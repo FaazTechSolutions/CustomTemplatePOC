@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Timesheet View With Excel Export</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .calenderview h6 {
+      text-align: center;
+    }
+
+    .calenderview .calendar {
+      overflow-x: auto;
+    }
+
+    .calenderview table {
+      border-collapse: collapse;
+      width: max-content;
+      min-width: 100%;
+    }
+    .calenderview th, .calenderview td {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      white-space: nowrap;
+      background: white;
+    }
+
+    .calenderview thead th {
+      position: sticky;
+      top: 0;
+      background: #f0f0f0;
+      /* background: #4CAF50; */
+      /* color: white; */
+      z-index: 3;
+    }
+    .sticky-col {
+      position: sticky;
+      background: white;
+      color: black;
+      z-index: 2;
+    }
+    .calenderview thead .sticky-col {
+      z-index: 4;
+    }
+    .calenderview thead tr:nth-child(2) th {
+      top: 36px;
+      z-index: 3;
+    }
+    .calenderview .th-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+    .calenderview .present {
+      color: green;
+      /* background: #c9f0c9; */
+    }
+
+    .calenderview .absent {
+      color: red;
+      /* background: #f8d5d5; */
+    }
+
+    .calenderview .leave,
+    .calenderview .weekDay {
+      color: #4f894f;
+      background: #e9f6e9;
+    }
+
+    .calenderview .weekEnd {
+      background: white;
+      color: black;
+    }
+
+    .calenderview .defaultWeekEnd {
+      background: white;
+      color: green;
+    }
+
+    .calenderview .pagination {
+      display: flex;
+      gap: 5px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .calenderview .pagination button {
+      padding: 6px 12px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      background: blue;
+      color: white;
+      border-radius: 4px;
+    }
+
+    .calenderview .pagination button.active {
+      background-color: #0505a7;
+      color: white;
+    }
+
+    .calenderview .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .calenderview .page-container {
+      display: flex;
+      justify-content: center;
+    }
+
+    .calenderview #count {
+      padding: 10px 5px;
+      margin-top: 15px;
+    }
+
+    .calenderview .table-container {
+      max-height: 70vh;
+      /* Adjust as needed */
+      overflow: auto;
+    }
+
+    .calenderview .head-container {
+      display: flex;
+      justify-content: center;
+    }
+
+    .calenderview .exp-btn-container {
+      margin: 0px 10px 0px 10px;
+    }
+
+    .calenderview #exportBtn {
+      background: blue;
+      color: white;
+      border: 1px solid blue;
+      border-radius: 5px;
+      padding: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+
+    <div class="calenderview">
+    <div class="head-container">
+      <div>
+        <h6 id="heading"></h6>
+      </div>
+      {{#if ResponseData}}
+      <div class="exp-btn-container">
+        <button id="exportBtn">{{Translate 'Export'}}</button>
+      </div>
+	  {{/if}}
+    </div>
+
+    <div class="table-container">
+      <table id="mytable">
+        <thead>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="page-container">
+      <div class="pagination" id="pagination"></div>
+      <span id="count"></span>
+    </div>
+    </div>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script>
+    //   const year = '2025';
+    //   const month = '09';
+    //   var url = `https://techsa-integration-api.azurewebsites.net/api/v1/IntegrationApi/GetMonthlyTimesheet?year=${year}&month=${month}`
+    //   fetch(url, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'companyId':'AYN',
+    //     'authorization':'Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSIsIkVtYWlsIjoiYS5oeWRlckBtYWlsLmNvbSIsIk1vYmlsZU51bWJlciI6IjEyMTIzMTQxMzQiLCJDb21wYW55SWQiOiJBWU4iLCJVc2VyTmFtZUVtcGxveWVlIjoiMSIsIklETnVtYmVyIjoiIiwiVXNlclR5cGUiOiIxIiwiZXhwIjoxNzU3Mzk4MDg2LCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.jW0J5C80va6TaNv-k9gywY3_I_PxVtJ-Yr-dOi-njck'
+    //   }
+    // })
+    // .then(response => response.json())
+    // .then(data => {
+    //   resp = data;
+    //   setTable(resp);
+    //   console.log('Success:', data);
+    // })
+    // .catch(error => {
+    //   console.error('Error:', error);
+    // });
+
+
+    const data = [
+      {
+        "EmployeeId": "0000085",
+        "Name": "بتول ال سهل ",
+        "2025-09-01": "P",
+        "2025-09-02": null,
+        "2025-09-03": null,
+        "2025-09-04": null,
+        "2025-09-05": null,
+        "2025-09-06": null,
+        "2025-09-07": "P",
+        "2025-09-08": "P",
+        "2025-09-09": null,
+        "2025-09-10": null,
+        "2025-09-11": null,
+        "2025-09-12": null,
+        "2025-09-13": "P",
+        "2025-09-14": null,
+        "2025-09-15": null,
+        "2025-09-16": null,
+        "2025-09-17": null,
+        "2025-09-18": null,
+        "2025-09-19": null,
+        "2025-09-20": null,
+        "2025-09-21": null,
+        "2025-09-22": null,
+        "2025-09-23": null,
+        "2025-09-24": null,
+        "2025-09-25": null,
+        "2025-09-26": null,
+        "2025-09-27": null,
+        "2025-09-28": null,
+        "2025-09-29": null,
+        "2025-09-30": null
+      },
+      {
+        "EmployeeId": "0001644",
+        "Name": "حصه سعود محمد ال سهل",
+        "2025-09-01": null,
+        "2025-09-02": "P",
+        "2025-09-03": "P",
+        "2025-09-04": null,
+        "2025-09-05": null,
+        "2025-09-06": null,
+        "2025-09-07": null,
+        "2025-09-08": "P",
+        "2025-09-09": null,
+        "2025-09-10": null,
+        "2025-09-11": null,
+        "2025-09-12": null,
+        "2025-09-13": null,
+        "2025-09-14": null,
+        "2025-09-15": null,
+        "2025-09-16": null,
+        "2025-09-17": null,
+        "2025-09-18": null,
+        "2025-09-19": null,
+        "2025-09-20": null,
+        "2025-09-21": null,
+        "2025-09-22": null,
+        "2025-09-23": null,
+        "2025-09-24": null,
+        "2025-09-25": null,
+        "2025-09-26": null,
+        "2025-09-27": null,
+        "2025-09-28": null,
+        "2025-09-29": null,
+        "2025-09-30": null
+      },
+      {
+        "EmployeeId": "0001647",
+        "Name": "منار صلاح خليفة الحمد ",
+        "2025-09-01": null,
+        "2025-09-02": null,
+        "2025-09-03": "P",
+        "2025-09-04": "P",
+        "2025-09-05": null,
+        "2025-09-06": null,
+        "2025-09-07": null,
+        "2025-09-08": null,
+        "2025-09-09": null,
+        "2025-09-10": null,
+        "2025-09-11": null,
+        "2025-09-12": null,
+        "2025-09-13": null,
+        "2025-09-14": null,
+        "2025-09-15": null,
+        "2025-09-16": null,
+        "2025-09-17": null,
+        "2025-09-18": null,
+        "2025-09-19": null,
+        "2025-09-20": null,
+        "2025-09-21": null,
+        "2025-09-22": null,
+        "2025-09-23": null,
+        "2025-09-24": null,
+        "2025-09-25": null,
+        "2025-09-26": null,
+        "2025-09-27": null,
+        "2025-09-28": null,
+        "2025-09-29": null,
+        "2025-09-30": null
+      }
+    ];
+
+    const ResponseData = [...data, ...data, ...data, ...data, ...data, ...data, ...data, ...data, ...data, ...data];
+    var tableExportData = [];
+    var selectedMonthList = [];
+    const monthList = [
+      { Jan: 'يناير' },
+      { Feb: 'فبراير' },
+      { Mar: 'مارس' },
+      { Apr: 'ابريل' },
+      { May: 'مايو' },
+      { Jun: 'يوليو' },
+      { Jul: 'يونية' },
+      { Aug: 'أغسطس' },
+      { Sep: 'سبتمبر' },
+      { Oct: 'أكتوبر' },
+      { Nov: 'نوفمبر' },
+      { Dec: 'ديسمبر' }
+    ];
+    const weekList = [
+      { Sun: 'الاحد' },
+      { Mon: 'الاثنين' },
+      { Tue: 'الثلاثاء' },
+      { Wed: 'الاربعاء' },
+      { Thu: 'الخميس' },
+      { Fri: 'الجمعة' },
+      { Sat: 'السبت' }
+    ];
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js'; // URL of the script
+      script.type = 'text/javascript';
+      script.onload = function () {
+        // You can now use jQuery or whatever the script provides
+        console.log('script loaded sucessfully');
+      };
+      document.head.appendChild(script); // or document.body.appendChild(script);
+    setTable()
+    // if (_this && _this.ResponseData && _this.ResponseData.length > 0) {
+    //   setTable();
+    // }
+
+  function getDaysInMonth(year, month) {
+
+      const days = [];
+      const date = new Date(year, month, 1);
+
+      while (date.getMonth() === month) {
+        const dayNumber = date.getDate(); // 1, 2, 3, ...
+        const dayName = date.toLocaleString('en-US', { weekday: 'short' }); // Mon, Tue, etc.
+        const monthName = date.toLocaleString('en-US', { month: 'short' }); // Jan, Feb, etc.
+        const dayOfWeek = date.getDay();
+        let isWeekend = false;
+        if (dayOfWeek === 5 || dayOfWeek === 6) {
+          isWeekend = true;
+        }
+        let monthNameTemp = monthName;
+        let dayNameTemp = dayName;
+        if (localStorage.getItem('CurrentLanguage') == 'Arabic') {
+          monthNameTemp = monthList.find(obj => Object.keys(obj)[0] === monthName)?.[monthName] || null;
+          dayNameTemp = weekList.find(obj => Object.keys(obj)[0] === dayName)?.[dayName] || null;
+        }
+        days.push({ dayNumber, 'dayName': dayNameTemp, 'monthName': monthNameTemp, isWeekend });
+        date.setDate(date.getDate() + 1); // Move to next day
+      }
+      return days;
+    }
+
+    function setTable() {
+      const resp = ResponseData;
+      if (resp.length < 1) {
+        return
+      }
+      setTableHeader(resp, 'mytable',true);
+    }
+
+    function setTableHeader(resp, tableName) {
+      const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+      const dateKeys = Object.keys(resp[0]).filter(key => datePattern.test(key));
+      const splitarr = dateKeys[0].split('-');
+      const month = splitarr[1];
+      const year = splitarr[0];
+      const table = document.getElementById(tableName);
+      const date = new Date(year, (Number(month) - 1), 1);
+      const monthName = date.toLocaleString('en-US', { month: 'short' });
+      let monthNameTemp = monthName;
+      if (localStorage.getItem('CurrentLanguage') == 'Arabic') {
+        monthNameTemp = monthList.find(obj => Object.keys(obj)[0] === monthName)?.[monthName] || null;
+      }
+      const header = document.getElementById("heading");
+      let headtext = 'Employee Attendance ';
+      if (localStorage.getItem('CurrentLanguage') == 'Arabic') {
+        headtext = 'حضور الموظف ';
+      }
+      header.innerHTML = headtext + monthNameTemp + '-' + year;
+      selectedMonthList = getDaysInMonth(year, (Number(month) - 1));
+
+      const headersEn = ["Employee Id", "Employee Name", "Present", "Absent"];
+      const headersAr = ["رقم الموظف", "اسم الموظف", "حاضر", "غائب"];
+      var headers = [];
+      if (localStorage.getItem('CurrentLanguage') == 'Arabic') {
+        headers = headersAr;
+      } else {
+        headers = headersEn;
+      }
+
+      const thead = table.querySelector("thead");
+      thead.innerHTML = "";
+
+      // Create two rows
+      const row1 = document.createElement("tr");
+      row1.className = 'sticky-header';
+      const row2 = document.createElement("tr");
+
+      headers.forEach((item, index) => {
+        const th = document.createElement("th");
+        th.rowSpan = 2;
+        const thdiv = document.createElement("div");
+        thdiv.className = 'th-content';
+        const labelText = document.createTextNode(item);
+        thdiv.appendChild(labelText);
+        
+        if(index != 0){
+        const input = document.createElement("input");
+        input.className = 'pin-toggle';
+        input.type = 'checkbox'
+        input.checked = false;
+        input.setAttribute("data-col", index + 1);
+        thdiv.appendChild(input);
+        }else{          
+        th.style.left = '0px';
+        th.className = 'sticky-col';
+        }
+        
+        th.appendChild(thdiv);
+        row1.appendChild(th);
+      });
+
+      selectedMonthList.forEach(item => {
+        const tdDate = document.createElement("th");
+        tdDate.textContent = item.dayNumber;
+        row1.appendChild(tdDate);
+
+        const tdDay = document.createElement("th");
+        tdDay.textContent = item.dayName;
+        if (item.isWeekend) {
+          tdDay.className = 'weekEnd';
+        } else {
+          tdDay.className = 'weekDay';
+        }
+        row2.appendChild(tdDay);
+      });
+
+      // Append rows to thead
+      thead.appendChild(row1);
+      thead.appendChild(row2);
+
+      const filteredDatesArray = resp.map(record => {
+        const dateEntries = Object.entries(record).filter(([key]) => datePattern.test(key));
+        return Object.fromEntries(dateEntries);
+      });
+      const filteredArray = resp.map(record => {
+        const dateEntries = Object.entries(record).filter(([key]) => !datePattern.test(key));
+        return Object.fromEntries(dateEntries);
+      });
+      const countarr = resp.map(row => {
+        let countA = 0;
+        // let countL = 0;
+        let countP = 0;
+
+        const weekends = selectedMonthList.filter(x => x.isWeekend);
+        for (let key in row) {
+          const keysplitDay = key.split('-')[2];
+          if (key !== "EmployeeId" && key !== "Name") {
+            if (row[key] === "P" || weekends.filter(x => x.dayNumber == Number(keysplitDay)).length > 0) countP++;
+            if (row[key] === null && !weekends.filter(x => x.dayNumber == Number(keysplitDay)).length > 0) countA++;
+            // if (row[key] === "L") countL++;
+          }
+        }
+
+        return {
+          EmployeeId: row.EmployeeId,
+          Name: row.Name,
+          TotalPresent: countP,
+          TotalAbsent: countA,
+          // TotalLeave: countL
+        };
+      });
+      const merged = countarr.map((item, index) => {
+        return { ...item, ...filteredDatesArray[index] };
+      });
+      setPagination(merged);
+      setTableExportData(merged);
+    }
+      function setTableExportData(paginatedItems) {
+       tableExportData = [];
+        let PresentText = 'Present';
+        let AbsentText = 'Absent';
+        let WeekEnd = 'WeekOff';
+        if (localStorage.getItem('CurrentLanguage') == 'Arabic') {
+          PresentText = 'حاضر';
+          AbsentText = 'غائب';
+          WeekEnd = 'WeekOff';
+        }
+        const weekends = selectedMonthList.filter(x => x.isWeekend);
+        paginatedItems.forEach(obj => {
+          let row = [];
+          Object.keys(obj).forEach((key, index) => {
+
+            let cell = {};
+            if (key !== 'EmployeeId' && key !== 'Name' && key !== 'TotalPresent' && key !== 'TotalAbsent' && key !== 'TotalLeave') {
+              const keysplitDay = Number(key.split('-')[2]);
+              if (obj[key] == 'P' && !weekends.filter(x => x.dayNumber == keysplitDay).length > 0) {
+                  cell[keysplitDay] = PresentText;
+              } else if (obj[key] == null && !weekends.filter(x => x.dayNumber == keysplitDay).length > 0) {
+                  cell[keysplitDay] = AbsentText;
+              }
+              else if (weekends.filter(x => x.dayNumber == keysplitDay).length > 0) {
+                  cell[keysplitDay] = WeekEnd;
+              }
+            }
+            else {
+              cell[key] = obj[key];
+            }
+
+            row.push(cell);
+          });
+          const merged = row.reduce((acc, obj) => {
+            return { ...acc, ...obj };
+          }, {});
+
+          tableExportData.push(merged);
+        });
+      }
+
+    function setPagination(params) {
+      const itemsPerPage = 10;
+      const items = params;
+
+
+      const pagination = document.getElementById("pagination");
+
+      let currentPage = 1;
+
+      function displayItems(page) {
+        const start = (page - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const paginatedItems = items.slice(start, end);
+        setTableData(paginatedItems, 'mytable', true);//mytable
+      }
+
+      function setTableData(paginatedItems, TableName, isSetIcon = true) {
+        const table = document.getElementById(TableName);
+        const tbody = table.querySelector("tbody");
+        tbody.innerHTML = "";
+        let PresentText = 'Present';
+        let AbsentText = 'Absent';
+        if (localStorage.getItem('CurrentLanguage') == 'Arabic') {
+          PresentText = 'حاضر';
+          AbsentText = 'غائب';
+        }
+        const weekends = selectedMonthList.filter(x => x.isWeekend);
+        paginatedItems.forEach(obj => {
+          const row = document.createElement("tr");
+          row.className = 'sticky-header';
+          Object.keys(obj).forEach((key, index) => {
+
+            const cell = document.createElement("td");
+            if (key !== 'EmployeeId' && key !== 'Name' && key !== 'TotalPresent' && key !== 'TotalAbsent' && key !== 'TotalLeave') {
+              const keysplitDay = key.split('-')[2];
+              if (obj[key] == 'P' && !weekends.filter(x => x.dayNumber == Number(keysplitDay)).length > 0) {
+
+                if (!isSetIcon) {
+                  cell.textContent = PresentText;
+                } else {
+                  cell.className = "present";
+                  cell.title = PresentText;
+                  cell.innerHTML = `<i class="fas fa-check-circle"></i>`;
+                }
+              } else if (obj[key] == null && !weekends.filter(x => x.dayNumber == Number(keysplitDay)).length > 0) {
+                if (!isSetIcon) {
+                  cell.textContent = AbsentText;
+                } else {
+                  cell.className = "absent";
+                  cell.title = AbsentText;
+                  cell.innerHTML = `<i class="fas fa-times-circle"></i>`;
+                }
+              }
+              else if (weekends.filter(x => x.dayNumber == Number(keysplitDay)).length > 0) {
+                if (!isSetIcon) {
+                  cell.textContent = PresentText;
+                } else {
+                  cell.className = "defaultWeekEnd";
+                  cell.title = PresentText;
+                  cell.innerHTML = "";
+                }
+              }
+              // else if (obj[key] == 'L') {
+              //   cell.className = "leave";
+              //   cell.title = "on Leave";
+              //   cell.innerHTML = `<i class="fas fa-umbrella-beach"></i>`;
+              // }
+            }
+            else {
+              if(index == 0){
+              cell.className = "sticky-col";
+              cell.style.left = '0px';
+              }
+              cell.textContent = obj[key];
+            }
+
+            row.appendChild(cell);
+          });
+          tbody.appendChild(row);
+        });
+
+      }
+
+      
+
+      function setupPagination(totalItems, itemsPerPage) {
+        const pageCount = Math.ceil(totalItems / itemsPerPage);
+        pagination.innerHTML = "";
+
+        const createButton = (text, disabled = false, onClick = null, isActive = false) => {
+          const btn = document.createElement("button");
+          btn.textContent = text;
+          if (disabled) btn.disabled = true;
+          if (isActive) btn.classList.add("active");
+          if (onClick) btn.addEventListener("click", onClick);
+          pagination.appendChild(btn);
+        };
+        let textNext = 'Next';
+        let textLast = 'Last';
+        let textFirst = 'First';
+        let textPrev = 'Prev';
+        let textCP = 'Current Page';
+        let textTP = 'Total Pages';
+        let textTR = 'Total Records';
+        if (localStorage.getItem('CurrentLanguage') == 'Arabic') {
+          textNext = 'التالي';
+          textLast = 'أخر';
+          textFirst = 'الاول';
+          textPrev = 'قبل';
+          textCP = 'الصفحة الحالية';
+          textTP = 'اجمالى الصفحات';
+          textTR = 'اجمالى التسجيلات';
+        }
+        const countPagination = document.getElementById("count");
+        countPagination.innerHTML = textCP + ': ' + currentPage + ', ' + textTP + ': ' + pageCount + ', ' + textTR + ': ' + items.length;
+
+        // ===== Navigation Buttons =====
+        createButton(textFirst, currentPage === 1, () => changePage(1));
+        createButton(textPrev, currentPage === 1, () => changePage(currentPage - 1));
+
+        // ===== Dynamic Page Buttons (max 5) =====
+        const maxVisiblePages = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = startPage + maxVisiblePages - 1;
+
+        if (endPage > pageCount) {
+          endPage = pageCount;
+          startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+          createButton(i, false, () => changePage(i), currentPage === i);
+        }
+
+        // ===== Navigation Buttons =====
+        createButton(textNext, currentPage === pageCount, () => changePage(currentPage + 1));
+        createButton(textLast, currentPage === pageCount, () => changePage(pageCount));
+      }
+
+      function changePage(page) {
+        currentPage = page;
+        displayItems(currentPage);
+        setupPagination(items.length, itemsPerPage);
+      }
+
+      // Initial load
+      displayItems(currentPage);
+      setupPagination(items.length, itemsPerPage);
+    }
+    updatedStickyField();
+function updatedStickyField() {
+    const tableSticky = document.getElementById('mytable');
+    const checkboxes = document.querySelectorAll('.pin-toggle');
+
+    function updateStickyColumns() {
+        let leftOffset = 0;
+
+        // Remove previous sticky styles
+        const allCells = tableSticky.querySelectorAll('th, td');
+        allCells.forEach(cell => {
+            cell.classList.remove('sticky-col');
+            cell.style.left = '';
+        });
+
+        // Make the first column (Employee ID) always sticky (colIndex = 0)
+        tableSticky.querySelectorAll('tr').forEach(row => {
+            const cell = row.children[0];
+            if (cell) {
+                cell.classList.add('sticky-col');
+                cell.style.left = `${leftOffset}px`;
+            }
+        });
+
+        // Get the width of the first column
+        const firstColWidth = tableSticky.rows[0].children[0]?.offsetWidth || 100;
+        leftOffset += firstColWidth;
+
+        // Apply sticky styles for checked columns (starting from colIndex = 1)
+        [...checkboxes].filter(cb => cb.checked).forEach(cb => {
+            const colIndex = parseInt(cb.dataset.col) - 1;
+
+            tableSticky.querySelectorAll('tr').forEach(row => {
+                const cell = row.children[colIndex];
+                if (cell) {
+                    cell.classList.add('sticky-col');
+                    cell.style.left = `${leftOffset}px`;
+                }
+            });
+
+            const cellWidth = tableSticky.rows[0].children[colIndex]?.offsetWidth || 100;
+            leftOffset += cellWidth;
+        });
+    }
+
+        // Attach listeners
+        checkboxes.forEach(cb => {
+          $(cb).on('change', updateStickyColumns);
+        });
+
+        // Initial run
+        $(window).on('load', updateStickyColumns);
+}
+
+
+    function exportExcel(){
+      
+    exportExcelWorkbook();
+        async function exportExcelWorkbook() {
+          const workbook = new ExcelJS.Workbook();
+          const worksheet = workbook.addWorksheet("Attendance");
+
+          const table = document.getElementById("mytable");
+
+          // Add heading row at the top
+          let heading = document.getElementById("heading").textContent;
+          const cusId = sessionStorage.getItem('customerId');
+          if(cusId){
+          heading += ' -'+cusId;
+          }
+          const headingRow = worksheet.addRow([heading]);
+
+          // Determine number of columns to merge (based on table first row)
+          const columnCount = table.rows[0].cells.length;
+
+          // Merge heading across all columns
+          worksheet.mergeCells(1, 1, 1, columnCount); // Merge from A1 to last column (e.g., E1)
+
+          // Style the heading
+          headingRow.font = { bold: true, size: 16 };
+          headingRow.alignment = { vertical: 'middle', horizontal: 'center' };
+          headingRow.height = 30;
+
+          // Extract headers from the HTML table
+          const firstHeaderRow = Array.from(table.rows[0].cells).map(cell => cell.innerText.trim());
+          const secondHeaderRow = ['', '', '', '', ...Array.from(table.rows[1].cells).map(cell => cell.innerText.trim())];
+
+          // Add header rows (now starting from row 2 and 3)
+          worksheet.addRow(firstHeaderRow);  // Row 2
+          worksheet.addRow(secondHeaderRow); // Row 3
+
+          // Merge first 4 columns vertically (A2:A3, B2:B3, etc.)
+          for (let i = 0; i < 4; i++) {
+            const col = String.fromCharCode(65 + i); // A, B, C, D
+            worksheet.mergeCells(`${col}2:${col}3`);
+          }
+
+          // Style header rows
+          for (let rowIndex = 2; rowIndex <= 3; rowIndex++) {
+            worksheet.getRow(rowIndex).eachCell(cell => {
+              const text = cell._value.model.value;
+              const weekends = selectedMonthList.filter(x => x.isWeekend);
+              cell.font = { bold: true };
+              cell.alignment = { horizontal: 'center', vertical: 'middle' };
+            if(!isNaN(text)){
+             if (weekends.filter(x => x.dayNumber == Number(text)).length > 0) {
+                cell.fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: { argb: 'ffffff' } // white background
+                };
+              }else{
+                cell.fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: { argb: 'FF4CAF50' } // Green background
+                };
+              }
+            }else if(text === 'Fri' || text === 'Sat' || text == 'الجمعة' || text == 'السبت'){//Arabic
+                cell.fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: { argb: 'ffffff' } // white background
+                };
+            }else{
+                cell.fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: { argb: 'FF4CAF50' } // Green background
+                };
+            }
+            });
+          }
+
+          const tbody = document.createElement("tbody");
+
+           let fixedKeys = ['EmployeeId', 'Name','TotalPresent','TotalAbsent'];
+           tableExportData.forEach(obj => {
+              const tr = document.createElement("tr");
+              fixedKeys.forEach(key => {
+                if (obj.hasOwnProperty(key)) {
+                const td = document.createElement("td");
+                td.textContent = obj[key];
+                tr.appendChild(td);
+                }
+              });
+              const remainingKeys = Object.keys(obj)
+                .filter(key => !fixedKeys.includes(key))
+                .sort((a, b) => Number(a) - Number(b));
+              remainingKeys.forEach(key => {
+                const td = document.createElement("td");
+                td.textContent = obj[key];
+                tr.appendChild(td);
+              });
+
+              tbody.appendChild(tr);
+            });
+
+          // Add data rows
+          const bodyRows = tbody.querySelectorAll("tr");
+          bodyRows.forEach(tr => {
+            const cells = Array.from(tr.cells).map(td => td.innerText.trim());
+            const excelRow = worksheet.addRow(cells);
+
+            // Apply styling based on cell value
+            excelRow.eachCell((cell) => {
+              const text = cell.value.toString().toLowerCase();
+              if (text === "present") {
+                cell.fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: { argb: 'FFB9F6CA' }
+                };
+              } else if (text === "absent") {
+                cell.fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: { argb: 'FFFFCDD2' }
+                };
+              }else if(text === "weekoff"){
+                cell.value = null;
+              }
+
+              // Center all cells
+              cell.alignment = { horizontal: 'center', vertical: 'middle' };
+            });
+          });
+
+          // Auto column width
+          worksheet.columns.forEach(col => col.width = 15);
+
+          // Download Excel file
+          const buffer = await workbook.xlsx.writeBuffer();
+          const blob = new Blob([buffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = heading + ".xlsx";
+          link.click();
+        }
+      }
+$('#exportBtn').on('click', function() {
+  exportExcel();
+});
+
+
+  </script>
+</body>
+
+</html>

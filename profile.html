@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile Card</title>
+  <!-- <link rel="stylesheet" href="styles.css" /> -->
+  <style>
+    .employee-profile.container {
+      display: flex;
+      gap: 20px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 1000px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .employee-profile .profile-left {
+      text-align: left;
+      flex: 1;
+    }
+
+    .employee-profile .profile-img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 4px solid #00b894;
+      margin-bottom: 10px;
+    }
+
+    .employee-profile .contact-number {
+      color: #555;
+    }
+
+    .employee-profile .location {
+      color: #777;
+    }
+
+    .employee-profile .profile-right {
+      flex: 2;
+      display: flex;
+      gap: 20px;
+      justify-content: space-between;
+    }
+
+    .employee-profile .profile-info {
+      background: #fafafa;
+      padding: 20px;
+      border-radius: 6px;
+      flex: 1;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .employee-profile .profile-info h3 {
+      margin-bottom: 10px;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .group-container{
+      display: flex;
+      margin: 10px 6px;
+    }
+    .label-form{
+          font-weight: 600;
+    }
+  </style>
+</head>
+
+<body class="direction-rtl">
+  {{#if data}}
+  <div class="employee-profile container">
+    <div class="profile-left">
+      <div style="text-align: center;">
+        <img
+          src="data:image/jpeg;base64,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"
+          alt="Profile Image" class="profile-img" />
+      </div>
+      <h3>{{Translate 'Personal Detail'}}</h3>
+      <div class="group-container">
+        <div class="label-form">{{Translate 'Emp Id'}} :</div> 
+        <div>{{data.[0].EmployeeId}}</div>
+      </div>
+      <div class="group-container">
+        <div class="label-form">{{Translate 'Name'}} :</div> 
+        <div>{{data.[0].Name}}</div>
+      </div>
+      <div class="group-container">
+        <div class="label-form">{{Translate 'Email'}} :</div> 
+        <div>{{data.[0].EmployeeEmail}}</div>
+      </div>
+      <div class="group-container">
+        <div class="label-form">{{Translate 'Mobile No'}} :</div> 
+        <div>{{data.[0].ContactNumber}}</div>
+      </div>
+      <div class="group-container">
+        <div class="label-form">{{Translate 'Location'}} :</div> 
+        <div>{{data.[0].Address}}</div>
+      </div>
+    </div>
+
+    <div class="profile-right">
+      <div class="profile-info">
+        <h3>{{Translate 'Project Detail'}}</h3>
+        <div class="group-container">
+          <div class="label-form">{{Translate 'Id'}} :</div>
+          <div>{{data.[0].ProjectId}}</div>
+        </div>
+        <div class="group-container">
+          <div class="label-form">{{Translate 'Name'}} :</div>
+          <div>{{data.[0].Description}}</div>
+        </div>
+        <div class="group-container">
+          <div class="label-form">{{Translate 'StartDate'}} :</div>
+          <div>{{data.[0].StartDate}}</div>
+        </div>
+        <div class="group-container">
+          <div class="label-form">{{Translate 'EndDate'}} :</div>
+          <div>{{data.[0].EndDate}}</div>
+        </div>
+        <h3>{{Translate 'Customer Detail'}}</h3>
+        
+        <div class="group-container">
+          <div class="label-form">{{Translate 'Id'}} :</div>
+          <div>{{data.[0].CustomerId}}</div>
+        </div>
+        
+        <div class="group-container">
+          <div class="label-form">{{Translate 'Name'}} :</div>
+          <div>{{data.[0].FirstName}}</div>
+        </div>
+        
+        <div class="group-container">
+          <div class="label-form">{{Translate 'Email'}} :</div>
+          <div>{{data.[0].CustomerEmail}}</div>
+        </div>
+        
+        <div class="group-container">
+          <div class="label-form">{{Translate 'Business Phone'}} :</div>
+          <div>{{data.[0].BusinessPhone}}</div>
+        </div>
+        
+        <div class="group-container">
+          <div class="label-form">{{Translate 'Mobile Phone'}} :</div>
+          <div>{{data.[0].MobilePhone}}</div>
+        </div>
+        <h3>Job Detail</h3>
+        <div class="group-container">
+          <div class="label-form">{{Translate 'Job'}} :</div>
+          <div>{{data.[0].Job}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{/if}}
+</body>
+
+</html>
