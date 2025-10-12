@@ -1,0 +1,2107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Wizard Form with Bootstrap</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    <style>
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            counter-reset: step;
+        }
+
+        .stepper .step {
+            text-align: center;
+            position: relative;
+            flex: 1;
+        }
+
+        .stepper .step:before {
+            counter-increment: step;
+            content: counter(step);
+            width: 35px;
+            height: 35px;
+            border: 2px solid #dee2e6;
+            display: block;
+            margin: 0 auto 10px auto;
+            border-radius: 50%;
+            background: #fff;
+            line-height: 31px;
+            font-weight: bold;
+            color: #adb5bd;
+			z-index: 1;
+            position: relative;
+        }
+
+        .stepper .step.active:before {
+            border-color: #fdbd3f;
+            background: #fdbd3f;
+            color: #fff;
+        }
+
+        .stepper .step:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #dee2e6;
+            top: 17px;
+            left: -50%;
+            z-index: 0;
+        }
+
+        .stepper .step:first-child:after {
+            content: none;
+        }
+
+        .stepper .step.active~.step:before {
+            background: #fff;
+            color: #adb5bd;
+            border-color: #dee2e6;
+        }
+
+        .stepper .step.active:after {
+            background: #fdbd3f;
+        }
+
+        /* Loader */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #fdbd3f;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+
+        .required {
+            color: red;
+        }
+        .nextBtn {
+            background-color: #fdbd3f;
+        }
+        .btn-align{
+            display: flex; 
+            justify-content: flex-end; 
+            gap: 10px;
+        }
+    .filelabel {
+        border: 2px dashed grey;
+        border-radius: 5px;
+        display: block;
+        padding: 5px;
+        transition: border 300ms ease;
+        cursor: pointer;
+        text-align: center;
+        margin: 0;
+    }
+    .filelabel i {
+        display: block;
+        font-size: 30px;
+        padding-bottom: 5px;
+    }
+    .filelabel i,
+    .filelabel .title {
+    color: grey;
+    transition: 200ms color;
+    }
+    .filelabel:hover {
+    border: 2px solid #1665c4;
+    }
+    .filelabel:hover i,
+    .filelabel:hover .title {
+    color: #1665c4;
+    }
+    #FileInput{
+        display:none;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="leave-request-container container py-5">
+        <!-- Stepper -->
+        <div class="stepper mb-5">
+            <div class="step active" data-step="1">{{Translate 'Leave'}}</div>
+            <div class="step" data-step="2">{{Translate 'Ticket'}}</div>
+            <div class="step" data-step="3">{{Translate 'Visa'}}</div>
+            <div class="step" data-step="4">{{Translate 'Confirmation'}}</div>
+        </div>
+
+        <!-- Step 1: Leave -->
+        <div class="wizard-step active" id="step-1">
+            <form>
+                <div class="row g-4">
+                    <div class="col-6">
+                        <label for="employeenametext" class="form-label fw-bold">{{Translate 'Employee Name'}}:</label>
+                        <span id="employeenametext"></span>
+                    </div>
+                    <div class="col-6">
+                        <label for="approvalmanagernametext" class="form-label fw-bold">{{Translate 'Approval Manager Name'}}:</label>
+                        <span id="approvalmanagernametext"></span>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <!-- Employee Info -->
+                    <div class="d-none">
+                        <fieldset class="border p-3 mb-4">
+                            <legend class="w-auto px-2">{{Translate 'Employee Info'}}</legend>
+                            <div class="mb-3">
+                                <label for="employeeId" class="form-label">{{Translate 'Employee Id'}} <span
+                                        class="required">*</span></label>
+                                <input type="text" class="form-control" id="employeeId" name="employeeId" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="ticketfor" class="form-label">{{Translate 'Ticket For'}}</label>
+                                <input type="text" class="form-control" id="ticketfor" name="ticketfor" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="ticketcoston" class="form-label">{{Translate 'Ticket Cost On'}}</label>
+                                <input type="text" class="form-control" id="ticketcoston" name="ticketcoston" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="requestfor" class="form-label">{{Translate 'Request For'}}</label>
+                                <input type="text" class="form-control" id="requestfor" name="requestfor" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="workingYears" class="form-label">{{Translate 'Working Years'}}</label>
+                                <input type="number" class="form-control" id="workingYears" name="workingYears"
+                                    readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="WorkingMonths" class="form-label">{{Translate 'Working Months'}}</label>
+                                <input type="number" class="form-control" id="WorkingMonths" name="WorkingMonths"
+                                    readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="WorkingDays" class="form-label">{{Translate 'Working Days'}}</label>
+                                <input type="number" class="form-control" id="WorkingDays" name="WorkingDays" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="TotalWorkingDays" class="form-label">{{Translate 'Working Days'}}</label>
+                                <input type="number" class="form-control" id="TotalWorkingDays" name="TotalWorkingDays"
+                                    readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="AlternativeEmployeeId" class="form-label">{{Translate 'Alternative Employee Id'}}</label>
+                                <input type="text" class="form-control" id="AlternativeEmployeeId" name="AlternativeEmployeeId"
+                                    readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="PhoneDuringVacation" class="form-label">{{Translate 'Phone During Vacation'}}</label>
+                                <input type="text" class="form-control" id="PhoneDuringVacation" name="PhoneDuringVacation"
+                                    readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="clearanceRequestId" class="form-label">{{Translate 'Clearance Request Id'}}</label>
+                                <input type="text" class="form-control" id="clearanceRequestId" name="clearanceRequestId"
+                                    readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="Department" class="form-label">{{Translate 'Department'}}</label>
+                                <input type="text" class="form-control" id="Department" name="Department" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="JobGrade" class="form-label">{{Translate 'JobGrade'}}</label>
+                                <input type="text" class="form-control" id="JobGrade" name="JobGrade" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="iqamaNumber" class="form-label">{{Translate 'Iqama Number'}}</label>
+                                <input type="text" class="form-control" id="iqamaNumber" name="iqamaNumber" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="payGroupId" class="form-label">{{Translate 'Pay Group Id'}}</label>
+                                <input type="text" class="form-control" id="payGroupId" name="payGroupId" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="Nationality" class="form-label">{{Translate 'Pay Group Id'}}</label>
+                                <input type="text" class="form-control" id="Nationality" name="Nationality" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="PayGroupName" class="form-label">{{Translate 'Pay Group Name'}}</label>
+                                <input type="text" class="form-control" id="PayGroupName" name="PayGroupName" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="payGroupStartDate" class="form-label">{{Translate 'Pay Group StartDate'}}</label>
+                                <input type="text" class="form-control" id="payGroupStartDate" name="payGroupStartDate"
+                                    readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="payGroupEndDate" class="form-label">{{Translate 'Pay Group End Date'}}</label>
+                                <input type="text" class="form-control" id="payGroupEndDate" name="payGroupEndDate"
+                                    readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="payGroupPeriodStartDate" class="form-label">{{Translate 'Pay Group Period StartDate'}}</label>
+                                <input type="text" class="form-control" id="payGroupPeriodStartDate"
+                                    name="payGroupPeriodStartDate" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="payGroupPeriodEndDate" class="form-label">{{Translate 'Pay Group Period EndDate'}}</label>
+                                <input type="text" class="form-control" id="payGroupPeriodEndDate"
+                                    name="payGroupPeriodEndDate" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="destinationtype" class="form-label">{{Translate 'Destination Type'}}</label>
+                                <input type="text" class="form-control" id="destinationtype" name="destinationtype"
+                                    readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="paywith" class="form-label">{{Translate 'Pay With'}}</label>
+                                <input type="text" class="form-control" id="paywith" name="paywith" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="departuredate" class="form-label">{{Translate 'Departure Date'}}</label>
+                                <input type="date" class="form-control" id="departuredate" name="departuredate"
+                                    readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="arrivaldate" class="form-label">{{Translate 'Arrival Date'}}</label>
+                                <input type="date" class="form-control" id="arrivaldate" name="arrivaldate" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="effectivedate" class="form-label">{{Translate 'Effective Date'}}</label>
+                                <input type="date" class="form-control" id="effectivedate" name="effectivedate"
+                                    readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="departureFrom" class="form-label">{{Translate 'Departure From'}}</label>
+                                <input type="text" class="form-control" id="departureFrom" name="departureFrom"
+                                    readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="ticketClass" class="form-label">{{Translate 'Ticket Class'}}</label>
+                                <input type="text" class="form-control" id="ticketClass" name="ticketClass" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="employeename" class="form-label">{{Translate 'Employee Name'}}</label>
+                                <input type="text" class="form-control" id="employeename" name="employeename" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="approvalmanagerid" class="form-label">{{Translate 'Approval Manager Id'}}</label>
+                                <input type="text" class="form-control" id="approvalmanagerid" name="approvalmanagerid"
+                                    readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="EmployeePosition" class="form-label">{{Translate 'Employee Position'}}</label>
+                                <input type="text" class="form-control" id="EmployeePosition" name="EmployeePosition"
+                                    readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="approvalmanagername" class="form-label">{{Translate 'Approval Manager Name'}}</label>
+                                <input type="text" class="form-control" id="approvalmanagername"
+                                    name="approvalmanagername" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="ApprovalManagerUserId" class="form-label">{{Translate 'Approval Manager User Id'}}</label>
+                                <input type="text" class="form-control" id="ApprovalManagerUserId"
+                                    name="ApprovalManagerUserId" readonly>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <!-- Leave Info -->
+                    <div class="col-12">
+                        <fieldset class="border p-3 mb-4">
+                            <legend class="w-auto px-2">{{Translate 'Leave Info'}}</legend>
+                            <div class="row g-3">
+                                <div class="col-3 mb-3">
+                                    <label for="paymentMethod" class="form-label">{{Translate 'Payment Method'}} <span class="required">*</span></label>
+                                    <select class="form-select" id="paymentMethod" name="paymentMethod">
+                                        <option value="">-- {{Translate 'Select'}} --</option>
+                                        <option value="Advanced amount">Advanced amount</option>
+                                        <option value="Monthly basis">Monthly basis</option>
+                                    </select>
+                                </div>
+                                <div class="col-3 mb-3">
+                                    <label for="vacationType" class="form-label">{{Translate 'Vacation Type'}} <span class="required">*</span></label>
+                                    <select class="form-select" id="vacationType" name="vacationType">
+                                        <option value="">-- {{Translate 'Select'}} --</option>
+                                        <option value="Annual">Annual</option>
+                                        <option value="Sick">Sick</option>
+                                        <option value="Unpaid">Unpaid</option>
+                                        <option value="Exam and Study">Exam and Study</option>
+                                        <option value="Hajj">Hajj</option>
+                                        <option value="Family Death">Family Death</option>
+                                        <option value="Child Birth">Child Birth</option>
+                                        <option value="Marriage">Marriage</option>
+                                        <option value="Maternity">Maternity</option>
+                                        <option value="Widow">Widow</option>
+                                    </select>
+                                </div>
+                                <div class="col-6 d-none">
+                                    <label for="vacationcode" class="form-label">{{Translate 'Vacation Code'}}</label>
+                                    <input type="number" class="form-control" id="vacationcode" name="vacationcode" min="1" readonly>
+                                </div>
+                                <div class="col-3">
+                                    <label for="startDate" class="form-label">{{Translate 'Start Date'}} <span class="required">*</span></label>
+                                    <input type="date" class="form-control" id="startDate" name="startDate">
+                                </div>
+                                <div class="col-3">
+                                    <label for="vacationDays" class="form-label">{{Translate 'Vacation Days'}} <span class="required">*</span></label>
+                                    <input type="number" class="form-control" id="vacationDays" name="vacationDays" min="1">
+                                </div>
+                                <!-- End Date -->
+                                <div class="col-3">
+                                    <label for="endDate" class="form-label">{{Translate 'End Date'}} <span class="required">*</span></label>
+                                    <input type="text" class="form-control" id="endDate" name="endDate" readonly>
+                                </div>
+                                <!-- Expected Return Date -->
+                                <div class="col-3">
+                                    <label for="expectedReturnDate" class="form-label">{{Translate 'Expected Return Date'}}</label>
+                                    <input type="text" class="form-control" id="expectedReturnDate" name="expectedReturnDate" readonly>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+
+                    <div class="row g-3">
+                        <!-- Is External? -->
+                         <div class="col-4">
+                            <!-- Group 3:Ticket and Visa -->
+                            <fieldset class="border p-3 mb-4">
+                                <legend class="w-auto px-2 mb-3">{{Translate 'Ticket and Visa'}}</legend>
+                                <div class="row g-3">
+                            <div class="row">
+                            <div class="col">
+
+                            <label class="form-label">{{Translate 'Is External'}}?</label>
+                            </div>
+                            <div class="col">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="isExternal" id="externalYes"
+                                        value="yes">
+                                    <label class="form-check-label" for="externalYes">{{Translate 'Yes'}}</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="isExternal" id="externalNo"
+                                        value="no">
+                                    <label class="form-check-label" for="externalNo">{{Translate 'No'}}</label>
+                                </div>
+                            </div>
+                            </div>
+                        <!-- Ticket Required -->
+                            <div class="row">
+                                <div class="col">
+                                    <label class="form-label">{{Translate 'Ticket Required'}}</label>
+                                </div>
+                                <div class="col">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="ticketrequired"
+                                        id="ticketrequiredYes" value="yes">
+                                    <label class="form-check-label" for="ticketrequiredYes">{{Translate 'Yes'}}</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="ticketrequired"
+                                        id="ticketrequiredNo" value="no">
+                                    <label class="form-check-label" for="ticketrequiredNo">{{Translate 'No'}}</label>
+                                </div>
+                            </div>
+                            </div>
+                        <!-- Visa Required -->
+                            <div class="row">
+                                <div class="col">
+                                <label class="form-label">{{Translate 'Visa Required'}}</label>
+                                </div>
+                            <div class="col">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="visarequired"
+                                        id="visarequiredYes" value="yes">
+                                    <label class="form-check-label" for="visarequiredYes">{{Translate 'Yes'}}</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="visarequired" id="visarequiredNo"
+                                        value="no">
+                                    <label class="form-check-label" for="visarequiredNo">{{Translate 'No'}}</label>
+                                </div>
+                            </div>
+                            </div>
+                        <!--Extension Leave 1 -->
+                            <div class="row">
+                                <div class="col">
+                                    <label class="form-label">{{Translate 'Extension Leave 1'}}</label>
+                                </div>
+                            <div class="col">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="extensionleave1"
+                                        id="extesionleave1yes" value="yes">
+                                    <label class="form-check-label" for="extesionleave1yes">{{Translate 'Yes'}}</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="extensionleave1"
+                                        id="extesionleave1no" value="no">
+                                    <label class="form-check-label" for="extesionleave1no">{{Translate 'No'}}</label>
+                                </div>
+                            </div>
+                            </div>
+                        <!--Extension Leave 2 -->
+                            <div class="row">
+                                <div class="col">
+                                    <label class="form-label">{{Translate 'Extension Leave 2'}}</label>
+                                </div>
+                                <div class="col">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="extensionleave2"
+                                        id="extesionleave2yes" value="yes">
+                                    <label class="form-check-label" for="extesionleave2yes">{{Translate 'Yes'}}</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="extensionleave2"
+                                        id="extesionleave2no" value="no">
+                                    <label class="form-check-label" for="extesionleave2no">{{Translate 'No'}}</label>
+                                </div>
+                            </div>
+                            </div>
+                                </div>
+
+                            
+                            </fieldset>
+                         </div>
+                        <!-- Group 4: Extended Leave 1 -->
+                    <div class="col-4">
+                        <fieldset id="ext1" class="border p-3 mb-4 d-none">
+                            <legend class="w-auto px-2">{{Translate 'Extended Leave 1'}}</legend>
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <label for="vacationTypeExt1" class="form-label">{{Translate 'Vacation Type Ext1'}}</label>
+                                    <select class="form-select" id="vacationTypeExt1" name="vacationTypeExt1">
+                                        <option value="">-- {{Translate 'Select'}} --</option>
+                                        <option value="Annual">Annual</option>
+                                        <option value="Sick">Sick</option>
+                                        <option value="Unpaid">Unpaid</option>
+                                        <option value="Exam and Study">Exam and Study</option>
+                                        <option value="Hajj">Hajj</option>
+                                        <option value="Family Death">Family Death</option>
+                                        <option value="Child Birth">Child Birth</option>
+                                        <option value="Marriage">Marriage</option>
+                                        <option value="Maternity">Maternity</option>
+                                        <option value="Widow">Widow</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label for="vacationDaysExt1" class="form-label">{{Translate 'Vacation Days'}}</label>
+                                    <input type="number" class="form-control" id="vacationDaysExt1"
+                                        name="vacationDaysExt1" min="1">
+                                </div>
+                                <div class="col-6">
+                                    <label for="startDateExt1" class="form-label">{{Translate 'Start Date Ext1'}}</label>
+                                    <input type="date" class="form-control" id="startDateExt1" name="startDateExt1">
+                                </div>
+                                <div class="col-6">
+                                    <label for="endDateExt1" class="form-label">{{Translate 'End Date Ext1'}}</label>
+                                    <input type="date" class="form-control" id="endDateExt1" name="endDateExt1">
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <!-- Group 5: Extended Leave 2 -->
+                    <div class="col-4">
+                        <fieldset id="ext2" class="border p-3 mb-4 d-none">
+                            <legend class="w-auto px-2">{{Translate 'Extended Leave 2'}}</legend>
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <label for="vacationTypeExt2" class="form-label">{{Translate 'Vacation Type Ext2'}}</label>
+                                    <select class="form-select" id="vacationTypeExt2" name="vacationTypeExt2">
+                                        <option value="">-- {{Translate 'Select'}} --</option>
+                                        <option value="Annual">Annual</option>
+                                        <option value="Sick">Sick</option>
+                                        <option value="Unpaid">Unpaid</option>
+                                        <option value="Exam and Study">Exam and Study</option>
+                                        <option value="Hajj">Hajj</option>
+                                        <option value="Family Death">Family Death</option>
+                                        <option value="Child Birth">Child Birth</option>
+                                        <option value="Marriage">Marriage</option>
+                                        <option value="Maternity">Maternity</option>
+                                        <option value="Widow">Widow</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label for="vacationDaysExt2" class="form-label">{{Translate 'Vacation Days'}}</label>
+                                    <input type="number" class="form-control" id="vacationDaysExt2"
+                                        name="vacationDaysExt2" min="1">
+                                </div>
+                                <div class="col-6">
+                                    <label for="startDateExt2" class="form-label">{{Translate 'Start Date Ext2'}}</label>
+                                    <input type="date" class="form-control" id="startDateExt2" name="startDateExt2">
+                                </div>
+                                <div class="col-6">
+                                    <label for="endDateExt2" class="form-label">{{Translate 'End Date Ext2'}}</label>
+                                    <input type="date" class="form-control" id="endDateExt2" name="endDateExt2">
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    </div>
+
+                <fieldset class="border p-3 mb-4">
+                    <div class="row">
+                        <div class="col-2">
+                        <legend class="w-auto px-2">{{Translate 'File'}}:</legend>
+                        </div>
+                        <div class="col">
+                            <label class="filelabel">
+                            <img  src="https://cdn-icons-png.flaticon.com/128/167/167499.png" width="30px" height="30px" alt="">
+                            <span class="title">   {{Translate 'Add File'}}  </span>
+                            <input class="FileUpload1" id="FileInput" name="booking_attachment" type="file" />
+                            </label>
+                        </div>
+                    </div>
+                    
+                </fieldset>
+
+                
+
+            </form>
+            <div class="mt-4 btn-align">
+                <button type="button" class="btn nextBtn" id="nextStep" value="2">{{Translate 'Next'}}</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Ticket -->
+        <div class="wizard-step d-none" id="step-2">
+            <form>
+                <!-- Group 1: Ticket Balance-->
+                <fieldset class="border p-3 mb-4">
+                    <legend class="w-auto px-2">{{Translate 'Ticket Balance'}}</legend>
+                    <div class="row g-3">
+                        <div class="col-md-3 d-none">
+                            <label for="AdultTicketBalance" class="form-label">{{Translate 'Adult Ticket Balance'}}</label>
+                            <input type="number" class="form-control" id="AdultTicketBalance" name="AdultTicketBalance"
+                                min="1">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="AdultTicketBalanceNew" class="form-label">{{Translate 'Adult Ticket Balance New'}}</label>
+                            <input type="number" class="form-control" id="AdultTicketBalanceNew"
+                                name="AdultTicketBalanceNew" min="1">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="AdultTicketPrice" class="form-label">{{Translate 'Adult Ticket Price'}}</label>
+                            <input type="number" class="form-control" id="AdultTicketPrice" name="AdultTicketPrice"
+                                min="1">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="AdultTicketsContract" class="form-label">{{Translate 'Adult Ticket Contract'}}</label>
+                            <input type="number" class="form-control" id="AdultTicketsContract"
+                                name="AdultTicketsContract" min="1">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="AdultTicketsUsed" class="form-label">{{Translate 'Adult Ticket Used'}}</label>
+                            <input type="number" class="form-control" id="AdultTicketsUsed" name="AdultTicketsUsed"
+                                min="1">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="ChildTicketBalance" class="form-label">{{Translate 'Child Ticket Balance'}}</label>
+                            <input type="number" class="form-control" id="ChildTicketBalance" name="ChildTicketBalance"
+                                min="1">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="ChildTicketBalanceNew" class="form-label">{{Translate 'Child Ticket Balance New'}}</label>
+                            <input type="number" class="form-control" id="ChildTicketBalanceNew"
+                                name="ChildTicketBalanceNew" min="1">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="ChildTicketPrice" class="form-label">{{Translate 'Child Ticket Price'}}</label>
+                            <input type="number" class="form-control" id="ChildTicketPrice" name="ChildTicketPrice"
+                                min="1">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="ChildTicketsContract" class="form-label">{{Translate 'Child Ticket Contract'}}</label>
+                            <input type="number" class="form-control" id="ChildTicketsContract"
+                                name="ChildTicketsContract" min="1">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="ChildTicketsUsed" class="form-label">{{Translate 'Child Ticket Used'}}</label>
+                            <input type="number" class="form-control" id="ChildTicketsUsed" name="ChildTicketsUsed"
+                                min="1">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="InfantTicketBalance" class="form-label">{{Translate 'Infant Ticket Balance'}}</label>
+                            <input type="number" class="form-control" id="InfantTicketBalance"
+                                name="InfantTicketBalance" min="1">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="InfantTicketBalanceNew" class="form-label">{{Translate 'Infant Ticket Balance New'}}</label>
+                            <input type="number" class="form-control" id="InfantTicketBalanceNew"
+                                name="InfantTicketBalanceNew" min="1">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="InfantTicketPrice" class="form-label">{{Translate 'Infant Ticket Price'}}</label>
+                            <input type="number" class="form-control" id="InfantTicketPrice" name="InfantTicketPrice"
+                                min="1">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="InfantTicketsContract" class="form-label">{{Translate 'Infant Ticket Contract'}}</label>
+                            <input type="number" class="form-control" id="InfantTicketsContract"
+                                name="InfantTicketsContract" min="1">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="InfantTicketsUsed" class="form-label">{{Translate 'Infant Ticket Used'}}</label>
+                            <input type="number" class="form-control" id="InfantTicketsUsed" name="InfantTicketsUsed"
+                                min="1">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="ticketPricePercentage" class="form-label">{{Translate 'Ticket Price Percentage'}}</label>
+                            <input type="text" class="form-control" id="ticketPricePercentage"
+                                name="ticketPricePercentage">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="totalTicketsPrice" class="form-label">{{Translate 'Total Ticket Price'}}</label>
+                            <input type="text" class="form-control" id="totalTicketsPrice" name="totalTicketsPrice">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="VacationBalance" class="form-label">{{Translate 'Vacation Balance'}}</label>
+                            <input type="number" class="form-control" id="VacationBalance" name="VacationBalance">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="vacationbalanceNew" class="form-label">{{Translate 'Vacation Balance'}}</label>
+                            <input type="number" class="form-control" id="vacationbalanceNew" name="vacationbalanceNew">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="monthCalculationMethod" class="form-label">{{Translate 'Month Calculation Method'}}</label>
+                            <input type="number" class="form-control" id="monthCalculationMethod"
+                                name="monthCalculationMethod">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="WorkingMonths" class="form-label">{{Translate 'Working Months'}}</label>
+                            <input type="number" class="form-control" id="WorkingMonths" name="WorkingMonths">
+                        </div>
+                    </div>
+                </fieldset>
+                <!-- Group 1: Tickets-->
+                <fieldset class="border p-3 mb-4 d-none">
+                    <legend class="w-auto px-2">{{Translate 'Tickets'}}</legend>
+                    <div class="row g-3">
+                        <div class="col-md-3 d-none">
+                            <label for="AdultTicket" class="form-label">{{Translate 'Adult Ticket'}}</label>
+                            <input type="number" class="form-control" id="AdultTicket" name="AdultTicket" min="1">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="ticketDestinationId" class="form-label">{{Translate 'Ticket Destination Id'}}</label>
+                            <input type="text" class="form-control" id="ticketDestinationId" name="ticketDestinationId">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="ChildTicket" class="form-label">{{Translate 'Child Ticket'}}</label>
+                            <input type="number" class="form-control" id="ChildTicket" name="ChildTicket" min="1">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="InfantTicket" class="form-label">{{Translate 'Infant Ticket'}}</label>
+                            <input type="number" class="form-control" id="InfantTicket" name="InfantTicket" min="1">
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+            <div class="mt-4 btn-align">
+                <button type="button" class="btn btn-secondary" id="prevStep" value="1">{{Translate 'Previous'}}</button>
+                <button type="button" class="btn nextBtn" id="nextStep" value="3">{{Translate 'Next'}}</button>
+            </div>
+        </div>
+
+        <!-- Step 3: Visa -->
+        <div class="wizard-step d-none" id="step-3">
+            <form>
+                <!-- Group 1: Leave Info -->
+                <fieldset class="border p-3 mb-4">
+                    <legend class="w-auto px-2">{{Translate 'Visa Info'}}</legend>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label for="visafor" class="form-label">{{Translate 'Visa For'}}</label>
+                            <select class="form-select" id="visafor" name="visafor">
+                                <option value="">-- {{Translate 'Select'}} --</option>
+                                <option>Employee</option>
+                                <option>Dependent</option>
+                                <option>Both</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="visadays" class="form-label">{{Translate 'Visa Days'}}</label>
+                            <input type="number" class="form-control" id="visadays" name="visadays" min="1">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="visaused" class="form-label">{{Translate 'No Of Visa'}}</label>
+                            <input type="number" class="form-control" id="visaused" name="visaused" min="1">
+                        </div>
+                        <!-- <div class="col-md-3">
+                            <label for="noofvisa" class="form-label">No Of Visa</label>
+                            <input type="number" class="form-control" id="noofvisa" name="noofvisa" min="1">
+                        </div> -->
+                        <div class="col-md-3 d-none">
+                            <label for="visacontract" class="form-label">{{Translate 'Visa Contract'}}</label>
+                            <input type="number" class="form-control" id="visacontract" name="visacontract" min="1">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="visacoston" class="form-label">{{Translate 'Visa Cost On'}}</label>
+                            <select class="form-select" id="visacoston" name="visacoston">
+                                <option value="">-- {{Translate 'Select'}} --</option>
+                                <option>Employee</option>
+                                <option>Company</option>
+                                <option>Cash</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="VisaBalance" class="form-label">{{Translate 'Visa Balance'}}</label>
+                            <input type="text" class="form-control" id="VisaBalance" name="VisaBalance">
+                        </div>
+                        <div class="col-md-3 d-none">
+                            <label for="VisaNewBalance" class="form-label">{{Translate 'Visa New Balance'}}</label>
+                            <input type="text" class="form-control" id="VisaNewBalance" name="VisaNewBalance">
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+            <div class="mt-4 btn-align">
+                <button type="button" class="btn btn-secondary" id="prevStep" value="2">{{Translate 'Previous'}}</button>
+                <button type="button" class="btn nextBtn" id="nextStep" value="4">{{Translate 'Next'}}</button>
+            </div>
+        </div>
+
+        <!-- Step 4: Confirmation -->
+        <div class="wizard-step d-none" id="step-4">
+            <h4 class="mb-3">{{Translate 'Confirmation'}}</h4>
+            <p class="text-muted">{{Translate 'Please review your details carefully before submitting'}}.</p>
+
+            <div id="confirmationSummary" class="card shadow-sm p-4 mb-4"></div>
+
+            <div class="mt-4 btn-align">
+                <button type="button" class="btn btn-secondary" id="prevStep" value="3">{{Translate 'Previous'}}</button>
+                <button type="button" class="btn btn-success" id="submitLeaveRequest">{{Translate 'Submit'}}</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        var _this = this;
+        const script = document.createElement('script');
+        script.src = 'https://code.jquery.com/jquery-3.6.0.min.js'; // URL of the script
+        script.type = 'text/javascript';
+        script.onload = function () {
+            // You can now use jQuery or whatever the script provides
+            console.log('script loaded sucessfully');
+        };
+        document.head.appendChild(script);
+        const script1 = document.createElement('script');
+        script1.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11'; // URL of the script
+        script1.type = 'text/javascript';
+        script1.onload = function () {
+            // You can now use jQuery or whatever the script provides
+            console.log('script loaded sucessfully');
+        };
+        document.head.appendChild(script1);
+            const script3 = document.createElement('script');
+            script3.src = 'https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js';
+            script3.type = 'text/javascript';
+            script3.onload = function () {
+            console.log('Handlebars loaded!');
+
+            // Now you can safely use Handlebars
+            Handlebars.registerHelper('Translate', function (value) {
+        let _ret =value;
+        if(!value)
+            _ret ="";
+        
+        let Lang = localStorage.getItem("CurrentLanguage");
+
+        if (!Lang) {
+            return _ret;
+        }
+        if (!_this.globalService.systemLabels) {
+            return _ret;
+        }
+       
+        try {
+
+            if (value.substring(0, 3) == "LBL") {
+      
+              let _label = _this.globalService.systemLabels.filter(x => x.LabelId == value)[0];
+              if (_label) {
+                let _ret = value;
+                if(_label[Lang]) {
+                  _ret = _label[Lang];
+                }
+                else if(_label.DefaultValue) {
+                  _ret = _label.DefaultValue
+                }
+                _ret =  _ret
+              }
+              else 
+              _ret = value;
+            }
+            else {
+      
+              let _value = value.toLowerCase().trim();
+              let _label = _this.globalService.systemLabels.filter(x => x.DefaultValue.toLowerCase().trim() == _value)[0];
+              if (_label) {
+                _ret =  _label[Lang] ? _label[Lang] : value
+              }
+              else 
+              _ret =  value;
+          
+            }
+          }
+          catch (error) {
+            _ret =  value
+          }
+
+        return  _ret;
+        });
+            };
+            document.body.appendChild(script3);
+        //const link = document.createElement("link");
+        //link.rel = "stylesheet";
+        //link.href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css";
+
+        //document.head.appendChild(link);
+
+        //{{Parameter.Token}};
+
+        
+        var token = localStorage.getItem("eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9");
+        const bcpURL = "https://bcp.mawarid.com.sa";
+        const Apps4xApiUrl = "https://portal.mawarid.com.sa/apps4x-api/";
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        var currentEmployeeId = userInfo.EmployeeId;
+        const userIdDefault = "SelfService";
+        var userId = localStorage.getItem('UserId');
+        var companyId = localStorage.getItem('CompanyId');
+        const appId = "e6516de3ae824fd18d745fe9ac836cda";
+        const AdministrationAppId = "APP0000006";
+        const UserTableCollectionId = "ECN0000055";//collectionId
+        const UserTableEntityId = "Users";//entityId
+
+        if(window.location.hostname === "portal.mawarid.com.sa"){
+            token = localStorage.getItem("eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9");
+            currentEmployeeId = userInfo.EmployeeId;
+            userId = localStorage.getItem('UserId');
+            companyId = localStorage.getItem('CompanyId');
+        }else{
+            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiIiLCJDb21wYW55SWQiOiJMR0UwMDAwMDAxIiwiZXhwIjoxNzU5OTg5MTUyLCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.bHjC1ojsV3yr8xSD-7hHOWogNqyYHqGvHcXvmYZwL90";
+            currentEmployeeId = "1098483";
+            userId = "a.hyder";
+            companyId = "LGE0000001";
+        }
+
+        $(document).ready(function () {
+            getReportingManagerForEmployee();
+        });
+        var fileData;
+
+         $("#FileInput").on('change',function (e) {
+            fileData = $('#FileInput').prop('files')[0];
+            var labelVal = $(".title").text();
+            var oldfileName = $(this).val();
+              const  fileName = e.target.value.split( '\\' ).pop();
+
+                if (oldfileName == fileName) {return false;}
+                var extension = fileName.split('.').pop();
+
+            if ($.inArray(extension,['jpg','jpeg','png']) >= 0) {
+                $(".filelabel i").removeClass().addClass('fa fa-file-image-o');
+                $(".filelabel i, .filelabel .title").css({'color':'#208440'});
+                $(".filelabel").css({'border':' 2px solid #208440'});
+            }
+            else if(extension == 'pdf'){
+                $(".filelabel i").removeClass().addClass('fa fa-file-pdf-o');
+                $(".filelabel i, .filelabel .title").css({'color':'red'});
+                $(".filelabel").css({'border':' 2px solid red'});
+
+            }
+        else if(extension == 'doc' || extension == 'docx'){
+            $(".filelabel i").removeClass().addClass('fa fa-file-word-o');
+            $(".filelabel i, .filelabel .title").css({'color':'#2388df'});
+            $(".filelabel").css({'border':' 2px solid #2388df'});
+        }
+            else{
+                $(".filelabel i").removeClass().addClass('fa fa-file-o');
+                $(".filelabel i, .filelabel .title").css({'color':'black'});
+                $(".filelabel").css({'border':' 2px solid black'});
+            }
+
+            if(fileName ){
+                if (fileName.length > 10){
+                    $(".filelabel .title").text(fileName.slice(0,4)+'...'+extension);
+                }
+                else{
+                    $(".filelabel .title").text(fileName);
+                }
+            }
+            else{
+                $(".filelabel .title").text(labelVal);
+            }
+        });
+
+        function showStep(step) {
+            $('.wizard-step').addClass('d-none');
+            $('#step-' + step).removeClass('d-none');
+
+            $('.stepper .step').removeClass('active');
+            $('.stepper .step[data-step="' + step + '"]').addClass('active');
+        }
+
+        function nextStep(step, btn) {
+            const $btn = $(btn);
+            const $loader = $('<span class="loader"></span>');
+
+            $btn.prop('disabled', true).append($loader);
+
+
+            if (!$("[name='employeeId']").val()) {
+                Swal.fire(handlebarCompile("Translate 'Warning'"), handlebarCompile("Translate 'Please select the Employee Id'"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+            if (!$("[name='paymentMethod']").val()) {
+                Swal.fire(handlebarCompile("Translate 'Warning'"), handlebarCompile("Translate 'Please select the Payment Method'"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+            if (!$("[name='vacationType']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'"), handlebarCompile("{{Translate 'Please select the Vacation Type' }}"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+            //enable
+            if (!$("[name='startDate']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'"), handlebarCompile("Translate 'Please select the Start Date'"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+            if (!$("[name='endDate']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'"), handlebarCompile("Translate 'Please select the End Date'"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+            if (!$("[name='vacationDays']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'"), handlebarCompile("Translate 'Please select the Vacation Days'"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+            if (!$("[name='ticketrequired']").is(":checked")) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'"), handlebarCompile("Translate 'Please select the Ticket Required'"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+
+            if (!$("[name='visarequired']").is(":checked")) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'"), handlebarCompile("Translate 'Please select the Visa Required'"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+
+            const ticketRequired = $("input[name='ticketrequired']:checked").val();
+            const visaRequired = $("input[name='visarequired']:checked").val();
+
+            const skipTicket = !ticketRequired || ticketRequired === "no";
+            const skipVisa = !visaRequired || visaRequired === "no";
+
+            // Case 1: both skipped → submit immediately
+            if (skipTicket && skipVisa) {
+                initLeaveRequest();
+                step = 3;
+            }
+
+            // Case 2: skip ticket
+            if (step === 2 && skipTicket) {
+                step += 1;
+            }
+            // Case 3: skip visa
+            else if (step === 3 && skipVisa) {
+                step += 1;
+            }
+
+            // If step reaches 4 → call API
+            if (step === 4) {
+                initLeaveRequest();
+                populateConfirmation();
+            }
+
+            setTimeout(() => {
+                $btn.prop('disabled', false);
+                $loader.remove();
+                showStep(step);
+            }, 800);
+        }
+        function confirmAction(btnValue,thisdata,text) {
+        Swal.fire({
+            title: handlebarCompile("Translate 'Are you sure?'"),
+            text: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: handlebarCompile("Translate 'Stay'"),
+            cancelButtonText: handlebarCompile("Translate 'Next'"),
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+            } else if (
+            result.dismiss === Swal.DismissReason.cancel
+            ) {
+            nextStep(Number(btnValue), thisdata);
+            }
+        });
+        }
+        $(document).on('click', '#submitLeaveRequest', function (e) {
+            submitLeaveRequest();
+        });
+        $(document).on('click', '#prevStep', function (e) {
+            let btnValue = $(this).val();
+            prevStep(Number(btnValue));
+        });
+
+        $(document).on('click', '#nextStep', function (e) {
+            let btnValue = $(this).val();
+            if(Number(btnValue) === 4 && $('input[name="visarequired"]:checked').val() === 'yes' && ($("#visadays").val() < 1) && ($("#visaused").val() < 1)){
+                confirmAction(Number(btnValue),this,handlebarCompile("Translate 'do You want to continue with out filling the Visa Balance'"));
+            }else if(Number(btnValue) === 3 && $('input[name="ticketrequired"]:checked').val() === 'yes' && ($("#AdultTicketsUsed").val() < 1) && ($("#ChildTicketsUsed").val() < 1) && ($("#InfantTicketsUsed").val() < 1)){
+                confirmAction(Number(btnValue),this,handlebarCompile("Translate 'do You want to continue with out filling the ticket Balance'"));
+            } else{
+            nextStep(Number(btnValue), this);
+            }
+        });
+        function prevStep(step) {
+            const ticketRequired = $("input[name='ticketrequired']:checked").val();
+            const visaRequired = $("input[name='visarequired']:checked").val();
+
+            const skipTicket = !ticketRequired || ticketRequired === "no";
+            const skipVisa = !visaRequired || visaRequired === "no";
+
+            if (step === 3 && skipTicket && skipVisa) {
+                step = 1;
+            }
+
+            if (step === 2 && skipTicket) {
+                step = 1;
+            }
+
+            showStep(step);
+        }
+
+
+        // Extension Leave 1
+        $('input[name="extensionleave1"]').on('change', function () {
+            const $ext1Section = $('#ext1');
+            const $ext2Section = $('#ext2');
+            if (!$ext1Section.length) return;
+
+            if ($(this).val() === "yes") {
+                $ext1Section.removeClass('d-none');
+                $('input[name="extensionleave2"]').prop('disabled', false);
+            } else {
+                $('input[name="extensionleave2"][value="no"]').prop("checked", true);
+                $('input[name="extensionleave2"]').prop('disabled', true);
+                $ext1Section.addClass('d-none');
+                $ext2Section.addClass('d-none');
+            }
+        });
+
+        // Extension Leave 2
+        $('input[name="extensionleave2"]').on('change', function () {
+            const $ext2Section = $('#ext2');
+            if (!$ext2Section.length) return;
+
+            if ($(this).val() === "yes") {
+                $ext2Section.removeClass('d-none');
+            } else {
+                $ext2Section.addClass('d-none');
+            }
+        });
+
+        // visarequired
+        $('input[name="visarequired"]').on('change', function () {
+            if ($(this).val() === "no") {
+                $('#visafor').val('Employee');
+                $('#visadays').val(0);
+                $('#visaused').val(0);
+                $('#visacoston').val('Company');
+            }
+        });
+
+        // ticketrequired
+        $('input[name="ticketrequired"]').on('change', function () {
+            if ($(this).val() === "no") {
+                $('#AdultTicketsUsed').val(0);
+                $('#ChildTicketsUsed').val(0);
+                $('#InfantTicketsUsed').val(0);
+            }
+        });
+
+        // Start date API call
+        $('#startDate').on('change', function () {
+            // const vacationType = $('#vacationType').val();
+            // if (!vacationType) {
+            //     Swal.fire("Error", "Please select a Vacation Type first.", "error");
+            //     $(this).val("");
+            //     return;
+            // }
+
+            try {
+                getBalancesOfVisaVacationAndTicket();
+            } catch (error) {
+                console.error(error);
+                Swal.fire("Error", handlebarCompile("Translate 'Failed to fetch vacation balance'"), "error");
+            }
+        });
+
+        // Vacation days API call
+        $('#vacationDays').on('change', function () {
+            try {
+                getBalancesOfVisaVacationAndTicket();
+            } catch (error) {
+                console.error(error);
+                Swal.fire("Error", handlebarCompile("Translate 'Failed to fetch vacation balance'"), "error");
+            }
+        });
+
+
+        //$("#vacationcode").on("change", async function () {
+        // InitiateLeaveRequest();
+        //});
+        // Calculate EndDate and Expected Return Date
+        $('#vacationDays').on('input', function () {
+            const startDateInput = $('#startDate').val();
+            $('#endDate').val('');
+            $('#expectedReturnDate').val('');
+            const vacationDays = parseInt($(this).val());
+
+            if (startDateInput && vacationDays > 0) {
+                const start = new Date(startDateInput);
+                const end = new Date(start);
+                end.setDate(start.getDate() + vacationDays - 1);
+
+                const returnDate = new Date(end);
+                returnDate.setDate(end.getDate() + 1);
+
+                $('#endDate').val(end.toISOString().split('T')[0]);
+                $('#expectedReturnDate').val(returnDate.toISOString().split('T')[0]);
+            }
+        });
+
+        $('#vacationDaysExt1').on('input', function () {
+            const startDateInput = $('#startDateExt1').val();
+            $('#endDateExt1').val('');
+            const vacationDays = parseInt($(this).val());
+
+            if (startDateInput && vacationDays > 0) {
+                let start = new Date(startDateInput);
+                start.setDate(start.getDate() - 1 + vacationDays);
+                let endDate = start.toISOString().split('T')[0];
+
+                $('#endDateExt1').val(endDate);
+            }
+        });
+
+        $('#vacationDaysExt2').on('input', function () {
+            const startDateInput = $('#startDateExt2').val();
+            $('#endDateExt2').val('');
+            const vacationDays = parseInt($(this).val());
+
+            if (startDateInput && vacationDays > 0) {
+                let start = new Date(startDateInput);
+                start.setDate(start.getDate() - 1 + vacationDays);
+                let endDate = start.toISOString().split('T')[0];
+
+                $('#endDateExt2').val(endDate);
+            }
+        });
+
+
+
+        function calculateDates() {
+            const startDateInput = $('#startDate').val();
+            const vacationDays = parseInt($('#vacationDays').val());
+
+            if (startDateInput && vacationDays > 0) {
+                const start = new Date(startDateInput);
+                const end = new Date(start);
+                end.setDate(start.getDate() + vacationDays - 1);
+
+                const returnDate = new Date(end);
+                returnDate.setDate(end.getDate() + 1);
+
+                $('#endDate').val(end.toISOString().split('T')[0]);
+                $('#expectedReturnDate').val(returnDate.toISOString().split('T')[0]);
+            } else {
+                $('#endDate').val(startDateInput);
+                $('#expectedReturnDate').val(startDateInput);
+            }
+        }
+
+        // Attach event listeners using jQuery
+        $('#startDate').on('change', calculateDates);
+        $('#vacationDays').on('input', calculateDates);
+
+
+        async function initLeaveRequest() {
+            const $loader = $('<span class="loader"></span>');
+            const $btn = $("#submitLeaveRequest");
+            $btn.find('.loader').remove();
+            $btn.prop('disabled', true).append($loader);
+            try {
+                // Prepare main leave info
+                const employeeId = currentEmployeeId; // Replace with handlebars variable if needed
+                const vacationType = $('#vacationType').val() || "Annual";
+                const startDate = $('#startDate').val() || "";
+                const endDate = $('#endDate').val() || "";
+                const vacationDays = parseInt($('#vacationDays').val()) || 0;
+                const payWith = $('#paywith').val() || "Salary";
+
+                // Extension leave 1
+                const extendedLeave1 = $('input[name="extensionleave1"]:checked').val() || "no";
+                const vacationTypeEx1 = $('#vacationTypeExt1').val() || "none";
+                const startDateEx1 = $('#startDateExt1').val() || startDate;
+                const endDateEx1 = $('#endDateExt1').val() || startDate;
+                const vacationDaysEx1 = parseInt($('#vacationDaysExt1').val()) || 0;
+
+                // Extension leave 2
+                const extendedLeave2 = $('input[name="extensionleave2"]:checked').val() || "no";
+                const vacationTypeEx2 = $('#vacationTypeExt2').val() || "none";
+                const startDateEx2 = $('#startDateExt2').val() || startDate;
+                const endDateEx2 = $('#endDateExt2').val() || startDate;
+                const vacationDaysEx2 = parseInt($('#vacationDaysExt2').val()) || 0;
+
+                // Ticket info
+                const ticketEntitlement = $('input[name="ticketrequired"]:checked').length > 0 ? "Yes" : "No";
+                const adultTicketUsed = parseInt($('#AdultTicket').val()) || 0;
+                const childTicketUsed = parseInt($('#ChildTicket').val()) || 0;
+                const infantTicketUsed = parseInt($('#InfantTicket').val()) || 0;
+                const adultTicketBalance = parseInt($('#AdultTicketBalance').val()) || 0;
+                const childTicketBalance = parseInt($('#ChildTicketBalance').val()) || 0;
+                const infantTicketBalance = parseInt($('#InfantTicketBalance').val()) || 0;
+
+                // Visa info
+                const visaEntitlement = $('input[name="visarequired"]:checked').length > 0 ? "Yes" : "No";
+                const visaFor = $('#visafor').val() || "Employee";
+                const visaCoston = $('#visacoston').val() || "Employee";
+                const visaDays = parseInt($('#visadays').val()) || 0;
+                const visaUsed = parseInt($('#visaused').val()) || 0;
+
+                // External
+                const external = $('input[name="isExternal"]:checked').val() || "no";
+
+                // Prepare request payload
+                const payload = {
+                    "_employeeId": employeeId,
+                    "_extendedLeave1": extendedLeave1,
+                    "_extendedLeave2": extendedLeave2,
+                    "_startDate": formatDate(startDate),
+                    "_endDate": formatDate(endDate),
+                    "_ticketDestinationId": "",
+                    "_startDateEx1": formatDate(startDateEx1),
+                    "_endDateEx1": formatDate(endDateEx1),
+                    "_vacationDays": vacationDays,
+                    "_vacationDaysEx1": vacationDaysEx1,
+                    "_vacationType": vacationType,
+                    "_vacationTypeEx1": vacationTypeEx1,
+                    "_startDateEx2": formatDate(startDateEx2),
+                    "_endDateEx2": formatDate(endDateEx2),
+                    "_vacationDaysEx2": vacationDaysEx2,
+                    "_vacationTypeEx2": vacationTypeEx2,
+                    "_ticketEntitlement": ticketEntitlement,
+                    "_adultticketUsed": adultTicketUsed,
+                    "_childTicketUsed": childTicketUsed,
+                    "_infantTicketUsed": infantTicketUsed,
+                    "_vacationBalance": 0,
+                    "_ticketFor": "Employee",
+                    "_ticketCostOn": "Company",
+                    "_destinationType": "International",
+                    "_ticketClass": "Economy",
+                    "_departureFrom": "Riyadh",
+                    "_departureDate": formatDate(startDate),
+                    "_arrivaldate": formatDate(startDate),
+                    "_visaEntitlement": visaEntitlement,
+                    "_visaFor": visaFor,
+                    "_visaCoston": visaCoston,
+                    "_visaDays": visaDays,
+                    "_visaUsed": visaUsed,
+                    "_external": external,
+                    "legalEntity": "MWD",
+                    "_payWith": payWith,
+                    "_vacationCode": "0"
+                };
+
+                // console.log("Payload:", payload);
+                //  return;
+
+                // Call API
+                const response = await fetch(`${bcpURL}/api/v1/erp/InitiateLeaveRequest?user-id=${userIdDefault}`, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "User-Id": userId
+                    },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error("API request failed");
+
+                const result = await response.json();
+
+                if (isNonEmptyString(result)) {
+                    let res = JSON.stringify(result);
+                        Swal.fire("Error", res, "error");
+                        $btn.prop('disabled', true);
+                    
+                    // console.log(res);
+                }else if(result === ""){
+                    Swal.fire("Error", handlebarCompile("Translate 'Something Went Wrong Please Contact System Admin'"), "error");
+                    $btn.prop('disabled', true);
+                }else{
+                $btn.find('.loader').remove();
+                $btn.prop('disabled', false);
+                }
+
+                // Update UI with response data
+                if(result && result.length > 0){                    
+                $('#effectivedate').val(formatDateforInput(result[0].effectiveDate));
+                $('#ticketDestinationId').val(result[0].ticketDestinationId);
+                $('#vacationDays').val(result[0].vacationDays);
+                $('#vacationcode').val(result[0].vacationCode);
+                $('#startDateExt1').val(formatDateforInput(result[0].startDateExt1));
+                $('#startDateExt2').val(formatDateforInput(result[0].startDateExt2));
+                $('#endDateExt2').val(formatDateforInput(result[0].endDateExt2));
+                $('#endDateExt1').val(formatDateforInput(result[0].endDateExt1));
+                $('#AdultTicketsContract').val(result[0].adultTicketContract);
+                $('#ChildTicketsContract').val(result[0].childTicketContract);
+                $('#InfantTicketsContract').val(result[0].infantTicketContract);
+                $('#visacontract').val(result[0].visaContract);
+                $('#ticketClass').val(result[0].ticketClass);
+                $('#AdultTicketsUsed').val(result[0].adultTicketsUsed);
+                $('#ChildTicketsUsed').val(result[0].childTicketsUsed);
+                $('#InfantTicketsUsed').val(result[0].infantTicketsUsed);
+                $('#AdultTicketPrice').val(result[0].adultTicketPrice);
+                $('#ChildTicketPrice').val(result[0].childTicketPrice);
+                $('#InfantTicketPrice').val(result[0].infantTicketPrice);
+                $('#ticketPricePercentage').val(result[0].ticketPricePercentage);
+                $('#totalTicketsPrice').val(result[0].totalTicketsPrice);
+                $('#payGroupId').val(result[0].payGroupId);
+                $('#payGroupStartDate').val(formatDateforInput(result[0].payGroupPeriodStartDate));
+                $('#payGroupEndDate').val(formatDateforInput(result[0].payGroupPeriodEndDate));
+                $('#monthCalculationMethod').val(result[0].monthCalculationMethod);
+                $('#VacationBalance').val(result[0].vacationbalance);
+                $('#visafor').val(result[0].visaFor);
+                $('#visacoston').val(result[0].visaCostOn);
+                $('#visaused').val(result[0].visaUsed);
+                $('#visadays').val(result[0].visaDays);
+                $('#VisaNewBalance').val(result[0].visaBalanceNew);
+                $('#AdultTicketBalance').val(result[0].adultTicketBalance);
+                $('#ChildTicketBalance').val(result[0].childTicketBalance);
+                $('#InfantTicketBalance').val(result[0].infantTicketBalance);
+                $('#AdultTicketBalanceNew').val(result[0].adultTicketBalanceNew);
+                $('#ChildTicketBalanceNew').val(result[0].childTicketBalanceNew);
+                $('#InfantTicketBalanceNew').val(result[0].infantTicketBalanceNew);
+                $('#VisaBalance').val(result[0].visaBalance);
+                $('#vacationbalanceNew').val(result[0].vacationbalanceNew);
+                $('#workingYears').val(result[0].workingYears);
+                $('#WorkingMonths').val(result[0].workingMonths);
+                $('#WorkingDays').val(result[0].workingDays);
+                $('#AlternativeEmployeeId').val(result[0].alternativeWorker);
+                $('#PhoneDuringVacation').val(result[0].phoneDuringvacation);
+                $('#clearanceRequestId').val(result[0].clearanceRequestId);
+                $('#EmployeePosition').val(result[0].PositionName);
+                $('#TotalWorkingDays').val(result[0].totalDays);
+                $('#Department').val(result[0].department);
+                $('#JobGrade').val(result[0].jobGrade);
+                }
+
+            } catch (error) {
+                console.error(error);
+                Swal.fire("Error", error, "error");
+            }
+        }
+
+        function isNonEmptyString(value) {
+            return (typeof value === 'string' || value instanceof String) && value.trim().length > 0;
+        }
+        function populateConfirmation() {
+            const $confirmationDiv = $("#confirmationSummary");
+            $confirmationDiv.empty();
+
+            const values = {
+                // Employee Info
+                employeeId: $("#employeeId").val(),
+                employeename: $("#employeename").val(),
+                paymentMethod: $("#paymentMethod").val(),
+                approvalmanagername: $("#approvalmanagername").val(),
+                approvalmanagerid: $("#approvalmanagerid").val(),
+                iqamaNumber: $("#iqamaNumber").val(),
+                requestfor: $("#requestfor").val(),
+                paywith: $("#paywith").val(),
+                EmployeePosition: $("#EmployeePosition").val(),
+                Department: $("#Department").val(),
+                Nationality: $("#Nationality").val(),
+
+                // Leave Info
+                vacationType: $("#vacationType").val(),
+                vacationCode: $("#vacationcode").val(),
+                isExternal: $("input[name='isExternal']:checked").val(),
+                startDate: $("#startDate").val(),
+                vacationDays: $("#vacationDays").val(),
+                endDate: $("#endDate").val(),
+                expectedReturnDate: $("#expectedReturnDate").val(),
+                VacationBalance: $("#VacationBalance").val(),
+                vacationbalanceNew: $("#vacationbalanceNew").val(),
+
+                // Ticket Info
+                ticketrequired: $("input[name='ticketrequired']:checked").val(),
+                ticketDestinationId: $("#ticketDestinationId").val(),
+                destinationtype: $("#destinationtype").val(),
+                ticketfor: $("#ticketfor").val(),
+                departureFrom: $("#departureFrom").val(),
+                ticketcoston: $("#ticketcoston").val(),
+                departuredate: $("#departuredate").val(),
+                ticketClass: $("#ticketClass").val(),
+                arrivaldate: $("#arrivaldate").val(),
+                AdultTicketsContract: $("#AdultTicketsContract").val(),
+                ChildTicketsContract: $("#ChildTicketsContract").val(),
+                InfantTicketsContract: $("#InfantTicketsContract").val(),
+                AdultTicketBalance: $("#AdultTicketBalance").val(),
+                ChildTicketBalance: $("#ChildTicketBalance").val(),
+                InfantTicketBalance: $("#InfantTicketBalance").val(),
+
+                InfantTicketBalanceNew: $("#InfantTicketBalanceNew").val(),
+                ChildTicketBalanceNew: $("#ChildTicketBalanceNew").val(),
+                AdultTicketBalanceNew: $("#AdultTicketBalanceNew").val(),
+
+                InfantTicketsUsed: $("#InfantTicketsUsed").val(),
+                ChildTicketsUsed: $("#ChildTicketsUsed").val(),
+                AdultTicketsUsed: $("#AdultTicketsUsed").val(),
+
+                // Visa Info
+                visarequired: $("input[name='visarequired']:checked").val(),
+                visafor: $("#visafor").val(),
+                visadays: $("#visadays").val(),
+                visaused: $("#visaused").val(),
+                visacoston: $("#visacoston").val(),
+                visacontract: $("#visacontract").val(),
+                VisaBalance: $("#VisaBalance").val(),
+                VisaNewBalance: $("#VisaNewBalance").val(),
+
+                // Extended Leave
+                extensionleave1: $("input[name='extensionleave1']:checked").val(),
+                vacationTypeExt1: $("#vacationTypeExt1").val(),
+                vacationDaysExt1: $("#vacationDaysExt1").val(),
+                startDateExt1: $("#startDateExt1").val(),
+                endDateExt1: $("#endDateExt1").val(),
+
+                extensionleave2: $("input[name='extensionleave2']:checked").val(),
+                vacationTypeExt2: $("#vacationTypeExt2").val(),
+                vacationDaysExt2: $("#vacationDaysExt2").val(),
+                startDateExt2: $("#startDateExt2").val(),
+                endDateExt2: $("#endDateExt2").val(),
+
+                // Payroll
+                payGroupId: $("#payGroupId").val(),
+                PayGroupName: $("#PayGroupName").val(),
+                payGroupStartDate: $("#payGroupStartDate").val(),
+                payGroupPeriodEndDate: $("#payGroupPeriodEndDate").val(),
+                workingYears: $("#workingYears").val(),
+                WorkingMonths: $("#WorkingMonths").val(),
+                WorkingDays: $("#WorkingDays").val(),
+                TotalWorkingDays: $("#TotalWorkingDays").val(),
+
+                // Prices
+                AdultTicketPrice: $("#AdultTicketPrice").val(),
+                ChildTicketPrice: $("#ChildTicketPrice").val(),
+                InfantTicketPrice: $("#InfantTicketPrice").val(),
+                totalTicketsPrice: $("#totalTicketsPrice").val(),
+                ticketPricePercentage: $("#ticketPricePercentage").val()
+            };
+
+            let templateSource  = `
+    <!-- Employee Info -->
+    <div class="card p-3 mb-3 shadow-sm">
+        <h5 class="mb-3 text-primary"><i class="bi bi-person-badge"></i>{{Translate 'Employee Info'}} </h5>
+        <div class="row">
+            <div class="col-md-3"><b>{{Translate 'ID'}}</b><br>${values.employeeId || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Name'}}</b><br>${values.employeename || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Position'}}</b><br>${values.EmployeePosition || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Department'}}</b><br>${values.Department || "-"}</div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-3"><b>{{Translate 'Payment Method'}}</b><br>${values.paymentMethod || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Manager'}}</b><br>${values.approvalmanagername || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Iqama Number'}}</b><br>${values.iqamaNumber || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Nationality'}}</b><br>${values.Nationality || "-"}</div>
+        </div>
+    </div>
+
+    <!-- Leave Info -->
+    <div class="card p-3 mb-3 shadow-sm">
+        <h5 class="mb-3 text-success"><i class="bi bi-calendar-event"></i> {{Translate 'Leave Info'}}</h5>
+        <div class="row">
+            <div class="col-md-3"><b>{{Translate 'Vacation Type'}}</b><br>${values.vacationType || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Vacation Code'}}</b><br>${values.vacationCode || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Start Date'}}</b><br>${values.startDate || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'End Date'}}</b><br>${values.endDate || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Days'}}</b><br>${values.vacationDays || "0"}</div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-3"><b>{{Translate 'Expected Return'}}</b><br>${values.expectedReturnDate || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Balance Before'}}</b><br>${values.VacationBalance || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Balance After'}}</b><br>${values.vacationbalanceNew || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Is External'}}</b><br>${values.isExternal || "-"}</div>
+        </div>
+    </div>
+
+    <!-- Ticket Info -->
+    <div class="card p-3 mb-3 shadow-sm">
+        <h5 class="mb-3 text-danger"><i class="bi bi-ticket"></i> {{Translate 'Ticket Info'}}</h5>
+        <div class="row">
+            <div class="col-md-3"><b>{{Translate 'Required'}}?</b><br>${values.ticketrequired || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Ticket For'}}</b><br>${values.ticketfor || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Destination'}}</b><br>${values.ticketDestinationId || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'From'}}</b><br>${values.departureFrom || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Class'}}</b><br>${values.ticketClass || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Ticket Cost On'}}</b><br>${values.ticketcoston || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Departure Date'}}</b><br>${values.departuredate || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Arrival Date'}}</b><br>${values.arrivaldate || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Destination City'}}</b><br>${ "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Destination Type'}}</b><br>${values.destinationtype || "-"}</div>
+        
+            <div class="col-md-3"><b>{{Translate 'Adult Balance'}}</b><br>${values.AdultTicketBalance || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Child Balance'}}</b><br>${values.ChildTicketBalance || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Infant Balance'}}</b><br>${values.InfantTicketBalance || "0"}</div>
+        
+            <div class="col-md-3"><b>{{Translate 'Adult Tickets Contract'}}</b><br>${values.AdultTicketsContract || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Child Tickets Contract'}}</b><br>${values.ChildTicketsContract || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Infant Tickets Contract'}}</b><br>${values.InfantTicketsContract || "0"}</div>
+
+            <div class="col-md-3"><b>{{Translate 'Adult Tickets Used'}}</b><br>${values.AdultTicketsUsed || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Child Tickets Used'}}</b><br>${values.ChildTicketsUsed || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Infant Tickets Used'}}</b><br>${values.InfantTicketsUsed || "0"}</div>
+
+            <div class="col-md-3"><b>{{Translate 'Adult Tickets Balance New'}}</b><br>${values.AdultTicketBalanceNew || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Child Tickets Balance New'}}</b><br>${values.ChildTicketBalanceNew || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Infant Tickets Balance New'}}</b><br>${values.InfantTicketBalanceNew || "0"}</div>
+        </div>
+    </div>
+
+    <!-- Visa Info -->
+    <div class="card p-3 mb-3 shadow-sm">
+        <h5 class="mb-3 text-warning"><i class="bi bi-passport"></i> {{Translate 'Visa Info'}}</h5>
+        <div class="row">
+            <div class="col-md-3"><b>{{Translate 'Required'}}?</b><br>${values.visarequired || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'For'}}</b><br>${values.visafor || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Days'}}</b><br>${values.visadays || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Used'}}</b><br>${values.visaused || "0"}</div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-3"><b>{{Translate 'Cost On'}}</b><br>${values.visacoston || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Contract'}}</b><br>${values.visacontract || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Balance'}}</b><br>${values.VisaBalance || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'New Balance'}}</b><br>${values.VisaNewBalance || "0"}</div>
+        </div>
+    </div>
+    `;
+
+            // Extended Leaves
+            if (values.extensionleave1 === "yes") {
+                templateSource  += `
+        <div class="card p-3 mb-3 shadow-sm">
+            <h5 class="mb-3 text-info">{{Translate 'Extended Leave 1'}}</h5>
+            <div class="row">
+                <div class="col-md-3"><b>{{Translate 'Type'}}</b><br>${values.vacationTypeExt1 || "-"}</div>
+                <div class="col-md-3"><b>{{Translate 'Extended Leave One'}}</b><br>${values.extensionleave1 || "-"}</div>
+                <div class="col-md-3"><b>{{Translate 'Start'}}</b><br>${values.startDateExt1 || "-"}</div>
+                <div class="col-md-3"><b>{{Translate 'End'}}</b><br>${values.endDateExt1 || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Days'}}</b><br>${values.vacationDays || "0"}</div>
+            </div>
+        </div>`;
+            }
+            if (values.extensionleave2 === "yes") {
+                templateSource  += `
+        <div class="card p-3 mb-3 shadow-sm">
+            <h5 class="mb-3 text-info">{{Translate 'Extended Leave 2'}}</h5>
+            <div class="row">
+                <div class="col-md-3"><b>{{Translate 'Type'}}</b><br>${values.vacationTypeExt2 || "-"}</div>
+                <div class="col-md-3"><b>{{Translate 'extended Leave Two'}}</b><br>${values.extensionleave2 || "-"}</div>
+                <div class="col-md-3"><b>{{Translate 'Days'}}</b><br>${values.vacationDaysExt2 || "0"}</div>
+                <div class="col-md-3"><b>{{Translate 'Start'}}</b><br>${values.startDateExt2 || "-"}</div>
+                <div class="col-md-3"><b>{{Translate 'End'}}</b><br>${values.endDateExt2 || "-"}</div>
+            </div>
+        </div>`;
+            }
+
+            // Payroll / System Info
+            templateSource  += `
+    <div class="card p-3 mb-3 shadow-sm">
+        <h5 class="mb-3 text-secondary"><i class="bi bi-cash-stack"></i> {{Translate 'Payroll & System Info'}}</h5>
+        <div class="row">
+            <div class="col-md-3"><b>{{Translate 'Pay Group'}}</b><br>${values.PayGroupName || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Start Date'}}</b><br>${values.payGroupStartDate || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'End Date'}}</b><br>${values.payGroupPeriodEndDate || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Years'}}</b><br>${values.workingYears || "0"}</div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-3"><b>{{Translate 'Months'}}</b><br>${values.WorkingMonths || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Days'}}</b><br>${values.WorkingDays || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Total Days'}}</b><br>${values.TotalWorkingDays || "0"}</div>
+        </div>
+    </div>
+    `;
+            
+            $confirmationDiv.html(handlebarCompile(templateSource));
+        }
+
+
+        function handlebarCompile(templateSource){
+            let template = Handlebars.compile(templateSource);
+            return  template();
+        }
+
+        function getReportingManagerForEmployee() {
+            // API URL
+            const apiUrl = `${bcpURL}/api/v1/erp/getReportingManagerForEmployee?_employeeid=${currentEmployeeId}&_Company=MWD&user-id=${userIdDefault}`;
+            // Make API call
+            fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    let today = new Date().toISOString().split('T')[0];
+                    $("#startDateExt1").val(today);
+                    $("#endDateExt1").val(today);
+                    $("#startDateExt2").val(today);
+                    $("#endDateExt2").val(today);
+                    $("#vacationDaysExt2").val(0);
+                    $("#vacationDaysExt1").val(0);
+                    $("#vacationcode").val(1).trigger("change");
+                    $("#vacationDays").val(0);
+                    $("#VacationBalance").val(0);
+                    $("#ticketfor").val('Employee');
+                    $("#ticketcoston").val('Company');
+                    $("#destinationtype").val('International');
+                    $("#ticketClass").val('Economy');
+                    $("#requestfor").val('Employee himself');
+                    $("#departureFrom").val('Riyadh');
+                    $("#departuredate").val(today);
+                    $("#arrivaldate").val(today);
+                    $("#visafor").val('Employee');
+                    $("#visacoston").val('Company');
+                    $("#AdultTicketsUsed").val(0);
+                    $("#InfantTicketsUsed").val(0);
+                    $("#ChildTicketsUsed").val(0);
+                    $("#visadays").val(0);
+                    $("#visaused").val(0);
+                    $("#vacationTypeExt1").val(null);
+                    $("#vacationTypeExt2").val(null);
+                    $("#paywith").val('Salary');
+                    $('input[name="isExternal"][value="no"]').prop("checked", true);
+                    $('input[name="extensionleave1"][value="no"]').prop("checked", true);
+                    $('input[name="extensionleave2"][value="no"]').prop("checked", true);
+                    $('input[name="visarequired"][value="no"]').prop("checked", true);
+                    $('input[name="ticketrequired"][value="no"]').prop("checked", true);
+                    getEmployeeDetailsByEmployeeIdOrName();
+                    $("#employeeId").val(data.RetListValue[0].employeeId);
+                    $("#paymentMethod").val("Advanced amount");
+                    $("#approvalmanagername").val(data.RetListValue[0].reportingEmployeeName);
+                    $('#approvalmanagernametext').html(data.RetListValue[0].reportingEmployeeName);
+                    $("#approvalmanagerid").val(data.RetListValue[0].reportingEmployeeId);
+                    $("#EmployeePosition").val(data.RetListValue[0].positionName);
+                    $('input[name="extensionleave2"]').prop('disabled', true);
+                    getApprovalManagerUserIdByEmployeeId(data.RetListValue[0].reportingEmployeeId);
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                });
+        }
+
+        function getEmployeeDetailsByEmployeeIdOrName() {
+            // API URL
+            const apiUrl = `${bcpURL}/api/v1/erp/getEmployeeDetailsByEmployeeIdOrName?_employeeIdOrName=${currentEmployeeId}&_Company=MWD&user-id=${userIdDefault}`;
+            // Make API call
+            fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    $("#iqamaNumber").val(data.RetListValue[0].iqamaNumber);
+                    $("#Nationality").val(data.RetListValue[0].nationality);
+                    $("#payGroupId").val(data.RetListValue[0].projectId);
+                    $("#PayGroupName").val(data.RetListValue[0].projectName);
+                    $("#employeename").val(data.RetListValue[0].employeeName);
+                    $('#employeenametext').html(data.RetListValue[0].employeeName);
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                });
+        }
+
+        function getBalancesOfVisaVacationAndTicket() {
+            let vacationType = $('#vacationType').val();
+            let startDate = formatDate($("#startDate").val());
+            let vacationDays = $('#vacationDays').val();
+
+
+            if (!vacationType) return;
+
+            // API URL
+            const apiUrl = `${bcpURL}/api/v1/erp/getBalancesOfVisaVacationAndTicket?EmpNum=${currentEmployeeId}&VacationType=${vacationType}&StartDate=${startDate}&VacationDays=${vacationDays}&_Company=MWD&user-id=${userIdDefault}`;
+            // Make API call
+            fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    $("#AdultTicketBalance").val(data[0].AdultTicketBalance);
+                    $("#AdultTicketPrice").val(data[0].AdultTicketPrice);
+                    $("#AdultTicketsContract").val(data[0].AdultTicketsContract);
+                    $("#AdultTicketsUsed").val(data[0].AdultTicketsUsed);
+                    $("#ChildTicketBalance").val(data[0].ChildTicketBalance);
+                    $("#ChildTicketPrice").val(data[0].ChildTicketPrice);
+                    $("#ChildTicketsContract").val(data[0].ChildTicketsContract);
+                    $("#ChildTicketsUsed").val(data[0].ChildTicketsUsed);
+                    $("#InfantTicketBalance").val(data[0].InfantTicketBalance);
+                    $("#InfantTicketPrice").val(data[0].InfantTicketPrice);
+                    $("#InfantTicketsContract").val(data[0].InfantTicketsContract);
+                    $("#InfantTicketsUsed").val(data[0].InfantTicketsUsed);
+                    $("#ticketPricePercentage").val(data[0].TicketPricePercentage);
+                    $("#totalTicketsPrice").val(data[0].TotalTicketsPrice);
+                    $("#VacationBalance").val(data[0].VacationBalance);
+                    $("#VisaBalance").val(data[0].VisaBalance);
+                    $("#WorkingDays").val(data[0].WorkingDays);
+                    $("#WorkingMonths").val(data[0].WorkingMonths);
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                });
+        }
+
+
+        async function submitLeaveRequest() {
+            const $loader = $('<span class="loader"></span>');
+            const $btn = $("#submitLeaveRequest");
+            $btn.find('.loader').remove();
+            $btn.prop('disabled', true).append($loader);
+            const payload = {
+                "EmployeeId": $("#employeeId").val(),
+                "EmployeeName": $("#employeename").val(),
+                "PaymentMethod": $("#paymentMethod").val(),
+                "ApprovalManagerName": $("#approvalmanagername").val(),
+                "ApprovalManagerUserId": $("#ApprovalManagerUserId").val(),
+                "LeaveRequestId": null,
+                "IqamaNumber": $("#iqamaNumber").val(),
+                "JobGrade": $("#JobGrade").val(),
+                "AlternativeEmployeeId": $("#AlternativeEmployeeId").val(),
+                "RequestFor": $("#requestfor").val(),
+                "payWith": $("#paywith").val(),
+                "EmployeePosition": $("#EmployeePosition").val(),
+                "Department": $("#Department").val(),
+                "AlternativeEmployeeName": "",
+                "VacationType": $("#vacationType").val(),
+                "VacationCode": 1,
+                "IsExternal": $("input[name='isExternal']:checked").val(),
+                "StartDate": toIsoWithCurrentTime($("#startDate").val()),
+                "VacationDays": parseInt($("#vacationDays").val()),
+                "EndDate": formatDate($("#endDate").val()),
+                "ExpectedReturnDate": formatDate($("#expectedReturnDate").val()),
+                "VacationBalance": parseFloat($("#VacationBalance").val()),
+                "NewVacationBalance": parseFloat($("#vacationbalanceNew").val()),
+                "monthCalculationMethod": parseInt($("#monthCalculationMethod").val()),
+                "extendedLeaveOne": $("input[name='extensionleave1']:checked").val() ? "Yes" : "No",
+                "vacationTypeExOne": $("#vacationTypeExt1").val() ? $("#vacationTypeExt1").val() : "none",
+                "vacationDaysExtOne": $("#vacationDaysExt1").val(),
+                "startDateExtOne": $("#startDateExt1").val() ? toIsoWithCurrentTime($("#startDateExt1").val()) : toIsoWithCurrentTimeCurrentDate(),
+                "endDateExtOne":  $("#endDateExt1").val() ? toIsoWithCurrentTime($("#endDateExt1").val()) : toIsoWithCurrentTimeCurrentDate(),
+                "extendedLeaveTwo": $("input[name='extensionleave2']:checked").val() ? "Yes" : "No",
+                "vacationTypeExTwo": $("#vacationTypeExt2").val() ? $("#vacationTypeExt2").val() : "none",
+                "vacationDaysExtTwo": $("#vacationDaysExt2").val(),
+                "startDateExtTwo": $("#startDateExt2").val() ? toIsoWithCurrentTime($("#startDateExt2").val()) : toIsoWithCurrentTimeCurrentDate(),
+                "endDateExtTwo": $("#endDateExt2").val() ? toIsoWithCurrentTime($("#endDateExt2").val()) : toIsoWithCurrentTimeCurrentDate(),
+                "PayGroupId": $("#payGroupId").val(),
+                "PayGroupName": $("#PayGroupName").val(),
+                "PayGroupStartDate": toIsoWithCurrentTime($("#payGroupStartDate").val()),
+                "PayGroupEndDate": toIsoWithCurrentTime($("#payGroupEndDate").val()),
+                "WokingYears": parseInt($("#workingYears").val()),
+                "WorkingMonths": parseInt($("#WorkingMonths").val()),
+                "WorkingDays": parseInt($("#WorkingDays").val()),
+                "TotalWokringDays": parseInt($("#TotalWorkingDays").val()),
+                "TicketEntitlement": $('input[name="ticketrequired"]:checked').val() || "no",
+                "TicketDestinationId": $("#ticketDestinationId").val(),
+                "DestinationType": $("#destinationtype").val(),
+                "TicketFor": $("#ticketfor").val(),
+                "Departurefrom": $("#departureFrom").val(),
+                "DestinationCity": null,
+                "TicketCostOn": $("#ticketcoston").val(),
+                "DepartureDate": formatDate($("#departuredate").val()),
+                "ticketClass": parseInt($("#ticketClass").val()),
+                "ArrivalDate": formatDate($("#arrivaldate").val()),
+                "AdultTicketsContract": parseInt($("#AdultTicketsContract").val()),
+                "ChildTicketsContract": parseInt($("#ChildTicketsContract").val()),
+                "InfantTicketsContract": parseInt($("#InfantTicketsContract").val()),
+                "AdultTicketBalance": parseInt($("#AdultTicketBalance").val()),
+                "ChildTicketBalance": parseInt($("#ChildTicketBalance").val()),
+                "InfantTicketBalance": parseInt($("#InfantTicketBalance").val()),
+                "AdultTicketsUsed": parseInt($("#AdultTicketsUsed").val()),
+                "ChildTicketsUsed": parseInt($("#ChildTicketsUsed").val()),
+                "InfantTicketsUsed": parseInt($("#InfantTicketsUsed").val()),
+                "adultTicketBalanceNew": parseInt($("#AdultTicketBalanceNew").val()),
+                "childTicketBalanceNew": parseInt($("#ChildTicketBalanceNew").val()),
+                "infantTicketBalanceNew": parseInt($("#InfantTicketBalanceNew").val()),
+                "VisaEntitlement": $("input[name='visarequired']:checked").val(),
+                "VisaFor": $("#visafor").val(),
+                "VisaDays": parseInt($("#visadays").val()),
+                "VisaUsed": parseInt($("#visaused").val()),
+                "VisaCostOn": $("#visacoston").val(),
+                "VisaCount": null,
+                "VisaBalance": parseFloat($("#VisaBalance").val()),
+                "VisaNewBalance": parseFloat($("#VisaNewBalance").val()),
+                "Notes": null,
+                "Status": "Draft",
+                "ApprovalManager": $("#approvalmanagerid").val(),
+                "LastWorkingDate": null,
+                "EmployeeJoinDate": null,
+                "AdultTicketPrice": parseInt($("#AdultTicketPrice").val()) || 0,
+                "ChildTicketPrice": parseInt($("#ChildTicketPrice").val()) || 0,
+                "InfantTicketPrice": parseInt($("#InfantTicketPrice").val()) || 0,
+                "TiketCostOn": null,
+                "Nationality": $("#Nationality").val(),
+                "EndDateString": formatDate($("#endDate").val()),
+                "StartDateString": formatDate($("#startDate").val()),
+                "ExpectedReturnDays": null,
+                "totalTicketsPrice": parseInt($("#totalTicketsPrice").val()) || 0,
+                "ticketPricePercentage": parseInt($("#ticketPricePercentage").val()) || 0,
+                "visaContract": parseFloat($("#visacontract").val()),
+                "EffectiveDate": toIsoWithCurrentTime($("#effectivedate").val()),
+                "startDateExtOneString": formatDate($("#startDateExt1").val()),
+                "startDateExtTwoString": formatDate($("#startDateExt2").val()),
+                "endDateExtOneString": formatDate($("#endDateExt1").val()),
+                "endDateExtTwoString": formatDate($("#endDateExt2").val()),
+                "departureCity": null,
+                "Comments": null,
+                "EntityId": "a687fc357c3c4e748cb60bf97ea1b0b0",
+                "PhoneDuringVacation":$("#PhoneDuringVacation").val(),
+                "ClearanceRequestId":$("#clearanceRequestId").val(),
+                "DoctypeId":"a779702e0a25498ab76c25541121fab7"
+            }
+
+            try {
+                const EntityId = 'a687fc357c3c4e748cb60bf97ea1b0b0';
+                const requestType = 'LeaveRequest';
+                // const apiUrl = `${Apps4xApiUrl}api/v1/data/${companyId}/create`;
+                const apiUrl = `${Apps4xApiUrl}graph-api/api/v1/Integration/CreateandValidateSelfServiceRequestERP?entityId=${EntityId}&requestType=${requestType}`;
+                
+
+                let obj = {
+                "DoctypeId":"a779702e0a25498ab76c25541121fab7",
+                "EntityData":{...payload},
+                "ErpValidationData":{
+                "effectiveDate": payload.EffectiveDate,
+                "endDate": payload.EndDate,
+                "payGroupStartDate": payload.PayGroupStartDate,
+                "paymentMethod": payload.PaymentMethod,
+                "vacationType": payload.VacationType,
+                "employeeId": payload.EmployeeId,
+                "startDate": payload.StartDate,
+                "ticketDestinationId": payload.TicketDestinationId,
+                "extendedLeave1": payload.extendedLeaveOne,
+                "vacationTypeEx1": payload.vacationTypeExOne,
+                "extendedLeave2": payload.extendedLeaveTwo,
+                "vacationTypeEx2": payload.vacationTypeExTwo,
+                "vacationDays": payload.VacationDays,
+                "vacationDaysExt1": Number(payload.vacationDaysExtOne),
+                "vacationDaysExt2": Number(payload.vacationDaysExtTwo),
+                "vacationCode": payload.VacationCode,
+                "startDateExt1": payload.startDateExtOne,
+                "endDateExt1": payload.endDateExtOne,
+                "startDateExt2": payload.startDateExtTwo,
+                "endDateExt2": payload.endDateExtTwo,
+                "adultTicketContract": payload.AdultTicketsContract,
+                "childTicketContract": payload.ChildTicketsContract,
+                "infantTicketContract": payload.InfantTicketsContract,
+                "visaContract": payload.visaContract,
+                "ticketClass": payload.ticketClass,
+                "adultTicketsUsed": payload.AdultTicketsUsed,
+                "childTicketsUsed": payload.ChildTicketsUsed,
+                "infantTicketsUsed": payload.InfantTicketsUsed,
+                "adultTicketPrice": payload.AdultTicketPrice,
+                "childTicketPrice": payload.ChildTicketPrice,
+                "infantTicketPrice": payload.InfantTicketPrice,
+                "ticketPricePercentage": payload.ticketPricePercentage,
+                "totalTicketsPrice": payload.totalTicketsPrice,
+                "payGroupId": payload.PayGroupId,
+                "payGroupPeriodStartDate": payload.PayGroupStartDate,
+                "payGroupPeriodEndDate": payload.PayGroupEndDate,
+                "payWith": payload.payWith,
+                "monthCalculationMethod": payload.monthCalculationMethod,
+                "vacationbalance": payload.VacationBalance,
+                "vacationbalanceNew": payload.NewVacationBalance,
+                "requestFor":payload.RequestFor,
+                "ticketEntitlement": payload.TicketEntitlement,
+                "ticketCostOn": payload.TicketCostOn,
+                "ticketfor": payload.TicketFor,
+                "destinationType": payload.DestinationType,
+                "departureFrom": payload.Departurefrom,
+                "departureCity": payload.departureCity,
+                "departureDate": payload.DepartureDate,
+                "arrivalDate": payload.ArrivalDate,
+                "adultTicketBalance": payload.AdultTicketBalance,
+                "childTicketBalance": payload.ChildTicketBalance,
+                "infantTicketBalance": payload.InfantTicketBalance,
+                "adultTicketBalanceNew": payload.adultTicketBalanceNew,
+                "childTicketBalanceNew": payload.childTicketBalanceNew,
+                "infantTicketBalanceNew": payload.infantTicketBalanceNew,
+                "visaEntitlement": payload.VisaEntitlement,
+                "visaFor": payload.VisaFor,
+                "visaCostOn": payload.VisaCostOn,
+                "visaDays": payload.VisaDays,
+                "visaUsed": payload.VisaUsed,
+                "visaBalance": payload.VisaBalance,
+                "visaBalanceNew": payload.VisaNewBalance,
+                "alternativeWorker":payload.AlternativeEmployeeId,
+                "phoneDuringvacation":payload.PhoneDuringVacation,
+                "clearanceRequestId":payload.ClearanceRequestId,
+                "external":payload.IsExternal
+                }
+                }
+                let formData = new FormData();
+                formData.append("RequestFormData", JSON.stringify(JSON.stringify(obj)));
+                if(fileData){
+                formData.append("files", fileData);
+                }
+                
+                fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "User-Id": userId,
+                        "appid": appId,
+                        "CompanyId": companyId
+                    },
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        return response.json();
+                    })
+                    .then(data => {
+                        Swal.fire(handlebarCompile("Translate 'Success'"), handlebarCompile("Translate 'Leave request created successfully,please wait for one minute to create the request in ERP then submit'"), "success");
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                        
+                    $btn.find('.loader').remove();
+                    $btn.prop('disabled', false);
+                    })
+                    .catch(error => {
+                        Swal.fire("Error", JSON.stringify(error), "error");
+                        console.error("Error fetching data:", error);
+                        
+                    $btn.find('.loader').remove();
+                    $btn.prop('disabled', false);
+                    });
+            } catch (err) {
+                console.error("API Error:", err);
+                alert(handlebarCompile("Translate 'Something went wrong while submitting leave request'"));
+            }
+        }
+
+        function getApprovalManagerUserIdByEmployeeId(ApprovalManagerEmployeeId) {
+            const apiUrl = `${Apps4xApiUrl}api/v1/data/${companyId}?collectionId=${UserTableCollectionId}&entityid=${UserTableEntityId}&$filter:EmployeeId=li:${ApprovalManagerEmployeeId}`;
+            // Make API call
+            fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token,
+                    "User-Id": userId,
+                    "appid": AdministrationAppId,
+                    "CompanyId": companyId
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    if(data && data.Data && data.Data.length > 0){
+                    $("#ApprovalManagerUserId").val(data.Data[0].UserId);
+                    }
+                    // console.log($("#ApprovalManagerUserId").val());
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                });
+        }
+        //date conversion from - to /
+        function formatDate(dateStr) {
+            if (!dateStr) {
+                return null;
+            }
+            const [year, month, day] = dateStr.split("-");
+            return `${parseInt(month)}/${parseInt(day)}/${year}`;
+        }
+            function formatDateforInput(dateString) {
+                const date = new Date(dateString);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+        function toIsoWithCurrentTimeCurrentDate() {
+            let dateStr = new Date();
+            const todayTime = new Date();
+            const d = new Date(dateStr);
+            return d.toISOString();
+        }
+
+        function toIsoWithCurrentTime(dateStr) {
+            if (!dateStr) {
+                return null;
+            }
+            const todayTime = new Date();
+            const d = new Date(dateStr);
+            return d.toISOString();
+        }
+
+    </script>
+
+</body>
+
+</html>
