@@ -10,7 +10,7 @@
 
 
     <style>
-        .stepper {
+                .stepper {
             display: flex;
             justify-content: space-between;
             margin-bottom: 30px;
@@ -107,7 +107,7 @@
             gap: 10px;
         }
     .filelabel {
-        border: 2px dashed grey;
+        /* border: 2px dashed grey; */
         border-radius: 5px;
         display: block;
         padding: 5px;
@@ -126,9 +126,9 @@
     color: grey;
     transition: 200ms color;
     }
-    .filelabel:hover {
+    /* .filelabel:hover {
     border: 2px solid #1665c4;
-    }
+    } */
     .filelabel:hover i,
     .filelabel:hover .title {
     color: #1665c4;
@@ -136,11 +136,28 @@
     #FileInput{
         display:none;
     }
+
+   .leave-request-container select option, .leave-request-container select,.form-control {
+    font-size: 12px;
+    }
+    .direction-rtl .leave-request-container .stepper .step:after {
+	  left: 50%;
+    }
+	.direction-rtl .leave-request-container .form-check-inline .form-check-input {
+    margin-left: .3125rem;
+    }
+	.leave-request-container .badge-title {
+    background: #fff;
+    position: absolute;
+    top: -8px;
+    padding: 0 5px;
+    font-weight: bold;
+}
     </style>
 </head>
 
 <body>
-    <div class="leave-request-container container py-5">
+        <div class="leave-request-container container py-5">
         <!-- Stepper -->
         <div class="stepper mb-5">
             <div class="step active" data-step="1">{{Translate 'Leave'}}</div>
@@ -165,8 +182,8 @@
                 <div class="row g-4">
                     <!-- Employee Info -->
                     <div class="d-none">
-                        <fieldset class="border p-3 mb-4">
-                            <legend class="w-auto px-2">{{Translate 'Employee Info'}}</legend>
+                        <fieldset class="border p-3 mb-4 position-relative">
+                            <span class="w-auto badge-title">{{Translate 'Employee Info'}}</span>
                             <div class="mb-3">
                                 <label for="employeeId" class="form-label">{{Translate 'Employee Id'}} <span
                                         class="required">*</span></label>
@@ -323,8 +340,8 @@
 
                     <!-- Leave Info -->
                     <div class="col-12">
-                        <fieldset class="border p-3 mb-4">
-                            <legend class="w-auto px-2">{{Translate 'Leave Info'}}</legend>
+                        <fieldset class="border p-3 mb-4 position-relative">
+                            <span class="w-auto badge-title">{{Translate 'Leave Info'}}</span>
                             <div class="row g-3">
                                 <div class="col-3 mb-3">
                                     <label for="paymentMethod" class="form-label">{{Translate 'Payment Method'}} <span class="required">*</span></label>
@@ -372,6 +389,16 @@
                                     <label for="expectedReturnDate" class="form-label">{{Translate 'Expected Return Date'}}</label>
                                     <input type="text" class="form-control" id="expectedReturnDate" name="expectedReturnDate" readonly>
                                 </div>
+                                <div class="col-3">
+                                    <!-- <fieldset class="border p-3 mb-4"> -->
+                                            <label class="filelabel mt-4">
+                                                <img src="https://cdn-icons-png.flaticon.com/128/167/167499.png" width="30px" height="30px" alt="">
+                                                <span class="title"></span>
+                                                <input class="FileUpload1" id="FileInput" name="booking_attachment" type="file" />
+                                            </label>
+                                    
+                                    <!-- </fieldset> -->
+                                </div>
                             </div>
                         </fieldset>
                     </div>
@@ -382,9 +409,9 @@
                         <!-- Is External? -->
                          <div class="col-4">
                             <!-- Group 3:Ticket and Visa -->
-                            <fieldset class="border p-3 mb-4">
-                                <legend class="w-auto px-2 mb-3">{{Translate 'Ticket and Visa'}}</legend>
-                                <div class="row g-3">
+                            <fieldset class="border p-3 mb-4 position-relative">
+                                <span class="w-auto mb-4 pb-2 badge-title">{{Translate 'Ticket and Visa'}}</span>
+                                <div class="row g-3 mt-2">
                             <div class="row">
                             <div class="col">
 
@@ -458,7 +485,7 @@
                             </div>
                             </div>
                         <!--Extension Leave 2 -->
-                            <div class="row">
+                            <div class="row d-none" id="extinfo2">
                                 <div class="col">
                                     <label class="form-label">{{Translate 'Extension Leave 2'}}</label>
                                 </div>
@@ -482,8 +509,8 @@
                          </div>
                         <!-- Group 4: Extended Leave 1 -->
                     <div class="col-4">
-                        <fieldset id="ext1" class="border p-3 mb-4 d-none">
-                            <legend class="w-auto px-2">{{Translate 'Extended Leave 1'}}</legend>
+                        <fieldset id="ext1" class="border p-3 mb-4 d-none position-relative">
+                            <span class="w-auto badge-title">{{Translate 'Extended Leave 1'}}</span>
                             <div class="row g-3">
                                 <div class="col-6">
                                     <label for="vacationTypeExt1" class="form-label">{{Translate 'Vacation Type Ext1'}}</label>
@@ -519,8 +546,8 @@
                     </div>
                     <!-- Group 5: Extended Leave 2 -->
                     <div class="col-4">
-                        <fieldset id="ext2" class="border p-3 mb-4 d-none">
-                            <legend class="w-auto px-2">{{Translate 'Extended Leave 2'}}</legend>
+                        <fieldset id="ext2" class="border p-3 mb-4 d-none position-relative">
+                            <span class="w-auto badge-title">{{Translate 'Extended Leave 2'}}</span>
                             <div class="row g-3">
                                 <div class="col-6">
                                     <label for="vacationTypeExt2" class="form-label">{{Translate 'Vacation Type Ext2'}}</label>
@@ -555,28 +582,11 @@
                         </fieldset>
                     </div>
                     </div>
-
-                <fieldset class="border p-3 mb-4">
-                    <div class="row">
-                        <div class="col-2">
-                        <legend class="w-auto px-2">{{Translate 'File'}}:</legend>
-                        </div>
-                        <div class="col">
-                            <label class="filelabel">
-                            <img  src="https://cdn-icons-png.flaticon.com/128/167/167499.png" width="30px" height="30px" alt="">
-                            <span class="title">   {{Translate 'Add File'}}  </span>
-                            <input class="FileUpload1" id="FileInput" name="booking_attachment" type="file" />
-                            </label>
-                        </div>
-                    </div>
-                    
-                </fieldset>
-
                 
 
             </form>
             <div class="mt-4 btn-align">
-                <button type="button" class="btn nextBtn" id="nextStep" value="2">{{Translate 'Next'}}</button>
+                <button type="button" class="btn btn-success nextBtn" id="nextStep" value="2">{{Translate 'Next'}}</button>
             </div>
         </div>
 
@@ -584,8 +594,8 @@
         <div class="wizard-step d-none" id="step-2">
             <form>
                 <!-- Group 1: Ticket Balance-->
-                <fieldset class="border p-3 mb-4">
-                    <legend class="w-auto px-2">{{Translate 'Ticket Balance'}}</legend>
+                <fieldset class="border p-3 mb-4 position-relative">
+                    <span class="w-auto badge-title">{{Translate 'Ticket Balance'}}</span>
                     <div class="row g-3">
                         <div class="col-md-3 d-none">
                             <label for="AdultTicketBalance" class="form-label">{{Translate 'Adult Ticket Balance'}}</label>
@@ -691,8 +701,8 @@
                     </div>
                 </fieldset>
                 <!-- Group 1: Tickets-->
-                <fieldset class="border p-3 mb-4 d-none">
-                    <legend class="w-auto px-2">{{Translate 'Tickets'}}</legend>
+                <fieldset class="border p-3 mb-4 d-none position-relative">
+                    <span class="w-auto badge-title">{{Translate 'Tickets'}}</span>
                     <div class="row g-3">
                         <div class="col-md-3 d-none">
                             <label for="AdultTicket" class="form-label">{{Translate 'Adult Ticket'}}</label>
@@ -715,7 +725,7 @@
             </form>
             <div class="mt-4 btn-align">
                 <button type="button" class="btn btn-secondary" id="prevStep" value="1">{{Translate 'Previous'}}</button>
-                <button type="button" class="btn nextBtn" id="nextStep" value="3">{{Translate 'Next'}}</button>
+                <button type="button" class="btn btn-success nextBtn" id="nextStep" value="3">{{Translate 'Next'}}</button>
             </div>
         </div>
 
@@ -723,8 +733,8 @@
         <div class="wizard-step d-none" id="step-3">
             <form>
                 <!-- Group 1: Leave Info -->
-                <fieldset class="border p-3 mb-4">
-                    <legend class="w-auto px-2">{{Translate 'Visa Info'}}</legend>
+                <fieldset class="border p-3 mb-4 position-relative">
+                    <span class="w-auto badge-title">{{Translate 'Visa Info'}}</span>
                     <div class="row g-3">
                         <div class="col-md-3">
                             <label for="visafor" class="form-label">{{Translate 'Visa For'}}</label>
@@ -773,7 +783,7 @@
             </form>
             <div class="mt-4 btn-align">
                 <button type="button" class="btn btn-secondary" id="prevStep" value="2">{{Translate 'Previous'}}</button>
-                <button type="button" class="btn nextBtn" id="nextStep" value="4">{{Translate 'Next'}}</button>
+                <button type="button" class="btn btn-success nextBtn" id="nextStep" value="4">{{Translate 'Next'}}</button>
             </div>
         </div>
 
@@ -790,7 +800,7 @@
             </div>
         </div>
 
-    </div>
+        </div>
 
     <script>
         var _this = this;
@@ -920,23 +930,19 @@
             if ($.inArray(extension,['jpg','jpeg','png']) >= 0) {
                 $(".filelabel i").removeClass().addClass('fa fa-file-image-o');
                 $(".filelabel i, .filelabel .title").css({'color':'#208440'});
-                $(".filelabel").css({'border':' 2px solid #208440'});
             }
             else if(extension == 'pdf'){
                 $(".filelabel i").removeClass().addClass('fa fa-file-pdf-o');
                 $(".filelabel i, .filelabel .title").css({'color':'red'});
-                $(".filelabel").css({'border':' 2px solid red'});
 
             }
         else if(extension == 'doc' || extension == 'docx'){
             $(".filelabel i").removeClass().addClass('fa fa-file-word-o');
             $(".filelabel i, .filelabel .title").css({'color':'#2388df'});
-            $(".filelabel").css({'border':' 2px solid #2388df'});
         }
             else{
                 $(".filelabel i").removeClass().addClass('fa fa-file-o');
                 $(".filelabel i, .filelabel .title").css({'color':'black'});
-                $(".filelabel").css({'border':' 2px solid black'});
             }
 
             if(fileName ){
@@ -968,51 +974,51 @@
 
 
             if (!$("[name='employeeId']").val()) {
-                Swal.fire(handlebarCompile("Translate 'Warning'"), handlebarCompile("Translate 'Please select the Employee Id'"), "warning");
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Employee Id'}}"), "warning");
                 $loader.remove();
                 $btn.prop('disabled', false);
                 return;
             }
             if (!$("[name='paymentMethod']").val()) {
-                Swal.fire(handlebarCompile("Translate 'Warning'"), handlebarCompile("Translate 'Please select the Payment Method'"), "warning");
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Payment Method'}}"), "warning");
                 $loader.remove();
                 $btn.prop('disabled', false);
                 return;
             }
             if (!$("[name='vacationType']").val()) {
-                Swal.fire(handlebarCompile("{{Translate 'Warning'"), handlebarCompile("{{Translate 'Please select the Vacation Type' }}"), "warning");
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Vacation Type' }}"), "warning");
                 $loader.remove();
                 $btn.prop('disabled', false);
                 return;
             }
             //enable
             if (!$("[name='startDate']").val()) {
-                Swal.fire(handlebarCompile("{{Translate 'Warning'"), handlebarCompile("Translate 'Please select the Start Date'"), "warning");
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Start Date'}}"), "warning");
                 $loader.remove();
                 $btn.prop('disabled', false);
                 return;
             }
             if (!$("[name='endDate']").val()) {
-                Swal.fire(handlebarCompile("{{Translate 'Warning'"), handlebarCompile("Translate 'Please select the End Date'"), "warning");
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the End Date'}}"), "warning");
                 $loader.remove();
                 $btn.prop('disabled', false);
                 return;
             }
             if (!$("[name='vacationDays']").val()) {
-                Swal.fire(handlebarCompile("{{Translate 'Warning'"), handlebarCompile("Translate 'Please select the Vacation Days'"), "warning");
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Vacation Days'}}"), "warning");
                 $loader.remove();
                 $btn.prop('disabled', false);
                 return;
             }
             if (!$("[name='ticketrequired']").is(":checked")) {
-                Swal.fire(handlebarCompile("{{Translate 'Warning'"), handlebarCompile("Translate 'Please select the Ticket Required'"), "warning");
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Ticket Required'}}"), "warning");
                 $loader.remove();
                 $btn.prop('disabled', false);
                 return;
             }
 
             if (!$("[name='visarequired']").is(":checked")) {
-                Swal.fire(handlebarCompile("{{Translate 'Warning'"), handlebarCompile("Translate 'Please select the Visa Required'"), "warning");
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Visa Required'}}"), "warning");
                 $loader.remove();
                 $btn.prop('disabled', false);
                 return;
@@ -1053,12 +1059,12 @@
         }
         function confirmAction(btnValue,thisdata,text) {
         Swal.fire({
-            title: handlebarCompile("Translate 'Are you sure?'"),
+            title: handlebarCompile("{{Translate 'Are you sure?'}}"),
             text: text,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: handlebarCompile("Translate 'Stay'"),
-            cancelButtonText: handlebarCompile("Translate 'Next'"),
+            confirmButtonText: handlebarCompile("{{Translate 'Stay'}}"),
+            cancelButtonText: handlebarCompile("{{Translate 'Next'}}"),
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
@@ -1080,9 +1086,9 @@
         $(document).on('click', '#nextStep', function (e) {
             let btnValue = $(this).val();
             if(Number(btnValue) === 4 && $('input[name="visarequired"]:checked').val() === 'yes' && ($("#visadays").val() < 1) && ($("#visaused").val() < 1)){
-                confirmAction(Number(btnValue),this,handlebarCompile("Translate 'do You want to continue with out filling the Visa Balance'"));
+                confirmAction(Number(btnValue),this,handlebarCompile("{{Translate 'do You want to continue with out filling the Visa Balance'}}"));
             }else if(Number(btnValue) === 3 && $('input[name="ticketrequired"]:checked').val() === 'yes' && ($("#AdultTicketsUsed").val() < 1) && ($("#ChildTicketsUsed").val() < 1) && ($("#InfantTicketsUsed").val() < 1)){
-                confirmAction(Number(btnValue),this,handlebarCompile("Translate 'do You want to continue with out filling the ticket Balance'"));
+                confirmAction(Number(btnValue),this,handlebarCompile("{{Translate 'do You want to continue with out filling the ticket Balance'}}"));
             } else{
             nextStep(Number(btnValue), this);
             }
@@ -1110,16 +1116,19 @@
         $('input[name="extensionleave1"]').on('change', function () {
             const $ext1Section = $('#ext1');
             const $ext2Section = $('#ext2');
+            const $extinfo2 = $('#extinfo2');
             if (!$ext1Section.length) return;
 
             if ($(this).val() === "yes") {
                 $ext1Section.removeClass('d-none');
+                $extinfo2.removeClass('d-none');
                 $('input[name="extensionleave2"]').prop('disabled', false);
             } else {
                 $('input[name="extensionleave2"][value="no"]').prop("checked", true);
                 $('input[name="extensionleave2"]').prop('disabled', true);
                 $ext1Section.addClass('d-none');
-                $ext2Section.addClass('d-none');
+                $ext1Section.addClass('d-none');
+                $extinfo2.addClass('d-none');
             }
         });
 
@@ -1167,7 +1176,7 @@
                 getBalancesOfVisaVacationAndTicket();
             } catch (error) {
                 console.error(error);
-                Swal.fire("Error", handlebarCompile("Translate 'Failed to fetch vacation balance'"), "error");
+                Swal.fire("Error", handlebarCompile("{{Translate 'Failed to fetch vacation balance'}}"), "error");
             }
         });
 
@@ -1177,7 +1186,7 @@
                 getBalancesOfVisaVacationAndTicket();
             } catch (error) {
                 console.error(error);
-                Swal.fire("Error", handlebarCompile("Translate 'Failed to fetch vacation balance'"), "error");
+                Swal.fire("Error", handlebarCompile("{{Translate 'Failed to fetch vacation balance'}}"), "error");
             }
         });
 
@@ -1371,7 +1380,7 @@
                     
                     // console.log(res);
                 }else if(result === ""){
-                    Swal.fire("Error", handlebarCompile("Translate 'Something Went Wrong Please Contact System Admin'"), "error");
+                    Swal.fire("Error", handlebarCompile("{{Translate 'Something Went Wrong Please Contact System Admin'}}"), "error");
                     $btn.prop('disabled', true);
                 }else{
                 $btn.find('.loader').remove();
@@ -2021,13 +2030,18 @@
                         return response.json();
                     })
                     .then(data => {
-                        Swal.fire(handlebarCompile("Translate 'Success'"), handlebarCompile("Translate 'Leave request created successfully,please wait for one minute to create the request in ERP then submit'"), "success");
+                        Swal.fire(handlebarCompile("{{Translate 'Success'}}"), handlebarCompile("{{Translate 'Leave request created successfully,please wait for one minute to create the request in ERP then submit'}}"), "success");
+                        
+                        $btn.find('.loader').remove();
+                        $btn.prop('disabled', false);
+                        const location = window.location.href; 
+                        if(location.includes("/SelfService/LeaveRequest")){
                         setTimeout(() => {
                             window.location.reload();
                         }, 2000);
-                        
-                    $btn.find('.loader').remove();
-                    $btn.prop('disabled', false);
+                        }else{
+                            window.location.href = 'https://portal.mawarid.com.sa/apps4x/#/apps/SelfService/LeaveRequest';
+                        }
                     })
                     .catch(error => {
                         Swal.fire("Error", JSON.stringify(error), "error");
@@ -2038,7 +2052,7 @@
                     });
             } catch (err) {
                 console.error("API Error:", err);
-                alert(handlebarCompile("Translate 'Something went wrong while submitting leave request'"));
+                alert(handlebarCompile("{{Translate 'Something went wrong while submitting leave request'}}"));
             }
         }
 
