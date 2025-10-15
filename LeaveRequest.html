@@ -10,7 +10,7 @@
 
 
     <style>
-                .stepper {
+        .stepper {
             display: flex;
             justify-content: space-between;
             margin-bottom: 30px;
@@ -152,12 +152,16 @@
     top: -8px;
     padding: 0 5px;
     font-weight: bold;
-}
+    }
+    .filespanlabel{
+    color: #525252;
+    font-weight: 500;
+    }
     </style>
 </head>
 
 <body>
-        <div class="leave-request-container container py-5">
+    <div class="leave-request-container container py-5">
         <!-- Stepper -->
         <div class="stepper mb-5">
             <div class="step active" data-step="1">{{Translate 'Leave'}}</div>
@@ -391,7 +395,9 @@
                                 </div>
                                 <div class="col-3">
                                     <!-- <fieldset class="border p-3 mb-4"> -->
+                                        
                                             <label class="filelabel mt-4">
+                                                <span class="filespanlabel">{{Translate 'Attachment'}}:</span>
                                                 <img src="https://cdn-icons-png.flaticon.com/128/167/167499.png" width="30px" height="30px" alt="">
                                                 <span class="title"></span>
                                                 <input class="FileUpload1" id="FileInput" name="booking_attachment" type="file" />
@@ -800,7 +806,7 @@
             </div>
         </div>
 
-        </div>
+    </div>
 
     <script>
         var _this = this;
@@ -1127,8 +1133,10 @@
                 $('input[name="extensionleave2"][value="no"]').prop("checked", true);
                 $('input[name="extensionleave2"]').prop('disabled', true);
                 $ext1Section.addClass('d-none');
-                $ext1Section.addClass('d-none');
+                $ext2Section.addClass('d-none');
                 $extinfo2.addClass('d-none');
+                resetValueext2();
+                resetValueext1();
             }
         });
 
@@ -1140,10 +1148,22 @@
             if ($(this).val() === "yes") {
                 $ext2Section.removeClass('d-none');
             } else {
+                resetValueext2();
                 $ext2Section.addClass('d-none');
             }
         });
-
+        function resetValueext1(){
+            let today = new Date().toISOString().split('T')[0];
+            $("#startDateExt1").val(today);
+            $("#endDateExt1").val(today);
+            $("#vacationDaysExt1").val(0);
+        }
+        function resetValueext2(){
+            let today = new Date().toISOString().split('T')[0];
+            $("#startDateExt2").val(today);
+            $("#endDateExt2").val(today);
+            $("#vacationDaysExt2").val(0);
+        }
         // visarequired
         $('input[name="visarequired"]').on('change', function () {
             if ($(this).val() === "no") {
@@ -2113,7 +2133,6 @@
             const d = new Date(dateStr);
             return d.toISOString();
         }
-
     </script>
 
 </body>
