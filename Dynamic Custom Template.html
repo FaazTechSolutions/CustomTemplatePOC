@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CanvasJS Dynamic Dashboard (Light)</title>
+
+  <!-- CanvasJS and SortableJS -->
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #f7fafc;
+      --card: #fff;
+      --muted: #64748b;
+      --accent: #2563eb;
+    }
+    * {
+      box-sizing: border-box;
+      font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: #0f1724;
+      padding: 18px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: 20px;
+      margin: 0;
+    }
+    .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .btn {
+      background: #fff;
+      border: 1px solid #e6eef6;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .layout-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 1100px) {
+      .layout-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 640px) {
+      .layout-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .widget {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: 0 6px 18px rgba(15, 23, 36, 0.06);
+      position: relative;
+      overflow: hidden;
+    }
+    .w-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .w-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .metric-number {
+      font-size: 26px;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+    .chart-area {
+      height: 220px;
+      width: 100%;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #f1f5f9;
+      text-align: left;
+      font-size: 13px;
+    }
+    th {
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .pagination {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .resizer {
+      position: absolute;
+      right: 6px;
+      bottom: 6px;
+      width: 14px;
+      height: 14px;
+      cursor: nwse-resize;
+      background: linear-gradient(135deg, #e2e8f0, #fff);
+      border-radius: 3px;
+      border: 1px solid #cbd5e1;
+    }
+    .drag-handle {
+      cursor: grab;
+      padding: 6px;
+      border-radius: 6px;
+    }
+    input, select {
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #e6eef6;
+    }
+    .small {
+      padding: 6px 8px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Dynamic Dashboard (CanvasJS • Light)</h1>
+      <div style="color:var(--muted);font-size:13px">
+        Drag widgets to reorder • Resize using handle • Connect API for live data
+      </div>
+    </div>
+    <div class="controls">
+      <input id="apiUrl" placeholder="API URL (optional)" style="width:320px" />
+      <button id="connectApi" class="btn">Connect API</button>
+      <select id="addType" class="btn small">
+        <option value="metric">Add Metric</option>
+        <option value="chart">Add Chart</option>
+        <option value="table">Add Table</option>
+      </select>
+      <button id="addWidget" class="btn">Add Widget</button>
+      <button id="exportAll" class="btn">Export All CSV</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="grid" class="layout-grid"></section>
+  </main>
+
+  <!-- Templates -->
+  <template id="metricTpl">
+    <div class="widget metric-widget">
+      <div class="w-head">
+        <strong class="w-title">Metric</strong>
+        <div class="w-actions">
+          <span class="drag-handle small">⇅</span>
+          <button class="btn small remove">Remove</button>
+        </div>
+      </div>
+      <div class="metric-number">0</div>
+      <div class="resizer"></div>
+    </div>
+  </template>
+
+  <template id="chartTpl">
+    <div class="widget chart-widget">
+      <div class="w-head">
+        <strong class="w-title">Chart</strong>
+        <div class="w-actions">
+          <select class="chartType small">
+            <option value="column">Column</option>
+            <option value="line">Line</option>
+            <option value="area">Area</option>
+            <option value="pie">Pie</option>
+          </select>
+          <span class="drag-handle small">⇅</span>
+          <button class="btn small remove">Remove</button>
+        </div>
+      </div>
+      <div class="chart-area"></div>
+      <div class="resizer"></div>
+    </div>
+  </template>
+
+  <template id="tableTpl">
+    <div class="widget table-widget">
+      <div class="w-head">
+        <strong class="w-title">Table</strong>
+        <div class="w-actions">
+          <input class="filter small" placeholder="Search..." />
+          <span class="drag-handle small">⇅</span>
+          <button class="btn small remove">Remove</button>
+        </div>
+      </div>
+      <div class="table-wrap" style="max-height:260px;overflow:auto">
+        <table>
+          <thead><tr><th>ID</th><th>Title</th><th>Status</th><th>Value</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+        <div class="pagination"></div>
+        <div><button class="btn small exportLocal">Export CSV</button></div>
+      </div>
+      <div class="resizer"></div>
+    </div>
+  </template>
+
+  <script>
+    // ---------- Mock data ----------
+    const state = { widgets: [], data: [], pageSize: 6 };
+    function genMock(n=60){
+      const statuses=['Open','Closed','Pending'];
+      return Array.from({length:n}, (_,i)=>({
+        id:i+1,
+        title:'Item '+(i+1),
+        status:statuses[i%3],
+        value:Math.floor(Math.random()*1000)
+      }));
+    }
+    state.data = genMock(48);
+
+    const grid = document.getElementById('grid');
+    const metricTpl = document.getElementById('metricTpl');
+    const chartTpl = document.getElementById('chartTpl');
+    const tableTpl = document.getElementById('tableTpl');
+
+    // ---------- Create widgets ----------
+    function makeWidget(type){
+      let node = null;
+      if(type==='metric') node = metricTpl.content.firstElementChild.cloneNode(true);
+      if(type==='chart') node = chartTpl.content.firstElementChild.cloneNode(true);
+      if(type==='table') node = tableTpl.content.firstElementChild.cloneNode(true);
+      attachWidgetBehavior(node, type);
+      grid.appendChild(node);
+      initResizable(node);
+    }
+
+    function attachWidgetBehavior(node, type){
+      node.querySelector('.remove').addEventListener('click', ()=>node.remove());
+      if(type==='metric') renderMetric(node);
+      if(type==='chart') renderChartWidget(node);
+      if(type==='table') renderTable(node);
+    }
+
+    // ---------- Metric ----------
+    function renderMetric(node){
+      const vEl = node.querySelector('.metric-number');
+      const total = state.data.reduce((s,it)=>s+it.value,0);
+      vEl.textContent = total.toLocaleString();
+    }
+
+    // ---------- Chart ----------
+    function renderChartWidget(node){
+      const wrap = node.querySelector('.chart-area');
+      const select = node.querySelector('.chartType');
+      function draw(){
+        const groups = {};
+        state.data.forEach(it=> groups[it.status]=(groups[it.status]||0)+it.value);
+        const dp = Object.entries(groups).map(([k,v])=>({label:k,y:v}));
+        const type = select.value;
+        const chart = new CanvasJS.Chart(wrap, {
+          animationEnabled:true,
+          theme:'light2',
+          data:[{type, dataPoints:dp}]
+        });
+        chart.render();
+      }
+      select.addEventListener('change', draw);
+      draw();
+    }
+
+    // ---------- Table ----------
+    function renderTable(node){
+      const tbody = node.querySelector('tbody');
+      const filter = node.querySelector('.filter');
+      const pagination = node.querySelector('.pagination');
+      const exportLocal = node.querySelector('.exportLocal');
+      let page=1;
+
+      function filtered(){
+        const q = (filter.value||'').toLowerCase();
+        return state.data.filter(d=> (d.title+d.id+d.status).toLowerCase().includes(q));
+      }
+      function draw(){
+        const arr = filtered();
+        const pages = Math.ceil(arr.length/state.pageSize)||1;
+        if(page>pages) page=pages;
+        const pageItems = arr.slice((page-1)*state.pageSize, page*state.pageSize);
+        tbody.innerHTML = pageItems.map(it=>
+          `<tr><td>${it.id}</td><td>${it.title}</td><td>${it.status}</td><td>${it.value}</td></tr>`
+        ).join('');
+        pagination.innerHTML='';
+        for(let p=1;p<=pages;p++){
+          const b=document.createElement('button');
+          b.className='btn small';
+          b.textContent=p;
+          if(p===page) b.style.background='#eef2ff';
+          b.onclick=()=>{page=p;draw();};
+          pagination.appendChild(b);
+        }
+      }
+
+      filter.addEventListener('input', ()=>{page=1;draw();});
+      exportLocal.addEventListener('click', ()=>exportCSV(filtered(), 'table.csv'));
+      draw();
+    }
+
+    // ---------- CSV Export ----------
+    function exportCSV(arr, filename='export.csv'){
+      if(!arr.length) return alert('No data');
+      const header=['id','title','status','value'];
+      const rows = arr.map(r=>[r.id,r.title,r.status,r.value].join(','));
+      const csv = [header.join(','),...rows].join('\n');
+      const blob = new Blob([csv], {type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url; a.download=filename; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // ---------- Resizable ----------
+    function initResizable(widget){
+      const res = widget.querySelector('.resizer');
+      if(!res) return;
+      let startX,startY,startW,startH;
+      res.addEventListener('pointerdown', e=>{
+        startX=e.clientX; startY=e.clientY;
+        startW=widget.offsetWidth; startH=widget.offsetHeight;
+        function move(ev){
+          const dx=ev.clientX-startX, dy=ev.clientY-startY;
+          widget.style.width=Math.max(220,startW+dx)+'px';
+          widget.style.height=Math.max(120,startH+dy)+'px';
+        }
+        function up(){document.removeEventListener('pointermove',move);document.removeEventListener('pointerup',up);}
+        document.addEventListener('pointermove',move);
+        document.addEventListener('pointerup',up);
+      });
+    }
+
+    // ---------- Sortable ----------
+    Sortable.create(grid,{handle:'.drag-handle',animation:150});
+
+    // ---------- Default widgets ----------
+    makeWidget('metric');
+    makeWidget('chart');
+    makeWidget('table');
+  </script>
+</body>
+</html>
