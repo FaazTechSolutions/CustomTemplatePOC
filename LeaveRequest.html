@@ -152,11 +152,39 @@
     top: -8px;
     padding: 0 5px;
     font-weight: bold;
-    }
+}
     .filespanlabel{
     color: #525252;
     font-weight: 500;
     }
+
+.accordion-button {
+  font-size: 1.05rem;
+  border-radius: 8px;
+  box-shadow: none;
+  transition: all 0.3s ease;
+}
+
+.accordion-button:not(.collapsed) {
+  color: #0d6efd;
+  background-color: #f8f9fa;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.accordion-button:focus {
+  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+}
+
+.accordion-body {
+  color: #333;
+  background: #fafafa;
+  border-bottom: 4px solid #fdbd3f;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
+}
+#bodyDiv .leave-request-container .card, #bodyDiv .leave-request-container .card:hover {
+    box-shadow: none !important;
+}
+
     </style>
 </head>
 
@@ -347,7 +375,7 @@
                         <fieldset class="border p-3 mb-4 position-relative">
                             <span class="w-auto badge-title">{{Translate 'Leave Info'}}</span>
                             <div class="row g-3">
-                                <div class="col-3 mb-3">
+                                <div class="col-12 col-lg-2 mb-3">
                                     <label for="paymentMethod" class="form-label">{{Translate 'Payment Method'}} <span class="required">*</span></label>
                                     <select class="form-select" id="paymentMethod" name="paymentMethod">
                                         <option value="">-- {{Translate 'Select'}} --</option>
@@ -355,7 +383,7 @@
                                         <option value="Monthly basis">Monthly basis</option>
                                     </select>
                                 </div>
-                                <div class="col-3 mb-3">
+                                <div class="col-12 col-lg-2 mb-3">
                                     <label for="vacationType" class="form-label">{{Translate 'Vacation Type'}} <span class="required">*</span></label>
                                     <select class="form-select" id="vacationType" name="vacationType">
                                         <option value="">-- {{Translate 'Select'}} --</option>
@@ -375,25 +403,25 @@
                                     <label for="vacationcode" class="form-label">{{Translate 'Vacation Code'}}</label>
                                     <input type="number" class="form-control" id="vacationcode" name="vacationcode" min="1" readonly>
                                 </div>
-                                <div class="col-3">
+                                <div class="col-12 col-lg-2">
                                     <label for="startDate" class="form-label">{{Translate 'Start Date'}} <span class="required">*</span></label>
                                     <input type="date" class="form-control" id="startDate" name="startDate">
                                 </div>
-                                <div class="col-3">
+                                <div class="col-12 col-lg-2" style="max-width: 120px;">
                                     <label for="vacationDays" class="form-label">{{Translate 'Vacation Days'}} <span class="required">*</span></label>
                                     <input type="number" class="form-control" id="vacationDays" name="vacationDays" min="1">
                                 </div>
                                 <!-- End Date -->
-                                <div class="col-3">
+                                <div class="col-12 col-lg-2">
                                     <label for="endDate" class="form-label">{{Translate 'End Date'}} <span class="required">*</span></label>
                                     <input type="text" class="form-control" id="endDate" name="endDate" readonly>
                                 </div>
                                 <!-- Expected Return Date -->
-                                <div class="col-3">
+                                <div class="col-12 col-lg-2">
                                     <label for="expectedReturnDate" class="form-label">{{Translate 'Expected Return Date'}}</label>
                                     <input type="text" class="form-control" id="expectedReturnDate" name="expectedReturnDate" readonly>
                                 </div>
-                                <div class="col-3">
+                                <div class="col-12 col-lg-2">
                                     <!-- <fieldset class="border p-3 mb-4"> -->
                                         
                                             <label class="filelabel mt-4">
@@ -623,10 +651,10 @@
                             <input type="number" class="form-control" id="AdultTicketsContract"
                                 name="AdultTicketsContract" min="1">
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label for="AdultTicketsUsed" class="form-label">{{Translate 'Adult Ticket Used'}}</label>
                             <input type="number" class="form-control" id="AdultTicketsUsed" name="AdultTicketsUsed"
-                                min="1">
+                                min="1" style="max-width: 115px;">
                         </div>
                         <div class="col-md-3 d-none">
                             <label for="ChildTicketBalance" class="form-label">{{Translate 'Child Ticket Balance'}}</label>
@@ -648,10 +676,10 @@
                             <input type="number" class="form-control" id="ChildTicketsContract"
                                 name="ChildTicketsContract" min="1">
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label for="ChildTicketsUsed" class="form-label">{{Translate 'Child Ticket Used'}}</label>
                             <input type="number" class="form-control" id="ChildTicketsUsed" name="ChildTicketsUsed"
-                                min="1">
+                                min="1" style="max-width: 115px;">
                         </div>
                         <div class="col-md-3 d-none">
                             <label for="InfantTicketBalance" class="form-label">{{Translate 'Infant Ticket Balance'}}</label>
@@ -673,10 +701,10 @@
                             <input type="number" class="form-control" id="InfantTicketsContract"
                                 name="InfantTicketsContract" min="1">
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label for="InfantTicketsUsed" class="form-label">{{Translate 'Infant Ticket Used'}}</label>
                             <input type="number" class="form-control" id="InfantTicketsUsed" name="InfantTicketsUsed"
-                                min="1">
+                                min="1" style="max-width: 115px;">
                         </div>
                         <div class="col-md-3 d-none">
                             <label for="ticketPricePercentage" class="form-label">{{Translate 'Ticket Price Percentage'}}</label>
@@ -742,7 +770,7 @@
                 <fieldset class="border p-3 mb-4 position-relative">
                     <span class="w-auto badge-title">{{Translate 'Visa Info'}}</span>
                     <div class="row g-3">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label for="visafor" class="form-label">{{Translate 'Visa For'}}</label>
                             <select class="form-select" id="visafor" name="visafor">
                                 <option value="">-- {{Translate 'Select'}} --</option>
@@ -751,13 +779,13 @@
                                 <option>Both</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label for="visadays" class="form-label">{{Translate 'Visa Days'}}</label>
-                            <input type="number" class="form-control" id="visadays" name="visadays" min="1">
+                            <input type="number" class="form-control" id="visadays" name="visadays" min="1" style="max-width: 100px;">
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label for="visaused" class="form-label">{{Translate 'No Of Visa'}}</label>
-                            <input type="number" class="form-control" id="visaused" name="visaused" min="1">
+                            <input type="number" class="form-control" id="visaused" name="visaused" min="1" style="max-width: 100px;">
                         </div>
                         <!-- <div class="col-md-3">
                             <label for="noofvisa" class="form-label">No Of Visa</label>
@@ -841,6 +869,9 @@
         let Lang = localStorage.getItem("CurrentLanguage");
 
         if (!Lang) {
+            return _ret;
+        }
+        if(!(window.location.hostname === "portal.mawarid.com.sa")){
             return _ret;
         }
         if (!_this.globalService.systemLabels) {
@@ -1567,24 +1598,87 @@
             let templateSource  = `
     <!-- Employee Info -->
     <div class="card p-3 mb-3 shadow-sm">
-        <h5 class="mb-3 text-primary"><i class="bi bi-person-badge"></i>{{Translate 'Employee Info'}} </h5>
-        <div class="row">
-            <div class="col-md-3"><b>{{Translate 'ID'}}</b><br>${values.employeeId || "-"}</div>
-            <div class="col-md-3"><b>{{Translate 'Name'}}</b><br>${values.employeename || "-"}</div>
-            <div class="col-md-3"><b>{{Translate 'Position'}}</b><br>${values.EmployeePosition || "-"}</div>
-            <div class="col-md-3"><b>{{Translate 'Department'}}</b><br>${values.Department || "-"}</div>
+         <div class="accordion" id="employeeAccordion">
+  <div class="accordion-item shadow-sm border-0 mb-3 rounded-3">
+    <h2 class="accordion-header" id="headingEmployee">
+      <button
+        class="accordion-button bg-white text-primary fw-semibold"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseEmployee"
+        aria-expanded="false"
+        aria-controls="collapseEmployee"
+      >
+        <i class="bi bi-person-badge me-2"></i>
+        {{Translate 'Employee Info'}}
+      </button>
+    </h2>
+
+    <div
+      id="collapseEmployee"
+      class="accordion-collapse collapse"
+      aria-labelledby="headingEmployee"
+      data-bs-parent="#employeeAccordion"
+    >
+      <div class="accordion-body bg-light rounded-bottom-3">
+        <div class="row mb-2">
+          <div class="col-md-3"><b>{{Translate 'ID'}}</b><br>${values.employeeId || "-"}</div>
+          <div class="col-md-3"><b>{{Translate 'Name'}}</b><br>${values.employeename || "-"}</div>
+          <div class="col-md-3"><b>{{Translate 'Position'}}</b><br>${values.EmployeePosition || "-"}</div>
+          <div class="col-md-3"><b>{{Translate 'Department'}}</b><br>${values.Department || "-"}</div>
         </div>
         <div class="row mt-2">
-            <div class="col-md-3"><b>{{Translate 'Payment Method'}}</b><br>${values.paymentMethod || "-"}</div>
-            <div class="col-md-3"><b>{{Translate 'Manager'}}</b><br>${values.approvalmanagername || "-"}</div>
-            <div class="col-md-3"><b>{{Translate 'Iqama Number'}}</b><br>${values.iqamaNumber || "-"}</div>
-            <div class="col-md-3"><b>{{Translate 'Nationality'}}</b><br>${values.Nationality || "-"}</div>
+          <div class="col-md-3"><b>{{Translate 'Payment Method'}}</b><br>${values.paymentMethod || "-"}</div>
+          <div class="col-md-3"><b>{{Translate 'Manager'}}</b><br>${values.approvalmanagername || "-"}</div>
+          <div class="col-md-3"><b>{{Translate 'Iqama Number'}}</b><br>${values.iqamaNumber || "-"}</div>
+          <div class="col-md-3"><b>{{Translate 'Nationality'}}</b><br>${values.Nationality || "-"}</div>
         </div>
+
+        <div class="mt-3">
+        <h5 class="mb-3 text-secondary" style="font-size: 14px;"><i class="bi bi-cash-stack"></i> {{Translate 'Payroll & System Info'}}</h5>
+        <div class="row">
+            <div class="col-md-3"><b>{{Translate 'Pay Group'}}</b><br>${values.PayGroupName || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Start Date'}}</b><br>${values.payGroupStartDate || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'End Date'}}</b><br>${values.payGroupPeriodEndDate || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Years'}}</b><br>${values.workingYears || "0"}</div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-3"><b>{{Translate 'Months'}}</b><br>${values.WorkingMonths || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Days'}}</b><br>${values.WorkingDays || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Total Days'}}</b><br>${values.TotalWorkingDays || "0"}</div>
+        </div>
+    </div>
+      </div>
+    </div>
+  </div>
+</div>
     </div>
 
     <!-- Leave Info -->
     <div class="card p-3 mb-3 shadow-sm">
-        <h5 class="mb-3 text-success"><i class="bi bi-calendar-event"></i> {{Translate 'Leave Info'}}</h5>
+        <div class="accordion" id="LeaveInfoAccordion">
+  <div class="accordion-item shadow-sm border-0 mb-3 rounded-3">
+    <h2 class="accordion-header" id="headingLeaveInfo">
+      <button
+        class="accordion-button bg-white text-primary fw-semibold"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseLeaveInfo"
+        aria-expanded="true"
+        aria-controls="collapseLeaveInfo"
+      >
+        <i class="bi bi-person-badge me-2"></i>
+        {{Translate 'Leave Info'}}
+      </button>
+    </h2>
+
+    <div
+      id="collapseLeaveInfo"
+      class="accordion-collapse collapse show"
+      aria-labelledby="headingLeaveInfo"
+      data-bs-parent="#LeaveInfoAccordion"
+    >
+      <div class="accordion-body bg-light rounded-bottom-3">
         <div class="row">
             <div class="col-md-3"><b>{{Translate 'Vacation Type'}}</b><br>${values.vacationType || "-"}</div>
             <div class="col-md-3"><b>{{Translate 'Vacation Code'}}</b><br>${values.vacationCode || "-"}</div>
@@ -1598,11 +1692,37 @@
             <div class="col-md-3"><b>{{Translate 'Balance After'}}</b><br>${values.vacationbalanceNew || "0"}</div>
             <div class="col-md-3"><b>{{Translate 'Is External'}}</b><br>${values.isExternal || "-"}</div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
     </div>
 
     <!-- Ticket Info -->
     <div class="card p-3 mb-3 shadow-sm">
-        <h5 class="mb-3 text-danger"><i class="bi bi-ticket"></i> {{Translate 'Ticket Info'}}</h5>
+         <div class="accordion" id="TicketInfoAccordion">
+  <div class="accordion-item shadow-sm border-0 mb-3 rounded-3">
+    <h2 class="accordion-header" id="headingTicketInfo">
+      <button
+        class="accordion-button bg-white text-primary fw-semibold"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseTicketInfo"
+        aria-expanded="true"
+        aria-controls="collapseTicketInfo"
+      >
+        <i class="bi bi-person-badge me-2"></i>
+        {{Translate 'Ticket Info'}}
+      </button>
+    </h2>
+
+    <div
+      id="collapseTicketInfo"
+      class="accordion-collapse collapse show"
+      aria-labelledby="headingTicketInfo"
+      data-bs-parent="#TicketInfoAccordion"
+    >
+      <div class="accordion-body bg-light rounded-bottom-3">
         <div class="row">
             <div class="col-md-3"><b>{{Translate 'Required'}}?</b><br>${values.ticketrequired || "-"}</div>
             <div class="col-md-3"><b>{{Translate 'Ticket For'}}</b><br>${values.ticketfor || "-"}</div>
@@ -1631,11 +1751,37 @@
             <div class="col-md-3"><b>{{Translate 'Child Tickets Balance New'}}</b><br>${values.ChildTicketBalanceNew || "0"}</div>
             <div class="col-md-3"><b>{{Translate 'Infant Tickets Balance New'}}</b><br>${values.InfantTicketBalanceNew || "0"}</div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
     </div>
 
     <!-- Visa Info -->
     <div class="card p-3 mb-3 shadow-sm">
-        <h5 class="mb-3 text-warning"><i class="bi bi-passport"></i> {{Translate 'Visa Info'}}</h5>
+        <div class="accordion" id="VisaInfoAccordion">
+  <div class="accordion-item shadow-sm border-0 mb-3 rounded-3">
+    <h2 class="accordion-header" id="headingVisaInfo">
+      <button
+        class="accordion-button bg-white text-primary fw-semibold"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseVisaInfo"
+        aria-expanded="true"
+        aria-controls="collapseVisaInfo"
+      >
+        <i class="bi bi-person-badge me-2"></i>
+        {{Translate 'Visa Info'}}
+      </button>
+    </h2>
+
+    <div
+      id="collapseVisaInfo"
+      class="accordion-collapse collapse show"
+      aria-labelledby="headingVisaInfo"
+      data-bs-parent="#VisaInfoAccordion"
+    >
+      <div class="accordion-body bg-light rounded-bottom-3">
         <div class="row">
             <div class="col-md-3"><b>{{Translate 'Required'}}?</b><br>${values.visarequired || "-"}</div>
             <div class="col-md-3"><b>{{Translate 'For'}}</b><br>${values.visafor || "-"}</div>
@@ -1648,6 +1794,10 @@
             <div class="col-md-3"><b>{{Translate 'Balance'}}</b><br>${values.VisaBalance || "0"}</div>
             <div class="col-md-3"><b>{{Translate 'New Balance'}}</b><br>${values.VisaNewBalance || "0"}</div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
     </div>
     `;
 
@@ -1655,47 +1805,99 @@
             if (values.extensionleave1 === "yes") {
                 templateSource  += `
         <div class="card p-3 mb-3 shadow-sm">
-            <h5 class="mb-3 text-info">{{Translate 'Extended Leave 1'}}</h5>
-            <div class="row">
+            <div class="accordion" id="ExtendedLeave1InfoAccordion">
+  <div class="accordion-item shadow-sm border-0 mb-3 rounded-3">
+    <h2 class="accordion-header" id="headingExtendedLeave1Info">
+      <button
+        class="accordion-button bg-white text-primary fw-semibold"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseExtendedLeave1Info"
+        aria-expanded="true"
+        aria-controls="collapseExtendedLeave1Info"
+      >
+        <i class="bi bi-person-badge me-2"></i>
+        {{Translate 'Extended Leave 1'}}
+      </button>
+    </h2>
+
+    <div
+      id="collapseExtendedLeave1Info"
+      class="accordion-collapse collapse show"
+      aria-labelledby="headingExtendedLeave1Info"
+      data-bs-parent="#ExtendedLeave1InfoAccordion"
+    >
+      <div class="accordion-body bg-light rounded-bottom-3">
+        <div class="row">
                 <div class="col-md-3"><b>{{Translate 'Type'}}</b><br>${values.vacationTypeExt1 || "-"}</div>
                 <div class="col-md-3"><b>{{Translate 'Extended Leave One'}}</b><br>${values.extensionleave1 || "-"}</div>
                 <div class="col-md-3"><b>{{Translate 'Start'}}</b><br>${values.startDateExt1 || "-"}</div>
                 <div class="col-md-3"><b>{{Translate 'End'}}</b><br>${values.endDateExt1 || "-"}</div>
             <div class="col-md-3"><b>{{Translate 'Days'}}</b><br>${values.vacationDays || "0"}</div>
             </div>
+      </div>
+    </div>
+  </div>
+</div>
         </div>`;
             }
             if (values.extensionleave2 === "yes") {
                 templateSource  += `
         <div class="card p-3 mb-3 shadow-sm">
-            <h5 class="mb-3 text-info">{{Translate 'Extended Leave 2'}}</h5>
-            <div class="row">
+            <div class="accordion" id="ExtendedLeave2InfoAccordion">
+  <div class="accordion-item shadow-sm border-0 mb-3 rounded-3">
+    <h2 class="accordion-header" id="headingExtendedLeave2Info">
+      <button
+        class="accordion-button bg-white text-primary fw-semibold"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseExtendedLeave2Info"
+        aria-expanded="true"
+        aria-controls="collapseExtendedLeave2Info"
+      >
+        <i class="bi bi-person-badge me-2"></i>
+        {{Translate 'Extended Leave 2'}}
+      </button>
+    </h2>
+
+    <div
+      id="collapseExtendedLeave2Info"
+      class="accordion-collapse collapse show"
+      aria-labelledby="headingExtendedLeave2Info"
+      data-bs-parent="#ExtendedLeave2InfoAccordion"
+    >
+      <div class="accordion-body bg-light rounded-bottom-3">
+        <div class="row">
                 <div class="col-md-3"><b>{{Translate 'Type'}}</b><br>${values.vacationTypeExt2 || "-"}</div>
                 <div class="col-md-3"><b>{{Translate 'extended Leave Two'}}</b><br>${values.extensionleave2 || "-"}</div>
                 <div class="col-md-3"><b>{{Translate 'Days'}}</b><br>${values.vacationDaysExt2 || "0"}</div>
                 <div class="col-md-3"><b>{{Translate 'Start'}}</b><br>${values.startDateExt2 || "-"}</div>
                 <div class="col-md-3"><b>{{Translate 'End'}}</b><br>${values.endDateExt2 || "-"}</div>
             </div>
+      </div>
+    </div>
+  </div>
+</div>
         </div>`;
             }
 
             // Payroll / System Info
-            templateSource  += `
-    <div class="card p-3 mb-3 shadow-sm">
-        <h5 class="mb-3 text-secondary"><i class="bi bi-cash-stack"></i> {{Translate 'Payroll & System Info'}}</h5>
-        <div class="row">
-            <div class="col-md-3"><b>{{Translate 'Pay Group'}}</b><br>${values.PayGroupName || "-"}</div>
-            <div class="col-md-3"><b>{{Translate 'Start Date'}}</b><br>${values.payGroupStartDate || "-"}</div>
-            <div class="col-md-3"><b>{{Translate 'End Date'}}</b><br>${values.payGroupPeriodEndDate || "-"}</div>
-            <div class="col-md-3"><b>{{Translate 'Years'}}</b><br>${values.workingYears || "0"}</div>
-        </div>
-        <div class="row mt-2">
-            <div class="col-md-3"><b>{{Translate 'Months'}}</b><br>${values.WorkingMonths || "0"}</div>
-            <div class="col-md-3"><b>{{Translate 'Days'}}</b><br>${values.WorkingDays || "0"}</div>
-            <div class="col-md-3"><b>{{Translate 'Total Days'}}</b><br>${values.TotalWorkingDays || "0"}</div>
-        </div>
-    </div>
-    `;
+    //         templateSource  += `
+    // <div class="card p-3 mb-3 shadow-sm">
+    //     <h5 class="mb-3 text-secondary"><i class="bi bi-cash-stack"></i> {{Translate 'Payroll & System Info'}}</h5>
+    //     <div class="row">
+    //         <div class="col-md-3"><b>{{Translate 'Pay Group'}}</b><br>${values.PayGroupName || "-"}</div>
+    //         <div class="col-md-3"><b>{{Translate 'Start Date'}}</b><br>${values.payGroupStartDate || "-"}</div>
+    //         <div class="col-md-3"><b>{{Translate 'End Date'}}</b><br>${values.payGroupPeriodEndDate || "-"}</div>
+    //         <div class="col-md-3"><b>{{Translate 'Years'}}</b><br>${values.workingYears || "0"}</div>
+    //     </div>
+    //     <div class="row mt-2">
+    //         <div class="col-md-3"><b>{{Translate 'Months'}}</b><br>${values.WorkingMonths || "0"}</div>
+    //         <div class="col-md-3"><b>{{Translate 'Days'}}</b><br>${values.WorkingDays || "0"}</div>
+    //         <div class="col-md-3"><b>{{Translate 'Total Days'}}</b><br>${values.TotalWorkingDays || "0"}</div>
+    //     </div>
+    // </div>
+    // `;
             
             $confirmationDiv.html(handlebarCompile(templateSource));
         }
@@ -2046,10 +2248,13 @@
                     body: formData
                 })
                     .then(response => {
-                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                         return response.json();
                     })
                     .then(data => {
+                        if(data.Status === "error"){
+                            Swal.fire("Error", data.Message, "error");
+                            return
+                        }
                         Swal.fire(handlebarCompile("{{Translate 'Success'}}"), handlebarCompile("{{Translate 'Leave request created successfully,please wait for one minute to create the request in ERP then submit'}}"), "success");
                         
                         $btn.find('.loader').remove();
@@ -2064,8 +2269,8 @@
                         }
                     })
                     .catch(error => {
-                        Swal.fire("Error", JSON.stringify(error), "error");
-                        console.error("Error fetching data:", error);
+                        Swal.fire("Error", JSON.stringify(error.message), "error");
+                        console.error("Error fetching data:", error.message);
                         
                     $btn.find('.loader').remove();
                     $btn.prop('disabled', false);
