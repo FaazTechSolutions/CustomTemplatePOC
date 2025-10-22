@@ -861,7 +861,7 @@
             console.log('Handlebars loaded!');
 
             // Now you can safely use Handlebars
-            Handlebars.registerHelper('Translate', function (value) {
+            Handlebars.registerHelper('Translate', function (value) {debugger
         let _ret =value;
         if(!value)
             _ret ="";
@@ -2075,12 +2075,12 @@
                 "VacationBalance": parseFloat($("#VacationBalance").val()),
                 "NewVacationBalance": parseFloat($("#vacationbalanceNew").val()),
                 "monthCalculationMethod": parseInt($("#monthCalculationMethod").val()),
-                "extendedLeaveOne": $("input[name='extensionleave1']:checked").val() ? "Yes" : "No",
+                "extendedLeaveOne": $('input[name="extensionleave1"][value="yes"]').prop('checked') ? "Yes" : "No",
                 "vacationTypeExOne": $("#vacationTypeExt1").val() ? $("#vacationTypeExt1").val() : "none",
                 "vacationDaysExtOne": $("#vacationDaysExt1").val(),
                 "startDateExtOne": $("#startDateExt1").val() ? toIsoWithCurrentTime($("#startDateExt1").val()) : toIsoWithCurrentTimeCurrentDate(),
                 "endDateExtOne":  $("#endDateExt1").val() ? toIsoWithCurrentTime($("#endDateExt1").val()) : toIsoWithCurrentTimeCurrentDate(),
-                "extendedLeaveTwo": $("input[name='extensionleave2']:checked").val() ? "Yes" : "No",
+                "extendedLeaveTwo": $('input[name="extensionleave2"][value="yes"]').prop('checked') ? "Yes" : "No",
                 "vacationTypeExTwo": $("#vacationTypeExt2").val() ? $("#vacationTypeExt2").val() : "none",
                 "vacationDaysExtTwo": $("#vacationDaysExt2").val(),
                 "startDateExtTwo": $("#startDateExt2").val() ? toIsoWithCurrentTime($("#startDateExt2").val()) : toIsoWithCurrentTimeCurrentDate(),
