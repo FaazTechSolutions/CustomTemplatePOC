@@ -1016,6 +1016,12 @@
                 $btn.prop('disabled', false);
                 return;
             }
+            if (!$("[name='approvalmanagerid']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please Fill The Approval Details'}}"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
             if (!$("[name='paymentMethod']").val()) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Payment Method'}}"), "warning");
                 $loader.remove();
