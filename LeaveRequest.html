@@ -152,39 +152,49 @@
     top: -8px;
     padding: 0 5px;
     font-weight: bold;
-}
-    .filespanlabel{
-    color: #525252;
-    font-weight: 500;
+    }
+        .filespanlabel{
+        color: #525252;
+        font-weight: 500;
+        }
+
+    .accordion-button {
+    font-size: 1.05rem;
+    border-radius: 8px;
+    box-shadow: none;
+    transition: all 0.3s ease;
     }
 
-.accordion-button {
-  font-size: 1.05rem;
-  border-radius: 8px;
-  box-shadow: none;
-  transition: all 0.3s ease;
-}
+    .accordion-button:not(.collapsed) {
+    color: #0d6efd;
+    background-color: #f8f9fa;
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    }
 
-.accordion-button:not(.collapsed) {
-  color: #0d6efd;
-  background-color: #f8f9fa;
-  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-}
+    .accordion-button:focus {
+    box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+    }
 
-.accordion-button:focus {
-  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
-}
-
-.accordion-body {
-  color: #333;
-  background: #fafafa;
-  border-bottom: 4px solid #fdbd3f;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
-}
-#bodyDiv .leave-request-container .card, #bodyDiv .leave-request-container .card:hover {
-    box-shadow: none !important;
-}
-
+    .accordion-body {
+    color: #333;
+    background: #fafafa;
+    border-bottom: 4px solid #fdbd3f;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
+    }
+    #bodyDiv .leave-request-container .card, #bodyDiv .leave-request-container .card:hover {
+        box-shadow: none !important;
+    }
+    .confirm{
+        font-size: 1.05rem;
+        color: #1f2d3d !important;
+    }
+    .leave-request-container .accordion-button{
+        padding: 12px;
+    }
+        .readOnly {
+        opacity: 0.5 !important;
+        pointer-events: none;
+        }
     </style>
 </head>
 
@@ -216,7 +226,7 @@
                     <div class="d-none">
                         <fieldset class="border p-3 mb-4 position-relative">
                             <span class="w-auto badge-title">{{Translate 'Employee Info'}}</span>
-                            <div class="mb-3">
+                            <div class="mb-3 readOnly">
                                 <label for="employeeId" class="form-label">{{Translate 'Employee Id'}} <span
                                         class="required">*</span></label>
                                 <input type="text" class="form-control" id="employeeId" name="employeeId" readonly>
@@ -378,7 +388,6 @@
                                 <div class="col-12 col-lg-2 mb-3">
                                     <label for="paymentMethod" class="form-label">{{Translate 'Payment Method'}} <span class="required">*</span></label>
                                     <select class="form-select" id="paymentMethod" name="paymentMethod">
-                                        <option value="">-- {{Translate 'Select'}} --</option>
                                         <option value="Advanced amount">Advanced amount</option>
                                         <option value="Monthly basis">Monthly basis</option>
                                     </select>
@@ -386,7 +395,6 @@
                                 <div class="col-12 col-lg-2 mb-3">
                                     <label for="vacationType" class="form-label">{{Translate 'Vacation Type'}} <span class="required">*</span></label>
                                     <select class="form-select" id="vacationType" name="vacationType">
-                                        <option value="">-- {{Translate 'Select'}} --</option>
                                         <option value="Annual">Annual</option>
                                         <option value="Sick">Sick</option>
                                         <option value="Unpaid">Unpaid</option>
@@ -412,12 +420,12 @@
                                     <input type="number" class="form-control" id="vacationDays" name="vacationDays" min="1">
                                 </div>
                                 <!-- End Date -->
-                                <div class="col-12 col-lg-2">
+                                <div class="col-12 col-lg-2 readOnly">
                                     <label for="endDate" class="form-label">{{Translate 'End Date'}} <span class="required">*</span></label>
                                     <input type="text" class="form-control" id="endDate" name="endDate" readonly>
                                 </div>
                                 <!-- Expected Return Date -->
-                                <div class="col-12 col-lg-2">
+                                <div class="col-12 col-lg-2 readOnly">
                                     <label for="expectedReturnDate" class="form-label">{{Translate 'Expected Return Date'}}</label>
                                     <input type="text" class="form-control" id="expectedReturnDate" name="expectedReturnDate" readonly>
                                 </div>
@@ -441,7 +449,7 @@
 
                     <div class="row g-3">
                         <!-- Is External? -->
-                         <div class="col-4">
+                         <div class="col-lg-4 col-12">
                             <!-- Group 3:Ticket and Visa -->
                             <fieldset class="border p-3 mb-4 position-relative">
                                 <span class="w-auto mb-4 pb-2 badge-title">{{Translate 'Ticket and Visa'}}</span>
@@ -542,15 +550,13 @@
                             </fieldset>
                          </div>
                         <!-- Group 4: Extended Leave 1 -->
-                    <div class="col-4">
+                    <div class="col-lg-4 col-12">
                         <fieldset id="ext1" class="border p-3 mb-4 d-none position-relative">
                             <span class="w-auto badge-title">{{Translate 'Extended Leave 1'}}</span>
                             <div class="row g-3">
                                 <div class="col-6">
                                     <label for="vacationTypeExt1" class="form-label">{{Translate 'Vacation Type Ext1'}}</label>
                                     <select class="form-select" id="vacationTypeExt1" name="vacationTypeExt1">
-                                        <option value="">-- {{Translate 'Select'}} --</option>
-                                        <option value="Annual">Annual</option>
                                         <option value="Sick">Sick</option>
                                         <option value="Unpaid">Unpaid</option>
                                         <option value="Exam and Study">Exam and Study</option>
@@ -579,15 +585,13 @@
                         </fieldset>
                     </div>
                     <!-- Group 5: Extended Leave 2 -->
-                    <div class="col-4">
+                    <div class="col-lg-4 col-12">
                         <fieldset id="ext2" class="border p-3 mb-4 d-none position-relative">
                             <span class="w-auto badge-title">{{Translate 'Extended Leave 2'}}</span>
                             <div class="row g-3">
                                 <div class="col-6">
                                     <label for="vacationTypeExt2" class="form-label">{{Translate 'Vacation Type Ext2'}}</label>
                                     <select class="form-select" id="vacationTypeExt2" name="vacationTypeExt2">
-                                        <option value="">-- {{Translate 'Select'}} --</option>
-                                        <option value="Annual">Annual</option>
                                         <option value="Sick">Sick</option>
                                         <option value="Unpaid">Unpaid</option>
                                         <option value="Exam and Study">Exam and Study</option>
@@ -773,7 +777,6 @@
                         <div class="col-md-2">
                             <label for="visafor" class="form-label">{{Translate 'Visa For'}}</label>
                             <select class="form-select" id="visafor" name="visafor">
-                                <option value="">-- {{Translate 'Select'}} --</option>
                                 <option>Employee</option>
                                 <option>Dependent</option>
                                 <option>Both</option>
@@ -798,7 +801,6 @@
                         <div class="col-md-3">
                             <label for="visacoston" class="form-label">{{Translate 'Visa Cost On'}}</label>
                             <select class="form-select" id="visacoston" name="visacoston">
-                                <option value="">-- {{Translate 'Select'}} --</option>
                                 <option>Employee</option>
                                 <option>Company</option>
                                 <option>Cash</option>
@@ -823,8 +825,8 @@
 
         <!-- Step 4: Confirmation -->
         <div class="wizard-step d-none" id="step-4">
-            <h4 class="mb-3">{{Translate 'Confirmation'}}</h4>
-            <p class="text-muted">{{Translate 'Please review your details carefully before submitting'}}.</p>
+            <h2 class="mb-1 fw-semibold confirm pl-2 pr-2">{{Translate 'Confirmation'}}</h2>
+            <p class="text-muted pl-2 pr-2">{{Translate 'Please review your details carefully before submitting'}}.</p>
 
             <div id="confirmationSummary" class="card shadow-sm p-4 mb-4"></div>
 
@@ -929,7 +931,7 @@
         const bcpURL = "https://bcp.mawarid.com.sa";
         const Apps4xApiUrl = "https://portal.mawarid.com.sa/apps4x-api/";
         const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-        var currentEmployeeId = userInfo.EmployeeId;
+        var currentEmployeeId = '';
         const userIdDefault = "SelfService";
         var userId = localStorage.getItem('UserId');
         var companyId = localStorage.getItem('CompanyId');
@@ -944,7 +946,7 @@
             userId = localStorage.getItem('UserId');
             companyId = localStorage.getItem('CompanyId');
         }else{
-            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiIiLCJDb21wYW55SWQiOiJMR0UwMDAwMDAxIiwiZXhwIjoxNzU5OTg5MTUyLCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.bHjC1ojsV3yr8xSD-7hHOWogNqyYHqGvHcXvmYZwL90";
+            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiIiLCJDb21wYW55SWQiOiJMR0UwMDAwMDAxIiwiZXhwIjoxNzYxMjg3MDcwLCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.gI5OdZTWbaux17trpFI82EwDkyjw9w7ZOhtzryleDL8";
             currentEmployeeId = "1098483";
             userId = "a.hyder";
             companyId = "LGE0000001";
@@ -1091,7 +1093,7 @@
             // If step reaches 4 → call API
             if (step === 4) {
                 initLeaveRequest();
-                populateConfirmation();
+                // populateConfirmation();
             }
 
             setTimeout(() => {
@@ -1495,6 +1497,8 @@
                 $('#TotalWorkingDays').val(result[0].totalDays);
                 $('#Department').val(result[0].department);
                 $('#JobGrade').val(result[0].jobGrade);
+
+                populateConfirmation()
                 }
 
             } catch (error) {
@@ -1724,7 +1728,7 @@
 
     <div
       id="collapseTicketInfo"
-      class="accordion-collapse collapse show"
+      class="accordion-collapse collapse"
       aria-labelledby="headingTicketInfo"
       data-bs-parent="#TicketInfoAccordion"
     >
@@ -1783,7 +1787,7 @@
 
     <div
       id="collapseVisaInfo"
-      class="accordion-collapse collapse show"
+      class="accordion-collapse collapse"
       aria-labelledby="headingVisaInfo"
       data-bs-parent="#VisaInfoAccordion"
     >
@@ -1964,7 +1968,8 @@
                     $('input[name="ticketrequired"][value="no"]').prop("checked", true);
                     getEmployeeDetailsByEmployeeIdOrName();
                     $("#employeeId").val(data.RetListValue[0].employeeId);
-                    $("#paymentMethod").val("Advanced amount");
+                    $("#paymentMethod").val("Monthly basis");
+                    $("#vacationType").val("Annual");
                     $("#approvalmanagername").val(data.RetListValue[0].reportingEmployeeName);
                     $('#approvalmanagernametext').html(data.RetListValue[0].reportingEmployeeName);
                     $("#approvalmanagerid").val(data.RetListValue[0].reportingEmployeeId);

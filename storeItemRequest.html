@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Store Item Request</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    <style>
+        .store-request-container .badge-title {
+            background: #fff;
+            position: absolute;
+            top: -8px;
+            padding: 0 5px;
+            font-weight: bold;
+        }
+        .store-request-container select option, .store-request-container select,.form-control {
+        font-size: 12px;
+        }
+        .required {
+            color: red;
+        }
+        /* Loader */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #fdbd3f;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+        .readOnly {
+        opacity: 0.5 !important;
+        pointer-events: none;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="store-request-container container py-5">
+        <div>
+            <form>
+                <div class="row g-4">
+                    <div class="col-6">
+                        <label for="employeenametextstore" class="form-label fw-bold">{{Translate 'Employee Name'}}:</label>
+                        <span id="employeenametextstore"></span>
+                    </div>
+                    <div class="col-6">
+                        <label for="approvalmanagernametextstore" class="form-label fw-bold">{{Translate 'Approval Manager Name'}}:</label>
+                        <span id="approvalmanagernametextstore"></span>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-12">
+                        <fieldset class="border p-3 mb-4 position-relative">
+                                <span class="w-auto badge-title">{{Translate 'Store Item Request header'}}</span>
+                            <div class="row g-3">
+                                <div class="col-6 d-none">
+                                    <label for="EmployeeId" class="form-label">{{Translate 'Employee Id'}}</label>
+                                    <input type="text" class="form-control" id="EmployeeId" name="EmployeeId" min="1" readonly>
+                                </div>
+                                <div class="col-6 d-none">
+                                    <label for="EmployeeName" class="form-label">{{Translate 'Employee Name'}}</label>
+                                    <input type="text" class="form-control" id="EmployeeName" name="EmployeeName" min="1" readonly>
+                                </div>
+                                <div class="col-6 d-none">
+                                    <label for="Reference" class="form-label">{{Translate 'Reference'}}</label>
+                                    <input type="text" class="form-control" id="Reference" name="Reference" min="1" readonly>
+                                </div>
+                                <div class="col-6 d-none">
+                                    <label for="ApprovalManager" class="form-label">{{Translate 'ApprovalManager'}}</label>
+                                    <input type="text" class="form-control" id="ApprovalManager" name="ApprovalManager" min="1" readonly>
+                                </div>
+                                <div class="col-6 d-none">
+                                    <label for="ApprovalManagerName" class="form-label">{{Translate 'ApprovalManagerName'}}</label>
+                                    <input type="text" class="form-control" id="ApprovalManagerName" name="ApprovalManagerName" min="1" readonly>
+                                </div>
+                                <div class="col-6 d-none">
+                                    <label for="ApprovalManagerUserId" class="form-label">{{Translate 'ApprovalManagerUserId'}}</label>
+                                    <input type="text" class="form-control" id="ApprovalManagerUserId" name="ApprovalManagerUserId" min="1" readonly>
+                                </div>
+                                <div class="col-6 d-none">
+                                    <label for="PersonnelNumber" class="form-label">{{Translate 'PersonnelNumber'}}</label>
+                                    <input type="text" class="form-control" id="PersonnelNumber" name="PersonnelNumber" min="1" readonly>
+                                </div>
+                                <div class="col-12 col-lg-2" id="TransDateContainer">
+                                    <label for="TransDate" class="form-label">{{Translate 'Trans Date'}} <span class="required">*</span></label>
+                                    <input type="date" class="form-control" id="TransDate" name="TransDate">
+                                </div>
+                                <div class="col-12 col-lg-2" id="DescriptionContainer">
+                                    <label for="Description" class="form-label">{{Translate 'Description'}} <span class="required">*</span></label>
+                                    <input type="text" class="form-control" id="Description" name="Description" min="1">
+                                </div>
+                                <div class="col-12 col-lg-2" id="headerContainer">
+                                    <button type="button" class="btn btn-success mt-4" id="submitHeader">{{Translate 'Add Item'}}</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>     
+                <div class="row g-4 d-none" id="linesSection">
+                    <div class="col-12">
+                        <fieldset class="border p-3 mb-4 position-relative">
+                                <span class="w-auto badge-title">{{Translate 'Store Item Request Lines'}}</span>
+                                <div id="linestable">
+
+                                </div>
+                            <div class="row g-3">
+                                <div class="p-3 mb-2 bg-warning text-dark">{{Translate 'Select the item code starts with 10 only'}}</div>
+                                <div class="col-12 col-lg-2">
+                                    <label for="ItemId" class="form-label">{{Translate 'Item Id'}} <span class="required">*</span></label>
+                                    <select class="form-select" id="ItemId" name="ItemId">
+                                    </select>
+                                </div>
+                                <div class="col-12 col-lg-2 readOnly">
+                                    <label for="ItemName" class="form-label">{{Translate 'Item Name'}} </label>
+                                    <input type="text" class="form-control" id="ItemName" name="ItemName" readonly>
+                                </div>
+                                <div class="col-12 col-lg-2">
+                                    <label for="Qty" class="form-label">{{Translate 'Qty'}} <span class="required">*</span></label>
+                                    <input type="number" class="form-control" id="Qty" name="Qty">
+                                </div>
+                                <div class="col-12 col-lg-2 d-none">
+                                    <label for="RefRecId" class="form-label">{{Translate 'RefRecId'}}</label>
+                                    <input type="text" class="form-control" id="RefRecId" name="RefRecId">
+                                </div>
+                                <div class="col-12 col-lg-2">
+                                    <label for="DescriptionLines" class="form-label">{{Translate 'Description'}}</label>
+                                    <textarea cols="30" rows="1" type="text" class="form-control" id="DescriptionLines" name="DescriptionLines" min="1"></textarea>
+                                </div>
+                                <div class="col-12 col-lg-2">
+                                    <button type="button" class="btn btn-success mt-4" id="submitLines">{{Translate 'Add'}}</button>
+                                </div>
+                            </div>
+                            <div class="row d-flex justify-content-end">
+                                <div class="col-12 col-lg-2">
+                                    <button type="button" class="btn btn-danger mt-4" id="finish">{{Translate 'Close'}}</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>           
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        var _this = this;
+        const script = document.createElement('script');
+        script.src = 'https://code.jquery.com/jquery-3.6.0.min.js'; // URL of the script
+        script.type = 'text/javascript';
+        script.onload = function () {
+            // You can now use jQuery or whatever the script provides
+            console.log('script loaded sucessfully');
+        };
+        document.head.appendChild(script);
+        const script1 = document.createElement('script');
+        script1.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11'; // URL of the script
+        script1.type = 'text/javascript';
+        script1.onload = function () {
+            // You can now use jQuery or whatever the script provides
+            console.log('script loaded sucessfully');
+        };
+        document.head.appendChild(script1);
+            const script3 = document.createElement('script');
+            script3.src = 'https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js';
+            script3.type = 'text/javascript';
+            script3.onload = function () {
+            console.log('Handlebars loaded!');
+
+            // Now you can safely use Handlebars
+            Handlebars.registerHelper('Translate', function (value) {
+        let _ret =value;
+        if(!value)
+            _ret ="";
+        
+        let Lang = localStorage.getItem("CurrentLanguage");
+
+        if (!Lang) {
+            return _ret;
+        }
+        if(!(window.location.hostname === "portal.mawarid.com.sa")){
+            return _ret;
+        }
+        if (!_this.globalService.systemLabels) {
+            return _ret;
+        }
+       
+        try {
+
+            if (value.substring(0, 3) == "LBL") {
+      
+              let _label = _this.globalService.systemLabels.filter(x => x.LabelId == value)[0];
+              if (_label) {
+                let _ret = value;
+                if(_label[Lang]) {
+                  _ret = _label[Lang];
+                }
+                else if(_label.DefaultValue) {
+                  _ret = _label.DefaultValue
+                }
+                _ret =  _ret
+              }
+              else 
+              _ret = value;
+            }
+            else {
+      
+              let _value = value.toLowerCase().trim();
+              let _label = _this.globalService.systemLabels.filter(x => x.DefaultValue.toLowerCase().trim() == _value)[0];
+              if (_label) {
+                _ret =  _label[Lang] ? _label[Lang] : value
+              }
+              else 
+              _ret =  value;
+          
+            }
+          }
+          catch (error) {
+            _ret =  value
+          }
+
+        return  _ret;
+        });
+            };
+            document.body.appendChild(script3);
+        
+        var token = localStorage.getItem("eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9");
+        const bcpURL = "https://bcp.mawarid.com.sa";
+        const Apps4xApiUrl = "https://portal.mawarid.com.sa/apps4x-api/";
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        var currentEmployeeId = '';
+        var currentEmployeeName = '';
+        var itemLines = [];
+        const userIdDefault = "SelfService";
+        var userId = localStorage.getItem('UserId');
+        var companyId = localStorage.getItem('CompanyId');
+        const appId = "e6516de3ae824fd18d745fe9ac836cda";
+        const AdministrationAppId = "APP0000006";
+        const UserTableCollectionId = "ECN0000055";//collectionId
+        const StoreItemTableEntityId = "63464c37aecc4543b1ab8a4af5a6fe29";//entityId
+        const StoreItemLinesTableEntityId = "e3af4124865b4639954efb469cc5b22a";//entityId
+        const UserTableEntityId = "Users";//entityId
+
+        if(window.location.hostname === "portal.mawarid.com.sa"){
+            token = localStorage.getItem("eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9");
+            currentEmployeeId = userInfo.EmployeeId;
+            currentEmployeeName = userInfo.Name;
+            userId = localStorage.getItem('UserId');
+            companyId = localStorage.getItem('CompanyId');
+        }else{
+            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiIiLCJDb21wYW55SWQiOiJMR0UwMDAwMDAxIiwiZXhwIjoxNzYxMTk0Nzc1LCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.TeNegG3o9N91vElOZu0MhauDsv7gDp1LQakntodMtoQ";
+            currentEmployeeId = "1098483";
+            currentEmployeeName = "Hyder Ali A";
+            userId = "a.hyder";
+            companyId = "LGE0000001";
+        }
+
+        $(document).ready(function () {
+            let today = new Date().toISOString().split('T')[0];
+            $("#TransDate").val(today);
+            $('#employeenametextstore').html(currentEmployeeName);
+            $("#EmployeeId").val(currentEmployeeId);
+            $("#EmployeeName").val(currentEmployeeName);
+            getReportingManagerForEmployee();
+        });
+        
+        $(document).on('click', '#submitHeader', function (e) {
+            showLoader('submitHeader');
+            if (!$("[name='EmployeeId']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Employee Id'}}"), "warning");
+                hideLoader('submitHeader');
+                return;
+            }
+            if (!$("[name='ApprovalManager']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please Fill the Approval Details'}}"), "warning");
+                hideLoader('submitHeader');
+                return;
+            }
+            if (!$("[name='TransDate']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Trans Date'}}"), "warning");
+                hideLoader('submitHeader');
+                return;
+            }
+            if (!$("[name='Description']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please Fill the Description'}}"), "warning");
+                hideLoader('submitHeader');
+                return;
+            }
+            submitHeader();
+        });
+        $(document).on('click', '#finish', function (e) {
+            const recId = $("#RefRecId").val();
+            window.location.href = 'https://portal.mawarid.com.sa/apps4x/#/apps/SelfService/StoreItemRequestDetails?RecId='+recId;
+            
+        });
+        
+        $(document).on('click', '#submitLines', function (e) {
+            showLoader('submitLines');
+
+            if (!$("[name='ItemId']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Item Id'}}"), "warning");
+                hideLoader('submitLines');
+                return;
+            }
+            if (!$("[name='Qty']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please Fill the Fill Qty'}}"), "warning");
+                hideLoader('submitLines');
+                return;
+            }
+            if (!$("[name='Reference']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Reference'}}"), "warning");
+                hideLoader('submitLines');
+                return;
+            }
+            if (!$("[name='RefRecId']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please Fill the RefRecId'}}"), "warning");
+                hideLoader('submitLines');
+                return;
+            }
+            submitLines();
+        });
+            $('#ItemId').change(function() {
+                var selectedText = $('#ItemId option:selected').text();
+                const value = selectedText.split('|')[1];
+                $('#ItemName').val(value);
+            });
+        function isNonEmptyString(value) {
+            return (typeof value === 'string' || value instanceof String) && value.trim().length > 0;
+        }
+
+        function handlebarCompile(templateSource){
+            let template = Handlebars.compile(templateSource);
+            return  template();
+        }
+
+        function getReportingManagerForEmployee() {
+            showLoader('submitHeader');
+            // API URL
+            const apiUrl = `${bcpURL}/api/v1/erp/getReportingManagerForEmployee?_employeeid=${currentEmployeeId}&_Company=MWD&user-id=${userIdDefault}`;
+            // Make API call
+            fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    if(typeof data === 'string'){
+                        Swal.fire("Error", data, "error");
+                        return
+                    }
+                    $("#ApprovalManagerName").val(data.RetListValue[0].reportingEmployeeName);
+                    $('#approvalmanagernametextstore').html(data.RetListValue[0].reportingEmployeeName);
+                    $("#ApprovalManager").val(data.RetListValue[0].reportingEmployeeId);
+                    hideLoader('submitHeader');
+                    getApprovalManagerUserIdByEmployeeId(data.RetListValue[0].reportingEmployeeId);
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                    hideLoader('submitHeader');
+                });
+        }
+        function getItemList() {
+            showLoader('submitLines');
+            const apiUrl = `${bcpURL}/api/v1/erp/ExecutGetProductListRequest`;
+            fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "User-Id":userId
+                }
+            })
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    if(data.Success === true){
+                        hideLoader('submitLines');
+                    let $dropdown = $('#ItemId');
+                    $dropdown.empty(); // Clear previous options
+
+                    // Loop through the response and append options
+                    $.each(data.Return, function(index, item) {
+                        $dropdown.append(
+                            $('<option>', {
+                                value: item.ProductNumber,
+                                text: `${item.ProductNumber} | ${item.NameAlias} | ${item.PurchPrice}`
+                            })
+                        );
+                    });
+                    }else{
+                        hideLoader('submitLines');
+                        Swal.fire("Error", data.Message ? data.Message : data, "error");
+                    }
+
+                })
+                .catch(error => {
+                     hideLoader('submitLines');
+                    console.error("Error fetching data:", error);
+                });
+        }
+
+        function showLoader(btn){
+            const $loader = $('<span class="loader"></span>');
+            const $btn = $(`#${btn}`);
+            $btn.find('.loader').remove();
+            $btn.prop('disabled', true).append($loader);
+        }
+        function hideLoader(btn){
+            const $btn = $(`#${btn}`);
+            $btn.find('.loader').remove();
+            $btn.prop('disabled', false);
+        }
+
+        function submitHeader() {
+            showLoader('submitHeader');
+            const payload = {
+                "EmployeeId": $("#EmployeeId").val(),
+                "PersonnelNumber": $("#EmployeeId").val(),
+                "EmployeeName": $("#EmployeeName").val(),
+                "ApprovalManager": $("#ApprovalManager").val(),
+                "ApprovalManagerName": $("#ApprovalManagerName").val(),
+                "ApprovalManagerUserId": $("#ApprovalManagerUserId").val(),
+                "Description": $("#Description").val(),
+                "TransDate": toIsoWithCurrentTime($("#TransDate").val()),
+                "EntityId": StoreItemTableEntityId,
+                "Status": "Draft",
+                "Company":"MWD"
+            }
+
+            try {
+                const apiUrl = `${Apps4xApiUrl}api/v1/data/${companyId}/create`;
+                const formData = new FormData();
+                let _entityData = JSON.stringify(payload);
+                formData.append("EntityData", _entityData);
+                //uncomment
+                fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "User-Id": userId,
+                        "appid": appId,
+                        "CompanyId": companyId
+                    },
+                    body: formData
+                })
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(data => {
+                        if(typeof data === "string"){
+                            Swal.fire("Error", data, "error");
+                            return
+                        }                        
+                        hideLoader('submitHeader');
+                        showLoader('submitLines');
+                        getDetails(data);
+                        const $linesSection = $('#linesSection');
+                        $linesSection.removeClass('d-none');                        
+                        const $headerContainer = $('#headerContainer');
+                        $headerContainer.addClass('d-none');                        
+                        const $DescriptionContainer = $('#DescriptionContainer');
+                        $DescriptionContainer.addClass('readOnly');                      
+                        const $TransDateContainer = $('#TransDateContainer');
+                        $TransDateContainer.addClass('readOnly');                        
+                        $('#TransDate').prop('readonly', true);
+                        $('#Description').prop('readonly', true);
+                        
+                    })
+                    .catch(error => {
+                        Swal.fire("Error", JSON.stringify(error.message), "error");
+                        console.error("Error fetching data:", error.message);
+                        hideLoader('submitHeader');
+                    });
+            } catch (err) {
+                hideLoader('submitHeader');
+                console.error("API Error:", err);
+                alert(handlebarCompile("{{Translate 'Something went wrong while submitting Store Item request'}}"));
+            }
+        }
+
+        function submitLines() {
+            showLoader('submitLines');
+            const payload = {
+                "ItemId": $("#ItemId").val(),
+                "ItemName": $("#ItemName").val(),
+                "Qty": $("#Qty").val(),
+                "Description": $("#DescriptionLines").val(),
+                "Reference": $("#Reference").val(),
+                "RefRecId": $("#RefRecId").val(),
+                "EntityId": StoreItemLinesTableEntityId
+            }
+
+            try {
+                const apiUrl = `${Apps4xApiUrl}api/v1/data/${companyId}/create`;
+                const formData = new FormData();
+                let _entityData = JSON.stringify(payload);
+                formData.append("EntityData", _entityData);
+                //uncomment
+                fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "User-Id": userId,
+                        "appid": appId,
+                        "CompanyId": companyId
+                    },
+                    body: formData
+                })
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(data => {
+                        if(typeof data === "string"){
+                            Swal.fire("Error", data, "error");
+                            hideLoader('submitLines');
+                            return
+                        }
+                        resetLines(data);
+                        hideLoader('submitLines');
+                    })
+                    .catch(error => {
+                        Swal.fire("Error", JSON.stringify(error.message), "error");
+                        console.error("Error fetching data:", error.message);
+                    hideLoader('submitLines');
+                    });
+            } catch (err) {
+                hideLoader('submitLines');
+                console.error("API Error:", err);
+                alert(handlebarCompile("{{Translate 'Something went wrong while submitting Store Item request'}}"));
+            }
+        }
+        function resetLines(RecId){
+            const ItemId = $("#ItemId").val();
+            const ItemName = $("#ItemName").val();
+            const Qty = $("#Qty").val();
+            const Description = $("#DescriptionLines").val();
+            const Reference = $("#Reference").val();
+            const RefRecId = $("#RefRecId").val();
+            itemLines.push({ItemId,ItemName,Qty,Description,Reference,RefRecId,RecId})
+            generatetable();
+        $("#ItemId").val('');
+        $("#ItemName").val('');
+        $("#Qty").val('');
+        $("#DescriptionLines").val('');
+        }
+        function generatetable(){
+
+            var table = $('<table>', { class: 'table', border: '1' }); // Create a table element
+            var thead = $('<thead>'); // Create the table header
+            var tbody = $('<tbody>'); // Create the table body
+
+            // Create the header row and append to the table header
+            var headerRow = $('<tr>');
+            headerRow.append(handlebarCompile(`<th>{{Translate 'Rec Id'}}</th>`));
+            headerRow.append(handlebarCompile(`<th>{{Translate 'Item Id'}}</th>`));
+            headerRow.append(handlebarCompile(`<th>{{Translate 'Item Name'}}</th>`));
+            headerRow.append(handlebarCompile(`<th>{{Translate 'Qty'}}</th>`));
+            headerRow.append(handlebarCompile(`<th>{{Translate 'Reference'}}</th>`));
+            headerRow.append(handlebarCompile(`<th>{{Translate 'Ref Rec Id'}}</th>`));
+            headerRow.append(handlebarCompile(`<th>{{Translate 'Description'}}</th>`));
+
+            thead.append(headerRow);
+
+            // Loop through the data array and create rows
+            $.each(itemLines, function(index, item) {
+                var row = $('<tr>');
+                row.append('<td>' + item.RecId + '</td>');
+                row.append('<td>' + item.ItemId + '</td>');
+                row.append('<td>' + item.ItemName + '</td>');
+                row.append('<td>' + item.Qty + '</td>');
+                row.append('<td>' + item.Reference + '</td>');
+                row.append('<td>' + item.RefRecId + '</td>');
+                row.append('<td>' + item.Description + '</td>');
+                tbody.append(row);
+            });
+
+            // Append the header and body to the table
+            table.append(thead);
+            table.append(tbody);
+
+            $('#linestable').html(table);
+        }
+        function getApprovalManagerUserIdByEmployeeId(ApprovalManagerEmployeeId) {
+            showLoader('submitHeader');
+            const apiUrl = `${Apps4xApiUrl}api/v1/data/${companyId}?collectionId=${UserTableCollectionId}&entityid=${UserTableEntityId}&$filter:EmployeeId=li:${ApprovalManagerEmployeeId}`;
+            // Make API call
+            fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token,
+                    "User-Id": userId,
+                    "appid": AdministrationAppId,
+                    "CompanyId": companyId
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    if(data && data.Data && data.Data.length > 0){
+                    $("#ApprovalManagerUserId").val(data.Data[0].UserId);
+                    }
+                    hideLoader('submitHeader');
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                    hideLoader('submitHeader');
+                });
+        }
+        
+        function getDetails(recId) {
+            showLoader('submitLines');
+            const apiUrl = `${Apps4xApiUrl}api/v1/data/${companyId}/${StoreItemTableEntityId}?recId=${recId}`;
+            // Make API call
+            fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token,
+                    "User-Id": userId,
+                    "appid": AdministrationAppId,
+                    "CompanyId": companyId
+                }
+            })
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    if(data){
+                    $("#RefRecId").val(data.RecId);
+                    $("#Reference").val(data.Reference);
+                    }
+                    hideLoader('submitLines');
+                    getItemList();
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                    hideLoader('submitLines');
+                });
+        }
+        
+
+        function toIsoWithCurrentTime(dateStr) {
+            if (!dateStr) {
+                return null;
+            }
+            const todayTime = new Date();
+            const d = new Date(dateStr);
+            return d.toISOString();
+        }
+
+    </script>
+
+</body>
+
+</html>
