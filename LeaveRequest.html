@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
 
     <style>
@@ -863,7 +864,7 @@
             console.log('Handlebars loaded!');
 
             // Now you can safely use Handlebars
-            Handlebars.registerHelper('Translate', function (value) {debugger
+            Handlebars.registerHelper('Translate', function (value) {
         let _ret =value;
         if(!value)
             _ret ="";
@@ -1329,10 +1330,7 @@
 
 
         async function initLeaveRequest() {
-            const $loader = $('<span class="loader"></span>');
-            const $btn = $("#submitLeaveRequest");
-            $btn.find('.loader').remove();
-            $btn.prop('disabled', true).append($loader);
+            showLoader('submitLeaveRequest');
             try {
                 // Prepare main leave info
                 const employeeId = currentEmployeeId; // Replace with handlebars variable if needed
@@ -1435,15 +1433,14 @@
                 if (isNonEmptyString(result)) {
                     let res = JSON.stringify(result);
                         Swal.fire("Error", res, "error");
-                        $btn.prop('disabled', true);
+                        hideLoader('submitLeaveRequest');
                     
                     // console.log(res);
                 }else if(result === ""){
                     Swal.fire("Error", handlebarCompile("{{Translate 'Something Went Wrong Please Contact System Admin'}}"), "error");
-                    $btn.prop('disabled', true);
+                    hideLoader('submitLeaveRequest');
                 }else{
-                $btn.find('.loader').remove();
-                $btn.prop('disabled', false);
+                hideLoader('submitLeaveRequest');
                 }
 
                 // Update UI with response data
@@ -1698,8 +1695,8 @@
         </div>
         <div class="row mt-2">
             <div class="col-md-3"><b>{{Translate 'Expected Return'}}</b><br>${values.expectedReturnDate || "-"}</div>
-            <div class="col-md-3"><b>{{Translate 'Balance Before'}}</b><br>${values.VacationBalance || "0"}</div>
-            <div class="col-md-3"><b>{{Translate 'Balance After'}}</b><br>${values.vacationbalanceNew || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Balance Before'}}</b><br>${convertToTwoDigits(values.VacationBalance) || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Balance After'}}</b><br>${convertToTwoDigits(values.vacationbalanceNew) || "0"}</div>
             <div class="col-md-3"><b>{{Translate 'Is External'}}</b><br>${values.isExternal || "-"}</div>
         </div>
       </div>
@@ -1745,21 +1742,21 @@
             <div class="col-md-3"><b>{{Translate 'Destination City'}}</b><br>${ "-"}</div>
             <div class="col-md-3"><b>{{Translate 'Destination Type'}}</b><br>${values.destinationtype || "-"}</div>
         
-            <div class="col-md-3"><b>{{Translate 'Adult Balance'}}</b><br>${values.AdultTicketBalance || "0"}</div>
-            <div class="col-md-3"><b>{{Translate 'Child Balance'}}</b><br>${values.ChildTicketBalance || "0"}</div>
-            <div class="col-md-3"><b>{{Translate 'Infant Balance'}}</b><br>${values.InfantTicketBalance || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Adult Balance'}}</b><br>${convertToTwoDigits(values.AdultTicketBalance) || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Child Balance'}}</b><br>${convertToTwoDigits(values.ChildTicketBalance) || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Infant Balance'}}</b><br>${convertToTwoDigits(values.InfantTicketBalance) || "0"}</div>
         
-            <div class="col-md-3"><b>{{Translate 'Adult Tickets Contract'}}</b><br>${values.AdultTicketsContract || "0"}</div>
-            <div class="col-md-3"><b>{{Translate 'Child Tickets Contract'}}</b><br>${values.ChildTicketsContract || "0"}</div>
-            <div class="col-md-3"><b>{{Translate 'Infant Tickets Contract'}}</b><br>${values.InfantTicketsContract || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Adult Tickets Contract'}}</b><br>${convertToTwoDigits(values.AdultTicketsContract) || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Child Tickets Contract'}}</b><br>${convertToTwoDigits(values.ChildTicketsContract) || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Infant Tickets Contract'}}</b><br>${convertToTwoDigits(values.InfantTicketsContract) || "0"}</div>
 
-            <div class="col-md-3"><b>{{Translate 'Adult Tickets Used'}}</b><br>${values.AdultTicketsUsed || "0"}</div>
-            <div class="col-md-3"><b>{{Translate 'Child Tickets Used'}}</b><br>${values.ChildTicketsUsed || "0"}</div>
-            <div class="col-md-3"><b>{{Translate 'Infant Tickets Used'}}</b><br>${values.InfantTicketsUsed || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Adult Tickets Used'}}</b><br>${convertToTwoDigits(values.AdultTicketsUsed) || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Child Tickets Used'}}</b><br>${convertToTwoDigits(values.ChildTicketsUsed) || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Infant Tickets Used'}}</b><br>${convertToTwoDigits(values.InfantTicketsUsed) || "0"}</div>
 
-            <div class="col-md-3"><b>{{Translate 'Adult Tickets Balance New'}}</b><br>${values.AdultTicketBalanceNew || "0"}</div>
-            <div class="col-md-3"><b>{{Translate 'Child Tickets Balance New'}}</b><br>${values.ChildTicketBalanceNew || "0"}</div>
-            <div class="col-md-3"><b>{{Translate 'Infant Tickets Balance New'}}</b><br>${values.InfantTicketBalanceNew || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Adult Tickets Balance New'}}</b><br>${convertToTwoDigits(values.AdultTicketBalanceNew) || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Child Tickets Balance New'}}</b><br>${convertToTwoDigits(values.ChildTicketBalanceNew) || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Infant Tickets Balance New'}}</b><br>${convertToTwoDigits(values.InfantTicketBalanceNew) || "0"}</div>
         </div>
       </div>
     </div>
@@ -1920,6 +1917,7 @@
 
         function getReportingManagerForEmployee() {
             // API URL
+            showLoader('nextStep');
             const apiUrl = `${bcpURL}/api/v1/erp/getReportingManagerForEmployee?_employeeid=${currentEmployeeId}&_Company=MWD&user-id=${userIdDefault}`;
             // Make API call
             fetch(apiUrl, {
@@ -1975,9 +1973,11 @@
                     $("#approvalmanagerid").val(data.RetListValue[0].reportingEmployeeId);
                     $("#EmployeePosition").val(data.RetListValue[0].positionName);
                     $('input[name="extensionleave2"]').prop('disabled', true);
+                    hideLoader('nextStep');
                     getApprovalManagerUserIdByEmployeeId(data.RetListValue[0].reportingEmployeeId);
                 })
                 .catch(error => {
+                    hideLoader('nextStep');
                     console.error("Error fetching data:", error);
                 });
         }
@@ -2057,10 +2057,7 @@
 
 
         async function submitLeaveRequest() {
-            const $loader = $('<span class="loader"></span>');
-            const $btn = $("#submitLeaveRequest");
-            $btn.find('.loader').remove();
-            $btn.prop('disabled', true).append($loader);
+            showLoader('submitLeaveRequest');
             const payload = {
                 "EmployeeId": $("#employeeId").val(),
                 "EmployeeName": $("#employeename").val(),
@@ -2268,8 +2265,7 @@
                         }
                         Swal.fire(handlebarCompile("{{Translate 'Success'}}"), handlebarCompile("{{Translate 'Leave request created successfully,please wait for one minute to create the request in ERP then submit'}}"), "success");
                         
-                        $btn.find('.loader').remove();
-                        $btn.prop('disabled', false);
+                        hideLoader('submitLeaveRequest');
                         const location = window.location.href; 
                         if(location.includes("/SelfService/LeaveRequest")){
                         setTimeout(() => {
@@ -2283,8 +2279,7 @@
                         Swal.fire("Error", JSON.stringify(error.message), "error");
                         console.error("Error fetching data:", error.message);
                         
-                    $btn.find('.loader').remove();
-                    $btn.prop('disabled', false);
+                    hideLoader('submitLeaveRequest');
                     });
             } catch (err) {
                 console.error("API Error:", err);
@@ -2293,6 +2288,7 @@
         }
 
         function getApprovalManagerUserIdByEmployeeId(ApprovalManagerEmployeeId) {
+            showLoader('nextStep');
             const apiUrl = `${Apps4xApiUrl}api/v1/data/${companyId}?collectionId=${UserTableCollectionId}&entityid=${UserTableEntityId}&$filter:EmployeeId=li:${ApprovalManagerEmployeeId}`;
             // Make API call
             fetch(apiUrl, {
@@ -2310,12 +2306,14 @@
                     return response.json();
                 })
                 .then(data => {
+                    hideLoader('nextStep');
                     if(data && data.Data && data.Data.length > 0){
                     $("#ApprovalManagerUserId").val(data.Data[0].UserId);
                     }
                     // console.log($("#ApprovalManagerUserId").val());
                 })
                 .catch(error => {
+                    hideLoader('nextStep');
                     console.error("Error fetching data:", error);
                 });
         }
@@ -2348,6 +2346,27 @@
             const todayTime = new Date();
             const d = new Date(dateStr);
             return d.toISOString();
+        }
+        function convertToTwoDigits(value) {
+            let val = parseFloat(value);
+            let decimalPart = val % 1;  // Get the decimal part (remainder after dividing by 1)
+            let decimalDigits = decimalPart.toString().split('.')[1]?.length || 0;
+            if(val != 0 && decimalDigits > 2){
+            return val.toFixed(2);
+            }else{
+                return value;
+            }
+        }
+        function showLoader(btn){
+            const $loader = $('<span class="loader"></span>');
+            const $btn = $(`#${btn}`);
+            $btn.find('.loader').remove();
+            $btn.prop('disabled', true).append($loader);
+        }
+        function hideLoader(btn){
+            const $btn = $(`#${btn}`);
+            $btn.find('.loader').remove();
+            $btn.prop('disabled', false);
         }
     </script>
 
