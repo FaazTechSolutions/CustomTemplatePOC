@@ -49,11 +49,238 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Custom Dropdown Styles */
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+        
+        .dropdown-input {
+            max-width: 200px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: border-color 0.3s;
+        }
+        
+        .dropdown-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-height: 400px;
+            overflow: hidden;
+            display: none;
+            z-index: 1000;
+            flex-direction: column;
+            min-width: 500px;
+        }
+        
+        .dropdown-content.active {
+            display: flex;
+        }
+        
+        /* Filter Controls */
+        .filter-controls {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .filter-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            max-width: 130px;
+        }
+        
+        .filter-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        /* Table Styles */
+        .data-table-container {
+            overflow-y: auto;
+            max-height: 250px;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th {
+            background-color: white;
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 2px solid #e1e5eb;
+            font-weight: 600;
+            color: #2c3e50;
+            position: sticky;
+            top: 0;
+            font-size: 12px;
+        }
+        
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eef1f5;
+            font-size: 12px;
+        }
+        
+        .data-table tbody tr:hover {
+            background-color: #f8fafc;
+            cursor: pointer;
+        }
+        
+        .data-table tbody tr.selected {
+            background-color: #e1f0fa;
+        }
+        
+        /* Pagination Styles */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+        
+        .pagination-info {
+            font-size: 12px;
+            color: #6c757d;
+            display: none;
+        }
+        
+        .pagination-controls {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        .pagination-btn {
+            padding: 6px 12px;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        
+        .pagination-btn:hover:not(:disabled) {
+            background-color: #e9ecef;
+        }
+        
+        .pagination-btn.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .pagination-btn:disabled {
+            color: #6c757d;
+            cursor: not-allowed;
+            background-color: #f8f9fa;
+        }
+        
+        /* Records per page dropdown */
+        .records-per-page {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 15px;
+            font-size: 12px;
+        }
+        
+        .records-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .records-dropdown-toggle {
+            padding: 6px 12px;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .records-dropdown-toggle::after {
+            content: "▼";
+            font-size: 10px;
+            color: #6c757d;
+        }
+        
+        .records-dropdown-menu {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            min-width: 80px;
+            display: none;
+            z-index: 1001;
+        }
+        
+        .records-dropdown-menu.active {
+            display: block;
+        }
+        
+        .records-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        
+        .records-option:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .records-option.active {
+            background-color: #e1f0fa;
+            color: #3498db;
+            font-weight: 500;
+        }
+
+        div#dynamic_list_e3a188c0021740d191e4b3692f642d1e .card-body.card-grid-table {
+            overflow: visible;
+        }
     </style>
 </head>
 
 <body>
-    <div class="store-request-container container py-5">
+    <div class="store-request-container container py-3">
         <div>
             <form>
                 <div class="row g-4">
@@ -122,11 +349,70 @@
 
                                 </div>
                             <div class="row g-3">
-                                <div class="p-3 mb-2 bg-warning text-dark">{{Translate 'Select the item code starts with 10 only'}}</div>
+                                <div class="p-1 bg-light text-dark">
+                                    <i class="tabler ti ti-info-circle-filled text-info" style="font-size: large;"></i>
+                                    {{Translate 'Select the item code starts with 10 only'}}</div>
                                 <div class="col-12 col-lg-2">
                                     <label for="ItemId" class="form-label">{{Translate 'Item Id'}} <span class="required">*</span></label>
-                                    <select class="form-select" id="ItemId" name="ItemId">
-                                    </select>
+                                    <!-- <select class="form-select" id="ItemId" name="ItemId">
+                                    </select> -->
+                                    <div class="custom-dropdown">
+                                        <input type="text" class="form-control dropdown-input" id="ItemId" name="ItemId" placeholder="Select Item Id"
+                                            readonly>
+                                        <div class="dropdown-content">
+                                    
+                                            <div class="data-table-container">
+                                                <table class="data-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Product Number
+                                                                <input type="text" class="filter-input" placeholder="Product Number" data-column="0">
+                                                            </th>
+                                                            <th>Name Alias
+                                                                <input type="text" class="filter-input" placeholder="Name Alias" data-column="1">
+                                    
+                                                            </th>
+                                                            <th>Purch Price
+                                                                <input type="text" class="filter-input" placeholder="Purch Price" data-column="2">
+                                    
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <!-- Table rows will be populated by JavaScript -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                    
+                                            <div class="pagination">
+                                                <div class="pagination-info">Showing <span id="start-record">1</span> to <span id="end-record">7</span> of
+                                                    <span id="total-records">7</span> entries</div>
+                                                <div class="pagination-controls">
+                                                    <button type="button" class="pagination-btn" id="first-page" disabled>First</button>
+                                                    <button type="button" class="pagination-btn" id="prev-page" disabled>Previous</button>
+                                                    <button type="button" class="pagination-btn active">1</button>
+                                                    <button type="button" class="pagination-btn" id="next-page">Next</button>
+                                                    <button type="button" class="pagination-btn" id="last-page">Last</button>
+                                    
+                                                    <div class="records-per-page">
+                                                        <span>Show</span>
+                                                        <div class="records-dropdown">
+                                                            <div class="records-dropdown-toggle">
+                                                                <span id="current-records-per-page">5</span>
+                                                            </div>
+                                                            <div class="records-dropdown-menu">
+                                                                <div class="records-option" data-value="5">5</div>
+                                                                <div class="records-option" data-value="10">10</div>
+                                                                <div class="records-option" data-value="25">25</div>
+                                                                <div class="records-option" data-value="50">50</div>
+                                                            </div>
+                                                        </div>
+                                                        <span>entries</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-12 col-lg-2 readOnly">
                                     <label for="ItemName" class="form-label">{{Translate 'Item Name'}} </label>
@@ -149,8 +435,11 @@
                                 </div>
                             </div>
                             <div class="row d-flex justify-content-end">
+                                <div class="col-12 col-lg-2 d-none" id="actionSubmitContainer">
+                                    <button type="button" class="btn btn-success" id="actionSubmit">{{Translate 'Submit'}}</button>
+                                </div>
                                 <div class="col-12 col-lg-2">
-                                    <button type="button" class="btn btn-danger mt-4" id="finish">{{Translate 'Close'}}</button>
+                                    <button type="button" class="btn btn-danger" id="finish">{{Translate 'Close'}}</button>
                                 </div>
                             </div>
                         </fieldset>
@@ -307,11 +596,16 @@
             submitHeader();
         });
         $(document).on('click', '#finish', function (e) {
-            const recId = $("#RefRecId").val();
-            window.location.href = 'https://portal.mawarid.com.sa/apps4x/#/apps/SelfService/StoreItemRequestDetails?RecId='+recId;
-            
+            closePopup();
         });
-        
+        $(document).on('click', '#actionSubmit', function (e) {
+            actionSubmit();
+        });
+        function closePopup() {
+            const recId = $("#RefRecId").val();
+            itemLines = [];
+            window.location.href = 'https://portal.mawarid.com.sa/apps4x/#/apps/SelfService/StoreItemRequestDetails?RecId='+recId;
+        }
         $(document).on('click', '#submitLines', function (e) {
             showLoader('submitLines');
 
@@ -337,11 +631,11 @@
             }
             submitLines();
         });
-            $('#ItemId').change(function() {
-                var selectedText = $('#ItemId option:selected').text();
-                const value = selectedText.split('|')[1];
-                $('#ItemName').val(value);
-            });
+            // $('#ItemId').change(function() {
+            //     var selectedText = $('#ItemId option:selected').text();
+            //     const value = selectedText.split('|')[1];
+            //     $('#ItemName').val(value);
+            // });
         function isNonEmptyString(value) {
             return (typeof value === 'string' || value instanceof String) && value.trim().length > 0;
         }
@@ -397,18 +691,19 @@
                 .then(data => {
                     if(data.Success === true){
                         hideLoader('submitLines');
-                    let $dropdown = $('#ItemId');
-                    $dropdown.empty(); // Clear previous options
+                    // let $dropdown = $('#ItemId');
+                    // $dropdown.empty(); // Clear previous options
 
                     // Loop through the response and append options
-                    $.each(data.Return, function(index, item) {
-                        $dropdown.append(
-                            $('<option>', {
-                                value: item.ProductNumber,
-                                text: `${item.ProductNumber} | ${item.NameAlias} | ${item.PurchPrice}`
-                            })
-                        );
-                    });
+                    // $.each(data.Return, function(index, item) {
+                    //     $dropdown.append(
+                    //         $('<option>', {
+                    //             value: item.ProductNumber,
+                    //             text: `${item.ProductNumber} | ${item.NameAlias} | ${item.PurchPrice}`
+                    //         })
+                    //     );
+                    // });
+                    setCustomDropdown(data.Return);
                     }else{
                         hideLoader('submitLines');
                         Swal.fire("Error", data.Message ? data.Message : data, "error");
@@ -475,6 +770,7 @@
                         }                        
                         hideLoader('submitHeader');
                         showLoader('submitLines');
+                        $("#RefRecId").val(data);
                         getDetails(data);
                         const $linesSection = $('#linesSection');
                         $linesSection.removeClass('d-none');                        
@@ -500,6 +796,74 @@
             }
         }
 
+        function actionSubmit() {
+            if(itemLines.length < 1){
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'without creating lines you cannot Submit'}}"), "warning");
+                return
+            }
+            Swal.fire({
+                title: handlebarCompile("{{Translate 'Are you sure?'}}"),
+                text: handlebarCompile("{{Translate 'Submit Store Item Request'}}"),
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: handlebarCompile("{{Translate 'OK'}}"),
+                cancelButtonText: handlebarCompile("{{Translate 'Cancel'}}"),
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+            showLoader('actionSubmit');
+            const payload = {
+                "RecId": $("#RefRecId").val(),
+                "Status": "Submitted",
+                "Comments": "Submitted",
+                "EntityId": StoreItemTableEntityId
+            }
+
+            try {
+                const apiUrl = `${Apps4xApiUrl}api/v1/data/${companyId}/update`;
+                const formData = new FormData();
+                let _entityData = JSON.stringify(payload);
+                formData.append("EntityData", _entityData);
+                
+                fetch(apiUrl, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "User-Id": userId,
+                        "appid": appId,
+                        "CompanyId": companyId
+                    },
+                    body: formData
+                })
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(data => {
+                        if(typeof data === "string"){
+                            Swal.fire("Error", data, "error");
+                            hideLoader('actionSubmit');
+                            return
+                        }
+                        hideLoader('actionSubmit');
+                        closePopup();
+                    })
+                    .catch(error => {
+                        Swal.fire("Error", JSON.stringify(error.message), "error");
+                        console.error("Error fetching data:", error.message);
+                    hideLoader('actionSubmit');
+                    });
+            } catch (err) {
+                hideLoader('actionSubmit');
+                console.error("API Error:", err);
+                alert(handlebarCompile("{{Translate 'Something went wrong while submitting Store Item request'}}"));
+            }
+                } else if (
+                result.dismiss === Swal.DismissReason.cancel
+                ) {
+                }
+            });
+            
+        }
         function submitLines() {
             showLoader('submitLines');
             const payload = {
@@ -539,6 +903,8 @@
                         }
                         resetLines(data);
                         hideLoader('submitLines');
+                        const $actionSubmitContainer = $('#actionSubmitContainer');
+                        $actionSubmitContainer.removeClass('d-none');
                     })
                     .catch(error => {
                         Swal.fire("Error", JSON.stringify(error.message), "error");
@@ -671,6 +1037,210 @@
             const todayTime = new Date();
             const d = new Date(dateStr);
             return d.toISOString();
+        }
+
+        function setCustomDropdown(param) {
+            // Sample data
+            const tableData = [...param]
+            
+            // Pagination variables
+            let currentPage = 1;
+            let recordsPerPage = 5;
+            let filteredData = [...tableData];
+            
+            // Initialize the table
+            function initializeTable() {
+                renderTable();
+                updatePagination();
+            }
+            
+            // Render table with current data
+            function renderTable() {
+                const tbody = $('.data-table tbody');
+                tbody.empty();
+                
+                const startIndex = (currentPage - 1) * recordsPerPage;
+                const endIndex = Math.min(startIndex + recordsPerPage, filteredData.length);
+                
+                for (let i = startIndex; i < endIndex; i++) {
+                    const row = filteredData[i];
+                    const tr = $('<tr>');
+                    
+                    tr.append($('<td>').text(row.ProductNumber));
+                    tr.append($('<td>').text(row.NameAlias));
+                    tr.append($('<td>').text(row.PurchPrice));
+                    
+                    tr.click(function() {
+                        $('.data-table tbody tr').removeClass('selected');
+                        $(this).addClass('selected');
+                        $('#ItemId').val(row.ProductNumber);
+                        $('#ItemName').val(row.NameAlias);
+                        $('.dropdown-content').removeClass('active');
+                    });
+                    
+                    tbody.append(tr);
+                }
+                
+                // Update pagination info
+                $('#start-record').text(filteredData.length > 0 ? startIndex + 1 : 0);
+                $('#end-record').text(endIndex);
+                $('#total-records').text(filteredData.length);
+            }
+            
+            // Update pagination controls
+            function updatePagination() {
+                const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+                
+                // Clear existing page buttons (except for navigation buttons)
+                $('.pagination-controls .pagination-btn:not(#first-page):not(#prev-page):not(#next-page):not(#last-page)').remove();
+                
+                // Add page number buttons
+                const maxVisiblePages = 2;
+                let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+                
+                // Adjust start page if we're near the end
+                if (endPage - startPage + 1 < maxVisiblePages) {
+                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                }
+                
+                // Add page buttons before Next button
+                const nextBtn = $('#next-page');
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = $('<button>')
+                        .addClass('pagination-btn')
+                        .text(i)
+                        .attr('type', 'button')
+                        .toggleClass('active', i === currentPage);
+                    
+                    pageBtn.click(function(e) {
+                        e.stopPropagation(); // Prevent event from bubbling up
+                        currentPage = i;
+                        renderTable();
+                        updatePagination();
+                    });
+                    
+                    pageBtn.insertBefore(nextBtn);
+                }
+                
+                // Update navigation buttons state
+                $('#first-page').prop('disabled', currentPage === 1);
+                $('#prev-page').prop('disabled', currentPage === 1);
+                $('#next-page').prop('disabled', currentPage === totalPages || totalPages === 0);
+                $('#last-page').prop('disabled', currentPage === totalPages || totalPages === 0);
+                
+                // Navigation button handlers
+                $('#first-page').off('click').click(function(e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPage > 1) {
+                        currentPage = 1;
+                        renderTable();
+                        updatePagination();
+                    }
+                });
+                
+                $('#prev-page').off('click').click(function(e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderTable();
+                        updatePagination();
+                    }
+                });
+                
+                $('#next-page').off('click').click(function(e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        renderTable();
+                        updatePagination();
+                    }
+                });
+                
+                $('#last-page').off('click').click(function(e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPage < totalPages) {
+                        currentPage = totalPages;
+                        renderTable();
+                        updatePagination();
+                    }
+                });
+            }
+            
+            // Filter table data based on input
+            function filterTable() {
+                const filters = [];
+                $('.filter-input').each(function() {
+                    const columnIndex = $(this).data('column');
+                    const value = $(this).val().toLowerCase();
+                    filters[columnIndex] = value;
+                });
+                
+                filteredData = tableData.filter(row => {
+                    return (
+                        (filters[0] ? row.ProductNumber.toLowerCase().includes(filters[0]) : true) &&
+                        (filters[1] ? row.NameAlias.toLowerCase().includes(filters[1]) : true) &&
+                        (filters[2] ? row.PurchPrice.toString().includes(filters[2]) : true)
+                    );
+                });
+                
+                currentPage = 1;
+                renderTable();
+                updatePagination();
+            }
+            
+            // Dropdown functionality
+            $('.dropdown-input').click(function() {
+                $('.dropdown-content').toggleClass('active');
+            });
+            
+            // Close dropdown when clicking outside
+            $(document).click(function(e) {
+                if (!$(e.target).closest('.custom-dropdown').length) {
+                    $('.dropdown-content').removeClass('active');
+                }
+                
+                // Close records per page dropdown
+                if (!$(e.target).closest('.records-dropdown').length) {
+                    $('.records-dropdown-menu').removeClass('active');
+                }
+            });
+            
+            // Filter input event handlers
+            $('.filter-input').on('input', function() {
+                filterTable();
+            });
+            
+            // Records per page dropdown functionality
+            $('.records-dropdown-toggle').click(function(e) {
+                e.stopPropagation(); // Prevent event from bubbling up
+                $('.records-dropdown-menu').toggleClass('active');
+            });
+            
+            $('.records-option').click(function(e) {
+                e.stopPropagation(); // Prevent event from bubbling up
+                const newRecordsPerPage = parseInt($(this).data('value'));
+                
+                if (newRecordsPerPage !== recordsPerPage) {
+                    recordsPerPage = newRecordsPerPage;
+                    $('#current-records-per-page').text(recordsPerPage);
+                    
+                    // Update active state
+                    $('.records-option').removeClass('active');
+                    $(this).addClass('active');
+                    
+                    // Reset to first page and re-render
+                    currentPage = 1;
+                    renderTable();
+                    updatePagination();
+                }
+                
+                $('.records-dropdown-menu').removeClass('active');
+            });
+            
+            
+            // Initialize the table
+            initializeTable();
         }
 
     </script>

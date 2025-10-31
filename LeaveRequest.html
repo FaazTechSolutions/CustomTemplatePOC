@@ -14,7 +14,7 @@
         .stepper {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
             counter-reset: step;
         }
 
@@ -200,9 +200,9 @@
 </head>
 
 <body>
-    <div class="leave-request-container container py-5">
+    <div class="leave-request-container container py-3">
         <!-- Stepper -->
-        <div class="stepper mb-5">
+        <div class="stepper">
             <div class="step active" data-step="1">{{Translate 'Leave'}}</div>
             <div class="step" data-step="2">{{Translate 'Ticket'}}</div>
             <div class="step" data-step="3">{{Translate 'Visa'}}</div>
@@ -336,10 +336,10 @@
                                 <input type="date" class="form-control" id="departuredate" name="departuredate"
                                     readonly>
                             </div>
-                            <div class="mb-3 d-none">
+                            <!-- <div class="mb-3 d-none">
                                 <label for="arrivaldate" class="form-label">{{Translate 'Arrival Date'}}</label>
                                 <input type="date" class="form-control" id="arrivaldate" name="arrivaldate" readonly>
-                            </div>
+                            </div> -->
                             <div class="mb-3 d-none">
                                 <label for="effectivedate" class="form-label">{{Translate 'Effective Date'}}</label>
                                 <input type="date" class="form-control" id="effectivedate" name="effectivedate"
@@ -423,12 +423,12 @@
                                 <!-- End Date -->
                                 <div class="col-12 col-lg-2 readOnly">
                                     <label for="endDate" class="form-label">{{Translate 'End Date'}} <span class="required">*</span></label>
-                                    <input type="text" class="form-control" id="endDate" name="endDate" readonly>
+                                    <input type="date" class="form-control" id="endDate" name="endDate" readonly>
                                 </div>
                                 <!-- Expected Return Date -->
                                 <div class="col-12 col-lg-2 readOnly">
                                     <label for="expectedReturnDate" class="form-label">{{Translate 'Expected Return Date'}}</label>
-                                    <input type="text" class="form-control" id="expectedReturnDate" name="expectedReturnDate" readonly>
+                                    <input type="date" class="form-control" id="expectedReturnDate" name="expectedReturnDate" readonly>
                                 </div>
                                 <div class="col-12 col-lg-2">
                                     <!-- <fieldset class="border p-3 mb-4"> -->
@@ -574,13 +574,13 @@
                                     <input type="number" class="form-control" id="vacationDaysExt1"
                                         name="vacationDaysExt1" min="1">
                                 </div>
-                                <div class="col-6">
+                                <div class="col-6 readOnly">
                                     <label for="startDateExt1" class="form-label">{{Translate 'Start Date Ext1'}}</label>
-                                    <input type="date" class="form-control" id="startDateExt1" name="startDateExt1">
+                                    <input type="date" class="form-control" id="startDateExt1" name="startDateExt1" readonly>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-6 readOnly">
                                     <label for="endDateExt1" class="form-label">{{Translate 'End Date Ext1'}}</label>
-                                    <input type="date" class="form-control" id="endDateExt1" name="endDateExt1">
+                                    <input type="date" class="form-control" id="endDateExt1" name="endDateExt1" readonly>
                                 </div>
                             </div>
                         </fieldset>
@@ -609,13 +609,13 @@
                                     <input type="number" class="form-control" id="vacationDaysExt2"
                                         name="vacationDaysExt2" min="1">
                                 </div>
-                                <div class="col-6">
+                                <div class="col-6 readOnly">
                                     <label for="startDateExt2" class="form-label">{{Translate 'Start Date Ext2'}}</label>
-                                    <input type="date" class="form-control" id="startDateExt2" name="startDateExt2">
+                                    <input type="date" class="form-control" id="startDateExt2" name="startDateExt2" readonly>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-6 readOnly">
                                     <label for="endDateExt2" class="form-label">{{Translate 'End Date Ext2'}}</label>
-                                    <input type="date" class="form-control" id="endDateExt2" name="endDateExt2">
+                                    <input type="date" class="form-control" id="endDateExt2" name="endDateExt2" readonly>
                                 </div>
                             </div>
                         </fieldset>
@@ -744,20 +744,8 @@
                     <span class="w-auto badge-title">{{Translate 'Tickets'}}</span>
                     <div class="row g-3">
                         <div class="col-md-3 d-none">
-                            <label for="AdultTicket" class="form-label">{{Translate 'Adult Ticket'}}</label>
-                            <input type="number" class="form-control" id="AdultTicket" name="AdultTicket" min="1">
-                        </div>
-                        <div class="col-md-3 d-none">
                             <label for="ticketDestinationId" class="form-label">{{Translate 'Ticket Destination Id'}}</label>
                             <input type="text" class="form-control" id="ticketDestinationId" name="ticketDestinationId">
-                        </div>
-                        <div class="col-md-3 d-none">
-                            <label for="ChildTicket" class="form-label">{{Translate 'Child Ticket'}}</label>
-                            <input type="number" class="form-control" id="ChildTicket" name="ChildTicket" min="1">
-                        </div>
-                        <div class="col-md-3 d-none">
-                            <label for="InfantTicket" class="form-label">{{Translate 'Infant Ticket'}}</label>
-                            <input type="number" class="form-control" id="InfantTicket" name="InfantTicket" min="1">
                         </div>
                     </div>
                 </fieldset>
@@ -829,11 +817,15 @@
             <h2 class="mb-1 fw-semibold confirm pl-2 pr-2">{{Translate 'Confirmation'}}</h2>
             <p class="text-muted pl-2 pr-2">{{Translate 'Please review your details carefully before submitting'}}.</p>
 
-            <div id="confirmationSummary" class="card shadow-sm p-4 mb-4"></div>
+            <div id="confirmationSummary" class="card shadow-sm mb-4"></div>
 
-            <div class="mt-4 btn-align">
+            <div class="mt-4 btn-align" id="submitLeave">
                 <button type="button" class="btn btn-secondary" id="prevStep" value="3">{{Translate 'Previous'}}</button>
-                <button type="button" class="btn btn-success" id="submitLeaveRequest">{{Translate 'Submit'}}</button>
+                <button type="button" class="btn btn-success" id="submitLeaveRequest">{{Translate 'Create'}}</button>
+            </div>
+            <div class="mt-4 btn-align d-none" id="actionLeave">
+                <button type="button" class="btn btn-success" id="leaveActionSubmit">{{Translate 'Submit'}}</button>
+                <button type="button" class="btn btn-danger" id="leaveActionClose">{{Translate 'Close'}}</button>
             </div>
         </div>
 
@@ -940,6 +932,8 @@
         const AdministrationAppId = "APP0000006";
         const UserTableCollectionId = "ECN0000055";//collectionId
         const UserTableEntityId = "Users";//entityId
+        var RecId;//leave Request RecId
+        const EntityId = 'a687fc357c3c4e748cb60bf97ea1b0b0';//leave Request EntityId
 
         if(window.location.hostname === "portal.mawarid.com.sa"){
             token = localStorage.getItem("eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9");
@@ -947,8 +941,8 @@
             userId = localStorage.getItem('UserId');
             companyId = localStorage.getItem('CompanyId');
         }else{
-            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiIiLCJDb21wYW55SWQiOiJMR0UwMDAwMDAxIiwiZXhwIjoxNzYxMjg3MDcwLCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.gI5OdZTWbaux17trpFI82EwDkyjw9w7ZOhtzryleDL8";
-            currentEmployeeId = "1098483";
+            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiIiLCJDb21wYW55SWQiOiJMR0UwMDAwMDAxIiwiZXhwIjoxNzYxOTgwNzQ5LCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.95ivX9Ouk0xUhK0xfs8_YTV2TnOTKC2WZxJgNeVrvDU";
+            currentEmployeeId = "1098483";//"1056641";idris bhai empId
             userId = "a.hyder";
             companyId = "LGE0000001";
         }
@@ -1124,6 +1118,12 @@
         $(document).on('click', '#submitLeaveRequest', function (e) {
             submitLeaveRequest();
         });
+        $(document).on('click', '#leaveActionSubmit', function (e) {
+            leaveActionSubmit();
+        });
+        $(document).on('click', '#leaveActionClose', function (e) {
+            closePopup();
+        });
         $(document).on('click', '#prevStep', function (e) {
             let btnValue = $(this).val();
             prevStep(Number(btnValue));
@@ -1169,6 +1169,19 @@
                 $ext1Section.removeClass('d-none');
                 $extinfo2.removeClass('d-none');
                 $('input[name="extensionleave2"]').prop('disabled', false);
+                const enddate = $("#endDate").val();
+                const vacationDays = $("#vacationDays").val();
+
+                const eDate = new Date(enddate);
+                eDate.setDate(eDate.getDate() + 1);
+
+                if(vacationDays > 0){
+                $('#startDateExt1').val(formatDateforInput(eDate));
+                $('#endDateExt1').val(formatDateforInput(eDate));
+                }else{
+                $('#startDateExt1').val(formatDateforInput(enddate));
+                $('#endDateExt1').val(formatDateforInput(enddate));
+                }
             } else {
                 $('input[name="extensionleave2"][value="no"]').prop("checked", true);
                 $('input[name="extensionleave2"]').prop('disabled', true);
@@ -1187,21 +1200,33 @@
 
             if ($(this).val() === "yes") {
                 $ext2Section.removeClass('d-none');
+                const enddate = $("#endDateExt1").val();
+                const vacationDaysExt1 = $("#vacationDaysExt1").val();
+
+                const eDate = new Date(enddate);
+                eDate.setDate(eDate.getDate() + 1);
+                if(vacationDaysExt1 > 0){
+                $('#startDateExt2').val(formatDateforInput(eDate));
+                $('#endDateExt2').val(formatDateforInput(eDate));
+                }else{
+                $('#startDateExt2').val(formatDateforInput(enddate));
+                $('#endDateExt2').val(formatDateforInput(enddate));
+                }
             } else {
                 resetValueext2();
                 $ext2Section.addClass('d-none');
             }
         });
         function resetValueext1(){
-            let today = new Date().toISOString().split('T')[0];
-            $("#startDateExt1").val(today);
-            $("#endDateExt1").val(today);
+            const enddate = $("#endDate").val();
+            $("#startDateExt1").val(enddate);
+            $("#endDateExt1").val(enddate);
             $("#vacationDaysExt1").val(0);
         }
         function resetValueext2(){
-            let today = new Date().toISOString().split('T')[0];
-            $("#startDateExt2").val(today);
-            $("#endDateExt2").val(today);
+            const enddate = $("#endDate").val();
+            $("#startDateExt2").val(enddate);
+            $("#endDateExt2").val(enddate);
             $("#vacationDaysExt2").val(0);
         }
         // visarequired
@@ -1271,6 +1296,23 @@
 
                 $('#endDate').val(end.toISOString().split('T')[0]);
                 $('#expectedReturnDate').val(returnDate.toISOString().split('T')[0]);
+                
+                const enddate = $("#endDate").val();
+                const vacationdaysext1 = parseInt($("#vacationDaysExt1").val());
+                const sDate = new Date(enddate);
+                const eDate = new Date(enddate);
+                if(enddate && vacationdaysext1 > 0){
+                eDate.setDate(eDate.getDate() + vacationdaysext1);
+                }else{
+                    sDate.setDate(eDate.getDate() + 1);
+                    eDate.setDate(eDate.getDate() + 1);
+                }
+
+                $('#startDateExt1').val(formatDateforInput(sDate));
+                $('#endDateExt1').val(formatDateforInput(eDate));
+                $('#startDateExt2').val(formatDateforInput(sDate));
+                $('#endDateExt2').val(formatDateforInput(sDate));
+
             }
         });
 
@@ -1285,6 +1327,21 @@
                 let endDate = start.toISOString().split('T')[0];
 
                 $('#endDateExt1').val(endDate);
+
+                const endD = $("#endDateExt1").val();
+                const vacationdaysext2 = parseInt($("#vacationDaysExt2").val());
+
+                const sDate = new Date(endD);
+                const eDate = new Date(endD);
+                if(endD && vacationdaysext2 > 0){
+                    eDate.setDate(eDate.getDate() + vacationdaysext2);
+                }else{
+                sDate.setDate(eDate.getDate() + 1);
+                eDate.setDate(eDate.getDate() + 1);
+                }
+
+                $('#startDateExt2').val(formatDateforInput(sDate));
+                $('#endDateExt2').val(formatDateforInput(eDate));
             }
         });
 
@@ -1356,9 +1413,9 @@
 
                 // Ticket info
                 const ticketEntitlement = $('input[name="ticketrequired"]:checked').length > 0 ? "Yes" : "No";
-                const adultTicketUsed = parseInt($('#AdultTicket').val()) || 0;
-                const childTicketUsed = parseInt($('#ChildTicket').val()) || 0;
-                const infantTicketUsed = parseInt($('#InfantTicket').val()) || 0;
+                const adultTicketUsed = parseInt($('#AdultTicketsUsed').val()) || 0;
+                const childTicketUsed = parseInt($('#ChildTicketsUsed').val()) || 0;
+                const infantTicketUsed = parseInt($('#InfantTicketsUsed').val()) || 0;
                 const adultTicketBalance = parseInt($('#AdultTicketBalance').val()) || 0;
                 const childTicketBalance = parseInt($('#ChildTicketBalance').val()) || 0;
                 const infantTicketBalance = parseInt($('#InfantTicketBalance').val()) || 0;
@@ -1402,7 +1459,7 @@
                     "_ticketClass": "Economy",
                     "_departureFrom": "Riyadh",
                     "_departureDate": formatDate(startDate),
-                    "_arrivaldate": formatDate(startDate),
+                    "_arrivaldate": formatDate(endDate),
                     "_visaEntitlement": visaEntitlement,
                     "_visaFor": visaFor,
                     "_visaCoston": visaCoston,
@@ -1545,7 +1602,7 @@
                 ticketcoston: $("#ticketcoston").val(),
                 departuredate: $("#departuredate").val(),
                 ticketClass: $("#ticketClass").val(),
-                arrivaldate: $("#arrivaldate").val(),
+                arrivaldate: $("#endDate").val(),
                 AdultTicketsContract: $("#AdultTicketsContract").val(),
                 ChildTicketsContract: $("#ChildTicketsContract").val(),
                 InfantTicketsContract: $("#InfantTicketsContract").val(),
@@ -1604,9 +1661,9 @@
 
             let templateSource  = `
     <!-- Employee Info -->
-    <div class="card p-3 mb-3 shadow-sm">
+    <div class="card p-1 shadow-sm">
          <div class="accordion" id="employeeAccordion">
-  <div class="accordion-item shadow-sm border-0 mb-3 rounded-3">
+  <div class="accordion-item shadow-sm border-0 rounded-3">
     <h2 class="accordion-header" id="headingEmployee">
       <button
         class="accordion-button bg-white text-primary fw-semibold"
@@ -1662,9 +1719,9 @@
     </div>
 
     <!-- Leave Info -->
-    <div class="card p-3 mb-3 shadow-sm">
+    <div class="card p-1 shadow-sm">
         <div class="accordion" id="LeaveInfoAccordion">
-  <div class="accordion-item shadow-sm border-0 mb-3 rounded-3">
+  <div class="accordion-item shadow-sm border-0 rounded-3">
     <h2 class="accordion-header" id="headingLeaveInfo">
       <button
         class="accordion-button bg-white text-primary fw-semibold"
@@ -1706,9 +1763,9 @@
     </div>
 
     <!-- Ticket Info -->
-    <div class="card p-3 mb-3 shadow-sm">
+    <div class="card p-1 shadow-sm">
          <div class="accordion" id="TicketInfoAccordion">
-  <div class="accordion-item shadow-sm border-0 mb-3 rounded-3">
+  <div class="accordion-item shadow-sm border-0 rounded-3">
     <h2 class="accordion-header" id="headingTicketInfo">
       <button
         class="accordion-button bg-white text-primary fw-semibold"
@@ -1765,9 +1822,9 @@
     </div>
 
     <!-- Visa Info -->
-    <div class="card p-3 mb-3 shadow-sm">
+    <div class="card p-1 shadow-sm">
         <div class="accordion" id="VisaInfoAccordion">
-  <div class="accordion-item shadow-sm border-0 mb-3 rounded-3">
+  <div class="accordion-item shadow-sm border-0 rounded-3">
     <h2 class="accordion-header" id="headingVisaInfo">
       <button
         class="accordion-button bg-white text-primary fw-semibold"
@@ -1811,9 +1868,9 @@
             // Extended Leaves
             if (values.extensionleave1 === "yes") {
                 templateSource  += `
-        <div class="card p-3 mb-3 shadow-sm">
+        <div class="card p-1 shadow-sm">
             <div class="accordion" id="ExtendedLeave1InfoAccordion">
-  <div class="accordion-item shadow-sm border-0 mb-3 rounded-3">
+  <div class="accordion-item shadow-sm border-0  rounded-3">
     <h2 class="accordion-header" id="headingExtendedLeave1Info">
       <button
         class="accordion-button bg-white text-primary fw-semibold"
@@ -1840,7 +1897,7 @@
                 <div class="col-md-3"><b>{{Translate 'Extended Leave One'}}</b><br>${values.extensionleave1 || "-"}</div>
                 <div class="col-md-3"><b>{{Translate 'Start'}}</b><br>${values.startDateExt1 || "-"}</div>
                 <div class="col-md-3"><b>{{Translate 'End'}}</b><br>${values.endDateExt1 || "-"}</div>
-            <div class="col-md-3"><b>{{Translate 'Days'}}</b><br>${values.vacationDays || "0"}</div>
+            <div class="col-md-3"><b>{{Translate 'Days'}}</b><br>${values.vacationDaysExt1 || "0"}</div>
             </div>
       </div>
     </div>
@@ -1850,9 +1907,9 @@
             }
             if (values.extensionleave2 === "yes") {
                 templateSource  += `
-        <div class="card p-3 mb-3 shadow-sm">
+        <div class="card p-1 shadow-sm">
             <div class="accordion" id="ExtendedLeave2InfoAccordion">
-  <div class="accordion-item shadow-sm border-0 mb-3 rounded-3">
+  <div class="accordion-item shadow-sm border-0 rounded-3">
     <h2 class="accordion-header" id="headingExtendedLeave2Info">
       <button
         class="accordion-button bg-white text-primary fw-semibold"
@@ -1887,24 +1944,6 @@
 </div>
         </div>`;
             }
-
-            // Payroll / System Info
-    //         templateSource  += `
-    // <div class="card p-3 mb-3 shadow-sm">
-    //     <h5 class="mb-3 text-secondary"><i class="bi bi-cash-stack"></i> {{Translate 'Payroll & System Info'}}</h5>
-    //     <div class="row">
-    //         <div class="col-md-3"><b>{{Translate 'Pay Group'}}</b><br>${values.PayGroupName || "-"}</div>
-    //         <div class="col-md-3"><b>{{Translate 'Start Date'}}</b><br>${values.payGroupStartDate || "-"}</div>
-    //         <div class="col-md-3"><b>{{Translate 'End Date'}}</b><br>${values.payGroupPeriodEndDate || "-"}</div>
-    //         <div class="col-md-3"><b>{{Translate 'Years'}}</b><br>${values.workingYears || "0"}</div>
-    //     </div>
-    //     <div class="row mt-2">
-    //         <div class="col-md-3"><b>{{Translate 'Months'}}</b><br>${values.WorkingMonths || "0"}</div>
-    //         <div class="col-md-3"><b>{{Translate 'Days'}}</b><br>${values.WorkingDays || "0"}</div>
-    //         <div class="col-md-3"><b>{{Translate 'Total Days'}}</b><br>${values.TotalWorkingDays || "0"}</div>
-    //     </div>
-    // </div>
-    // `;
             
             $confirmationDiv.html(handlebarCompile(templateSource));
         }
@@ -1948,7 +1987,7 @@
                     $("#requestfor").val('Employee himself');
                     $("#departureFrom").val('Riyadh');
                     $("#departuredate").val(today);
-                    $("#arrivaldate").val(today);
+                    // $("#arrivaldate").val(today);
                     $("#visafor").val('Employee');
                     $("#visacoston").val('Company');
                     $("#AdultTicketsUsed").val(0);
@@ -2110,7 +2149,7 @@
                 "TicketCostOn": $("#ticketcoston").val(),
                 "DepartureDate": formatDate($("#departuredate").val()),
                 "ticketClass": parseInt($("#ticketClass").val()),
-                "ArrivalDate": formatDate($("#arrivaldate").val()),
+                "ArrivalDate": formatDate($("#endDate").val()),
                 "AdultTicketsContract": parseInt($("#AdultTicketsContract").val()),
                 "ChildTicketsContract": parseInt($("#ChildTicketsContract").val()),
                 "InfantTicketsContract": parseInt($("#InfantTicketsContract").val()),
@@ -2154,14 +2193,13 @@
                 "endDateExtTwoString": formatDate($("#endDateExt2").val()),
                 "departureCity": null,
                 "Comments": null,
-                "EntityId": "a687fc357c3c4e748cb60bf97ea1b0b0",
+                "EntityId": EntityId,
                 "PhoneDuringVacation":$("#PhoneDuringVacation").val(),
                 "ClearanceRequestId":$("#clearanceRequestId").val(),
                 "DoctypeId":"a779702e0a25498ab76c25541121fab7"
             }
 
             try {
-                const EntityId = 'a687fc357c3c4e748cb60bf97ea1b0b0';
                 const requestType = 'LeaveRequest';
                 // const apiUrl = `${Apps4xApiUrl}api/v1/data/${companyId}/create`;
                 const apiUrl = `${Apps4xApiUrl}graph-api/api/v1/Integration/CreateandValidateSelfServiceRequestERP?entityId=${EntityId}&requestType=${requestType}`;
@@ -2263,17 +2301,14 @@
                             Swal.fire("Error", data.Message, "error");
                             return
                         }
-                        Swal.fire(handlebarCompile("{{Translate 'Success'}}"), handlebarCompile("{{Translate 'Leave request created successfully,please wait for one minute to create the request in ERP then submit'}}"), "success");
+                        // Swal.fire(handlebarCompile("{{Translate 'Success'}}"), handlebarCompile("{{Translate 'Leave request created successfully,please wait for one minute to create the request in ERP then submit'}}"), "success");
                         
                         hideLoader('submitLeaveRequest');
-                        const location = window.location.href; 
-                        if(location.includes("/SelfService/LeaveRequest")){
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 2000);
-                        }else{
-                            window.location.href = 'https://portal.mawarid.com.sa/apps4x/#/apps/SelfService/LeaveRequest';
-                        }
+                        RecId = data.Data;
+                        const $actionLeave = $('#actionLeave');
+                        $actionLeave.removeClass('d-none');
+                        const $submitLeave = $('#submitLeave');
+                        $submitLeave.addClass('d-none');
                     })
                     .catch(error => {
                         Swal.fire("Error", JSON.stringify(error.message), "error");
@@ -2285,6 +2320,85 @@
                 console.error("API Error:", err);
                 alert(handlebarCompile("{{Translate 'Something went wrong while submitting leave request'}}"));
             }
+        }
+
+        function leaveActionSubmit() {
+            if(!RecId){
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'RecId Not Found'}}"), "warning");
+                return
+            }
+            Swal.fire({
+                title: handlebarCompile("{{Translate 'Are you sure?'}}"),
+                text: handlebarCompile("{{Translate 'Submit Leave Request'}}"),
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: handlebarCompile("{{Translate 'OK'}}"),
+                cancelButtonText: handlebarCompile("{{Translate 'Cancel'}}"),
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+            showLoader('leaveActionSubmit');
+            const payload = {
+                "RecId": RecId,
+                "Status": "Submitted",
+                "Comments": "Submitted",
+                "EntityId": EntityId
+            }
+
+            try {
+                const apiUrl = `${Apps4xApiUrl}api/v1/data/${companyId}/update`;
+                const formData = new FormData();
+                let _entityData = JSON.stringify(payload);
+                formData.append("EntityData", _entityData);
+                
+                fetch(apiUrl, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "User-Id": userId,
+                        "appid": appId,
+                        "CompanyId": companyId
+                    },
+                    body: formData
+                })
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(data => {
+                        if(typeof data === "string"){
+                            Swal.fire("Error", data, "error");
+                            hideLoader('leaveActionSubmit');
+                            return
+                        }
+                        hideLoader('leaveActionSubmit');
+                        closePopup();
+                    })
+                    .catch(error => {
+                        Swal.fire("Error", JSON.stringify(error.message), "error");
+                        console.error("Error fetching data:", error.message);
+                    hideLoader('leaveActionSubmit');
+                    });
+            } catch (err) {
+                hideLoader('leaveActionSubmit');
+                console.error("API Error:", err);
+                alert(handlebarCompile("{{Translate 'Something went wrong while submitting Leave request'}}"));
+            }
+                } else if (
+                result.dismiss === Swal.DismissReason.cancel
+                ) {
+                }
+            });
+            
+        }
+        function closePopup(){
+        // const location = window.location.href; 
+        // if(location.includes("/SelfService/LeaveRequest")){
+        // setTimeout(() => {
+        //    window.location.reload();
+        // }, 2000);
+        // }else{
+            window.location.href = 'https://portal.mawarid.com.sa/apps4x/#/apps/SelfService/LeaveRequestDetails?RecId='+RecId;
+        // }
         }
 
         function getApprovalManagerUserIdByEmployeeId(ApprovalManagerEmployeeId) {
@@ -2337,6 +2451,15 @@
             const todayTime = new Date();
             const d = new Date(dateStr);
             return d.toISOString();
+        }
+        function formateDateYYYYMMDD(date) {
+            if(date){
+            const dateOnly = new Date(date).toISOString().split('T')[0];
+            return dateOnly;
+            }else{
+                return date
+            }
+            
         }
 
         function toIsoWithCurrentTime(dateStr) {

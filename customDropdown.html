@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Dropdown with Filterable Table</title>
+    <style>
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        /* Custom Dropdown Styles */
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+        
+        .dropdown-input {
+            max-width: 200px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .dropdown-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-height: 400px;
+            overflow: hidden;
+            display: none;
+            z-index: 1000;
+            flex-direction: column;
+        }
+        
+        .dropdown-content.active {
+            display: flex;
+        }
+        
+        /* Filter Controls */
+        .filter-controls {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .filter-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .filter-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        /* Table Styles */
+        .data-table-container {
+            overflow-y: auto;
+            max-height: 250px;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th {
+            background-color: white;
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 2px solid #e1e5eb;
+            font-weight: 600;
+            color: #2c3e50;
+            position: sticky;
+            top: 0;
+        }
+        
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eef1f5;
+        }
+        
+        .data-table tbody tr:hover {
+            background-color: #f8fafc;
+            cursor: pointer;
+        }
+        
+        .data-table tbody tr.selected {
+            background-color: #e1f0fa;
+        }
+        
+        /* Pagination Styles */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+        
+        .pagination-info {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .pagination-controls {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        .pagination-btn {
+            padding: 6px 12px;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .pagination-btn:hover:not(:disabled) {
+            background-color: #e9ecef;
+        }
+        
+        .pagination-btn.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .pagination-btn:disabled {
+            color: #6c757d;
+            cursor: not-allowed;
+            background-color: #f8f9fa;
+        }
+        
+        /* Records per page dropdown */
+        .records-per-page {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 15px;
+            font-size: 14px;
+        }
+        
+        .records-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .records-dropdown-toggle {
+            padding: 6px 12px;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .records-dropdown-toggle::after {
+            content: "▼";
+            font-size: 10px;
+            color: #6c757d;
+        }
+        
+        .records-dropdown-menu {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            min-width: 80px;
+            display: none;
+            z-index: 1001;
+        }
+        
+        .records-dropdown-menu.active {
+            display: block;
+        }
+        
+        .records-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        
+        .records-option:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .records-option.active {
+            background-color: #e1f0fa;
+            color: #3498db;
+            font-weight: 500;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <div class="custom-dropdown">
+            <input type="text" class="dropdown-input" placeholder="Select Loan Type" readonly>
+            <div class="dropdown-content">
+                
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name
+                                    <input type="text" class="filter-input" placeholder="Filter by Name" data-column="0">
+                                </th>
+                                <th>Loan Type
+                                    <input type="text" class="filter-input" placeholder="Filter by Loan Type" data-column="1">
+                    
+                                </th>
+                                <th>Other Loan Type Id
+                                    <input type="text" class="filter-input" placeholder="Filter by Other Loan Type Id" data-column="2">
+                    
+                                </th>
+                                <th>Rec Id
+                                    <input type="text" class="filter-input" placeholder="Filter by Rec Id" data-column="3">
+                    
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Table rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="pagination">
+                    <div class="pagination-info">Showing <span id="start-record">1</span> to <span id="end-record">7</span> of <span id="total-records">7</span> entries</div>
+                    <div class="pagination-controls">
+                        <button class="pagination-btn" id="first-page" disabled>First</button>
+                        <button class="pagination-btn" id="prev-page" disabled>Previous</button>
+                        <button class="pagination-btn active">1</button>
+                        <button class="pagination-btn" id="next-page">Next</button>
+                        <button class="pagination-btn" id="last-page">Last</button>
+                        
+                        <div class="records-per-page">
+                            <span>Show</span>
+                            <div class="records-dropdown">
+                                <div class="records-dropdown-toggle">
+                                    <span id="current-records-per-page">5</span>
+                                </div>
+                                <div class="records-dropdown-menu">
+                                    <div class="records-option" data-value="5">5</div>
+                                    <div class="records-option" data-value="10">10</div>
+                                    <div class="records-option" data-value="25">25</div>
+                                    <div class="records-option" data-value="50">50</div>
+                                </div>
+                            </div>
+                            <span>entries</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Sample data
+            const tableData = [
+                { name: 'SLP', loanType: 'Personal', otherLoanTypeId: '', recId: '563714' },
+                { name: 'SLP', loanType: 'Salary Advance', otherLoanTypeId: '', recId: '563714' },
+                { name: 'SLP', loanType: 'Business Trip Advance', otherLoanTypeId: '', recId: '563714' },
+                { name: 'SLP', loanType: 'Other', otherLoanTypeId: '1st Salary Advance', recId: '563714' },
+                { name: 'SLP', loanType: 'Other', otherLoanTypeId: 'Emergency loan', recId: '563714' },
+                { name: 'SLP', loanType: 'Other', otherLoanTypeId: 'Exit VISA LOAN', recId: '563714' },
+                { name: 'SLP', loanType: 'Other', otherLoanTypeId: 'Housing Allowance', recId: '563714' },
+                { name: 'ABC', loanType: 'Personal', otherLoanTypeId: '', recId: '563715' },
+                { name: 'XYZ', loanType: 'Salary Advance', otherLoanTypeId: '', recId: '563716' },
+                { name: 'SLP', loanType: 'Business Loan', otherLoanTypeId: '', recId: '563717' },
+                { name: 'SLP', loanType: 'Personal', otherLoanTypeId: '', recId: '563714' },
+                { name: 'SLP', loanType: 'Salary Advance', otherLoanTypeId: '', recId: '563714' },
+                { name: 'SLP', loanType: 'Business Trip Advance', otherLoanTypeId: '', recId: '563714' },
+                { name: 'SLP', loanType: 'Other', otherLoanTypeId: '1st Salary Advance', recId: '563714' },
+                { name: 'SLP', loanType: 'Other', otherLoanTypeId: 'Emergency loan', recId: '563714' },
+                { name: 'SLP', loanType: 'Other', otherLoanTypeId: 'Exit VISA LOAN', recId: '563714' },
+                { name: 'SLP', loanType: 'Other', otherLoanTypeId: 'Housing Allowance', recId: '563714' },
+                { name: 'ABC', loanType: 'Personal', otherLoanTypeId: '', recId: '563715' },
+                { name: 'XYZ', loanType: 'Salary Advance', otherLoanTypeId: '', recId: '563716' },
+                { name: 'SLP', loanType: 'Business Loan', otherLoanTypeId: '', recId: '563717' },
+                { name: 'SLP', loanType: 'Personal', otherLoanTypeId: '', recId: '563714' },
+                { name: 'SLP', loanType: 'Salary Advance', otherLoanTypeId: '', recId: '563714' },
+                { name: 'SLP', loanType: 'Business Trip Advance', otherLoanTypeId: '', recId: '563714' },
+                { name: 'SLP', loanType: 'Other', otherLoanTypeId: '1st Salary Advance', recId: '563714' },
+                { name: 'SLP', loanType: 'Other', otherLoanTypeId: 'Emergency loan', recId: '563714' },
+                { name: 'SLP', loanType: 'Other', otherLoanTypeId: 'Exit VISA LOAN', recId: '563714' },
+                { name: 'SLP', loanType: 'Other', otherLoanTypeId: 'Housing Allowance', recId: '563714' },
+                { name: 'ABC', loanType: 'Personal', otherLoanTypeId: '', recId: '563715' },
+                { name: 'XYZ', loanType: 'Salary Advance', otherLoanTypeId: '', recId: '563716' },
+                { name: 'SLP', loanType: 'Business Loan', otherLoanTypeId: '', recId: '563717' },
+                { name: 'SLP', loanType: 'Personal', otherLoanTypeId: '', recId: '563714' },
+                { name: 'SLP', loanType: 'Salary Advance', otherLoanTypeId: '', recId: '563714' },
+                { name: 'SLP', loanType: 'Business Trip Advance', otherLoanTypeId: '', recId: '563714' },
+                { name: 'SLP', loanType: 'Other', otherLoanTypeId: '1st Salary Advance', recId: '563714' },
+                { name: 'SLP', loanType: 'Other', otherLoanTypeId: 'Emergency loan', recId: '563714' },
+                { name: 'SLP', loanType: 'Other', otherLoanTypeId: 'Exit VISA LOAN', recId: '563714' },
+                { name: 'SLP', loanType: 'Other', otherLoanTypeId: 'Housing Allowance', recId: '563714' },
+                { name: 'ABC', loanType: 'Personal', otherLoanTypeId: '', recId: '563715' },
+                { name: 'XYZ', loanType: 'Salary Advance', otherLoanTypeId: '', recId: '563716' },
+                { name: 'SLP', loanType: 'Business Loan', otherLoanTypeId: '', recId: '563717' },
+            ];
+            
+            // Pagination variables
+            let currentPage = 1;
+            let recordsPerPage = 5;
+            let filteredData = [...tableData];
+            
+            // Initialize the table
+            function initializeTable() {
+                renderTable();
+                updatePagination();
+            }
+            
+            // Render table with current data
+            function renderTable() {
+                const tbody = $('.data-table tbody');
+                tbody.empty();
+                
+                const startIndex = (currentPage - 1) * recordsPerPage;
+                const endIndex = Math.min(startIndex + recordsPerPage, filteredData.length);
+                
+                for (let i = startIndex; i < endIndex; i++) {
+                    const row = filteredData[i];
+                    const tr = $('<tr>');
+                    
+                    tr.append($('<td>').text(row.name));
+                    tr.append($('<td>').text(row.loanType));
+                    tr.append($('<td>').text(row.otherLoanTypeId));
+                    tr.append($('<td>').text(row.recId));
+                    
+                    tr.click(function() {
+                        $('.data-table tbody tr').removeClass('selected');
+                        $(this).addClass('selected');
+                        $('.dropdown-input').val(row.loanType);
+                        $('.dropdown-content').removeClass('active');
+                    });
+                    
+                    tbody.append(tr);
+                }
+                
+                // Update pagination info
+                $('#start-record').text(filteredData.length > 0 ? startIndex + 1 : 0);
+                $('#end-record').text(endIndex);
+                $('#total-records').text(filteredData.length);
+            }
+            
+            // Update pagination controls
+            function updatePagination() {
+                const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+                
+                // Clear existing page buttons (except for navigation buttons)
+                $('.pagination-controls .pagination-btn:not(#first-page):not(#prev-page):not(#next-page):not(#last-page)').remove();
+                
+                // Add page number buttons
+                const maxVisiblePages = 2;
+                let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+                
+                // Adjust start page if we're near the end
+                if (endPage - startPage + 1 < maxVisiblePages) {
+                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                }
+                
+                // Add page buttons before Next button
+                const nextBtn = $('#next-page');
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = $('<button>')
+                        .addClass('pagination-btn')
+                        .text(i)
+                        .toggleClass('active', i === currentPage);
+                    
+                    pageBtn.click(function(e) {
+                        e.stopPropagation(); // Prevent event from bubbling up
+                        currentPage = i;
+                        renderTable();
+                        updatePagination();
+                    });
+                    
+                    pageBtn.insertBefore(nextBtn);
+                }
+                
+                // Update navigation buttons state
+                $('#first-page').prop('disabled', currentPage === 1);
+                $('#prev-page').prop('disabled', currentPage === 1);
+                $('#next-page').prop('disabled', currentPage === totalPages || totalPages === 0);
+                $('#last-page').prop('disabled', currentPage === totalPages || totalPages === 0);
+                
+                // Navigation button handlers
+                $('#first-page').off('click').click(function(e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPage > 1) {
+                        currentPage = 1;
+                        renderTable();
+                        updatePagination();
+                    }
+                });
+                
+                $('#prev-page').off('click').click(function(e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderTable();
+                        updatePagination();
+                    }
+                });
+                
+                $('#next-page').off('click').click(function(e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        renderTable();
+                        updatePagination();
+                    }
+                });
+                
+                $('#last-page').off('click').click(function(e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPage < totalPages) {
+                        currentPage = totalPages;
+                        renderTable();
+                        updatePagination();
+                    }
+                });
+            }
+            
+            // Filter table data based on input
+            function filterTable() {
+                const filters = [];
+                $('.filter-input').each(function() {
+                    const columnIndex = $(this).data('column');
+                    const value = $(this).val().toLowerCase();
+                    filters[columnIndex] = value;
+                });
+                
+                filteredData = tableData.filter(row => {
+                    return (
+                        (filters[0] ? row.name.toLowerCase().includes(filters[0]) : true) &&
+                        (filters[1] ? row.loanType.toLowerCase().includes(filters[1]) : true) &&
+                        (filters[2] ? row.otherLoanTypeId.toLowerCase().includes(filters[2]) : true) &&
+                        (filters[3] ? row.recId.toLowerCase().includes(filters[3]) : true)
+                    );
+                });
+                
+                currentPage = 1;
+                renderTable();
+                updatePagination();
+            }
+            
+            // Dropdown functionality
+            $('.dropdown-input').click(function() {
+                $('.dropdown-content').toggleClass('active');
+            });
+            
+            // Close dropdown when clicking outside
+            $(document).click(function(e) {
+                if (!$(e.target).closest('.custom-dropdown').length) {
+                    $('.dropdown-content').removeClass('active');
+                }
+                
+                // Close records per page dropdown
+                if (!$(e.target).closest('.records-dropdown').length) {
+                    $('.records-dropdown-menu').removeClass('active');
+                }
+            });
+            
+            // Filter input event handlers
+            $('.filter-input').on('input', function() {
+                filterTable();
+            });
+            
+            // Records per page dropdown functionality
+            $('.records-dropdown-toggle').click(function(e) {
+                e.stopPropagation(); // Prevent event from bubbling up
+                $('.records-dropdown-menu').toggleClass('active');
+            });
+            
+            $('.records-option').click(function(e) {
+                e.stopPropagation(); // Prevent event from bubbling up
+                const newRecordsPerPage = parseInt($(this).data('value'));
+                
+                if (newRecordsPerPage !== recordsPerPage) {
+                    recordsPerPage = newRecordsPerPage;
+                    $('#current-records-per-page').text(recordsPerPage);
+                    
+                    // Update active state
+                    $('.records-option').removeClass('active');
+                    $(this).addClass('active');
+                    
+                    // Reset to first page and re-render
+                    currentPage = 1;
+                    renderTable();
+                    updatePagination();
+                }
+                
+                $('.records-dropdown-menu').removeClass('active');
+            });
+            
+            // Installment pagination
+            $('.installment-btn').click(function() {
+                if ($(this).text() === 'Previous' || $(this).text() === 'Next') {
+                    return; // Keep Previous/Next buttons without active state
+                }
+                
+                $('.installment-btn').removeClass('active');
+                $(this).addClass('active');
+            });
+            
+            // Initialize the table
+            initializeTable();
+        });
+    </script>
+</body>
+</html>
