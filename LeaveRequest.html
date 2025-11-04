@@ -237,6 +237,10 @@
                                 <input type="text" class="form-control" id="ticketfor" name="ticketfor" readonly>
                             </div>
                             <div class="mb-3 d-none">
+                                <label for="RecId" class="form-label">{{Translate 'RecId'}}</label>
+                                <input type="number" class="form-control" id="RecId" name="RecId" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
                                 <label for="ticketcoston" class="form-label">{{Translate 'Ticket Cost On'}}</label>
                                 <input type="text" class="form-control" id="ticketcoston" name="ticketcoston" readonly>
                             </div>
@@ -820,13 +824,13 @@
             <div id="confirmationSummary" class="card shadow-sm mb-4"></div>
 
             <div class="mt-4 btn-align" id="submitLeave">
-                <button type="button" class="btn btn-secondary" id="prevStep" value="3">{{Translate 'Previous'}}</button>
-                <button type="button" class="btn btn-success" id="submitLeaveRequest">{{Translate 'Create'}}</button>
+                <button type="button" class="btn btn-secondary prevStepbtn" id="prevStep" value="3">{{Translate 'Previous'}}</button>
+                <button type="button" class="btn btn-success" id="submitLeaveRequest">{{Translate 'Submit'}}</button>
             </div>
-            <div class="mt-4 btn-align d-none" id="actionLeave">
+            <!-- <div class="mt-4 btn-align d-none" id="actionLeave">
                 <button type="button" class="btn btn-success" id="leaveActionSubmit">{{Translate 'Submit'}}</button>
                 <button type="button" class="btn btn-danger" id="leaveActionClose">{{Translate 'Close'}}</button>
-            </div>
+            </div> -->
         </div>
 
     </div>
@@ -932,7 +936,6 @@
         const AdministrationAppId = "APP0000006";
         const UserTableCollectionId = "ECN0000055";//collectionId
         const UserTableEntityId = "Users";//entityId
-        var RecId;//leave Request RecId
         const EntityId = 'a687fc357c3c4e748cb60bf97ea1b0b0';//leave Request EntityId
 
         if(window.location.hostname === "portal.mawarid.com.sa"){
@@ -941,7 +944,7 @@
             userId = localStorage.getItem('UserId');
             companyId = localStorage.getItem('CompanyId');
         }else{
-            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiIiLCJDb21wYW55SWQiOiJMR0UwMDAwMDAxIiwiZXhwIjoxNzYxOTgwNzQ5LCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.95ivX9Ouk0xUhK0xfs8_YTV2TnOTKC2WZxJgNeVrvDU";
+            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiIiLCJDb21wYW55SWQiOiJMR0UwMDAwMDAxIiwiZXhwIjoxNzYyMzI0MDAzLCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.HS4ZJ0G2wBDw3d6KIsTRDzpdBfRFoZ3fr_7N-cOHPWw";
             currentEmployeeId = "1098483";//"1056641";idris bhai empId
             userId = "a.hyder";
             companyId = "LGE0000001";
@@ -1116,14 +1119,16 @@
         });
         }
         $(document).on('click', '#submitLeaveRequest', function (e) {
+            const $prevStep = $('.prevStepbtn');
+            $prevStep.addClass('d-none');
             submitLeaveRequest();
         });
-        $(document).on('click', '#leaveActionSubmit', function (e) {
-            leaveActionSubmit();
-        });
-        $(document).on('click', '#leaveActionClose', function (e) {
-            closePopup();
-        });
+        // $(document).on('click', '#leaveActionSubmit', function (e) {
+        //     leaveActionSubmit();
+        // });
+        // $(document).on('click', '#leaveActionClose', function (e) {
+        //     closePopup();
+        // });
         $(document).on('click', '#prevStep', function (e) {
             let btnValue = $(this).val();
             prevStep(Number(btnValue));
@@ -2304,11 +2309,15 @@
                         // Swal.fire(handlebarCompile("{{Translate 'Success'}}"), handlebarCompile("{{Translate 'Leave request created successfully,please wait for one minute to create the request in ERP then submit'}}"), "success");
                         
                         hideLoader('submitLeaveRequest');
-                        RecId = data.Data;
-                        const $actionLeave = $('#actionLeave');
-                        $actionLeave.removeClass('d-none');
+                        //closePopup();
+                        if(data.Status === 'success'){
+                        $("#RecId").val(data.Data)
+                        // const $actionLeave = $('#actionLeave');
+                        // $actionLeave.removeClass('d-none');
                         const $submitLeave = $('#submitLeave');
                         $submitLeave.addClass('d-none');
+                        leaveActionSubmit();
+                        }
                     })
                     .catch(error => {
                         Swal.fire("Error", JSON.stringify(error.message), "error");
@@ -2323,23 +2332,23 @@
         }
 
         function leaveActionSubmit() {
-            if(!RecId){
+            if(!$("#RecId").val()){
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'RecId Not Found'}}"), "warning");
                 return
             }
             Swal.fire({
-                title: handlebarCompile("{{Translate 'Are you sure?'}}"),
+                title: handlebarCompile("{{Translate 'Do you want to submit for approval ?'}}"),
                 text: handlebarCompile("{{Translate 'Submit Leave Request'}}"),
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: handlebarCompile("{{Translate 'OK'}}"),
-                cancelButtonText: handlebarCompile("{{Translate 'Cancel'}}"),
+                confirmButtonText: handlebarCompile("{{Translate 'Submit for approval'}}"),
+                cancelButtonText: handlebarCompile("{{Translate 'Save as Draft'}}"),
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
             showLoader('leaveActionSubmit');
             const payload = {
-                "RecId": RecId,
+                "RecId": $("#RecId").val(),
                 "Status": "Submitted",
                 "Comments": "Submitted",
                 "EntityId": EntityId
@@ -2386,19 +2395,21 @@
                 } else if (
                 result.dismiss === Swal.DismissReason.cancel
                 ) {
+                    closePopup();
                 }
             });
             
         }
         function closePopup(){
-        // const location = window.location.href; 
-        // if(location.includes("/SelfService/LeaveRequest")){
-        // setTimeout(() => {
-        //    window.location.reload();
-        // }, 2000);
-        // }else{
-            window.location.href = 'https://portal.mawarid.com.sa/apps4x/#/apps/SelfService/LeaveRequestDetails?RecId='+RecId;
-        // }
+        const location = window.location.href; 
+        if(location.includes("/SelfService/LeaveRequest")){
+        setTimeout(() => {
+           window.location.reload();
+        }, 2000);
+        }else{
+            window.location.href = 'https://portal.mawarid.com.sa/apps4x/#/apps/SelfService/LeaveRequest';
+            // window.location.href = 'https://portal.mawarid.com.sa/apps4x/#/apps/SelfService/LeaveRequestDetails?RecId='+RecId;
+        }
         }
 
         function getApprovalManagerUserIdByEmployeeId(ApprovalManagerEmployeeId) {
