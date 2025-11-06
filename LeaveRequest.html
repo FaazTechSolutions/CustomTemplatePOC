@@ -192,10 +192,10 @@
     .leave-request-container .accordion-button{
         padding: 12px;
     }
-        .readOnly {
+    .readOnly {
         opacity: 0.5 !important;
         pointer-events: none;
-        }
+    }
     </style>
 </head>
 
@@ -1018,6 +1018,12 @@
             }
             if (!$("[name='approvalmanagerid']").val()) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please Fill The Approval Details'}}"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+            if (!$("[name='ApprovalManagerUserId']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please Fill The Approval Manager UserId'}}"), "warning");
                 $loader.remove();
                 $btn.prop('disabled', false);
                 return;

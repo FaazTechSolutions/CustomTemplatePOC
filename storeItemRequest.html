@@ -583,6 +583,11 @@
                 hideLoader('submitHeader');
                 return;
             }
+            if (!$("[name='ApprovalManagerUserId']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please Fill the Approval Manager User Id'}}"), "warning");
+                hideLoader('submitHeader');
+                return;
+            }
             if (!$("[name='TransDate']").val()) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Trans Date'}}"), "warning");
                 hideLoader('submitHeader');
@@ -1242,7 +1247,6 @@
             // Initialize the table
             initializeTable();
         }
-
     </script>
 
 </body>
