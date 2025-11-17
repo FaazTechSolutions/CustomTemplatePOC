@@ -4,7 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <title>Timesheet View With Excel Export</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
     .calenderview h6 {
       text-align: center;
@@ -19,7 +22,9 @@
       width: max-content;
       min-width: 100%;
     }
-    .calenderview th, .calenderview td {
+
+    .calenderview th,
+    .calenderview td {
       padding: 8px 12px;
       border: 1px solid #ddd;
       white-space: nowrap;
@@ -34,25 +39,30 @@
       /* color: white; */
       z-index: 3;
     }
+
     .sticky-col {
       position: sticky;
       background: white;
       color: black;
       z-index: 2;
     }
+
     .calenderview thead .sticky-col {
       z-index: 4;
     }
+
     .calenderview thead tr:nth-child(2) th {
       top: 36px;
       z-index: 3;
     }
+
     .calenderview .th-content {
       display: flex;
       justify-content: space-between;
       align-items: center;
       width: 100%;
     }
+
     .calenderview .present {
       color: green;
       /* background: #c9f0c9; */
@@ -138,22 +148,381 @@
       padding: 6px;
       cursor: pointer;
     }
+            /* Custom Dropdown Styles */
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+        
+        .dropdown-input {
+            max-width: 200px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: border-color 0.3s;
+        }
+        
+        .dropdown-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-height: 400px;
+            overflow: hidden;
+            display: none;
+            z-index: 1000;
+            flex-direction: column;
+            min-width: 500px;
+        }
+        
+        .dropdown-content.active {
+            display: flex;
+        }
+        
+        /* Filter Controls */
+        .filter-controls {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .filter-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            max-width: 130px;
+        }
+        
+        .filter-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        /* Table Styles */
+        .data-table-container {
+            overflow-y: auto;
+            max-height: 250px;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th {
+            background-color: white;
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 2px solid #e1e5eb;
+            font-weight: 600;
+            color: #2c3e50;
+            position: sticky;
+            top: 0;
+            font-size: 12px;
+        }
+        
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eef1f5;
+            font-size: 12px;
+        }
+        
+        .data-table tbody tr:hover {
+            background-color: #f8fafc;
+            cursor: pointer;
+        }
+        
+        .data-table tbody tr.selected {
+            background-color: #e1f0fa;
+        }
+        
+        /* Pagination Styles */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+        
+        .pagination-info {
+            font-size: 12px;
+            color: #6c757d;
+            /* display: none; */
+        }
+        
+        .pagination-controls {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        .pagination-btn {
+            padding: 6px 12px;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        
+        .pagination-btn:hover:not(:disabled) {
+            background-color: #e9ecef;
+        }
+        
+        .pagination-btn.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .pagination-btn:disabled {
+            color: #6c757d;
+            cursor: not-allowed;
+            background-color: #f8f9fa;
+        }
+        
+        /* Records per page dropdown */
+        .records-per-page {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 15px;
+            font-size: 12px;
+        }
+        
+        .records-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .records-dropdown-toggle {
+            padding: 6px 12px;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .records-dropdown-toggle::after {
+            content: "▼";
+            font-size: 10px;
+            color: #6c757d;
+        }
+        
+        .records-dropdown-menu {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            min-width: 80px;
+            display: none;
+            z-index: 1001;
+        }
+        
+        .records-dropdown-menu.active {
+            display: block;
+        }
+        
+        .records-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        
+        .records-option:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .records-option.active {
+            background-color: #e1f0fa;
+            color: #3498db;
+            font-weight: 500;
+        }        
+        div#dynamic_list_ced3a7272dcb49d79ab1ead610659bf3 .card-body.card-grid-table {
+            overflow: visible;
+        }
+        /* indicator */
+        .loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            font-weight: bold;
+            display: none; /* Hidden by default */
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #3498db; /* Blue color */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Spinner animation */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
   </style>
 </head>
 
 <body>
 
 
-    <div class="calenderview">
+  <div class="calenderview p-3">
+    <form>
+      <div class="row g-3">
+        <div class="col-2">
+          <label for="Year" class="form-label">{{Translate 'Year'}}</label>
+          <select class="form-select" id="Year" name="Year">
+          </select>
+        </div>
+        <div class="col-2">
+          <label for="Month" class="form-label">{{Translate 'Month'}}</label>
+          <select class="form-select" id="Month" name="Month">
+            <option value=""></option>
+            <option value="01">{{Translate 'Jan'}}</option>
+            <option value="02">{{Translate 'Feb'}}</option>
+            <option value="03">{{Translate 'Mar'}}</option>
+            <option value="04">{{Translate 'Apr'}}</option>
+            <option value="05">{{Translate 'May'}}</option>
+            <option value="06">{{Translate 'Jun'}}</option>
+            <option value="07">{{Translate 'Jul'}}</option>
+            <option value="08">{{Translate 'Aug'}}</option>
+            <option value="09">{{Translate 'Sep'}}</option>
+            <option value="10">{{Translate 'Oct'}}</option>
+            <option value="11">{{Translate 'Nov'}}</option>
+            <option value="12">{{Translate 'Dec'}}</option>
+          </select>
+        </div>
+        <div class="col-4" id="customerIdContainer">
+          <label for="CustomerId" class="form-label">{{Translate 'CustomerId'}}</label>
+          <div class="custom-dropdown">
+            <input type="text" class="form-control dropdown-input" id="CustomerId" name="CustomerId"
+              placeholder="Select" readonly>
+            <div class="dropdown-content">
+
+              <div class="data-table-container">
+                <div class="loading-indicator">
+                  <div class="spinner"></div>
+                </div>
+                <table class="data-table">
+                  <thead>
+                    <tr><th colspan="2" class="text-center">
+                      enter minimum 4 digits to search
+                    </th></tr>
+                    <tr>
+                      <th>
+                        <span>Customer Id</span>
+                        <span>
+                        <input id="customerId" type="text" class="filter-input" placeholder="Customer Id" data-column="0">
+                        </span>
+                        <span id="cusfilter" style="padding: 1px 4px;border-radius: 5px;"  class="bg-danger text-light d-none">
+                        <i class="fas fa-times"></i></span>
+                      </th>
+                      <th>
+                        <span>Name</span>
+                        <span>
+                        <input id="cusName" type="text" class="filter-input" placeholder="Name" data-column="1">
+                        </span>
+                        <span id="namefilter" style="padding: 1px 4px;border-radius: 5px;"  class="bg-danger text-light d-none">
+                        <i class="fas fa-times"></i></span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Table rows will be populated by JavaScript -->
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="pagination">
+                <div class="pagination-info">Showing <span id="start-record">1</span> to <span id="end-record">7</span>
+                  of
+                  <span id="total-records">7</span> entries
+                </div>
+                <div class="pagination-controls">
+                  <button type="button" class="pagination-btn" id="first-page" disabled>First</button>
+                  <button type="button" class="pagination-btn" id="prev-page" disabled>Previous</button>
+                  <button type="button" class="pagination-btn active">1</button>
+                  <button type="button" class="pagination-btn" id="next-page">Next</button>
+                  <button type="button" class="pagination-btn" id="last-page">Last</button>
+
+                  <div class="records-per-page">
+                    <span>Show</span>
+                    <div class="records-dropdown">
+                      <div class="records-dropdown-toggle">
+                        <span id="current-records-per-page">10</span>
+                      </div>
+                      <div class="records-dropdown-menu">
+                        <!-- <div class="records-option" data-value="5">5</div> -->
+                        <div class="records-option" data-value="10">10</div>
+                        <div class="records-option" data-value="25">25</div>
+                        <div class="records-option" data-value="50">50</div>
+                      </div>
+                    </div>
+                    <span>entries</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-2">
+          <button type="button" class="btn btn-success mt-4" id="searchdata">{{Translate 'Search'}}</button>
+        </div>
+        <div class="col-2">
+          <button type="button" class="btn btn-danger mt-4" id="cleardata">{{Translate 'Clear'}}</button>
+        </div>
+      </div>
+    </form>
+    <div id="main-container" class="d-none">
+      <div id="norecord" class="d-none text-center">
+        No Data Found
+      </div>
     <div class="head-container">
+
       <div>
         <h6 id="heading"></h6>
       </div>
-      {{#if ResponseData}}
-      <div class="exp-btn-container">
+      <div class="exp-btn-container d-none" id="export-container">
         <button id="exportBtn">{{Translate 'Export'}}</button>
       </div>
-	  {{/if}}
     </div>
 
     <div class="table-container">
@@ -168,142 +537,107 @@
       <span id="count"></span>
     </div>
     </div>
+  </div>
 
-  
+
   <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <script>
-    //   const year = '2025';
-    //   const month = '09';
-    //   var url = `https://techsa-integration-api.azurewebsites.net/api/v1/IntegrationApi/GetMonthlyTimesheet?year=${year}&month=${month}`
-    //   fetch(url, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'companyId':'AYN',
-    //     'authorization':'Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSIsIkVtYWlsIjoiYS5oeWRlckBtYWlsLmNvbSIsIk1vYmlsZU51bWJlciI6IjEyMTIzMTQxMzQiLCJDb21wYW55SWQiOiJBWU4iLCJVc2VyTmFtZUVtcGxveWVlIjoiMSIsIklETnVtYmVyIjoiIiwiVXNlclR5cGUiOiIxIiwiZXhwIjoxNzU3Mzk4MDg2LCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.jW0J5C80va6TaNv-k9gywY3_I_PxVtJ-Yr-dOi-njck'
-    //   }
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-    //   resp = data;
-    //   setTable(resp);
-    //   console.log('Success:', data);
-    // })
-    // .catch(error => {
-    //   console.error('Error:', error);
-    // });
+    var _this = this;
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js'; // URL of the script
+    script.type = 'text/javascript';
+    script.onload = function () {
+      console.log('Script loaded successfully');
+      // You can now use jQuery or whatever the script provides
+    };
+    document.head.appendChild(script); // or document.body.appendChild(script);
+    const script1 = document.createElement('script');
+        script1.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11'; // URL of the script
+        script1.type = 'text/javascript';
+        script1.onload = function () {
+            // You can now use jQuery or whatever the script provides
+            console.log('script loaded sucessfully');
+        };
+    document.head.appendChild(script1);
+    const script3 = document.createElement('script');
+            script3.src = 'https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js';
+            script3.type = 'text/javascript';
+            script3.onload = function () {
+            console.log('Handlebars loaded!');
+
+            // Now you can safely use Handlebars
+            Handlebars.registerHelper('Translate', function (value) {
+        let _ret =value;
+        if(!value)
+            _ret ="";
+        
+        let Lang = localStorage.getItem("CurrentLanguage");
+
+        if (!Lang) {
+            return _ret;
+        }
+        if(!(window.location.hostname === "techsa.sa")){
+            return _ret;
+        }
+        if (!_this.globalService.systemLabels) {
+            return _ret;
+        }
+       
+        try {
+
+            if (value.substring(0, 3) == "LBL") {
+      
+              let _label = _this.globalService.systemLabels.filter(x => x.LabelId == value)[0];
+              if (_label) {
+                let _ret = value;
+                if(_label[Lang]) {
+                  _ret = _label[Lang];
+                }
+                else if(_label.DefaultValue) {
+                  _ret = _label.DefaultValue
+                }
+                _ret =  _ret
+              }
+              else 
+              _ret = value;
+            }
+            else {
+      
+              let _value = value.toLowerCase().trim();
+              let _label = _this.globalService.systemLabels.filter(x => x.DefaultValue.toLowerCase().trim() == _value)[0];
+              if (_label) {
+                _ret =  _label[Lang] ? _label[Lang] : value
+              }
+              else 
+              _ret =  value;
+          
+            }
+          }
+          catch (error) {
+            _ret =  value
+          }
+
+        return  _ret;
+        });
+            };
+            document.body.appendChild(script3);
 
 
-    const data = [
-      {
-        "EmployeeId": "0000085",
-        "Name": "بتول ال سهل ",
-        "2025-09-01": "P",
-        "2025-09-02": null,
-        "2025-09-03": null,
-        "2025-09-04": null,
-        "2025-09-05": null,
-        "2025-09-06": null,
-        "2025-09-07": "P",
-        "2025-09-08": "P",
-        "2025-09-09": null,
-        "2025-09-10": null,
-        "2025-09-11": null,
-        "2025-09-12": null,
-        "2025-09-13": "P",
-        "2025-09-14": null,
-        "2025-09-15": null,
-        "2025-09-16": null,
-        "2025-09-17": null,
-        "2025-09-18": null,
-        "2025-09-19": null,
-        "2025-09-20": null,
-        "2025-09-21": null,
-        "2025-09-22": null,
-        "2025-09-23": null,
-        "2025-09-24": null,
-        "2025-09-25": null,
-        "2025-09-26": null,
-        "2025-09-27": null,
-        "2025-09-28": null,
-        "2025-09-29": null,
-        "2025-09-30": null
-      },
-      {
-        "EmployeeId": "0001644",
-        "Name": "حصه سعود محمد ال سهل",
-        "2025-09-01": null,
-        "2025-09-02": "P",
-        "2025-09-03": "P",
-        "2025-09-04": null,
-        "2025-09-05": null,
-        "2025-09-06": null,
-        "2025-09-07": null,
-        "2025-09-08": "P",
-        "2025-09-09": null,
-        "2025-09-10": null,
-        "2025-09-11": null,
-        "2025-09-12": null,
-        "2025-09-13": null,
-        "2025-09-14": null,
-        "2025-09-15": null,
-        "2025-09-16": null,
-        "2025-09-17": null,
-        "2025-09-18": null,
-        "2025-09-19": null,
-        "2025-09-20": null,
-        "2025-09-21": null,
-        "2025-09-22": null,
-        "2025-09-23": null,
-        "2025-09-24": null,
-        "2025-09-25": null,
-        "2025-09-26": null,
-        "2025-09-27": null,
-        "2025-09-28": null,
-        "2025-09-29": null,
-        "2025-09-30": null
-      },
-      {
-        "EmployeeId": "0001647",
-        "Name": "منار صلاح خليفة الحمد ",
-        "2025-09-01": null,
-        "2025-09-02": null,
-        "2025-09-03": "P",
-        "2025-09-04": "P",
-        "2025-09-05": null,
-        "2025-09-06": null,
-        "2025-09-07": null,
-        "2025-09-08": null,
-        "2025-09-09": null,
-        "2025-09-10": null,
-        "2025-09-11": null,
-        "2025-09-12": null,
-        "2025-09-13": null,
-        "2025-09-14": null,
-        "2025-09-15": null,
-        "2025-09-16": null,
-        "2025-09-17": null,
-        "2025-09-18": null,
-        "2025-09-19": null,
-        "2025-09-20": null,
-        "2025-09-21": null,
-        "2025-09-22": null,
-        "2025-09-23": null,
-        "2025-09-24": null,
-        "2025-09-25": null,
-        "2025-09-26": null,
-        "2025-09-27": null,
-        "2025-09-28": null,
-        "2025-09-29": null,
-        "2025-09-30": null
-      }
-    ];
+    var companyId = 'AYN';
+    var integrationUrl = 'https://techsa-integration-api.azurewebsites.net';
+    var apps4xUrl = 'https://techsa-apps4x-api.azurewebsites.net';
+    var token = '';
+    const userId = localStorage.getItem('UserId') || 'a.hyder';
+    const connectorId = 'f8020e6282e5406c870eda6827ea6de4';
+    const CustomerEntityId = '8956271a900043519590d8891794b927';
+    var currentPage = 1;
+    var recordsPerPage = 10;
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    const portal = window.location.hash.split('/')[1];
 
-    const ResponseData = [...data, ...data, ...data, ...data, ...data, ...data, ...data, ...data, ...data, ...data];
-    var tableExportData = [];
-    var selectedMonthList = [];
+
     const monthList = [
       { Jan: 'يناير' },
       { Feb: 'فبراير' },
@@ -327,20 +661,152 @@
       { Fri: 'الجمعة' },
       { Sat: 'السبت' }
     ];
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js'; // URL of the script
-      script.type = 'text/javascript';
-      script.onload = function () {
-        // You can now use jQuery or whatever the script provides
-        console.log('script loaded sucessfully');
-      };
-      document.head.appendChild(script); // or document.body.appendChild(script);
-    setTable()
+    var tableExportData = [];
+    var selectedMonthList = [];
+
+    if (window.location.hostname === "techsa.sa") {
+      token = localStorage.getItem("eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9");
+      companyId = localStorage.getItem('CompanyId');
+
+      if (_this.globalService.SysParameter) {
+        const SysParameter = _this.globalService.SysParameter;
+        if (SysParameter.TechsaIntegrationEndPoint) {
+          integrationUrl = SysParameter.TechsaIntegrationEndPoint;
+        }
+        if (SysParameter.TechsaSwaggerEndPoint) {
+          apps4xUrl = SysParameter.TechsaSwaggerEndPoint;
+        }
+      }
+    }
+    else {
+      token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSIsIkVtYWlsIjoiYS5oeWRlckBtYWlsLmNvbSIsIk1vYmlsZU51bWJlciI6IjEyMTIzMTQxMzQiLCJDb21wYW55SWQiOiJBWU4iLCJVc2VyTmFtZUVtcGxveWVlIjoiMSIsIklETnVtYmVyIjoiIiwiVXNlclR5cGUiOiIxIiwiZXhwIjoxNzYzMDEyOTA1LCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.1s2-MobKTH0NrVEEike_99ZZoUUxKvph1M1ZbohcLCQ";
+      companyId = "AYN";
+      integrationUrl = 'https://techsa-integration-api.azurewebsites.net';
+      apps4xUrl = 'https://techsa-apps4x-api.azurewebsites.net';
+      // getReportData();
+    }
+
+
+    getYearList();
+    if(userInfo && userInfo.UserNameEmployee && portal && portal === 'Customer'){
+      $("#CustomerId").val(userInfo.UserNameEmployee);
+      const $customerIdContainer = $('#customerIdContainer');
+      $customerIdContainer.addClass('d-none');
+    }else{
+      getCustomerList();
+    }
+
+    function getReportData() {
+    const year = $("#Year").val();
+    const month = $("#Month").val();
+    const customerId = $("#CustomerId").val();
+      var url = `${integrationUrl}/api/v1/IntegrationApi/GetMonthlyTimesheet?year=${year}&month=${month}&customerId=${customerId}`
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'companyId': companyId,
+          'authorization': 'Bearer ' + token
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.length > 0) {
+            const $exportcont = $('#export-container');
+            $exportcont.removeClass('d-none');
+            const $norecord = $('#norecord');
+            $norecord.addClass('d-none');
+            setTable(data);
+          }else{
+            const $norecord = $('#norecord');
+            $norecord.removeClass('d-none');
+            // setTable(resp);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
     // if (_this && _this.ResponseData && _this.ResponseData.length > 0) {
-    //   setTable();
+    //   
+
+    //   const $exportcont = $('#export-container');
+    //   $exportcont.removeClass('d-none');
+    //   setTable(_this.ResponseData);
     // }
 
-  function getDaysInMonth(year, month) {
+    function getYearList() {
+      const apiUrl = `${apps4xUrl}/api/v1/AYN/connector/${connectorId}/sql/sysobjectexecute?object_Type=V&objectName=GetYearList&$orderby=YearValue&$orderbydirection=0`;
+      fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "User-Id": userId,
+          'authorization': 'Bearer ' + token
+        }
+      })
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+          let $dropdown = $('#Year');
+          $dropdown.empty(); // Clear previous options
+
+        $dropdown.append($('<option>', {
+                value: '',
+                text: ''
+              }))
+          $.each(data.Data, function (index, item) {
+            $dropdown.append(
+              $('<option>', {
+                value: item.YearValue,
+                text: `${item.YearValue}`
+              })
+            );
+          });
+
+        })
+        .catch(error => {
+          console.error("Error fetching data:", error);
+        });
+    }
+
+    function getCustomerList(obj={}) {
+
+      $('.loading-indicator').show();
+            let apiUrl = `${apps4xUrl}/api/v1/data/${companyId}?entityId=${CustomerEntityId}&$page=${currentPage}&$size=${recordsPerPage}`;
+      if(obj.CustomerId){
+          apiUrl += '&$filter:CustomerId=li:'+obj.CustomerId;
+      }
+      if(obj.FirstName){
+          apiUrl += '&$filter:FirstName=li:'+obj.FirstName;
+      }
+            fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "User-Id":userId,
+                    'authorization': 'Bearer ' + token
+                }
+            })
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                  // setTimeout(function() {
+                    $('.loading-indicator').hide();
+                  // }, 1000);
+                    setCustomDropdown(data.Data,data.TotalCount);
+
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                });
+        }
+
+
+    function getDaysInMonth(year, month) {
 
       const days = [];
       const date = new Date(year, month, 1);
@@ -366,12 +832,12 @@
       return days;
     }
 
-    function setTable() {
-      const resp = ResponseData;
+    function setTable(resdata) {
+      const resp = resdata;
       if (resp.length < 1) {
         return
       }
-      setTableHeader(resp, 'mytable',true);
+      setTableHeader(resp, 'mytable', true);
     }
 
     function setTableHeader(resp, tableName) {
@@ -419,19 +885,19 @@
         thdiv.className = 'th-content';
         const labelText = document.createTextNode(item);
         thdiv.appendChild(labelText);
-        
-        if(index != 0){
-        const input = document.createElement("input");
-        input.className = 'pin-toggle';
-        input.type = 'checkbox'
-        input.checked = false;
-        input.setAttribute("data-col", index + 1);
-        thdiv.appendChild(input);
-        }else{          
-        th.style.left = '0px';
-        th.className = 'sticky-col';
+
+        if (index != 0) {
+          const input = document.createElement("input");
+          input.className = 'pin-toggle';
+          input.type = 'checkbox'
+          input.checked = false;
+          input.setAttribute("data-col", index + 1);
+          thdiv.appendChild(input);
+        } else {
+          th.style.left = '0px';
+          th.className = 'sticky-col';
         }
-        
+
         th.appendChild(thdiv);
         row1.appendChild(th);
       });
@@ -492,46 +958,46 @@
       setPagination(merged);
       setTableExportData(merged);
     }
-      function setTableExportData(paginatedItems) {
-       tableExportData = [];
-        let PresentText = 'Present';
-        let AbsentText = 'Absent';
-        let WeekEnd = 'WeekOff';
-        if (localStorage.getItem('CurrentLanguage') == 'Arabic') {
-          PresentText = 'حاضر';
-          AbsentText = 'غائب';
-          WeekEnd = 'WeekOff';
-        }
-        const weekends = selectedMonthList.filter(x => x.isWeekend);
-        paginatedItems.forEach(obj => {
-          let row = [];
-          Object.keys(obj).forEach((key, index) => {
-
-            let cell = {};
-            if (key !== 'EmployeeId' && key !== 'Name' && key !== 'TotalPresent' && key !== 'TotalAbsent' && key !== 'TotalLeave') {
-              const keysplitDay = Number(key.split('-')[2]);
-              if (obj[key] == 'P' && !weekends.filter(x => x.dayNumber == keysplitDay).length > 0) {
-                  cell[keysplitDay] = PresentText;
-              } else if (obj[key] == null && !weekends.filter(x => x.dayNumber == keysplitDay).length > 0) {
-                  cell[keysplitDay] = AbsentText;
-              }
-              else if (weekends.filter(x => x.dayNumber == keysplitDay).length > 0) {
-                  cell[keysplitDay] = WeekEnd;
-              }
-            }
-            else {
-              cell[key] = obj[key];
-            }
-
-            row.push(cell);
-          });
-          const merged = row.reduce((acc, obj) => {
-            return { ...acc, ...obj };
-          }, {});
-
-          tableExportData.push(merged);
-        });
+    function setTableExportData(paginatedItems) {
+      tableExportData = [];
+      let PresentText = 'Present';
+      let AbsentText = 'Absent';
+      let WeekEnd = 'WeekOff';
+      if (localStorage.getItem('CurrentLanguage') == 'Arabic') {
+        PresentText = 'حاضر';
+        AbsentText = 'غائب';
+        WeekEnd = 'WeekOff';
       }
+      const weekends = selectedMonthList.filter(x => x.isWeekend);
+      paginatedItems.forEach(obj => {
+        let row = [];
+        Object.keys(obj).forEach((key, index) => {
+
+          let cell = {};
+          if (key !== 'EmployeeId' && key !== 'Name' && key !== 'TotalPresent' && key !== 'TotalAbsent' && key !== 'TotalLeave') {
+            const keysplitDay = Number(key.split('-')[2]);
+            if (obj[key] == 'P' && !weekends.filter(x => x.dayNumber == keysplitDay).length > 0) {
+              cell[keysplitDay] = PresentText;
+            } else if (obj[key] == null && !weekends.filter(x => x.dayNumber == keysplitDay).length > 0) {
+              cell[keysplitDay] = AbsentText;
+            }
+            else if (weekends.filter(x => x.dayNumber == keysplitDay).length > 0) {
+              cell[keysplitDay] = WeekEnd;
+            }
+          }
+          else {
+            cell[key] = obj[key];
+          }
+
+          row.push(cell);
+        });
+        const merged = row.reduce((acc, obj) => {
+          return { ...acc, ...obj };
+        }, {});
+
+        tableExportData.push(merged);
+      });
+    }
 
     function setPagination(params) {
       const itemsPerPage = 10;
@@ -602,9 +1068,9 @@
               // }
             }
             else {
-              if(index == 0){
-              cell.className = "sticky-col";
-              cell.style.left = '0px';
+              if (index == 0) {
+                cell.className = "sticky-col";
+                cell.style.left = '0px';
               }
               cell.textContent = obj[key];
             }
@@ -613,10 +1079,10 @@
           });
           tbody.appendChild(row);
         });
-
+        updatedStickyField();
       }
 
-      
+
 
       function setupPagination(totalItems, itemsPerPage) {
         const pageCount = Math.ceil(totalItems / itemsPerPage);
@@ -682,28 +1148,28 @@
       displayItems(currentPage);
       setupPagination(items.length, itemsPerPage);
     }
-    updatedStickyField();
-function updatedStickyField() {
-    const tableSticky = document.getElementById('mytable');
-    const checkboxes = document.querySelectorAll('.pin-toggle');
+    // updatedStickyField();
+    function updatedStickyField() {
+      const tableSticky = document.getElementById('mytable');
+      const checkboxes = document.querySelectorAll('.pin-toggle');
 
-    function updateStickyColumns() {
+      function updateStickyColumns() {
         let leftOffset = 0;
 
         // Remove previous sticky styles
         const allCells = tableSticky.querySelectorAll('th, td');
         allCells.forEach(cell => {
-            cell.classList.remove('sticky-col');
-            cell.style.left = '';
+          cell.classList.remove('sticky-col');
+          cell.style.left = '';
         });
 
         // Make the first column (Employee ID) always sticky (colIndex = 0)
         tableSticky.querySelectorAll('tr').forEach(row => {
-            const cell = row.children[0];
-            if (cell) {
-                cell.classList.add('sticky-col');
-                cell.style.left = `${leftOffset}px`;
-            }
+          const cell = row.children[0];
+          if (cell) {
+            cell.classList.add('sticky-col');
+            cell.style.left = `${leftOffset}px`;
+          }
         });
 
         // Get the width of the first column
@@ -712,182 +1178,451 @@ function updatedStickyField() {
 
         // Apply sticky styles for checked columns (starting from colIndex = 1)
         [...checkboxes].filter(cb => cb.checked).forEach(cb => {
-            const colIndex = parseInt(cb.dataset.col) - 1;
+          const colIndex = parseInt(cb.dataset.col) - 1;
 
-            tableSticky.querySelectorAll('tr').forEach(row => {
-                const cell = row.children[colIndex];
-                if (cell) {
-                    cell.classList.add('sticky-col');
-                    cell.style.left = `${leftOffset}px`;
-                }
-            });
+          tableSticky.querySelectorAll('tr').forEach(row => {
+            const cell = row.children[colIndex];
+            if (cell) {
+              cell.classList.add('sticky-col');
+              cell.style.left = `${leftOffset}px`;
+            }
+          });
 
-            const cellWidth = tableSticky.rows[0].children[colIndex]?.offsetWidth || 100;
-            leftOffset += cellWidth;
+          const cellWidth = tableSticky.rows[0].children[colIndex]?.offsetWidth || 100;
+          leftOffset += cellWidth;
         });
+      }
+
+      // Attach listeners
+      checkboxes.forEach(cb => {
+        $(cb).on('change', updateStickyColumns);
+      });
+
+      // Initial run
+      $(window).on('load', updateStickyColumns);
     }
 
-        // Attach listeners
-        checkboxes.forEach(cb => {
-          $(cb).on('change', updateStickyColumns);
+
+    function exportExcel() {
+
+      exportExcelWorkbook();
+      async function exportExcelWorkbook() {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet("Attendance");
+
+        const table = document.getElementById("mytable");
+
+        // Add heading row at the top
+        let heading = document.getElementById("heading").textContent;
+        const cusId = sessionStorage.getItem('customerId');
+        if (cusId) {
+          heading += ' -' + cusId;
+        }
+        const headingRow = worksheet.addRow([heading]);
+
+        // Determine number of columns to merge (based on table first row)
+        const columnCount = table.rows[0].cells.length;
+
+        // Merge heading across all columns
+        worksheet.mergeCells(1, 1, 1, columnCount); // Merge from A1 to last column (e.g., E1)
+
+        // Style the heading
+        headingRow.font = { bold: true, size: 16 };
+        headingRow.alignment = { vertical: 'middle', horizontal: 'center' };
+        headingRow.height = 30;
+
+        // Extract headers from the HTML table
+        const firstHeaderRow = Array.from(table.rows[0].cells).map(cell => cell.innerText.trim());
+        const secondHeaderRow = ['', '', '', '', ...Array.from(table.rows[1].cells).map(cell => cell.innerText.trim())];
+
+        // Add header rows (now starting from row 2 and 3)
+        worksheet.addRow(firstHeaderRow);  // Row 2
+        worksheet.addRow(secondHeaderRow); // Row 3
+
+        // Merge first 4 columns vertically (A2:A3, B2:B3, etc.)
+        for (let i = 0; i < 4; i++) {
+          const col = String.fromCharCode(65 + i); // A, B, C, D
+          worksheet.mergeCells(`${col}2:${col}3`);
+        }
+
+        // Style header rows
+        for (let rowIndex = 2; rowIndex <= 3; rowIndex++) {
+          worksheet.getRow(rowIndex).eachCell(cell => {
+            const text = cell._value.model.value;
+            const weekends = selectedMonthList.filter(x => x.isWeekend);
+            cell.font = { bold: true };
+            cell.alignment = { horizontal: 'center', vertical: 'middle' };
+            if (!isNaN(text)) {
+              if (weekends.filter(x => x.dayNumber == Number(text)).length > 0) {
+                cell.fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: { argb: 'ffffff' } // white background
+                };
+              } else {
+                cell.fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: { argb: 'FF4CAF50' } // Green background
+                };
+              }
+            } else if (text === 'Fri' || text === 'Sat' || text == 'الجمعة' || text == 'السبت') {//Arabic
+              cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'ffffff' } // white background
+              };
+            } else {
+              cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'FF4CAF50' } // Green background
+              };
+            }
+          });
+        }
+
+        const tbody = document.createElement("tbody");
+
+        let fixedKeys = ['EmployeeId', 'Name', 'TotalPresent', 'TotalAbsent'];
+        tableExportData.forEach(obj => {
+          const tr = document.createElement("tr");
+          fixedKeys.forEach(key => {
+            if (obj.hasOwnProperty(key)) {
+              const td = document.createElement("td");
+              td.textContent = obj[key];
+              tr.appendChild(td);
+            }
+          });
+          const remainingKeys = Object.keys(obj)
+            .filter(key => !fixedKeys.includes(key))
+            .sort((a, b) => Number(a) - Number(b));
+          remainingKeys.forEach(key => {
+            const td = document.createElement("td");
+            td.textContent = obj[key];
+            tr.appendChild(td);
+          });
+
+          tbody.appendChild(tr);
         });
 
-        // Initial run
-        $(window).on('load', updateStickyColumns);
-}
+        // Add data rows
+        const bodyRows = tbody.querySelectorAll("tr");
+        bodyRows.forEach(tr => {
+          const cells = Array.from(tr.cells).map(td => td.innerText.trim());
+          const excelRow = worksheet.addRow(cells);
 
-
-    function exportExcel(){
-      
-    exportExcelWorkbook();
-        async function exportExcelWorkbook() {
-          const workbook = new ExcelJS.Workbook();
-          const worksheet = workbook.addWorksheet("Attendance");
-
-          const table = document.getElementById("mytable");
-
-          // Add heading row at the top
-          let heading = document.getElementById("heading").textContent;
-          const cusId = sessionStorage.getItem('customerId');
-          if(cusId){
-          heading += ' -'+cusId;
-          }
-          const headingRow = worksheet.addRow([heading]);
-
-          // Determine number of columns to merge (based on table first row)
-          const columnCount = table.rows[0].cells.length;
-
-          // Merge heading across all columns
-          worksheet.mergeCells(1, 1, 1, columnCount); // Merge from A1 to last column (e.g., E1)
-
-          // Style the heading
-          headingRow.font = { bold: true, size: 16 };
-          headingRow.alignment = { vertical: 'middle', horizontal: 'center' };
-          headingRow.height = 30;
-
-          // Extract headers from the HTML table
-          const firstHeaderRow = Array.from(table.rows[0].cells).map(cell => cell.innerText.trim());
-          const secondHeaderRow = ['', '', '', '', ...Array.from(table.rows[1].cells).map(cell => cell.innerText.trim())];
-
-          // Add header rows (now starting from row 2 and 3)
-          worksheet.addRow(firstHeaderRow);  // Row 2
-          worksheet.addRow(secondHeaderRow); // Row 3
-
-          // Merge first 4 columns vertically (A2:A3, B2:B3, etc.)
-          for (let i = 0; i < 4; i++) {
-            const col = String.fromCharCode(65 + i); // A, B, C, D
-            worksheet.mergeCells(`${col}2:${col}3`);
-          }
-
-          // Style header rows
-          for (let rowIndex = 2; rowIndex <= 3; rowIndex++) {
-            worksheet.getRow(rowIndex).eachCell(cell => {
-              const text = cell._value.model.value;
-              const weekends = selectedMonthList.filter(x => x.isWeekend);
-              cell.font = { bold: true };
-              cell.alignment = { horizontal: 'center', vertical: 'middle' };
-            if(!isNaN(text)){
-             if (weekends.filter(x => x.dayNumber == Number(text)).length > 0) {
-                cell.fill = {
-                  type: 'pattern',
-                  pattern: 'solid',
-                  fgColor: { argb: 'ffffff' } // white background
-                };
-              }else{
-                cell.fill = {
-                  type: 'pattern',
-                  pattern: 'solid',
-                  fgColor: { argb: 'FF4CAF50' } // Green background
-                };
-              }
-            }else if(text === 'Fri' || text === 'Sat' || text == 'الجمعة' || text == 'السبت'){//Arabic
-                cell.fill = {
-                  type: 'pattern',
-                  pattern: 'solid',
-                  fgColor: { argb: 'ffffff' } // white background
-                };
-            }else{
-                cell.fill = {
-                  type: 'pattern',
-                  pattern: 'solid',
-                  fgColor: { argb: 'FF4CAF50' } // Green background
-                };
+          // Apply styling based on cell value
+          excelRow.eachCell((cell) => {
+            const text = cell.value.toString().toLowerCase();
+            if (text === "present") {
+              cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'FFB9F6CA' }
+              };
+            } else if (text === "absent") {
+              cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'FFFFCDD2' }
+              };
+            } else if (text === "weekoff") {
+              cell.value = null;
             }
-            });
-          }
 
-          const tbody = document.createElement("tbody");
-
-           let fixedKeys = ['EmployeeId', 'Name','TotalPresent','TotalAbsent'];
-           tableExportData.forEach(obj => {
-              const tr = document.createElement("tr");
-              fixedKeys.forEach(key => {
-                if (obj.hasOwnProperty(key)) {
-                const td = document.createElement("td");
-                td.textContent = obj[key];
-                tr.appendChild(td);
-                }
-              });
-              const remainingKeys = Object.keys(obj)
-                .filter(key => !fixedKeys.includes(key))
-                .sort((a, b) => Number(a) - Number(b));
-              remainingKeys.forEach(key => {
-                const td = document.createElement("td");
-                td.textContent = obj[key];
-                tr.appendChild(td);
-              });
-
-              tbody.appendChild(tr);
-            });
-
-          // Add data rows
-          const bodyRows = tbody.querySelectorAll("tr");
-          bodyRows.forEach(tr => {
-            const cells = Array.from(tr.cells).map(td => td.innerText.trim());
-            const excelRow = worksheet.addRow(cells);
-
-            // Apply styling based on cell value
-            excelRow.eachCell((cell) => {
-              const text = cell.value.toString().toLowerCase();
-              if (text === "present") {
-                cell.fill = {
-                  type: 'pattern',
-                  pattern: 'solid',
-                  fgColor: { argb: 'FFB9F6CA' }
-                };
-              } else if (text === "absent") {
-                cell.fill = {
-                  type: 'pattern',
-                  pattern: 'solid',
-                  fgColor: { argb: 'FFFFCDD2' }
-                };
-              }else if(text === "weekoff"){
-                cell.value = null;
-              }
-
-              // Center all cells
-              cell.alignment = { horizontal: 'center', vertical: 'middle' };
-            });
+            // Center all cells
+            cell.alignment = { horizontal: 'center', vertical: 'middle' };
           });
+        });
 
-          // Auto column width
-          worksheet.columns.forEach(col => col.width = 15);
+        // Auto column width
+        worksheet.columns.forEach(col => col.width = 15);
 
-          // Download Excel file
-          const buffer = await workbook.xlsx.writeBuffer();
-          const blob = new Blob([buffer], {
-            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          });
-          const link = document.createElement("a");
-          link.href = URL.createObjectURL(blob);
-          link.download = heading + ".xlsx";
-          link.click();
-        }
+        // Download Excel file
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = heading + ".xlsx";
+        link.click();
       }
-$('#exportBtn').on('click', function() {
-  exportExcel();
-});
+    }
+    $('#exportBtn').on('click', function () {
+      exportExcel();
+    });
+    $('#searchdata').on('click', function () {
+            if (!$("[name='CustomerId']").val() || !$("[name='Month']").val() || !$("[name='Year']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please Fill all the details'}}"), "warning");
+                return;
+            }
+      const $mainContainer = $('#main-container');
+      $mainContainer.removeClass('d-none');
+      getReportData();
+    });
+    $('#cleardata').on('click', function () {
+      if(portal && portal !== 'Customer'){
+      $("#CustomerId").val('');
+      }
 
+      $("#Month").val('');
+      $("#Year").val('');
+      const $mainContainer = $('#main-container');
+      $mainContainer.addClass('d-none');
+    });
+    
+        function handlebarCompile(templateSource){
+            let template = Handlebars.compile(templateSource);
+            return  template();
+        }
+
+    function setCustomDropdown(param,totalCount) {
+            // Sample data
+            const tableData = [...param]
+            
+            // Pagination variables
+            let filteredData = [...tableData];
+            
+            // Initialize the table
+            function initializeTable() {
+                renderTable();
+                updatePagination();
+            }
+            
+            // Render table with current data
+            function renderTable() {
+                const tbody = $('.data-table tbody');
+                tbody.empty();
+                
+                const startIndex = (currentPage - 1) * recordsPerPage;
+                const endIndex = Math.min(startIndex + recordsPerPage, totalCount);
+                
+                for (let i = 0; i < filteredData.length; i++) {
+                    const row = filteredData[i];
+                    const tr = $('<tr>');
+                    
+                    tr.append($('<td>').text(row.CustomerId));
+                    tr.append($('<td>').text(row.FirstName));
+                    
+                    tr.click(function() {
+                        $('.data-table tbody tr').removeClass('selected');
+                        $(this).addClass('selected');
+                        $('#CustomerId').val(row.CustomerId);
+                        $('.dropdown-content').removeClass('active');
+                    });
+                    
+                    tbody.append(tr);
+                }
+                
+                // Update pagination info
+                $('#start-record').text(totalCount > 0 ? startIndex + 1 : 0);
+                $('#end-record').text(endIndex);
+                $('#total-records').text(totalCount);
+            }
+            
+            // Update pagination controls
+            function updatePagination() {
+                const totalPages = Math.ceil(totalCount / recordsPerPage);
+                
+                // Clear existing page buttons (except for navigation buttons)
+                $('.pagination-controls .pagination-btn:not(#first-page):not(#prev-page):not(#next-page):not(#last-page)').remove();
+                
+                // Add page number buttons
+                const maxVisiblePages = 2;
+                let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+                
+                // Adjust start page if we're near the end
+                if (endPage - startPage + 1 < maxVisiblePages) {
+                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                }
+                
+                // Add page buttons before Next button
+                const nextBtn = $('#next-page');
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = $('<button>')
+                        .addClass('pagination-btn')
+                        .text(i)
+                        .attr('type', 'button')
+                        .toggleClass('active', i === currentPage);
+                    
+                    pageBtn.click(function(e) {
+                        e.stopPropagation(); // Prevent event from bubbling up
+                        currentPage = i;
+                        getCustomerList();
+                        // renderTable();
+                        // updatePagination();
+                    });
+                    
+                    pageBtn.insertBefore(nextBtn);
+                }
+                
+                // Update navigation buttons state
+                $('#first-page').prop('disabled', currentPage === 1);
+                $('#prev-page').prop('disabled', currentPage === 1);
+                $('#next-page').prop('disabled', currentPage === totalPages || totalPages === 0);
+                $('#last-page').prop('disabled', currentPage === totalPages || totalPages === 0);
+                
+                // Navigation button handlers
+                $('#first-page').off('click').click(function(e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPage > 1) {
+                        currentPage = 1;
+                        getCustomerList();
+                        // renderTable();
+                        // updatePagination();
+                    }
+                });
+                
+                $('#prev-page').off('click').click(function(e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPage > 1) {
+                        currentPage--;
+                        getCustomerList();
+                        // renderTable();
+                        // updatePagination();
+                    }
+                });
+                
+                $('#next-page').off('click').click(function(e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        getCustomerList();
+                        // renderTable();
+                        // updatePagination();
+                    }
+                });
+                
+                $('#last-page').off('click').click(function(e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPage < totalPages) {
+                        currentPage = totalPages;
+                        getCustomerList();
+                        // renderTable();
+                        // updatePagination();
+                    }
+                });
+            }
+            
+            // clear data
+            // $('#cusfilter').click(function() {
+            //     $("#customerId").val('');
+            //     let obj = {};
+            //     const cus = $("#cusName").val();
+            //     if(cus && cus.length > 3){
+            //       obj['FirstName'] = cus;
+            //     }
+            //     getCustomerList(obj);
+            // });
+            // $('#namefilter').click(function() {
+            //     $("#cusName").val('');
+            //     let obj = {};
+            //     const cus = $("#customerId").val();
+            //     if(cus && cus.length > 3){
+            //       obj['CustomerId'] = cus;
+            //     }
+            //     getCustomerList(obj);
+            // });
+            // Filter table data based on input
+            function filterTable() {
+                const filters = [];
+                $('.filter-input').each(function() {
+                    const columnIndex = $(this).data('column');
+                    const value = $(this).val().toLowerCase();
+                    filters[columnIndex] = value;
+                });
+                
+                // filteredData = tableData.filter(row => {
+                //     return (
+                //         (filters[0] ? row.CustomerId.toLowerCase().includes(filters[0]) : true) &&
+                //         (filters[1] ? row.FirstName.toLowerCase().includes(filters[1]) : true)
+                //     );
+                // });
+                let obj ={};
+                // const $cusfilter = $('#cusfilter');
+                // const $namefilter = $('#namefilter');
+                if(filters[0]){
+                obj['CustomerId'] = filters[0];
+                // $cusfilter.removeClass('d-none');
+                }
+                // else{
+                // $cusfilter.addClass('d-none');
+                // }
+                if(filters[1]){
+                obj['FirstName'] = filters[1];
+                $namefilter.removeClass('d-none');
+                }
+                // else{
+                // $namefilter.addClass('d-none');
+                // }
+                currentPage = 1;
+                if(obj !== null && ((obj.CustomerId && obj.CustomerId.length > 3) || (obj.FirstName && obj.FirstName.length > 3))){
+                getCustomerList(obj);
+                }
+                if(!filters[0] && !filters[1]){
+                  getCustomerList(obj);
+                }
+                // renderTable();
+                // updatePagination();
+            }
+            
+            // Dropdown functionality
+            $('.dropdown-input').click(function() {
+                $('.dropdown-content').addClass('active');
+            });
+            
+            // Close dropdown when clicking outside
+            $(document).click(function(e) {
+                if (!$(e.target).closest('.custom-dropdown').length) {
+                    $('.dropdown-content').removeClass('active');
+                }
+                
+                // Close records per page dropdown
+                if (!$(e.target).closest('.records-dropdown').length) {
+                    $('.records-dropdown-menu').removeClass('active');
+                }
+            });
+            
+            // Filter input event handlers
+            $('.filter-input').on('input', function() {
+                filterTable();
+            });
+            
+            // Records per page dropdown functionality
+            $('.records-dropdown-toggle').click(function(e) {
+                e.stopPropagation(); // Prevent event from bubbling up
+                $('.records-dropdown-menu').addClass('active');
+            });
+            
+            $('.records-option').click(function(e) {
+                e.stopPropagation(); // Prevent event from bubbling up
+                const newRecordsPerPage = parseInt($(this).data('value'));
+                
+                if (newRecordsPerPage !== recordsPerPage) {
+                    recordsPerPage = newRecordsPerPage;
+                    $('#current-records-per-page').text(recordsPerPage);
+                    
+                    // Update active state
+                    $('.records-option').removeClass('active');
+                    $(this).addClass('active');
+                    
+                    // Reset to first page and re-render
+                    currentPage = 1;
+                    // renderTable();
+                    // updatePagination();
+                    getCustomerList();
+                }
+                
+                $('.records-dropdown-menu').removeClass('active');
+            });
+            
+            
+            // Initialize the table
+            initializeTable();
+        }
 
   </script>
 </body>

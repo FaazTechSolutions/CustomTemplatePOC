@@ -2015,7 +2015,7 @@
                     $('input[name="visarequired"][value="no"]').prop("checked", true);
                     $('input[name="ticketrequired"][value="no"]').prop("checked", true);
                     getEmployeeDetailsByEmployeeIdOrName();
-                    $("#employeeId").val(data.RetListValue[0].employeeId);
+                    $("#employeeId").val(currentEmployeeId);
                     $("#paymentMethod").val("Monthly basis");
                     $("#vacationType").val("Annual");
                     $("#approvalmanagername").val(data.RetListValue[0].reportingEmployeeName);
