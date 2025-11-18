@@ -511,10 +511,10 @@
         </div>
       </div>
     </form>
-    <div id="main-container" class="d-none">
       <div id="norecord" class="d-none text-center">
         No Data Found
       </div>
+    <div id="main-container" class="d-none">
     <div class="head-container">
 
       <div>
@@ -679,7 +679,7 @@
       }
     }
     else {
-      token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSIsIkVtYWlsIjoiYS5oeWRlckBtYWlsLmNvbSIsIk1vYmlsZU51bWJlciI6IjEyMTIzMTQxMzQiLCJDb21wYW55SWQiOiJBWU4iLCJVc2VyTmFtZUVtcGxveWVlIjoiMSIsIklETnVtYmVyIjoiIiwiVXNlclR5cGUiOiIxIiwiZXhwIjoxNzYzMDEyOTA1LCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.1s2-MobKTH0NrVEEike_99ZZoUUxKvph1M1ZbohcLCQ";
+      token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSIsIkVtYWlsIjoiYS5oeWRlckBtYWlsLmNvbSIsIk1vYmlsZU51bWJlciI6IjEyMTIzMTQxMzQiLCJDb21wYW55SWQiOiJBWU4iLCJVc2VyTmFtZUVtcGxveWVlIjoiMSIsIklETnVtYmVyIjoiIiwiVXNlclR5cGUiOiIxIiwiZXhwIjoxNzYzNTI3MjQ2LCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.gmJX-By7CpKCVMNbEMhtB0iWOnsQoNX_GcEMPi99ZGA";
       companyId = "AYN";
       integrationUrl = 'https://techsa-integration-api.azurewebsites.net';
       apps4xUrl = 'https://techsa-apps4x-api.azurewebsites.net';
@@ -697,6 +697,11 @@
     }
 
     function getReportData() {
+      const $exportcont = $('#export-container');
+      const $norecord = $('#norecord');
+      const $maincontainer = $('#main-container');
+      $exportcont.addClass('d-none');
+      $maincontainer.addClass('d-none');
     const year = $("#Year").val();
     const month = $("#Month").val();
     const customerId = $("#CustomerId").val();
@@ -712,14 +717,84 @@
         .then(response => response.json())
         .then(data => {
           if (data.length > 0) {
-            const $exportcont = $('#export-container');
             $exportcont.removeClass('d-none');
-            const $norecord = $('#norecord');
+            $maincontainer.removeClass('d-none');
             $norecord.addClass('d-none');
+            let tempdata = [{
+  "EmployeeId": "0006198",
+  "Name": "عبدالله تركي بن علي الزهراني",
+  "2025-09-01": null,
+  "2025-09-02": "P",
+  "2025-09-03": null,
+  "2025-09-04": null,
+  "2025-09-05": null,
+  "2025-09-06": null,
+  "2025-09-07": "P",
+  "2025-09-08": null,
+  "2025-09-09": null,
+  "2025-09-10": null,
+  "2025-09-11": null,
+  "2025-09-12": null,
+  "2025-09-13": null,
+  "2025-09-14": "P",
+  "2025-09-15": null,
+  "2025-09-16": null,
+  "2025-09-17": null,
+  "2025-09-18": "P",
+  "2025-09-19": null,
+  "2025-09-20": null,
+  "2025-09-21": "P",
+  "2025-09-22": null,
+  "2025-09-23": null,
+  "2025-09-24": null,
+  "2025-09-25": null,
+  "2025-09-26": null,
+  "2025-09-27": null,
+  "2025-09-28": null,
+  "2025-09-29": null,
+  "2025-09-30": null
+},
+{
+  "EmployeeId": "0006198",
+  "Name": "عبدالله تركي بن علي الزهراني",
+  "2025-09-01": null,
+  "2025-09-02": null,
+  "2025-09-03": null,
+  "2025-09-04": null,
+  "2025-09-05": null,
+  "2025-09-06": null,
+  "2025-09-07": null,
+  "2025-09-08": null,
+  "2025-09-09": null,
+  "2025-09-10": null,
+  "2025-09-11": null,
+  "2025-09-12": null,
+  "2025-09-13": null,
+  "2025-09-14": null,
+  "2025-09-15": null,
+  "2025-09-16": null,
+  "2025-09-17": null,
+  "2025-09-18": null,
+  "2025-09-19": null,
+  "2025-09-20": null,
+  "2025-09-21": null,
+  "2025-09-22": null,
+  "2025-09-23": null,
+  "2025-09-24": null,
+  "2025-09-25": null,
+  "2025-09-26": null,
+  "2025-09-27": null,
+  "2025-09-28": null,
+  "2025-09-29": null,
+  "2025-09-30": null
+}
+]
+            
             setTable(data);
           }else{
-            const $norecord = $('#norecord');
             $norecord.removeClass('d-none');
+            $exportcont.addClass('d-none');
+            $maincontainer.addClass('d-none');
             // setTable(resp);
           }
         })
