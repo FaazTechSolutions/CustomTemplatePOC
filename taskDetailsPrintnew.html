@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Document</title>
+    <style>
+        .task-details .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 0 10px #ccc;
+            letter-spacing: normal !important
+        }
+
+        .task-details .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-details .details-grid {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .task-details .details-grid>div {
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        .task-details .details-grid>div:last-child {
+            margin-right: 0;
+        }
+
+        .task-details .table-section {
+            margin-top: 20px;
+        }
+
+        .task-details table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .task-details table,
+        .task-details th,
+        .task-details td {
+            border: 1px solid #ccc;
+        }
+
+        .task-details th,
+        .task-details td {
+            padding: 8px 12px;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        .task-details th {
+            background-color: #f0f0f0;
+        }
+
+        .task-details .image-header {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .task-details .logo-left,
+        .task-details .logo-center,
+        .task-details .logo-right {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            max-height: 100px;
+        }
+
+        .task-details .logo-left {
+            left: 20px;
+        }
+
+        .task-details .logo-center {
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .task-details .logo-right {
+            right: 20px;
+        }
+
+        .task-details .group-container {
+            display: flex;
+            margin: 10px 6px;
+        }
+
+        .task-details .label-form {
+            font-weight: 600;
+            min-width: 80px;
+        }
+
+        .print_action {
+            position: absolute;
+            right: 60px;
+            background: #2a41e6;
+            color: white;
+            border: 1px solid #000056;
+        }
+
+        .direction-rtl .print_action {
+            left: 65px;
+            right: unset;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="text-center">please wait generating your document..</div>
+    <div class="d-none">
+    <div class="task-details" id="task-report">
+        <div class="container">
+            <div class="image-header" id="image-header-container">
+            </div>
+            <div class="header">
+                <h6>{{Translate 'Task Details'}}</h6>
+            </div>
+            <div id="task-detail">
+
+            </div>
+
+
+            <!-- Task Assignment History -->
+            <div class="table-section">
+                <h6>{{Translate 'Task Assignment History'}}</h6>
+                <table id="mytable-task-report">
+                    <thead>
+                        <tr>
+                            <th>{{Translate 'Assigned To'}}</th>
+                            <th>{{Translate 'Assigned To Name'}}</th>
+                            <th>{{Translate 'Complete Percentage'}}</th>
+                            <th>{{Translate 'Assigned Date'}}</th>
+                            <th>{{Translate 'Task Status'}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Status History -->
+            <div class="table-section">
+                <h6>{{Translate 'Status History'}}</h6>
+                <table id="mytable-status-report">
+                    <thead>
+                        <tr>
+                            <th>{{Translate 'Task Rec Id'}}</th>
+                            <th>{{Translate 'Status'}}</th>
+                            <th>{{Translate 'Complete Percentage'}}</th>
+                            <th>{{Translate 'Datetime'}}</th>
+                            <th>{{Translate 'Comments'}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script>
+
+        var _this = this;
+
+        const script3 = document.createElement('script');
+        script3.src = 'https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js';
+        script3.type = 'text/javascript';
+        script3.onload = function () {
+            console.log('Handlebars loaded!');
+
+            // Now you can safely use Handlebars
+            Handlebars.registerHelper('Translate', function (value) {
+                let _ret = value;
+                if (!value)
+                    _ret = "";
+
+                let Lang = localStorage.getItem("CurrentLanguage");
+
+                if (!Lang) {
+                    return _ret;
+                }
+                if (!(window.location.hostname === "techsa.sa")) {
+                    return _ret;
+                }
+                if (!_this.globalService.systemLabels) {
+                    return _ret;
+                }
+
+                try {
+
+                    if (value.substring(0, 3) == "LBL") {
+
+                        let _label = _this.globalService.systemLabels.filter(x => x.LabelId == value)[0];
+                        if (_label) {
+                            let _ret = value;
+                            if (_label[Lang]) {
+                                _ret = _label[Lang];
+                            }
+                            else if (_label.DefaultValue) {
+                                _ret = _label.DefaultValue
+                            }
+                            _ret = _ret
+                        }
+                        else
+                            _ret = value;
+                    }
+                    else {
+
+                        let _value = value.toLowerCase().trim();
+                        let _label = _this.globalService.systemLabels.filter(x => x.DefaultValue.toLowerCase().trim() == _value)[0];
+                        if (_label) {
+                            _ret = _label[Lang] ? _label[Lang] : value
+                        }
+                        else
+                            _ret = value;
+
+                    }
+                }
+                catch (error) {
+                    _ret = value
+                }
+
+                return _ret;
+            });
+        };
+        document.body.appendChild(script3);
+        // remove
+        _this.ParentData = { RecId: 54734 }
+        var companyId = 'AYN';
+        var integrationUrl = 'https://techsa-integration-api.azurewebsites.net/';
+        var apps4xUrl = 'https://techsa-apps4x-api.azurewebsites.net/';
+        var token = '';
+        const userId = localStorage.getItem('UserId') || 'a.hyder';
+        const connectorId = 'f8020e6282e5406c870eda6827ea6de4';
+        const CustomerEntityId = '8956271a900043519590d8891794b927';
+        const TaskDetailsQueryId = 'c67327e04db44fa79bd691fccd944365';
+        const TaskAssignmentQueryId = 'cc97c0a39c36430fb137fdb362129dfa';
+        const TaskStatusQueryId = '7b333181ec8549268fc05ac703428511';
+        var currentPage = 1;
+        var recordsPerPage = 10;
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        if (window.location.hostname === "techsa.sa") {
+            token = localStorage.getItem("eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9");
+            companyId = localStorage.getItem('CompanyId');
+
+            if (_this.globalService.SysParameter) {
+                const SysParameter = _this.globalService.SysParameter;
+                if (SysParameter.TechsaIntegrationEndPoint) {
+                    integrationUrl = SysParameter.TechsaIntegrationEndPoint;
+                }
+                if (SysParameter.TechsaSwaggerEndPoint) {
+                    apps4xUrl = SysParameter.TechsaSwaggerEndPoint;
+                }
+            }
+        }
+        else {
+            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSIsIkVtYWlsIjoiYS5oeWRlckBtYWlsLmNvbSIsIk1vYmlsZU51bWJlciI6IjEyMTIzMTQxMzQiLCJDb21wYW55SWQiOiJBWU4iLCJVc2VyTmFtZUVtcGxveWVlIjoiMSIsIklETnVtYmVyIjoiIiwiVXNlclR5cGUiOiIxIiwiZXhwIjoxNzYzNzAzODIxLCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.Q94toz23o1gTv9yO9t4ZZxhAC2YBMX7dXG9qsWhAFt8";
+            companyId = "AYN";
+            integrationUrl = 'https://techsa-integration-api.azurewebsites.net/';
+            apps4xUrl = 'https://techsa-apps4x-api.azurewebsites.net/';
+        }
+
+        if (_this.ParentData && _this.ParentData.RecId) {
+            getTaskDetails();
+            getTaskAssignmentDetails();
+            getTaskStatusDetails();
+        }
+        function dateFormate(input) {
+            if (input) {
+                const isoString = input;
+                const date = new Date(isoString);
+
+                // Extract day, month, and year
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                const year = date.getFullYear();
+
+                const formattedDate = `${day}-${month}-${year}`;
+                return formattedDate;
+            }
+            else {
+                return '-';
+            }
+        }
+
+        async function imageUrlToBase64OrUrl(imageUrl) {
+            try {
+                const response = await fetch(imageUrl, { mode: 'cors' });
+                if (!response.ok) throw new Error('Image not accessible');
+
+                const blob = await response.blob();
+
+                return await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result); // Return base64
+                    reader.onerror = () => reject("FileReader failed");
+                    reader.readAsDataURL(blob);
+                });
+            } catch (error) {
+                console.warn('Falling back to URL:', error);
+                return imageUrl; // Fallback to original URL
+            }
+        }
+
+        function fetchimage(customerLogo) {
+
+            const result = "data:image/png;base64,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";
+            const imagecontainer = document.getElementById('image-header-container');
+            const img = document.createElement("img");
+            img.src = result;
+            img.alt = "Logo Left";
+            img.className = "logo-left";
+            imagecontainer.appendChild(img);
+
+            const result1 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAFA3PEY8MlBGQUZaVVBfeMiCeG5uePWvuZHI////////////////////////////////////////////////////2wBDAVVaWnhpeOuCguv/////////////////////////////////////////////////////////////////////////wAARCAEUAlcDASIAAhEBAxEB/8QAGQABAAMBAQAAAAAAAAAAAAAAAAIDBAEF/8QAMhABAAIBAgQEBQQCAgMBAAAAAAECAwQREiExUTJBYXETIjOBkUJScqEUsUPhIzRT8P/EABcBAQEBAQAAAAAAAAAAAAAAAAABAgP/xAAcEQEBAQEBAQEBAQAAAAAAAAAAARECEjEhQVH/2gAMAwEAAhEDEQA/ANoAAK8uamLxTz7QCxG+SlPFaIYsmqvflX5Y9FEzMzvK4Nt9ZSPDWZ/pVbWZJ6REKIrNp2iJn2WV02W36dveQcnUZZ/XLnxsn77fldGit53iEo0Ued/6Bn+Nk/fb8uxqMsfrlfOi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";
+            const img1 = document.createElement("img");
+            img1.src = result1;
+            img1.alt = "Logo Center";
+            img1.className = "logo-center";
+            imagecontainer.appendChild(img1);
+            if (customerLogo) {
+                (async () => {
+                    const imageUrl = `${apps4xUrl}customerLogo`;
+
+                    const result = await imageUrlToBase64OrUrl(imageUrl);
+
+                    const imagecontainer = document.getElementById('image-header-container');
+                    const img = document.createElement("img");
+                    img.src = result;
+                    img.alt = "Logo Right";
+                    img.className = "logo-right";
+                    imagecontainer.appendChild(img);
+                })();
+            }
+        }
+        function handlebarCompile(templateSource) {
+            let template = Handlebars.compile(templateSource);
+            return template();
+        }
+        function getTaskDetails() {
+            const RecId = _this.ParentData.RecId || 54734;
+            const apiUrl = `${apps4xUrl}api/v1/${companyId}/query/execute/${TaskDetailsQueryId}?RecId=${RecId}`;
+            fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "User-Id": userId,
+                    'authorization': 'Bearer ' + token
+                }
+            })
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.Data && data.Data.length > 0) {
+                        const $taskdetail = $("#task-detail");
+                        $taskdetail.empty();
+
+                        const values = data.Data[0];
+                        let templateSource = `
+            <div>
+                <div>
+                    <div class="group-container">
+                        <div class="label-form">{{Translate 'Title'}} :</div>
+                        <div>${values.Title || '-'}</div>
+                    </div>
+                    <div class="group-container">
+                        <div class="label-form">{{Translate 'Description'}} :</div>
+                        <div>${values.Description || '-'}</div>
+                    </div>
+                </div>
+                <div class="details-grid">
+
+                    <div class="left">
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Task Id'}} :</div>
+                            <div>${values.RecId || '-'}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Customer Task Id'}} :</div>
+                            <div>${values.ExternalTaskId || '-'}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Group'}} :</div>
+                            <div>${values.GroupDescription || '-'}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Priority'}} :</div>
+                            <div>${values.PriorityDescription || '-'}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Target Date'}} :</div>
+                            <div>${dateFormate(values.TargetDate)}</div>
+                        </div>
+                    </div>
+
+                    <div class="middle">
+
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Customer Id'}} :</div>
+                            <div>${values.CustomerId || '-'}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Customer Name'}} :</div>
+                            <div>${values.CustomerName || '-'}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Project Id'}} :</div>
+                            <div>${values.ProjectId || '-'}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Project Name'}} :</div>
+                            <div>${values.PriorityDescription || '-'}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Assigned To'}} :</div>
+                            <div>${values.AssignedTo || '-'}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Assigned To Name'}} :</div>
+                            <div>${values.EmployeeName || '-'}</div>
+                        </div>
+
+                    </div>
+
+                    <div class="right">
+
+                    </div>
+                </div>
+                <div class="details-grid">
+                    <div class="left">
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Status'}} :</div>
+                            <div>${values.StatusDescription}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Complete Percentage'}} :</div>
+                            <div>${values.CompletePercentage}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Actual Start'}} :</div>
+                            <div>${dateFormate(values.ActualStart)}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Actual End'}} :</div>
+                            <div>${dateFormate(values.ActualEnd)}</div>
+                        </div>
+                    </div>
+                    <div class="middle">
+                        <h6>{{Translate 'Scheduled'}}</h6>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Start'}} :</div>
+                            <div>${dateFormate(values.ScheduledStart)}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'End'}} :</div>
+                            <div>${dateFormate(values.ScheduledEnd)}</div>
+                        </div>
+                    </div>
+                    <div class="right">
+
+                        <h6>{{Translate 'Estimation'}}</h6>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Days'}} :</div>
+                            <div>${values.EstimatedEffortDays}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Hours'}} :</div>
+                            <div>${values.EstimatedEffortHours}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Minutes'}} :</div>
+                            <div>${values.EstimatedEffortMinutes}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+                        $taskdetail.html(handlebarCompile(templateSource));
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                });
+        }
+
+        function getTaskAssignmentDetails() {
+            let RecId = _this.ParentData.RecId || 54734;
+            const apiUrl = `${apps4xUrl}api/v1/${companyId}/query/execute/${TaskAssignmentQueryId}?TaskRecId=${RecId}`;
+            fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "User-Id": userId,
+                    'authorization': 'Bearer ' + token
+                }
+            })
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    
+                    if (data.Data && data.Data.length > 0) {
+                        fetchimage(data.Data[0].CustomerLogoPath ? data.Data[0].CustomerLogoPath : '')
+                        const table = document.getElementById("mytable-task-report");
+                        const tbody = table.querySelector("tbody");
+                        tbody.innerHTML = "";
+                        let dataTask = data.Data;
+                        dataTask.forEach(obj => {
+                            const row = document.createElement("tr");
+                            row.innerHTML = ` <td>${obj.AssignedTo}</td>
+                            <td>${obj.Name}</td>
+                            <td>${obj.CompletePercentage}</td>
+                            <td>${dateFormate(obj.TaskCreatedDatetime)}</td>
+                            <td>${obj.StatusDescription}</td>`
+                            tbody.appendChild(row);
+                        });
+                    }
+
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                });
+        }
+
+        function getTaskStatusDetails() {
+            const RecId = _this.ParentData.RecId || 54734;
+            const apiUrl = `${apps4xUrl}api/v1/${companyId}/query/execute/${TaskStatusQueryId}?RecId=${RecId}`;
+            fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "User-Id": userId,
+                    'authorization': 'Bearer ' + token
+                }
+            })
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.Data && data.Data.length > 0) {
+                        const table = document.getElementById("mytable-status-report");
+                        const tbody = table.querySelector("tbody");
+                        tbody.innerHTML = "";
+                        let dataTask = data.Data;
+                        dataTask.forEach(obj => {
+                            const row = document.createElement("tr");
+                            row.innerHTML = `<td>${obj.TaskRecId ? obj.TaskRecId : '-'}</td>
+                            <td>${obj.StatusDescription ? obj.StatusDescription : '-'}</td>
+                            <td>${obj.CompletePercentage ? obj.CompletePercentage : '-'}</td>
+                            <td>${dateFormate(obj.Datetime)}</td>
+                            <td>${obj.Comments ? obj.Comments : '-'}</td>`
+                            tbody.appendChild(row);
+                        });
+                    }
+                    // setTimeout(() => {
+                    printDetails();
+                        
+                    // }, 500);
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                });
+        }
+function printDetails() {
+    var content = document.getElementById('task-report').innerHTML;
+
+    // // Open a new print window
+    var printWindow = window.open('', '', 'height=600,width=1000');
+
+    // Write the content and styles directly into the print window
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Print</title>
+            <style>
+                /* General page styles */
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                }
+
+                /* Ensure container styles */
+                .task-details {
+                    width: 100%;
+                    padding: 10px;
+                }
+        .task-details .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 0 10px #ccc;
+            letter-spacing: normal !important
+        }
+
+        .task-details .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-details .details-grid {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .task-details .details-grid>div {
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        .task-details .details-grid>div:last-child {
+            margin-right: 0;
+        }
+        .task-details .image-header {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .task-details .logo-left,
+        .task-details .logo-center,
+        .task-details .logo-right {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            max-height: 100px;
+        }
+
+        .task-details .logo-left {
+            left: 20px;
+        }
+
+        .task-details .logo-center {
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .task-details .logo-right {
+            right: 20px;
+        }
+
+        .task-details .group-container {
+            display: flex;
+            margin: 10px 6px;
+        }
+
+        .task-details .label-form {
+            font-weight: 600;
+            min-width: 80px;
+        }
+
+                /* Table styling */
+                .task-details table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                }
+
+                .task-details th, .task-details td {
+                    border: 1px solid #ccc;
+                    padding: 8px 12px;
+                    text-align: left;
+                    font-size: 12px;
+                }
+
+                .task-details th {
+                    background-color: #f0f0f0;
+                }
+
+                /* Image header container styling */
+                .task-details .image-header {
+                    width: 100%;
+                    height: 150px;  /* Adjust as needed */
+                    // background: #f2f2f2;
+                    margin-bottom: 20px;
+                }
+
+                /* Image styling to prevent collapse */
+                .task-details img {
+                    max-width: 100%;  /* Scale to fit the container */
+                    height: auto;     /* Maintain aspect ratio */
+                    display: block;
+                    margin: 0 auto;
+                }
+
+                /* Ensure image container doesn't overflow or collapse */
+                .task-details .image-header img {
+                    max-width: 90%;  /* Restrict image width in image header */
+                    height: auto;
+                }
+
+                /* Printing styles */
+                @media print {
+                    body {
+                        margin: 0;
+                        padding: 0;
+                    }
+
+                    /* Ensure content fits inside the page */
+                    .task-details {
+                        width: 100%;
+                        max-width: 100%;
+                        padding: 10px;
+                    }
+
+                    /* Table breaks - avoid row splits */
+                    .task-details table {
+                        page-break-inside: auto;
+                    }
+
+                    .task-details tr {
+                        page-break-inside: avoid;
+                    }
+
+                    .task-details td, .task-details th {
+                        page-break-inside: avoid;
+                    }
+
+                    /* Hide the print action button */
+                    .print_action {
+                        display: none;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="task-details">
+                ${content}
+            </div>
+        </body>
+        </html>
+    `);
+
+    // Close the document to finish loading content
+    printWindow.document.close();
+
+
+    // Wait until the window content has fully loaded, then trigger print
+    printWindow.onload = function () {
+        printWindow.focus();  // Focus the print window
+        printWindow.print();   // Open the print dialog
+
+        // Use a delay to ensure the print dialog is fully processed before closing the window
+        setTimeout(function () {
+            // Try to close the print window after a short delay
+            printWindow.close();  // Close the print window after print dialog is closed
+            if (window.location.hostname === "techsa.sa"){
+            $(`#DynamicWidget_close_2a6f976523544cfcb1a3ca325a859230`).click();
+            }
+        }, 500); // Adjust the delay (500ms) if necessary
+    };
+
+    // Listen for after print event (cross-browser compatibility)
+    printWindow.onafterprint = function () {
+        // Ensure the window is closed after printing or saving
+        printWindow.close();
+        if (window.location.hostname === "techsa.sa"){
+        $(`#DynamicWidget_close_2a6f976523544cfcb1a3ca325a859230`).click();
+        }
+    };
+}
+    
+    </script>
+</body>
+
+</html>
