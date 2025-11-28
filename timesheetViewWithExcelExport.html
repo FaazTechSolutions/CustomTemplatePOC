@@ -433,7 +433,9 @@
         <div class="col-4" id="customerIdContainer">
           <label for="CustomerId" class="form-label">{{Translate 'CustomerId'}}</label>
           <div class="custom-dropdown">
-            <input type="text" class="form-control dropdown-input" id="CustomerId" name="CustomerId"
+            <input type="text" class="form-control dropdown-input" id="CustomerName" name="CustomerName"
+              placeholder="Select" readonly>
+            <input type="text" class="d-none" id="CustomerId" name="CustomerId"
               placeholder="Select" readonly>
             <div class="dropdown-content">
 
@@ -450,7 +452,7 @@
                       <th>
                         <span>Customer Id</span>
                         <span>
-                        <input id="customerId" type="text" class="filter-input" placeholder="Customer Id" data-column="0">
+                        <input id="cusId" type="text" class="filter-input" placeholder="Customer Id" data-column="0">
                         </span>
                         <span id="cusfilter" style="padding: 1px 4px;border-radius: 5px;"  class="bg-danger text-light d-none">
                         <i class="fas fa-times"></i></span>
@@ -679,7 +681,7 @@
       }
     }
     else {
-      token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSIsIkVtYWlsIjoiYS5oeWRlckBtYWlsLmNvbSIsIk1vYmlsZU51bWJlciI6IjEyMTIzMTQxMzQiLCJDb21wYW55SWQiOiJBWU4iLCJVc2VyTmFtZUVtcGxveWVlIjoiMSIsIklETnVtYmVyIjoiIiwiVXNlclR5cGUiOiIxIiwiZXhwIjoxNzYzNTI3MjQ2LCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.gmJX-By7CpKCVMNbEMhtB0iWOnsQoNX_GcEMPi99ZGA";
+      token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSIsIkVtYWlsIjoiYS5oeWRlckBtYWlsLmNvbSIsIk1vYmlsZU51bWJlciI6IjEyMTIzMTQxMzQiLCJDb21wYW55SWQiOiJBWU4iLCJVc2VyTmFtZUVtcGxveWVlIjoiMSIsIklETnVtYmVyIjoiIiwiVXNlclR5cGUiOiIxIiwiZXhwIjoxNzYzNjEzNDM4LCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.JouQO9APxGimHkDkzodDmgR4GQ_Dt2vobCo6ycpYa0k";
       companyId = "AYN";
       integrationUrl = 'https://techsa-integration-api.azurewebsites.net';
       apps4xUrl = 'https://techsa-apps4x-api.azurewebsites.net';
@@ -1289,9 +1291,10 @@
 
         // Add heading row at the top
         let heading = document.getElementById("heading").textContent;
-        const cusId = sessionStorage.getItem('customerId');
+        const cusId = $("#CustomerId").val();//sessionStorage.getItem('customerId');
+        const cusName = $("#CustomerName").val();
         if (cusId) {
-          heading += ' -' + cusId;
+          heading += ' -' + cusId + '-' + cusName;
         }
         const headingRow = worksheet.addRow([heading]);
 
@@ -1485,6 +1488,7 @@
                         $('.data-table tbody tr').removeClass('selected');
                         $(this).addClass('selected');
                         $('#CustomerId').val(row.CustomerId);
+                        $('#CustomerName').val(row.FirstName);
                         $('.dropdown-content').removeClass('active');
                     });
                     
@@ -1628,7 +1632,7 @@
                 // }
                 if(filters[1]){
                 obj['FirstName'] = filters[1];
-                $namefilter.removeClass('d-none');
+                // $namefilter.removeClass('d-none');
                 }
                 // else{
                 // $namefilter.addClass('d-none');
