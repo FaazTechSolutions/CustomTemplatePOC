@@ -336,15 +336,6 @@
                                 <input type="text" class="form-control" id="paywith" name="paywith" readonly>
                             </div>
                             <div class="mb-3 d-none">
-                                <label for="departuredate" class="form-label">{{Translate 'Departure Date'}}</label>
-                                <input type="date" class="form-control" id="departuredate" name="departuredate"
-                                    readonly>
-                            </div>
-                            <!-- <div class="mb-3 d-none">
-                                <label for="arrivaldate" class="form-label">{{Translate 'Arrival Date'}}</label>
-                                <input type="date" class="form-control" id="arrivaldate" name="arrivaldate" readonly>
-                            </div> -->
-                            <div class="mb-3 d-none">
                                 <label for="effectivedate" class="form-label">{{Translate 'Effective Date'}}</label>
                                 <input type="date" class="form-control" id="effectivedate" name="effectivedate"
                                     readonly>
@@ -365,6 +356,11 @@
                             <div class="mb-3 d-none">
                                 <label for="approvalmanagerid" class="form-label">{{Translate 'Approval Manager Id'}}</label>
                                 <input type="text" class="form-control" id="approvalmanagerid" name="approvalmanagerid"
+                                    readonly>
+                            </div>
+                            <div class="mb-3 d-none">
+                                <label for="isEdit" class="form-label">{{Translate 'isEdit'}}</label>
+                                <input type="text" class="form-control" id="isEdit" name="isEdit"
                                     readonly>
                             </div>
                             <div class="mb-3 d-none">
@@ -433,6 +429,14 @@
                                 <div class="col-12 col-lg-2 readOnly">
                                     <label for="expectedReturnDate" class="form-label">{{Translate 'Expected Return Date'}}</label>
                                     <input type="date" class="form-control" id="expectedReturnDate" name="expectedReturnDate" readonly>
+                                </div>
+                                <div class="col-12 col-lg-2">
+                                    <label for="DepartureDate" class="form-label">{{Translate 'Departure Date'}} <span class="required">*</span></label>
+                                    <input type="date" class="form-control" id="DepartureDate" name="DepartureDate">
+                                </div>
+                                <div class="col-12 col-lg-2">
+                                    <label for="ArrivalDate" class="form-label">{{Translate 'Arrival Date'}} <span class="required">*</span></label>
+                                    <input type="date" class="form-control" id="ArrivalDate" name="ArrivalDate">
                                 </div>
                                 <div class="col-12 col-lg-2">
                                     <!-- <fieldset class="border p-3 mb-4"> -->
@@ -837,6 +841,158 @@
 
     <script>
         var _this = this;
+       // remove it later 
+//        _this.ParentData = {
+//             "EntityId_Desc": "EmployeeLeaveRequest",
+//             "Attachment_EmployeeLeaveRequest_Path": null,
+//             "Attachment_EmployeeLeaveRequest_Name": null,
+//             "CreatedDatetime": "2025-11-10T22:44:14.97",
+//             "ModifiedDatetime": null,
+//             "ModifiedBy": null,
+//             "RecVersion": "AAAAAABl59Y=",
+//             "DataAreaId": "LGE0000001",
+//             "MetaObject": "{\"CreatedVersion\":1.000,\"UpdatedVersion\":0,\"CreatedFormId\":\"\"}",
+//             "EmployeeId": "1082370",
+//             "EmployeeName": "RAMAN IBRAHIM ALGHANMI",
+//             "VacationType": "Annual",
+//             "VacationType_Desc": "Annual",
+//             "VacationType_DescAr": "Annual",
+//             "StartDate": "2025-11-16T00:00:00",
+//             "EndDate": "2025-11-27T00:00:00",
+//             "VacationDays": 12,
+//             "PaymentMethod": "Monthly basis",
+//             "PaymentMethod_Desc": "Monthly basis",
+//             "PaymentMethod_DescAr": "Monthly basis",
+//             "AdultTicketsUsed": 0,
+//             "ChildTicketBalance": 0,
+//             "InfantTicketsUsed": 0,
+//             "VisaUsed": 0,
+//             "VisaEntitlement": "no",
+//             "VisaEntitlement_Desc": "no",
+//             "VisaEntitlement_DescAr": "no",
+//             "VisaFor": "Employee",
+//             "VisaFor_Desc": "Employee",
+//             "VisaFor_DescAr": "Employee",
+//             "VisaCostOn": "Company",
+//             "VisaCostOn_Desc": "Company",
+//             "VisaCostOn_DescAr": "Company",
+//             "TicketDestinationId": "NOTAPP",
+//             "LastWorkingDate": null,
+//             "ExpectedReturnDate": "2025-11-28T00:00:00",
+//             "LeaveRequestId": "ELR0003527",
+//             "EmployeePosition": "SP2",
+//             "IqamaNumber": "1095701254",
+//             "PhoneDuringVacation": null,
+//             "RequestFor": "Employee himself",
+//             "RequestFor_Desc": "Employee himself",
+//             "RequestFor_DescAr": "Employee himself",
+//             "AlternativeEmployeeId": null,
+//             "AlternativeEmployeeName": null,
+//             "ClearanceRequestId": null,
+//             "PayGroupId": "HO",
+//             "PayGroupStartDate": "2025-11-01T00:00:00",
+//             "PayGroupEndDate": "2025-11-30T00:00:00",
+//             "VacationCode": "1",
+//             "VacationBalance": 39.33,
+//             "NewVacationBalance": 27.33,
+//             "WokingYears": 2,
+//             "WorkingMonths": 9,
+//             "WorkingDays": 23,
+//             "TotalWokringDays": 1027,
+//             "EmployeeJoinDate": null,
+//             "Status": "Draft",
+//             "Notes": null,
+//             "WorkflowStatus": null,
+//             "VisaDays": "0",
+//             "VisaCount": null,
+//             "VisaBalance": "0",
+//             "VisaNewBalance": "0",
+//             "TicketEntitlement": "no",
+//             "TicketEntitlement_Desc": "no",
+//             "TicketEntitlement_DescAr": "no",
+//             "AdultTicketBalance": 0,
+//             "AdultTicketPrice": 0,
+//             "AdultTicketsContract": 0,
+//             "ChildTicketPrice": 0,
+//             "ChildTicketsContract": 0,
+//             "ChildTicketsUsed": 0,
+//             "InfantTicketBalance": 0,
+//             "InfantTicketPrice": 0,
+//             "InfantTicketsContract": 0,
+//             "TicketFor": "Employee",
+//             "TicketFor_Desc": "Employee",
+//             "TicketFor_DescAr": "Employee",
+//             "TiketCostOn": null,
+//             "DestinationType": "International",
+//             "Departurefrom": "Riyadh",
+//             "DestinationCity": null,
+//             "DepartureDate": "2025-11-10T00:00:00",
+//             "ArrivalDate": "2025-11-27T00:00:00",
+//             "Nationality": "SAU",
+//             "ApprovalManager": "1030351",
+//             "ApprovalManagerName": "Norah Suliman Alyoussef",
+//             "PayGroupName": "Head Office",
+//             "EndDateString": "11/27/2025",
+//             "StartDateString": "11/16/2025",
+//             "monthCalculationMethod": "1",
+//             "payWith": "Salary",
+//             "payWith_Desc": "Salary",
+//             "payWith_DescAr": "Salary",
+//             "totalTicketsPrice": "0",
+//             "ticketPricePercentage": "0",
+//             "ticketClass": "3",
+//             "visaContract": "0",
+//             "endDateExtTwo": "2025-11-29T00:00:00",
+//             "startDateExtTwo": "2025-11-29T00:00:00",
+//             "endDateExtOne": "2025-11-28T00:00:00",
+//             "startDateExtOne": "2025-11-28T00:00:00",
+//             "vacationDaysExtTwo": "0",
+//             "vacationDaysExtOne": "0",
+//             "vacationTypeExOne": "none",
+//             "vacationTypeExOne_Desc": "none",
+//             "vacationTypeExOne_DescAr": "none",
+//             "vacationTypeExTwo": "none",
+//             "vacationTypeExTwo_Desc": "none",
+//             "vacationTypeExTwo_DescAr": "none",
+//             "extendedLeaveOne": "Yes",
+//             "extendedLeaveOne_Desc": "No",
+//             "extendedLeaveOne_DescAr": "No",
+//             "extendedLeaveTwo": "No",
+//             "extendedLeaveTwo_Desc": "No",
+//             "extendedLeaveTwo_DescAr": "No",
+//             "EffectiveDate": "2025-11-16T00:00:00",
+//             "startDateExtOneString": "11/28/2025",
+//             "startDateExtTwoString": "11/29/2025",
+//             "endDateExtOneString": "11/28/2025",
+//             "endDateExtTwoString": "11/29/2025",
+//             "ERPResponse": null,
+//             "ERPRequestId": null,
+//             "TicketCostOn": "Company",
+//             "TicketCostOn_Desc": "Company",
+//             "TicketCostOn_DescAr": "Company",
+//             "adultTicketBalanceNew": "0",
+//             "childTicketBalanceNew": "0",
+//             "infantTicketBalanceNew": "0",
+//             "departureCity": null,
+//             "JobGrade": null,
+//             "Department": null,
+//             "IsExternal": "no",
+//             "IsExternal_Desc": "no",
+//             "IsExternal_DescAr": "no",
+//             "RecId": 33425,
+//             "Comments": null,
+//             "ERPStatus": null,
+//             "ApprovalManagerUserId": "n.alyoussef@mawarid.com.sa",
+//             "CreatedBy": "r.alghanmi@mawarid.com.sa",
+//             "CreatedBy_UserId": "r.alghanmi@mawarid.com.sa",
+//             "CreatedBy_Name": "Rawan Alghanmi",
+//             "CreatedBy_Email": "r.alghanmi@mawarid.com.sa",
+//             "CreatedBy_MobileNumber": null,
+//             "CreatedBy_Profile": null,
+//             "EntityId": "a687fc357c3c4e748cb60bf97ea1b0b0"
+// }
+        
+        console.log(_this);
         const script = document.createElement('script');
         script.src = 'https://code.jquery.com/jquery-3.6.0.min.js'; // URL of the script
         script.type = 'text/javascript';
@@ -944,18 +1100,96 @@
             userId = localStorage.getItem('UserId');
             companyId = localStorage.getItem('CompanyId');
         }else{
-            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiIiLCJDb21wYW55SWQiOiJMR0UwMDAwMDAxIiwiZXhwIjoxNzYyMzI0MDAzLCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.HS4ZJ0G2wBDw3d6KIsTRDzpdBfRFoZ3fr_7N-cOHPWw";
+            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiI5OTQzMjIxMzIxIiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSIsImV4cCI6MTc2NjU2MDg1OSwiaXNzIjoiYXBwczR4LmNvbSIsImF1ZCI6ImFwcHM0eC5jb20ifQ.ScQL9SWehirPJDQaTgax3Pi5yHDHlVneUqtjWgbmvXo";
             currentEmployeeId = "1098483";//"1056641";idris bhai empId
             userId = "a.hyder";
             companyId = "LGE0000001";
         }
 
         $(document).ready(function () {
+            $("#isEdit").val('No');
+            if(_this.ParentData && _this.ParentData.RecId){
+            $("#isEdit").val('Yes');
+            // $('#submitLeaveRequest').text('Update');
+            setFormValue(_this.ParentData);
+            }else{
             getReportingManagerForEmployee();
+            }
         });
+                function setFormValue(response) {
+                    $("#startDate").val(formateDateYYYYMMDD(response.StartDate));
+                    $("#endDate").val(formateDateYYYYMMDD(response.EndDate));
+                    $("#expectedReturnDate").val(formateDateYYYYMMDD(response.ExpectedReturnDate));
+                    $("#startDateExt1").val(formateDateYYYYMMDD(response.startDateExtOne));
+                    $("#endDateExt1").val(formateDateYYYYMMDD(response.endDateExtOne));
+                    $("#startDateExt2").val(formateDateYYYYMMDD(response.startDateExtTwo));
+                    $("#endDateExt2").val(formateDateYYYYMMDD(response.endDateExtTwo));
+                    $("#vacationDaysExt2").val(response.vacationDaysExtTwo);
+                    $("#vacationDaysExt1").val(response.vacationDaysExtOne);
+                    $("#vacationcode").val(response.VacationCode);
+                    $("#vacationDays").val(response.VacationDays);
+                    $("#VacationBalance").val(response.VacationBalance);
+                    $("#ticketfor").val('Employee');
+                    $("#ticketcoston").val('Company');
+                    $("#destinationtype").val('International');
+                    $("#ticketClass").val('Economy');
+                    $("#requestfor").val('Employee himself');
+                    $("#departureFrom").val('Riyadh');
+                    $("#DepartureDate").val(formateDateYYYYMMDD(response.DepartureDate));
+                    $("#ArrivalDate").val(formateDateYYYYMMDD(response.ArrivalDate));
+                    $("#visafor").val(response.VisaFor);
+                    $("#visacoston").val(response.VisaCostOn);
+                    $("#AdultTicketsUsed").val(response.AdultTicketsUsed);
+                    $("#InfantTicketsUsed").val(response.InfantTicketsUsed);
+                    $("#ChildTicketsUsed").val(response.ChildTicketsUsed);
+                    $("#visadays").val(response.VisaDays);
+                    $("#visaused").val(response.VisaUsed);
+                    $("#vacationTypeExt1").val(response.vacationTypeExOne);
+                    $("#vacationTypeExt2").val(response.vacationTypeExTwo);
+                    $("#paywith").val('Salary');
+                    $("#TotalWorkingDays").val(response.TotalWokringDays);
+                    $("#Nationality").val(response.Nationality);
+                        setCheckRadioValue(response.IsExternal, 'externalYes', 'externalNo');
+                        setCheckRadioValue(response.extendedLeaveOne, 'extesionleave1yes', 'extesionleave1no');
+                        setCheckRadioValue(response.extendedLeaveTwo, 'extesionleave2yes', 'extesionleave2no');
+                        setCheckRadioValue(response.VisaEntitlement, 'visarequiredYes', 'visarequiredNo');
+                        setCheckRadioValue(response.TicketEntitlement, 'ticketrequiredYes', 'ticketrequiredNo');
+                    // $('input[name="isExternal"][value="no"]').prop("checked", true);
+                    // $('input[name="extensionleave1"][value="no"]').prop("checked", true);
+                    // $('input[name="extensionleave2"][value="no"]').prop("checked", true);
+                    // $('input[name="visarequired"][value="no"]').prop("checked", true);
+                    // $('input[name="ticketrequired"][value="no"]').prop("checked", true);
+                    if (response.extendedLeaveTwo.toLowerCase() === 'no') {
+                        $('input[name="extensionleave2"]').prop('disabled', true);
+                    }
+                    $("#employeeId").val(currentEmployeeId);
+                    $("#employeename").val(response.EmployeeName);
+                    $('#employeenametext').html(response.EmployeeName);
+                    $("#paymentMethod").val(response.PaymentMethod);
+                    $("#vacationType").val(response.VacationType);
+                    $("#approvalmanagername").val(response.ApprovalManagerName);
+                    $('#approvalmanagernametext').html(response.ApprovalManagerName);
+                    $("#approvalmanagerid").val(response.ApprovalManager);
+                    $("#ApprovalManagerUserId").val(response.ApprovalManagerUserId);
+                    $("#EmployeePosition").val(response.EmployeePosition);
+                    $("#PayGroupName").val(response.PayGroupName);
+                }
+
+
         var fileData;
 
-         $("#FileInput").on('change',function (e) {
+        function setCheckRadioValue(value, id1,id2) {
+            // Ensure the value is lowercased before comparison
+            const normalizedValue = value ? value.toLowerCase() : '';
+
+            if (normalizedValue === 'yes') {
+                $(`#${id1}`).click().trigger('change');
+            } else if (normalizedValue === 'no') {
+                $(`#${id2}`).click().trigger('change');
+            }
+        }
+
+            $("#FileInput").on('change',function (e) {
             fileData = $('#FileInput').prop('files')[0];
             var labelVal = $(".title").text();
             var oldfileName = $(this).val();
@@ -1055,6 +1289,36 @@
             }
             if (!$("[name='vacationDays']").val()) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Vacation Days'}}"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+            if (!$("[name='DepartureDate']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Departure Date'}}"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+            if (!$("[name='ArrivalDate']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Arrival Date'}}"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+            if (compareDate($("[name='DepartureDate']").val(),$("[name='ArrivalDate']").val())) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate ' Departure Date and Arrival Date cannot be Same'}}"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+            if (validateDate($("[name='DepartureDate']").val(),$("[name='startDate']").val())) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'departure date should be greater than or equal to start date'}}"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+            if (validateDate($("[name='ArrivalDate']").val(),$("[name='DepartureDate']").val())) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'arrival date should be greater than departure date'}}"), "warning");
                 $loader.remove();
                 $btn.prop('disabled', false);
                 return;
@@ -1295,6 +1559,7 @@
             const startDateInput = $('#startDate').val();
             $('#endDate').val('');
             $('#expectedReturnDate').val('');
+            $('#ArrivalDate').val('');
             const vacationDays = parseInt($(this).val());
 
             if (startDateInput && vacationDays > 0) {
@@ -1307,6 +1572,7 @@
 
                 $('#endDate').val(end.toISOString().split('T')[0]);
                 $('#expectedReturnDate').val(returnDate.toISOString().split('T')[0]);
+                $('#ArrivalDate').val(returnDate.toISOString().split('T')[0]);
                 
                 const enddate = $("#endDate").val();
                 const vacationdaysext1 = parseInt($("#vacationDaysExt1").val());
@@ -1386,9 +1652,13 @@
 
                 $('#endDate').val(end.toISOString().split('T')[0]);
                 $('#expectedReturnDate').val(returnDate.toISOString().split('T')[0]);
+                $('#ArrivalDate').val(returnDate.toISOString().split('T')[0]);
+                $("#DepartureDate").val(startDateInput);
             } else {
                 $('#endDate').val(startDateInput);
                 $('#expectedReturnDate').val(startDateInput);
+                $('#ArrivalDate').val(startDateInput);
+                $("#DepartureDate").val(startDateInput);
             }
         }
 
@@ -1405,6 +1675,8 @@
                 const vacationType = $('#vacationType').val() || "Annual";
                 const startDate = $('#startDate').val() || "";
                 const endDate = $('#endDate').val() || "";
+                const ArrivalDate = $('#ArrivalDate').val() || "";
+                const DepartureDate = $('#DepartureDate').val() || "";
                 const vacationDays = parseInt($('#vacationDays').val()) || 0;
                 const payWith = $('#paywith').val() || "Salary";
 
@@ -1469,8 +1741,8 @@
                     "_destinationType": "International",
                     "_ticketClass": "Economy",
                     "_departureFrom": "Riyadh",
-                    "_departureDate": formateDateYYYYMMDD(startDate),
-                    "_arrivaldate": formateDateYYYYMMDD(endDate),
+                    "_departureDate": formateDateYYYYMMDD(DepartureDate),
+                    "_arrivaldate": formateDateYYYYMMDD(ArrivalDate),
                     "_visaEntitlement": visaEntitlement,
                     "_visaFor": visaFor,
                     "_visaCoston": visaCoston,
@@ -1611,9 +1883,9 @@
                 ticketfor: $("#ticketfor").val(),
                 departureFrom: $("#departureFrom").val(),
                 ticketcoston: $("#ticketcoston").val(),
-                departuredate: $("#departuredate").val(),
+                DepartureDate: $("#DepartureDate").val(),
                 ticketClass: $("#ticketClass").val(),
-                arrivaldate: $("#endDate").val(),
+                ArrivalDate: $("#ArrivalDate").val(),
                 AdultTicketsContract: $("#AdultTicketsContract").val(),
                 ChildTicketsContract: $("#ChildTicketsContract").val(),
                 InfantTicketsContract: $("#InfantTicketsContract").val(),
@@ -1656,7 +1928,7 @@
                 payGroupId: $("#payGroupId").val(),
                 PayGroupName: $("#PayGroupName").val(),
                 payGroupStartDate: $("#payGroupStartDate").val(),
-                payGroupPeriodEndDate: $("#payGroupPeriodEndDate").val(),
+                payGroupPeriodEndDate: $("#payGroupEndDate").val(),
                 workingYears: $("#workingYears").val(),
                 WorkingMonths: $("#WorkingMonths").val(),
                 WorkingDays: $("#WorkingDays").val(),
@@ -1805,8 +2077,8 @@
             <div class="col-md-3"><b>{{Translate 'From'}}</b><br>${values.departureFrom || "-"}</div>
             <div class="col-md-3"><b>{{Translate 'Class'}}</b><br>${values.ticketClass || "-"}</div>
             <div class="col-md-3"><b>{{Translate 'Ticket Cost On'}}</b><br>${values.ticketcoston || "-"}</div>
-            <div class="col-md-3"><b>{{Translate 'Departure Date'}}</b><br>${values.departuredate || "-"}</div>
-            <div class="col-md-3"><b>{{Translate 'Arrival Date'}}</b><br>${values.arrivaldate || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Departure Date'}}</b><br>${values.DepartureDate || "-"}</div>
+            <div class="col-md-3"><b>{{Translate 'Arrival Date'}}</b><br>${values.ArrivalDate || "-"}</div>
             <div class="col-md-3"><b>{{Translate 'Destination City'}}</b><br>${ "-"}</div>
             <div class="col-md-3"><b>{{Translate 'Destination Type'}}</b><br>${values.destinationtype || "-"}</div>
         
@@ -1988,7 +2260,7 @@
                     $("#endDateExt2").val(today);
                     $("#vacationDaysExt2").val(0);
                     $("#vacationDaysExt1").val(0);
-                    $("#vacationcode").val(1).trigger("change");
+                    $("#vacationcode").val(1);
                     $("#vacationDays").val(0);
                     $("#VacationBalance").val(0);
                     $("#ticketfor").val('Employee');
@@ -1997,7 +2269,7 @@
                     $("#ticketClass").val('Economy');
                     $("#requestfor").val('Employee himself');
                     $("#departureFrom").val('Riyadh');
-                    $("#departuredate").val(today);
+                    // $("#DepartureDate").val(today);
                     // $("#arrivaldate").val(today);
                     $("#visafor").val('Employee');
                     $("#visacoston").val('Company');
@@ -2158,9 +2430,9 @@
                 "Departurefrom": $("#departureFrom").val(),
                 "DestinationCity": null,
                 "TicketCostOn": $("#ticketcoston").val(),
-                "DepartureDate": formatDate($("#departuredate").val()),
+                "DepartureDate": formatDate($("#DepartureDate").val()),
                 "ticketClass": parseInt($("#ticketClass").val()),
-                "ArrivalDate": formatDate($("#endDate").val()),
+                "ArrivalDate": formatDate($("#ArrivalDate").val()),
                 "AdultTicketsContract": parseInt($("#AdultTicketsContract").val()),
                 "ChildTicketsContract": parseInt($("#ChildTicketsContract").val()),
                 "InfantTicketsContract": parseInt($("#InfantTicketsContract").val()),
@@ -2213,7 +2485,8 @@
             try {
                 const requestType = 'LeaveRequest';
                 // const apiUrl = `${Apps4xApiUrl}api/v1/data/${companyId}/create`;
-                const apiUrl = `${Apps4xApiUrl}graph-api/api/v1/Integration/CreateandValidateSelfServiceRequestERP?entityId=${EntityId}&requestType=${requestType}`;
+                let apiUrl = `${Apps4xApiUrl}graph-api/api/v1/Integration/CreateandValidateSelfServiceRequestERP?entityId=${EntityId}&requestType=${requestType}`;
+                
                 
 
                 let obj = {
@@ -2288,14 +2561,25 @@
                 "external":payload.IsExternal
                 }
                 }
-                let formData = new FormData();
-                formData.append("RequestFormData", JSON.stringify(JSON.stringify(obj)));
-                if(fileData){
-                formData.append("files", fileData);
-                }
                 
+                let formData = new FormData();
+                let methodType = 'POST';
+                
+                if($("#isEdit").val() === "Yes"){
+                    apiUrl = `${Apps4xApiUrl}api/v1/data/${companyId}/update`;
+                    methodType = 'PUT';
+                    let _entityData = JSON.stringify({...payload,RecId:_this.ParentData.RecId,LeaveRequestId:_this.ParentData.LeaveRequestId});
+                    formData.append("EntityData", _entityData);
+                }else{
+                    formData.append("RequestFormData", JSON.stringify(JSON.stringify(obj)));
+                }
+                if(fileData){
+                    formData.append("files", fileData);
+                }
+                // // remove
+                // return
                 fetch(apiUrl, {
-                    method: "POST",
+                    method: methodType,
                     headers: {
                         "Authorization": "Bearer " + token,
                         "User-Id": userId,
@@ -2316,13 +2600,21 @@
                         
                         hideLoader('submitLeaveRequest');
                         //closePopup();
-                        if(data.Status === 'success'){
-                        $("#RecId").val(data.Data)
-                        // const $actionLeave = $('#actionLeave');
-                        // $actionLeave.removeClass('d-none');
-                        const $submitLeave = $('#submitLeave');
-                        $submitLeave.addClass('d-none');
-                        leaveActionSubmit();
+                        if($("#isEdit").val() === "Yes" && _this.ParentData.Status === "Draft"){
+                          $("#RecId").val(data);
+                            const $submitLeave = $('#submitLeave');
+                            $submitLeave.addClass('d-none');
+                            leaveActionSubmit();  
+                        }
+                        else{
+                            if(data.Status === 'success'){
+                            $("#RecId").val(data.Data)
+                            // const $actionLeave = $('#actionLeave');
+                            // $actionLeave.removeClass('d-none');
+                            const $submitLeave = $('#submitLeave');
+                            $submitLeave.addClass('d-none');
+                            leaveActionSubmit();
+                            }
                         }
                     })
                     .catch(error => {
@@ -2475,6 +2767,28 @@
             return dateOnly;
             }else{
                 return date
+            }
+            
+        }
+        function compareDate(date1,date2) {
+            const datea = new Date(date1).toISOString().split('T')[0];
+            const dateb = new Date(date2).toISOString().split('T')[0];
+
+            if(datea === dateb){
+                return true
+            }else{
+                return false
+            }
+            
+        }
+        function validateDate(date1,date2) {
+            const datea = new Date(date1).toISOString().split('T')[0];
+            const dateb = new Date(date2).toISOString().split('T')[0];
+
+            if(datea < dateb){
+                return true
+            }else{
+                return false
             }
             
         }

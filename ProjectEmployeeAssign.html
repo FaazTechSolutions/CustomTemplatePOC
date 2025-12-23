@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Document</title>
+    <style>
+        .required {
+            color: red;
+        }
+
+        /* Custom Dropdown Styles */
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        .dropdown-input {
+            max-width: 200px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: border-color 0.3s;
+        }
+
+        .dropdown-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-height: 400px;
+            overflow: hidden;
+            display: none;
+            z-index: 1000;
+            flex-direction: column;
+            min-width: 500px;
+        }
+
+        .dropdown-content.active {
+            display: flex;
+        }
+
+        /* Filter Controls */
+
+        .filter-input,
+        .emp-filter-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            max-width: 130px;
+        }
+
+        .filter-input:focus,
+        .emp-filter-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        /* Table Styles */
+        .data-table-container {
+            overflow-y: auto;
+            max-height: 350px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background-color: white;
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 2px solid #e1e5eb;
+            font-weight: 600;
+            color: #2c3e50;
+            position: sticky;
+            top: 0;
+            font-size: 12px;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eef1f5;
+            font-size: 12px;
+        }
+
+        .data-table tbody tr:hover {
+            background-color: #f8fafc;
+            cursor: pointer;
+        }
+
+        .data-table tbody tr.selected {
+            background-color: #e1f0fa;
+        }
+
+        /* Pagination Styles */
+        .pagination,
+        .emp-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+
+        .pagination-info,
+        .emp-pagination-info {
+            font-size: 12px;
+            color: #6c757d;
+            /* display: none; */
+        }
+
+        .pagination-controls,
+        .emp-pagination-controls {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .pagination-btn,
+        .emp-pagination-btn {
+            padding: 6px 12px;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .pagination-btn:hover:not(:disabled),
+        .emp-pagination-btn:hover:not(:disabled) {
+            background-color: #e9ecef;
+        }
+
+        .pagination-btn.active,
+        .emp-pagination-btn.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .pagination-btn:disabled,
+        .emp-pagination-btn:disabled {
+            color: #6c757d;
+            cursor: not-allowed;
+            background-color: #f8f9fa;
+        }
+
+        /* Records per page dropdown */
+        .records-per-page,
+        .emp-records-per-page {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 15px;
+            font-size: 12px;
+        }
+
+        .records-dropdown,
+        .emp-records-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .records-dropdown-toggle,
+        .emp-records-dropdown-toggle {
+            padding: 6px 12px;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .records-dropdown-toggle::after,
+        .emp-records-dropdown-toggle::after {
+            content: "▼";
+            font-size: 10px;
+            color: #6c757d;
+        }
+
+        .records-dropdown-menu,
+        .emp-records-dropdown-menu {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            min-width: 80px;
+            display: none;
+            z-index: 1001;
+        }
+
+        .records-dropdown-menu.active,
+        .emp-records-dropdown-menu.active {
+            display: block;
+        }
+
+        .records-option,
+        .emp-records-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .records-option:hover,
+        .emp-records-option:hover {
+            background-color: #f8f9fa;
+        }
+
+        .records-option.active,
+        .emp-records-option.active {
+            background-color: #e1f0fa;
+            color: #3498db;
+            font-weight: 500;
+        }
+
+        div#dynamic_list_ced3a7272dcb49d79ab1ead610659bf3 .card-body.card-grid-table {
+            overflow: visible;
+        }
+
+        /* indicator */
+        .loading-indicator,
+        .emp-loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            font-weight: bold;
+            display: none;
+            /* Hidden by default */
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            /* Light grey */
+            border-top: 4px solid #3498db;
+            /* Blue color */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Spinner animation */
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container emp-assign">
+        <h6>{{Translate 'Project Employees '}}</h6>
+        <form>
+
+            <div class="row g-3">
+                <div class="col-3" id="ProjectIdContainer">
+                    <label for="ProjectId" class="form-label">{{Translate 'ProjectId'}}
+                        <span class="required">*</span></label>
+                    <div class="custom-dropdown">
+                        <input type="text" class="form-control dropdown-input" id="Description" name="Description"
+                            placeholder="Select" readonly>
+                        <input type="text" class="d-none" id="ProjectId" name="ProjectId" placeholder="Select" readonly>
+                        <div class="dropdown-content">
+
+                            <div class="data-table-container">
+                                <div class="loading-indicator">
+                                    <div class="spinner"></div>
+                                </div>
+                                <table class="data-table">
+                                    <thead>
+                                        <!-- <tr>
+                                            <th colspan="2" class="text-center">
+                                                enter minimum 4 digits to search
+                                            </th>
+                                        </tr> -->
+                                        <tr>
+                                            <th>
+                                                <span>Project Id</span>
+                                                <span>
+                                                    <input id="projId" type="text" class="filter-input"
+                                                        placeholder="Project Id" data-column="0">
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span>Description</span>
+                                                <span>
+                                                    <input id="Desc" type="text" class="filter-input"
+                                                        placeholder="Description" data-column="1">
+                                                </span>
+                                            </th>
+                                            <th>
+                                                <span>Customer Id</span>
+                                                <span>
+                                                    <input id="cusId" type="text" class="filter-input"
+                                                        placeholder="Customer Id" data-column="2">
+                                                </span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Table rows will be populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="pagination">
+                                <div class="pagination-info">Showing <span id="start-record">1</span> to <span
+                                        id="end-record">7</span>
+                                    of
+                                    <span id="total-records">7</span> entries
+                                </div>
+                                <div class="pagination-controls">
+                                    <button type="button" class="pagination-btn" id="first-page" disabled>First</button>
+                                    <button type="button" class="pagination-btn" id="prev-page"
+                                        disabled>Previous</button>
+                                    <button type="button" class="pagination-btn active">1</button>
+                                    <button type="button" class="pagination-btn" id="next-page">Next</button>
+                                    <button type="button" class="pagination-btn" id="last-page">Last</button>
+
+                                    <div class="records-per-page">
+                                        <span>Show</span>
+                                        <div class="records-dropdown">
+                                            <div class="records-dropdown-toggle">
+                                                <span id="current-records-per-page">10</span>
+                                            </div>
+                                            <div class="records-dropdown-menu">
+                                                <!-- <div class="records-option" data-value="5">5</div> -->
+                                                <div class="records-option" data-value="10">10</div>
+                                                <div class="records-option" data-value="25">25</div>
+                                                <div class="records-option" data-value="50">50</div>
+                                            </div>
+                                        </div>
+                                        <span>entries</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <label for="ValidFrom" class="form-label">{{Translate 'Valid From'}} <span
+                            class="required">*</span></label>
+                    <input type="date" class="form-control" id="ValidFrom" name="ValidFrom">
+                </div>
+                <div class="col-2">
+                    <label for="Job" class="form-label">{{Translate 'Job'}} <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="Job" name="Job">
+                </div>
+                <div class="col-2">
+                    <label for="MobileAccess" class="form-label">{{Translate 'Mobile Access'}}</label>
+                    <select class="form-select" id="MobileAccess" name="MobileAccess">
+                        <option value=""></option>
+                        <option value="Yes">{{Translate 'Yes'}}</option>
+                        <option value="No">{{Translate 'No'}}</option>
+                    </select>
+                </div>
+                <!-- <div class="col-2">
+                    <button type="button" class="btn btn-success mt-4" id="searchdata">{{Translate 'Search'}}</button>
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-danger mt-4" id="cleardata">{{Translate 'Clear'}}</button>
+                </div> -->
+            </div>
+        </form>
+        <div>
+            <div class="data-table-container">
+                <div class="emp-loading-indicator">
+                    <div class="spinner"></div>
+                </div>
+                <table class="data-table" id="emplist">
+                    <thead>
+                        <tr>
+                            <th>
+                                <span>Employee Id</span>
+                                <span>
+                                    <input id="empId" type="text" class="filter-input" placeholder="Employee Id"
+                                        data-column="0">
+                                </span>
+                            </th>
+                            <th>
+                                <span>Name</span>
+                                <span>
+                                    <input id="empName" type="text" class="filter-input" placeholder="Name"
+                                        data-column="1">
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Table rows will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="emp-pagination">
+                <div class="emp-pagination-info">Showing <span id="emp-start-record">1</span> to <span
+                        id="emp-end-record">7</span>
+                    of
+                    <span id="emp-total-records">7</span> entries
+                </div>
+                <div class="pagination-controls">
+                    <button type="button" class="emp-pagination-btn" id="emp-first-page" disabled>First</button>
+                    <button type="button" class="emp-pagination-btn" id="emp-prev-page" disabled>Previous</button>
+                    <button type="button" class="emp-pagination-btn active">1</button>
+                    <button type="button" class="emp-pagination-btn" id="emp-next-page">Next</button>
+                    <button type="button" class="emp-pagination-btn" id="emp-last-page">Last</button>
+
+                    <div class="emp-records-per-page">
+                        <span>Show</span>
+                        <div class="emp-records-dropdown">
+                            <div class="emp-records-dropdown-toggle">
+                                <span id="emp-current-records-per-page">10</span>
+                            </div>
+                            <div class="emp-records-dropdown-menu">
+                                <!-- <div class="records-option" data-value="5">5</div> -->
+                                <div class="emp-records-option" data-value="10">10</div>
+                                <div class="emp-records-option" data-value="25">25</div>
+                                <div class="emp-records-option" data-value="50">50</div>
+                            </div>
+                        </div>
+                        <span>entries</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        var _this = this;
+
+        const script3 = document.createElement('script');
+        script3.src = 'https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js';
+        script3.type = 'text/javascript';
+        script3.onload = function () {
+            console.log('Handlebars loaded!');
+
+            // Now you can safely use Handlebars
+            Handlebars.registerHelper('Translate', function (value) {
+                let _ret = value;
+                if (!value)
+                    _ret = "";
+
+                let Lang = localStorage.getItem("CurrentLanguage");
+
+                if (!Lang) {
+                    return _ret;
+                }
+                if (!(window.location.hostname === "techsa.sa")) {
+                    return _ret;
+                }
+                if (!_this.globalService.systemLabels) {
+                    return _ret;
+                }
+
+                try {
+
+                    if (value.substring(0, 3) == "LBL") {
+
+                        let _label = _this.globalService.systemLabels.filter(x => x.LabelId == value)[0];
+                        if (_label) {
+                            let _ret = value;
+                            if (_label[Lang]) {
+                                _ret = _label[Lang];
+                            }
+                            else if (_label.DefaultValue) {
+                                _ret = _label.DefaultValue
+                            }
+                            _ret = _ret
+                        }
+                        else
+                            _ret = value;
+                    }
+                    else {
+
+                        let _value = value.toLowerCase().trim();
+                        let _label = _this.globalService.systemLabels.filter(x => x.DefaultValue.toLowerCase().trim() == _value)[0];
+                        if (_label) {
+                            _ret = _label[Lang] ? _label[Lang] : value
+                        }
+                        else
+                            _ret = value;
+
+                    }
+                }
+                catch (error) {
+                    _ret = value
+                }
+
+                return _ret;
+            });
+        };
+        document.body.appendChild(script3);
+        var companyId = 'AYN';
+        var integrationUrl = 'https://techsa-integration-api.azurewebsites.net/';
+        var apps4xUrl = 'https://techsa-apps4x-api.azurewebsites.net/';
+        var token = '';
+        const userId = localStorage.getItem('UserId') || 'a.hyder';
+        const ProjectEntityId = '49a55fa9304e4d6a99e6009974025208';
+        const ConnectorId = 'f8020e6282e5406c870eda6827ea6de4';
+        var currentPage = 1;
+        var recordsPerPage = 10;
+        var currentPageEmployee = 1;
+        var recordsPerPageEmployee = 10;
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        if (window.location.hostname === "techsa.sa") {
+            token = localStorage.getItem("eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9");
+            companyId = localStorage.getItem('CompanyId');
+
+            if (_this.globalService.SysParameter) {
+                const SysParameter = _this.globalService.SysParameter;
+                if (SysParameter.TechsaIntegrationEndPoint) {
+                    integrationUrl = SysParameter.TechsaIntegrationEndPoint;
+                }
+                if (SysParameter.TechsaSwaggerEndPoint) {
+                    apps4xUrl = SysParameter.TechsaSwaggerEndPoint;
+                }
+            }
+        }
+        else {
+            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSIsIkVtYWlsIjoiYS5oeWRlckBtYWlsLmNvbSIsIk1vYmlsZU51bWJlciI6IjEyMTIzMTQxMzQiLCJDb21wYW55SWQiOiJBWU4iLCJVc2VyTmFtZUVtcGxveWVlIjoiMSIsIklETnVtYmVyIjoiIiwiVXNlclR5cGUiOiIxIiwiZXhwIjoxNzY0MjE2Nzc5LCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.4aiQOjok20OKKVxVTDXL7AFX1haUObepR_hxVRX4g5A";
+            companyId = "AYN";
+            integrationUrl = 'https://techsa-integration.azurewebsites.net/';
+            apps4xUrl = 'https://techsa-apps4x-framework.azurewebsites.net/';
+        }
+
+
+        function dateFormate(input) {
+            if (input) {
+                const isoString = input;
+                const date = new Date(isoString);
+
+                // Extract day, month, and year
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                const year = date.getFullYear();
+
+                const formattedDate = `${day}-${month}-${year}`;
+                return formattedDate;
+            }
+            else {
+                return '-';
+            }
+        }
+
+        function handlebarCompile(templateSource) {
+            let template = Handlebars.compile(templateSource);
+            return template();
+        }
+        getProjectList();
+        function getProjectList(obj = {}) {
+
+            $('.loading-indicator').show();
+            let apiUrl = `${apps4xUrl}/api/v1/data/${companyId}?entityId=${ProjectEntityId}&$page=${currentPage}&$size=${recordsPerPage}`;
+            if (obj.ProjectId) {
+                apiUrl += '&$filter:ProjectId=li:' + obj.ProjectId;
+            }
+            if (obj.Description) {
+                apiUrl += '&$filter:Description=li:' + obj.Description;
+            }
+            if (obj.CustomerId) {
+                apiUrl += '&$filter:CustomerId=li:' + obj.CustomerId;
+            }
+            fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "User-Id": userId,
+                    'authorization': 'Bearer ' + token
+                }
+            })
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    // setTimeout(function() {
+                    $('.loading-indicator').hide();
+                    // }, 1000);
+                    setCustomDropdown(data.Data, data.TotalCount);
+
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                });
+        }
+        getEmployeeList();
+        function getEmployeeList(obj = {}) {
+
+            $('.loading-indicator').show();
+            let apiUrl = `${apps4xUrl}/api/v1/${companyId}/connector/${ConnectorId}/sql/sysobjectexecute?object_Type=V&objectName=GetEmployeeDrop&$page=${currentPageEmployee}&$size=${recordsPerPageEmployee}`;
+            if (obj.Id) {
+                apiUrl += '&$filter:Id=li:' + obj.Id;
+            }
+            if (obj.Name) {
+                apiUrl += '&$filter:Name=li:' + obj.Name;
+            }
+            fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "User-Id": userId,
+                    'authorization': 'Bearer ' + token
+                }
+            })
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    // setTimeout(function() {
+                    $('.loading-indicator').hide();
+                    // }, 1000);
+                    setCustomDropdownForEmployee(data.Data, data.TotalCount);
+
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                });
+        }
+
+
+
+        function setCustomDropdown(param, totalCount) {
+            // Sample data
+            const tableData = [...param]
+
+            // Pagination variables
+            let filteredData = [...tableData];
+
+            // Initialize the table
+            function initializeTable() {
+                renderTable();
+                updatePagination();
+            }
+
+            // Render table with current data
+            function renderTable() {
+                const tbody = $('.data-table tbody');
+                tbody.empty();
+
+                const startIndex = (currentPage - 1) * recordsPerPage;
+                const endIndex = Math.min(startIndex + recordsPerPage, totalCount);
+
+                for (let i = 0; i < filteredData.length; i++) {
+                    const row = filteredData[i];
+                    const tr = $('<tr>');
+
+
+                    tr.append($('<td>').text(row.ProjectId));
+                    tr.append($('<td>').text(row.Description));
+                    tr.append($('<td>').text(row.CustomerId));
+
+                    tr.click(function () {
+                        $('.data-table tbody tr').removeClass('selected');
+                        $(this).addClass('selected');
+                        $('#ProjectId').val(row.ProjectId);
+                        $('#Description').val(row.Description);
+                        $('.dropdown-content').removeClass('active');
+                    });
+
+                    tbody.append(tr);
+                }
+
+                // Update pagination info
+                $('#start-record').text(totalCount > 0 ? startIndex + 1 : 0);
+                $('#end-record').text(endIndex);
+                $('#total-records').text(totalCount);
+            }
+
+            // Update pagination controls
+            function updatePagination() {
+                const totalPages = Math.ceil(totalCount / recordsPerPage);
+
+                // Clear existing page buttons (except for navigation buttons)
+                $('.pagination-controls .pagination-btn:not(#first-page):not(#prev-page):not(#next-page):not(#last-page)').remove();
+
+                // Add page number buttons
+                const maxVisiblePages = 2;
+                let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+                // Adjust start page if we're near the end
+                if (endPage - startPage + 1 < maxVisiblePages) {
+                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                }
+
+                // Add page buttons before Next button
+                const nextBtn = $('#next-page');
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = $('<button>')
+                        .addClass('pagination-btn')
+                        .text(i)
+                        .attr('type', 'button')
+                        .toggleClass('active', i === currentPage);
+
+                    pageBtn.click(function (e) {
+                        e.stopPropagation(); // Prevent event from bubbling up
+                        currentPage = i;
+                        getProjectList();
+                    });
+
+                    pageBtn.insertBefore(nextBtn);
+                }
+
+                // Update navigation buttons state
+                $('#first-page').prop('disabled', currentPage === 1);
+                $('#prev-page').prop('disabled', currentPage === 1);
+                $('#next-page').prop('disabled', currentPage === totalPages || totalPages === 0);
+                $('#last-page').prop('disabled', currentPage === totalPages || totalPages === 0);
+
+                // Navigation button handlers
+                $('#first-page').off('click').click(function (e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPage > 1) {
+                        currentPage = 1;
+                        getProjectList();
+                    }
+                });
+
+                $('#prev-page').off('click').click(function (e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPage > 1) {
+                        currentPage--;
+                        getProjectList();
+                    }
+                });
+
+                $('#next-page').off('click').click(function (e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        getProjectList();
+                    }
+                });
+
+                $('#last-page').off('click').click(function (e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPage < totalPages) {
+                        currentPage = totalPages;
+                        getProjectList();
+                    }
+                });
+            }
+            function filterTable() {
+                const filters = [];
+                $('.filter-input').each(function () {
+                    debugger
+                    const columnIndex = $(this).data('column');
+                    const value = $(this).val().toLowerCase();
+                    filters[columnIndex] = value;
+                });
+
+                let obj = {};
+                if (filters[0]) {
+                    obj['ProjectId'] = filters[0];
+                }
+                if (filters[1]) {
+                    obj['Description'] = filters[1];
+                }
+                if (filters[2]) {
+                    obj['CustomerId'] = filters[2];
+                }
+                currentPage = 1;
+                if (obj !== null && ((obj.ProjectId && obj.ProjectId.length > 3) || (obj.Description && obj.Description.length > 3) || (obj.CustomerId && obj.CustomerId.length > 3))) {
+                    getProjectList(obj);
+                }
+                if (!filters[0] && !filters[1] && !filters[2]) {
+                    console.log('filter')
+                    getProjectList(obj);
+                }
+            }
+            // Dropdown functionality
+            $('.dropdown-input').click(function () {
+                $('.dropdown-content').addClass('active');
+            });
+
+            // Close dropdown when clicking outside
+            $(document).click(function (e) {
+                if (!$(e.target).closest('.custom-dropdown').length) {
+                    $('.dropdown-content').removeClass('active');
+                }
+
+                // Close records per page dropdown
+                if (!$(e.target).closest('.records-dropdown').length) {
+                    $('.records-dropdown-menu').removeClass('active');
+                }
+            });
+
+            // Filter input event handlers
+            $('.filter-input').on('input', function () {
+                debugger
+                console.log('test')
+                filterTable();
+            });
+
+            // Records per page dropdown functionality
+            $('.records-dropdown-toggle').click(function (e) {
+                e.stopPropagation(); // Prevent event from bubbling up
+                $('.records-dropdown-menu').addClass('active');
+            });
+
+            $('.records-option').click(function (e) {
+                e.stopPropagation(); // Prevent event from bubbling up
+                const newRecordsPerPage = parseInt($(this).data('value'));
+
+                if (newRecordsPerPage !== recordsPerPage) {
+                    recordsPerPage = newRecordsPerPage;
+                    $('#current-records-per-page').text(recordsPerPage);
+
+                    // Update active state
+                    $('.records-option').removeClass('active');
+                    $(this).addClass('active');
+
+                    // Reset to first page and re-render
+                    currentPage = 1;
+                    getProjectList();
+                }
+
+                $('.records-dropdown-menu').removeClass('active');
+            });
+
+
+            // Initialize the table
+            initializeTable();
+        }
+
+        // employee list
+        function setCustomDropdownForEmployee(param, totalCount) {
+            // Sample data
+            const tableData = [...param]
+
+            // Pagination variables
+            let filteredData = [...tableData];
+
+            // Initialize the table
+            function initializeTable() {
+                renderTable();
+                updatePagination();
+            }
+
+            // Render table with current data
+            function renderTable() {
+                const tbody = $('#emplist tbody');
+                tbody.empty();
+
+                const startIndex = (currentPageEmployee - 1) * recordsPerPageEmployee;
+                const endIndex = Math.min(startIndex + recordsPerPageEmployee, totalCount);
+
+                for (let i = 0; i < filteredData.length; i++) {
+                    const row = filteredData[i];
+                    const tr = $('<tr>');
+
+
+                    tr.append($('<td>').text(row.Id));
+                    tr.append($('<td>').text(row.Name));
+
+                    tbody.append(tr);
+                }
+
+                // Update pagination info
+                $('#emp-start-record').text(totalCount > 0 ? startIndex + 1 : 0);
+                $('#emp-end-record').text(endIndex);
+                $('#emp-total-records').text(totalCount);
+            }
+
+            // Update pagination controls
+            function updatePagination() {
+                const totalPages = Math.ceil(totalCount / recordsPerPageEmployee);
+
+                // Clear existing page buttons (except for navigation buttons)
+                $('.emp-pagination-controls .emp-pagination-btn:not(#emp-first-page):not(#emp-prev-page):not(#emp-next-page):not(#emp-last-page)').remove();
+
+                // Add page number buttons
+                const maxVisiblePages = 2;
+                let startPage = Math.max(1, currentPageEmployee - Math.floor(maxVisiblePages / 2));
+                let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+                // Adjust start page if we're near the end
+                if (endPage - startPage + 1 < maxVisiblePages) {
+                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                }
+
+                // Add page buttons before Next button
+                const nextBtn = $('#emp-next-page');
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = $('<button>')
+                        .addClass('emp-pagination-btn')
+                        .text(i)
+                        .attr('type', 'button')
+                        .toggleClass('active', i === currentPageEmployee);
+
+                    pageBtn.click(function (e) {
+                        e.stopPropagation(); // Prevent event from bubbling up
+                        currentPageEmployee = i;
+                        getEmployeeList();
+                    });
+
+                    pageBtn.insertBefore(nextBtn);
+                }
+
+                // Update navigation buttons state
+                $('#emp-first-page').prop('disabled', currentPageEmployee === 1);
+                $('#emp-prev-page').prop('disabled', currentPageEmployee === 1);
+                $('#emp-next-page').prop('disabled', currentPageEmployee === totalPages || totalPages === 0);
+                $('#emp-last-page').prop('disabled', currentPageEmployee === totalPages || totalPages === 0);
+
+                // Navigation button handlers
+                $('#emp-first-page').off('click').click(function (e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPageEmployee > 1) {
+                        currentPageEmployee = 1;
+                        getEmployeeList();
+                    }
+                });
+
+                $('#emp-prev-page').off('click').click(function (e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPageEmployee > 1) {
+                        currentPageEmployee--;
+                        getEmployeeList();
+                    }
+                });
+
+                $('#emp-next-page').off('click').click(function (e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPageEmployee < totalPages) {
+                        currentPageEmployee++;
+                        getEmployeeList();
+                    }
+                });
+
+                $('#emp-last-page').off('click').click(function (e) {
+                    e.stopPropagation(); // Prevent event from bubbling up
+                    if (currentPageEmployee < totalPages) {
+                        currentPageEmployee = totalPages;
+                        getEmployeeList();
+                    }
+                });
+            }
+            function filterTable() {
+                const filters = [];
+                $('.emp-filter-input').each(function () {
+                    debugger
+                    const columnIndex = $(this).data('column');
+                    const value = $(this).val().toLowerCase();
+                    filters[columnIndex] = value;
+                });
+
+                let obj = {};
+                if (filters[0]) {
+                    obj['Id'] = filters[0];
+                }
+                if (filters[1]) {
+                    obj['Name'] = filters[1];
+                }
+                currentPageEmployee = 1;
+                if (obj !== null && ((obj.Id && obj.Id.length > 3) || (obj.Name && obj.Name.length > 3))) {
+                    getEmployeeList(obj);
+                }
+                if (!filters[0] && !filters[1]) {
+                    getEmployeeList(obj);
+                }
+            }
+
+
+            // Close dropdown when clicking outside
+            $(document).click(function (e) {
+
+                // Close records per page dropdown
+                if (!$(e.target).closest('.emp-records-dropdown').length) {
+                    $('.emp-records-dropdown-menu').removeClass('active');
+                }
+            });
+
+            // Filter input event handlers
+            $('.emp-filter-input').on('input', function () {
+                debugger
+                console.log('test')
+                filterTable();
+            });
+
+            // Records per page dropdown functionality
+            $('.emp-records-dropdown-toggle').click(function (e) {
+                e.stopPropagation(); // Prevent event from bubbling up
+                $('.emp-records-dropdown-menu').addClass('active');
+            });
+
+            $('.emp-records-option').click(function (e) {
+                e.stopPropagation(); // Prevent event from bubbling up
+                const newrecordsPerPageEmployee = parseInt($(this).data('value'));
+
+                if (newrecordsPerPageEmployee !== recordsPerPageEmployee) {
+                    recordsPerPageEmployee = newrecordsPerPageEmployee;
+                    $('#emp-current-records-per-page').text(recordsPerPageEmployee);
+
+                    // Update active state
+                    $('.emp-records-option').removeClass('active');
+                    $(this).addClass('active');
+
+                    // Reset to first page and re-render
+                    currentPageEmployeeEmployee = 1;
+                    getEmployeeList();
+                }
+
+                $('.emp-records-dropdown-menu').removeClass('active');
+            });
+
+
+            // Initialize the table
+            initializeTable();
+        }
+
+
+    </script>
+</body>
+
+</html>

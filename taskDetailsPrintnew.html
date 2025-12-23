@@ -119,8 +119,8 @@
 </head>
 
 <body>
-    <div class="text-center">please wait generating your document..</div>
-    <div class="d-none">
+<div class="text-center">please wait generating your document..</div>
+<div class="d-none">
     <div class="task-details" id="task-report">
         <div class="container">
             <div class="image-header" id="image-header-container">
@@ -170,7 +170,7 @@
             </div>
         </div>
     </div>
-    </div>
+</div>
     <script>
 
         var _this = this;
@@ -237,8 +237,6 @@
             });
         };
         document.body.appendChild(script3);
-        // remove
-        _this.ParentData = { RecId: 54734 }
         var companyId = 'AYN';
         var integrationUrl = 'https://techsa-integration-api.azurewebsites.net/';
         var apps4xUrl = 'https://techsa-apps4x-api.azurewebsites.net/';
@@ -267,10 +265,11 @@
             }
         }
         else {
-            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSIsIkVtYWlsIjoiYS5oeWRlckBtYWlsLmNvbSIsIk1vYmlsZU51bWJlciI6IjEyMTIzMTQxMzQiLCJDb21wYW55SWQiOiJBWU4iLCJVc2VyTmFtZUVtcGxveWVlIjoiMSIsIklETnVtYmVyIjoiIiwiVXNlclR5cGUiOiIxIiwiZXhwIjoxNzYzNzAzODIxLCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.Q94toz23o1gTv9yO9t4ZZxhAC2YBMX7dXG9qsWhAFt8";
+            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJBZG1pbiIsIk5hbWUiOiJBZG1pbiIsIkVtYWlsIjoiYWRtaW5Acm9oLnNhIiwiTW9iaWxlTnVtYmVyIjoiOTA4NzY1NDc2MSIsIkNvbXBhbnlJZCI6IkFZTiIsIlVzZXJOYW1lRW1wbG95ZWUiOiJBZG1pbiIsIklETnVtYmVyIjoiIiwiVXNlclR5cGUiOiIiLCJleHAiOjE3NjQxMzg2OTIsImlzcyI6ImFwcHM0eC5jb20iLCJhdWQiOiJhcHBzNHguY29tIn0.e9g-1aMvyM5p4BMT9PlwIXfna8VN3filvVhV6C2pCxI";
             companyId = "AYN";
             integrationUrl = 'https://techsa-integration-api.azurewebsites.net/';
             apps4xUrl = 'https://techsa-apps4x-api.azurewebsites.net/';
+            _this.ParentData = { RecId: 54734 }
         }
 
         if (_this.ParentData && _this.ParentData.RecId) {
@@ -333,7 +332,7 @@
             imagecontainer.appendChild(img1);
             if (customerLogo) {
                 (async () => {
-                    const imageUrl = `${apps4xUrl}customerLogo`;
+                    const imageUrl = `${apps4xUrl+customerLogo}`;
 
                     const result = await imageUrlToBase64OrUrl(imageUrl);
 
@@ -351,7 +350,7 @@
             return template();
         }
         function getTaskDetails() {
-            const RecId = _this.ParentData.RecId || 54734;
+            const RecId = _this.ParentData.RecId;
             const apiUrl = `${apps4xUrl}api/v1/${companyId}/query/execute/${TaskDetailsQueryId}?RecId=${RecId}`;
             fetch(apiUrl, {
                 method: "GET",
@@ -371,20 +370,12 @@
 
                         const values = data.Data[0];
                         let templateSource = `
-            <div>
-                <div>
-                    <div class="group-container">
-                        <div class="label-form">{{Translate 'Title'}} :</div>
-                        <div>${values.Title || '-'}</div>
-                    </div>
-                    <div class="group-container">
-                        <div class="label-form">{{Translate 'Description'}} :</div>
-                        <div>${values.Description || '-'}</div>
-                    </div>
-                </div>
+                        <div>
+
                 <div class="details-grid">
 
                     <div class="left">
+                        <h6>{{Translate 'Identification'}}</h6>
                         <div class="group-container">
                             <div class="label-form">{{Translate 'Task Id'}} :</div>
                             <div>${values.RecId || '-'}</div>
@@ -402,13 +393,13 @@
                             <div>${values.PriorityDescription || '-'}</div>
                         </div>
                         <div class="group-container">
-                            <div class="label-form">{{Translate 'Target Date'}} :</div>
-                            <div>${dateFormate(values.TargetDate)}</div>
+                            <div class="label-form">{{Translate 'Project Id'}} :</div>
+                            <div>${values.ProjectId || '-'}</div>
                         </div>
-                    </div>
-
-                    <div class="middle">
-
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Project Name'}} :</div>
+                            <div>${values.PriorityDescription || '-'}</div>
+                        </div>
                         <div class="group-container">
                             <div class="label-form">{{Translate 'Customer Id'}} :</div>
                             <div>${values.CustomerId || '-'}</div>
@@ -418,14 +409,6 @@
                             <div>${values.CustomerName || '-'}</div>
                         </div>
                         <div class="group-container">
-                            <div class="label-form">{{Translate 'Project Id'}} :</div>
-                            <div>${values.ProjectId || '-'}</div>
-                        </div>
-                        <div class="group-container">
-                            <div class="label-form">{{Translate 'Project Name'}} :</div>
-                            <div>${values.PriorityDescription || '-'}</div>
-                        </div>
-                        <div class="group-container">
                             <div class="label-form">{{Translate 'Assigned To'}} :</div>
                             <div>${values.AssignedTo || '-'}</div>
                         </div>
@@ -433,23 +416,40 @@
                             <div class="label-form">{{Translate 'Assigned To Name'}} :</div>
                             <div>${values.EmployeeName || '-'}</div>
                         </div>
+                    </div>
+
+                    <div class="middle">
+                        <h6>{{Translate 'Relation'}}</h6>
+
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Estimated Effort Days'}} :</div>
+                            <div>${values.EstimatedEffortDays}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Estimated Effort Hours'}} :</div>
+                            <div>${values.EstimatedEffortHours}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Estimated Effort Minutes'}} :</div>
+                            <div>${values.EstimatedEffortMinutes}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Scheduled Start'}} :</div>
+                            <div>${dateFormate(values.ScheduledStart)}</div>
+                        </div>
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Scheduled End'}} :</div>
+                            <div>${dateFormate(values.ScheduledEnd)}</div>
+                        </div>                        
+                        <div class="group-container">
+                            <div class="label-form">{{Translate 'Target Date'}} :</div>
+                            <div>${dateFormate(values.TargetDate)}</div>
+                        </div>
 
                     </div>
 
                     <div class="right">
-
-                    </div>
-                </div>
-                <div class="details-grid">
-                    <div class="left">
-                        <div class="group-container">
-                            <div class="label-form">{{Translate 'Status'}} :</div>
-                            <div>${values.StatusDescription}</div>
-                        </div>
-                        <div class="group-container">
-                            <div class="label-form">{{Translate 'Complete Percentage'}} :</div>
-                            <div>${values.CompletePercentage}</div>
-                        </div>
+                        <h6>{{Translate 'Assignment'}}</h6>
                         <div class="group-container">
                             <div class="label-form">{{Translate 'Actual Start'}} :</div>
                             <div>${dateFormate(values.ActualStart)}</div>
@@ -458,33 +458,24 @@
                             <div class="label-form">{{Translate 'Actual End'}} :</div>
                             <div>${dateFormate(values.ActualEnd)}</div>
                         </div>
-                    </div>
-                    <div class="middle">
-                        <h6>{{Translate 'Scheduled'}}</h6>
                         <div class="group-container">
-                            <div class="label-form">{{Translate 'Start'}} :</div>
-                            <div>${dateFormate(values.ScheduledStart)}</div>
+                            <div class="label-form">{{Translate 'Actual Complete Percentage'}} :</div>
+                            <div>${values.CompletePercentage}</div>
                         </div>
                         <div class="group-container">
-                            <div class="label-form">{{Translate 'End'}} :</div>
-                            <div>${dateFormate(values.ScheduledEnd)}</div>
+                            <div class="label-form">{{Translate 'Status'}} :</div>
+                            <div>${values.StatusDescription}</div>
                         </div>
                     </div>
-                    <div class="right">
-
-                        <h6>{{Translate 'Estimation'}}</h6>
-                        <div class="group-container">
-                            <div class="label-form">{{Translate 'Days'}} :</div>
-                            <div>${values.EstimatedEffortDays}</div>
-                        </div>
-                        <div class="group-container">
-                            <div class="label-form">{{Translate 'Hours'}} :</div>
-                            <div>${values.EstimatedEffortHours}</div>
-                        </div>
-                        <div class="group-container">
-                            <div class="label-form">{{Translate 'Minutes'}} :</div>
-                            <div>${values.EstimatedEffortMinutes}</div>
-                        </div>
+                </div>
+                <div>
+                    <div class="group-container">
+                        <div class="label-form">{{Translate 'Title'}} :</div>
+                        <div>${values.Title || '-'}</div>
+                    </div>
+                    <div class="group-container">
+                        <div class="label-form">{{Translate 'Description'}} :</div>
+                        <div>${values.Description || '-'}</div>
                     </div>
                 </div>
             </div>
@@ -498,7 +489,7 @@
         }
 
         function getTaskAssignmentDetails() {
-            let RecId = _this.ParentData.RecId || 54734;
+            let RecId = _this.ParentData.RecId;
             const apiUrl = `${apps4xUrl}api/v1/${companyId}/query/execute/${TaskAssignmentQueryId}?TaskRecId=${RecId}`;
             fetch(apiUrl, {
                 method: "GET",
@@ -514,7 +505,6 @@
                 .then(data => {
                     
                     if (data.Data && data.Data.length > 0) {
-                        fetchimage(data.Data[0].CustomerLogoPath ? data.Data[0].CustomerLogoPath : '')
                         const table = document.getElementById("mytable-task-report");
                         const tbody = table.querySelector("tbody");
                         tbody.innerHTML = "";
@@ -529,6 +519,13 @@
                             tbody.appendChild(row);
                         });
                     }
+                    if(data.Data){
+                        let logo = '';
+                        if(data.Data.length > 0 && data.Data[0].CustomerLogoPath){
+                            logo = data.Data[0].CustomerLogoPath;
+                        }
+                        fetchimage(logo);
+                    }
 
                 })
                 .catch(error => {
@@ -537,7 +534,7 @@
         }
 
         function getTaskStatusDetails() {
-            const RecId = _this.ParentData.RecId || 54734;
+            const RecId = _this.ParentData.RecId;
             const apiUrl = `${apps4xUrl}api/v1/${companyId}/query/execute/${TaskStatusQueryId}?RecId=${RecId}`;
             fetch(apiUrl, {
                 method: "GET",
@@ -566,16 +563,218 @@
                             tbody.appendChild(row);
                         });
                     }
-                    // setTimeout(() => {
-                    printDetails();
-                        
-                    // }, 500);
+                    if(data.Data){                     
+                    setTimeout(() => {                       
+                        printDetails();                        
+                    }, 200);
+                    }
+
                 })
                 .catch(error => {
                     console.error("Error fetching data:", error);
                 });
         }
-function printDetails() {
+function printDetails() {debugger
+    var content = document.getElementById('task-report').innerHTML;
+
+    // // Open a new print window
+    var printWindow = window.open('', '', 'height=600,width=1000');
+
+    // Write the content and styles directly into the print window
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Print</title>
+            <style>
+                /* General page styles */
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                }
+
+                /* Ensure container styles */
+                .task-details {
+                    width: 100%;
+                    padding: 10px;
+                }
+        .task-details .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 0 10px #ccc;
+            letter-spacing: normal !important
+        }
+
+        .task-details .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-details .details-grid {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .task-details .details-grid>div {
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        .task-details .details-grid>div:last-child {
+            margin-right: 0;
+        }
+        .task-details .image-header {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .task-details .logo-left,
+        .task-details .logo-center,
+        .task-details .logo-right {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            max-height: 100px;
+        }
+
+        .task-details .logo-left {
+            left: 20px;
+        }
+
+        .task-details .logo-center {
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .task-details .logo-right {
+            right: 20px;
+        }
+
+        .task-details .group-container {
+            display: flex;
+            margin: 10px 6px;
+        }
+
+        .task-details .label-form {
+            font-weight: 600;
+            min-width: 80px;
+        }
+
+                /* Table styling */
+                .task-details table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                }
+
+                .task-details th, .task-details td {
+                    border: 1px solid #ccc;
+                    padding: 8px 12px;
+                    text-align: left;
+                    font-size: 12px;
+                }
+
+                .task-details th {
+                    background-color: #f0f0f0;
+                }
+
+                /* Image header container styling */
+                .task-details .image-header {
+                    width: 100%;
+                    height: 150px;  /* Adjust as needed */
+                    // background: #f2f2f2;
+                    margin-bottom: 20px;
+                }
+
+                /* Image styling to prevent collapse */
+                .task-details img {
+                    max-width: 100%;  /* Scale to fit the container */
+                    height: auto;     /* Maintain aspect ratio */
+                    display: block;
+                    margin: 0 auto;
+                }
+
+                /* Ensure image container doesn't overflow or collapse */
+                .task-details .image-header img {
+                    max-width: 90%;  /* Restrict image width in image header */
+                    height: auto;
+                }
+
+                /* Printing styles */
+                @media print {
+                    body {
+                        margin: 0;
+                        padding: 0;
+                    }
+
+                    /* Ensure content fits inside the page */
+                    .task-details {
+                        width: 100%;
+                        max-width: 100%;
+                        padding: 10px;
+                    }
+
+                    /* Table breaks - avoid row splits */
+                    .task-details table {
+                        page-break-inside: auto;
+                    }
+
+                    .task-details tr {
+                        page-break-inside: avoid;
+                    }
+
+                    .task-details td, .task-details th {
+                        page-break-inside: avoid;
+                    }
+
+                    /* Hide the print action button */
+                    .print_action {
+                        display: none;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="task-details">
+                ${content}
+            </div>
+        </body>
+        </html>
+    `);
+
+    // Close the document to finish loading content
+    printWindow.document.close();
+
+
+    // Wait until the window content has fully loaded, then trigger print
+    printWindow.onload = function () {
+        printWindow.focus();  // Focus the print window
+        printWindow.print();   // Open the print dialog
+
+        // Use a delay to ensure the print dialog is fully processed before closing the window
+        setTimeout(function () {
+            // Try to close the print window after a short delay
+            printWindow.close();  // Close the print window after print dialog is closed
+            if (window.location.hostname === "techsa.sa"){
+            $(`#DynamicWidget_close_2a6f976523544cfcb1a3ca325a859230`).click();
+            }
+        }, 500); // Adjust the delay (500ms) if necessary
+    };
+
+    // Listen for after print event (cross-browser compatibility)
+    printWindow.onafterprint = function () {
+        // Ensure the window is closed after printing or saving
+        printWindow.close();
+        if (window.location.hostname === "techsa.sa"){
+        $(`#DynamicWidget_close_2a6f976523544cfcb1a3ca325a859230`).click();
+        }
+    };
+
     var content = document.getElementById('task-report').innerHTML;
 
     // // Open a new print window
