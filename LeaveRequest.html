@@ -431,14 +431,6 @@
                                     <input type="date" class="form-control" id="expectedReturnDate" name="expectedReturnDate" readonly>
                                 </div>
                                 <div class="col-12 col-lg-2">
-                                    <label for="DepartureDate" class="form-label">{{Translate 'Departure Date'}} <span class="required">*</span></label>
-                                    <input type="date" class="form-control" id="DepartureDate" name="DepartureDate">
-                                </div>
-                                <div class="col-12 col-lg-2">
-                                    <label for="ArrivalDate" class="form-label">{{Translate 'Arrival Date'}} <span class="required">*</span></label>
-                                    <input type="date" class="form-control" id="ArrivalDate" name="ArrivalDate">
-                                </div>
-                                <div class="col-12 col-lg-2">
                                     <!-- <fieldset class="border p-3 mb-4"> -->
                                         
                                             <label class="filelabel">
@@ -744,6 +736,14 @@
                         <div class="col-md-3 d-none">
                             <label for="WorkingMonths" class="form-label">{{Translate 'Working Months'}}</label>
                             <input type="number" class="form-control" id="WorkingMonths" name="WorkingMonths">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="DepartureDate" class="form-label">{{Translate 'Departure Date'}} <span class="required">*</span></label>
+                            <input type="date" class="form-control" id="DepartureDate" name="DepartureDate">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="ArrivalDate" class="form-label">{{Translate 'Arrival Date'}} <span class="required">*</span></label>
+                            <input type="date" class="form-control" id="ArrivalDate" name="ArrivalDate">
                         </div>
                     </div>
                 </fieldset>
@@ -1287,38 +1287,9 @@
                 $btn.prop('disabled', false);
                 return;
             }
-            if (!$("[name='vacationDays']").val()) {
+            if (!$("[name='vacationDays']").val() || Number($("[name='vacationDays']").val()) <= 0) {
+                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please enter valid Vacation Days'}}"), "warning");
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Vacation Days'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
-                return;
-            }
-            if (!$("[name='DepartureDate']").val()) {
-                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Departure Date'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
-                return;
-            }
-            if (!$("[name='ArrivalDate']").val()) {
-                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Arrival Date'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
-                return;
-            }
-            if (compareDate($("[name='DepartureDate']").val(),$("[name='ArrivalDate']").val())) {
-                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate ' Departure Date and Arrival Date cannot be Same'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
-                return;
-            }
-            if (validateDate($("[name='DepartureDate']").val(),$("[name='startDate']").val())) {
-                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'departure date should be greater than or equal to start date'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
-                return;
-            }
-            if (validateDate($("[name='ArrivalDate']").val(),$("[name='DepartureDate']").val())) {
-                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'arrival date should be greater than departure date'}}"), "warning");
                 $loader.remove();
                 $btn.prop('disabled', false);
                 return;
@@ -1370,6 +1341,45 @@
                 showStep(step);
             }, 800);
         }
+        function validateTicket(btnValue,btn) {
+            const $btn = $(btn);
+            const $loader = $('<span class="loader"></span>');
+            $btn.prop('disabled', true).append($loader);
+
+            if (!$("[name='DepartureDate']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Departure Date'}}"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+            if (!$("[name='ArrivalDate']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Arrival Date'}}"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+            if (compareDate($("[name='DepartureDate']").val(),$("[name='ArrivalDate']").val())) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate ' Departure Date and Arrival Date cannot be Same'}}"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+            // if (validateDate($("[name='DepartureDate']").val(),$("[name='startDate']").val())) {
+            //     Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'departure date should be greater than or equal to start date'}}"), "warning");
+            //     $loader.remove();
+            //     $btn.prop('disabled', false);
+            //     return;
+            // }
+            if (validateDate($("[name='ArrivalDate']").val(),$("[name='DepartureDate']").val())) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'arrival date should be greater than departure date'}}"), "warning");
+                $loader.remove();
+                $btn.prop('disabled', false);
+                return;
+            }
+            if(Number(btnValue) === 3 && $('input[name="ticketrequired"]:checked').val() === 'yes' && ($("#AdultTicketsUsed").val() < 1) && ($("#ChildTicketsUsed").val() < 1) && ($("#InfantTicketsUsed").val() < 1)){
+                confirmAction(Number(btnValue),this,handlebarCompile("{{Translate 'do You want to continue with out filling the ticket Balance'}}"));
+            }
+        }
         function confirmAction(btnValue,thisdata,text) {
         Swal.fire({
             title: handlebarCompile("{{Translate 'Are you sure?'}}"),
@@ -1408,8 +1418,8 @@
             let btnValue = $(this).val();
             if(Number(btnValue) === 4 && $('input[name="visarequired"]:checked').val() === 'yes' && ($("#visadays").val() < 1) && ($("#visaused").val() < 1)){
                 confirmAction(Number(btnValue),this,handlebarCompile("{{Translate 'do You want to continue with out filling the Visa Balance'}}"));
-            }else if(Number(btnValue) === 3 && $('input[name="ticketrequired"]:checked').val() === 'yes' && ($("#AdultTicketsUsed").val() < 1) && ($("#ChildTicketsUsed").val() < 1) && ($("#InfantTicketsUsed").val() < 1)){
-                confirmAction(Number(btnValue),this,handlebarCompile("{{Translate 'do You want to continue with out filling the ticket Balance'}}"));
+            }else if(Number(btnValue) === 3){
+                validateTicket(Number(btnValue), this);
             } else{
             nextStep(Number(btnValue), this);
             }
