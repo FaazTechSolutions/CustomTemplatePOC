@@ -1099,9 +1099,9 @@
             currentEmployeeId = userInfo.EmployeeId;
             userId = localStorage.getItem('UserId');
             companyId = localStorage.getItem('CompanyId');
-        }else{
-            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiI5OTQzMjIxMzIxIiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSIsImV4cCI6MTc2NjU2MDg1OSwiaXNzIjoiYXBwczR4LmNvbSIsImF1ZCI6ImFwcHM0eC5jb20ifQ.ScQL9SWehirPJDQaTgax3Pi5yHDHlVneUqtjWgbmvXo";
-            currentEmployeeId = "1098483";//"1056641";idris bhai empId
+        }else if (window.location.hostname === "localhost" || window.location.hostname === "" ){
+            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiI5OTQzMjIxMzIxIiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSIsImV4cCI6MTc3MjcwOTA5MiwiaXNzIjoiYXBwczR4LmNvbSIsImF1ZCI6ImFwcHM0eC5jb20ifQ.8eNmBmsENJ9y-Z0DcFceEu2MjAQdeXXN3Dan5uhoYTY";
+            currentEmployeeId = "1098483";//"1056641";idris bhai empId/1098483
             userId = "a.hyder";
             companyId = "LGE0000001";
         }
@@ -1237,74 +1237,84 @@
             $('.stepper .step[data-step="' + step + '"]').addClass('active');
         }
 
-        function nextStep(step, btn) {
-            const $btn = $(btn);
-            const $loader = $('<span class="loader"></span>');
+        function nextStep(step, btn) {debugger
+            // const $btn = $(btn);
+            // const $loader = $('<span class="loader"></span>');
 
-            $btn.prop('disabled', true).append($loader);
-
+            // $btn.prop('disabled', true).append($loader);
+            showLoader('nextStep');
 
             if (!$("[name='employeeId']").val()) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Employee Id'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
+                // $loader.remove();
+                // $btn.prop('disabled', false);
+                hideLoader('nextStep');
                 return;
             }
             if (!$("[name='approvalmanagerid']").val()) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please Fill The Approval Details'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
+                // $loader.remove();
+                // $btn.prop('disabled', false);
+                hideLoader('nextStep');
                 return;
             }
             if (!$("[name='ApprovalManagerUserId']").val()) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please Fill The Approval Manager UserId'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
+                // $loader.remove();
+                // $btn.prop('disabled', false);
+                hideLoader('nextStep');
                 return;
             }
             if (!$("[name='paymentMethod']").val()) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Payment Method'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
+                // $loader.remove();
+                // $btn.prop('disabled', false);
+                hideLoader('nextStep');
                 return;
             }
             if (!$("[name='vacationType']").val()) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Vacation Type' }}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
+                // $loader.remove();
+                // $btn.prop('disabled', false);
+                hideLoader('nextStep');
                 return;
             }
             //enable
             if (!$("[name='startDate']").val()) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Start Date'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
+                // $loader.remove();
+                // $btn.prop('disabled', false);
+                hideLoader('nextStep');
                 return;
             }
             if (!$("[name='endDate']").val()) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the End Date'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
+                // $loader.remove();
+                // $btn.prop('disabled', false);
+                hideLoader('nextStep');
                 return;
             }
             if (!$("[name='vacationDays']").val() || Number($("[name='vacationDays']").val()) <= 0) {
                  Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please enter valid Vacation Days'}}"), "warning");
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Vacation Days'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
+                // $loader.remove();
+                // $btn.prop('disabled', false);
+                hideLoader('nextStep');
                 return;
             }
             if (!$("[name='ticketrequired']").is(":checked")) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Ticket Required'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
+                // $loader.remove();
+                // $btn.prop('disabled', false);
+                hideLoader('nextStep');
                 return;
             }
 
             if (!$("[name='visarequired']").is(":checked")) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Visa Required'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
+                // $loader.remove();
+                // $btn.prop('disabled', false);
+                hideLoader('nextStep');
                 return;
             }
 
@@ -1336,32 +1346,37 @@
             }
 
             setTimeout(() => {
-                $btn.prop('disabled', false);
-                $loader.remove();
+                // $btn.prop('disabled', false);
+                // $loader.remove();
+                hideLoader('nextStep');
                 showStep(step);
             }, 800);
         }
         function validateTicket(btnValue,btn) {
-            const $btn = $(btn);
-            const $loader = $('<span class="loader"></span>');
-            $btn.prop('disabled', true).append($loader);
+            // const $btn = $(btn);
+            // const $loader = $('<span class="loader"></span>');
+            // $btn.prop('disabled', true).append($loader);
+            showLoader('nextStep');
 
             if (!$("[name='DepartureDate']").val()) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Departure Date'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
+                // $loader.remove();
+                // $btn.prop('disabled', false);
+                hideLoader('nextStep');
                 return;
             }
             if (!$("[name='ArrivalDate']").val()) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please select the Arrival Date'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
+                // $loader.remove();
+                // $btn.prop('disabled', false);
+                hideLoader('nextStep');
                 return;
             }
             if (compareDate($("[name='DepartureDate']").val(),$("[name='ArrivalDate']").val())) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate ' Departure Date and Arrival Date cannot be Same'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
+                // $loader.remove();
+                // $btn.prop('disabled', false);
+                hideLoader('nextStep');
                 return;
             }
             // if (validateDate($("[name='DepartureDate']").val(),$("[name='startDate']").val())) {
@@ -1372,15 +1387,18 @@
             // }
             if (validateDate($("[name='ArrivalDate']").val(),$("[name='DepartureDate']").val())) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'arrival date should be greater than departure date'}}"), "warning");
-                $loader.remove();
-                $btn.prop('disabled', false);
+                // $loader.remove();
+                // $btn.prop('disabled', false);
+                hideLoader('nextStep');
                 return;
             }
             if(Number(btnValue) === 3 && $('input[name="ticketrequired"]:checked').val() === 'yes' && ($("#AdultTicketsUsed").val() < 1) && ($("#ChildTicketsUsed").val() < 1) && ($("#InfantTicketsUsed").val() < 1)){
-                confirmAction(Number(btnValue),this,handlebarCompile("{{Translate 'do You want to continue with out filling the ticket Balance'}}"));
+                confirmAction(Number(btnValue),btn,handlebarCompile("{{Translate 'do You want to continue with out filling the ticket Balance'}}"));
+            } else{
+            nextStep(Number(btnValue), btn);
             }
         }
-        function confirmAction(btnValue,thisdata,text) {
+        function confirmAction(btnValue,thisdata,text) {debugger
         Swal.fire({
             title: handlebarCompile("{{Translate 'Are you sure?'}}"),
             text: text,
@@ -1391,6 +1409,7 @@
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
+                hideLoader('nextStep');
             } else if (
             result.dismiss === Swal.DismissReason.cancel
             ) {
@@ -1737,8 +1756,8 @@
                     "_vacationDaysEx1": vacationDaysEx1,
                     "_vacationType": vacationType,
                     "_vacationTypeEx1": vacationTypeEx1,
-                    "_startDateEx2": formateDateYYYYMMDD(startDateEx2),
-                    "_endDateEx2": formateDateYYYYMMDD(endDateEx2),
+                    "_startDateEx2": extendedLeave2 == "yes" ? formateDateYYYYMMDD(startDateEx2) : "1900-01-01T00:00:00",
+                    "_endDateEx2": extendedLeave2 == "yes" ? formateDateYYYYMMDD(endDateEx2) : "1900-01-01T00:00:00",
                     "_vacationDaysEx2": vacationDaysEx2,
                     "_vacationTypeEx2": vacationTypeEx2,
                     "_ticketEntitlement": ticketEntitlement,
