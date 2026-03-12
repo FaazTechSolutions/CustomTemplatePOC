@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employment Certificate - Al Mawarid Manpower Company</title>
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script> -->
+
+</head>
+
+<body>
+
+    <div class="letter-container">
+        <style>
+            .letter-container {
+                /* background-color: #f5f5f5; */
+                font-family: var(--font-en);
+                font-size: 14px;
+                color: #1a1a1a;
+                line-height: 1.6;
+                letter-spacing: normal !important;
+            }
+
+            .certificate-container {
+                width: 210mm;
+                /* Remove min-height to prevent pushing to 2nd page if there's slight overflow */
+                padding: 20mm;
+                margin: 0 auto;
+                background: #fff;
+                box-sizing: border-box;
+                position: relative;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            /* Outer wrapper for screen spacing */
+            .page-wrapper {
+                padding: 40px 0;
+                background-color: #f5f5f5;
+                /* Match body bg */
+                min-height: 100vh;
+            }
+
+            .header {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 40px;
+                font-weight: 500;
+            }
+
+            .date-section {
+                display: flex;
+                gap: 10px;
+            }
+
+            .title-section {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 40px;
+                border-bottom: 1px solid transparent;
+                /* Placeholder for spacing */
+            }
+
+            .title-en {
+                font-size: 20px;
+                font-weight: 700;
+            }
+
+            .title-ar {
+                font-family: var(--font-ar);
+                font-size: 22px;
+                font-weight: 700;
+                text-align: right;
+            }
+
+            .to-section {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 25px;
+                font-weight: 700;
+            }
+
+            .certification-text {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 30px;
+                gap: 40px;
+            }
+
+            .text-en {
+                /* flex: 1;
+                text-align: left; */
+            }
+
+            .text-ar {
+                /* flex: 1; */
+                text-align: right;
+                font-family: var(--font-ar);
+                /* direction: rtl; */
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+
+            th,
+            td {
+                border: 1px solid #000;
+                padding: 8px 12px;
+                text-align: center;
+            }
+
+            .details-table td {
+                height: 35px;
+                text-align: left;
+            }
+
+            .details-table td:nth-child(1) {
+                width: 25%;
+                font-weight: 700;
+            }
+
+            .details-table td:nth-child(2) {
+                width: 25%;
+            }
+
+            .details-table td:nth-child(3) {
+                width: 25%;
+            }
+
+            .details-table td:nth-child(4) {
+                width: 25%;
+                font-family: var(--font-ar);
+                text-align: right;
+                font-weight: 700;
+                /* direction: rtl; */
+            }
+
+            .salary-table th {
+                font-weight: 600;
+                background-color: transparent;
+            }
+
+            .salary-table th .ar {
+                display: block;
+                font-family: var(--font-ar);
+                margin-bottom: 5px;
+            }
+
+            .closing-section {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 30px;
+                margin-bottom: 40px;
+                gap: 40px;
+            }
+
+            .signature-area {
+                margin-top: 60px;
+                text-align: center;
+                width: 300px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .signature-line {
+                border-top: 1px solid #1a1a1a;
+                margin-bottom: 15px;
+                width: 100%;
+            }
+
+            .signatory-name {
+                font-family: var(--font-ar);
+                /* text-align: right; */
+                font-size: 16px;
+                font-weight: 700;
+                margin-bottom: 5px;
+            }
+
+            .signatory-title {
+                /* text-align: right; */
+                font-family: var(--font-ar);
+                font-size: 14px;
+            }
+
+            /* Download Button Styling */
+            .controls {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                margin-top: 10px;
+            }
+
+            .download-btn {
+                background-color: orange;
+                color: #fff;
+                border: none;
+                padding: 12px 24px;
+                font-family: var(--font-en);
+                font-weight: 600;
+                cursor: pointer;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: background-color 0.3s;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            .download-btn:hover {
+                background-color: #f7b439;
+            }
+
+            .download-btn.btn-load {
+                pointer-events: none;
+                opacity: 0.8;
+            }
+
+            .download-btn .spinner {
+                display: none;
+                width: 18px;
+                height: 18px;
+                border: 2px solid #ffffff;
+                border-top: 2px solid transparent;
+                border-radius: 50%;
+                animation: spin 0.8s linear infinite;
+            }
+
+            .download-btn.btn-load .spinner {
+                display: inline-block;
+            }
+
+            .download-btn.btn-load span {
+                display: none;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .salary-transfer-container {
+                width: 210mm;
+                padding: 20mm;
+                margin: 0 auto;
+                background: #fff;
+                box-sizing: border-box;
+                position: relative;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                font-family: var(--font-ar);
+                /* direction: rtl; */
+                text-align: right;
+            }
+
+            .salary-transfer-container .content-head {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            .salary-transfer-container .form-title {
+                font-size: 20px;
+                font-weight: 700;
+                /* text-decoration: underline; */
+                margin-bottom: 30px;
+            }
+
+            .salary-transfer-container .salutation {
+                margin-bottom: 15px;
+                font-weight: 700;
+            }
+
+            .summary-table {
+                width: 100%;
+                margin: 20px 0;
+                border-collapse: collapse;
+            }
+
+            .summary-table td {
+                padding: 10px;
+                text-align: center;
+                vertical-align: middle;
+            }
+
+            /* Modal Styles */
+            .modal-popup-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(4px);
+                z-index: 2000;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .modal-popup-content {
+                background: #fff;
+                padding: 30px;
+                border-radius: 12px;
+                width: 400px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+                animation: slideIn 0.3s ease-out;
+                direction: ltr;
+                /* Keeping modal inputs LTR for easier typing */
+                text-align: left;
+            }
+
+            @keyframes slideIn {
+                from {
+                    transform: translateY(-20px);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            .modal-popup-header {
+                margin-bottom: 20px;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 10px;
+            }
+
+            .modal-popup-header h2 {
+                margin: 0;
+                font-size: 1.2rem;
+                color: #333;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: 600;
+                color: #555;
+                font-size: 0.9rem;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 10px;
+                border: 1.5px solid #ddd;
+                border-radius: 6px;
+                font-size: 1rem;
+                transition: border-color 0.2s;
+            }
+
+            .form-group input:focus {
+                outline: none;
+                border-color: orange;
+            }
+
+            .modal-popup-footer {
+                display: flex;
+                justify-content: flex-end;
+                gap: 10px;
+                margin-top: 25px;
+            }
+
+            .modal-popup-btn {
+                padding: 10px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 600;
+                border: none;
+                transition: background 0.2s;
+            }
+
+            .modal-popup-btn.cancel {
+                background: #f1f1f1;
+                color: #666;
+            }
+
+            .modal-popup-btn.cancel:hover {
+                background: #e5e5e5;
+            }
+
+            .modal-popup-btn.confirm {
+                background: orange;
+                color: #fff;
+            }
+
+            .modal-popup-btn.confirm:hover {
+                background: #f7b439;
+            }
+
+            .error-msg {
+                color: #d32f2f;
+                font-size: 0.8rem;
+                margin-top: 4px;
+                display: none;
+            }
+
+            .double-line {
+                border-top: 3px double #000;
+                margin: 20px 0;
+            }
+
+            @media print {
+                .controls {
+                    display: none;
+                }
+
+                body {
+                    background: none;
+                }
+
+                .certificate-container,
+                .salary-transfer-container {
+                    margin: 0;
+                    box-shadow: none;
+                    width: 100%;
+                }
+
+                @page {
+                    size: A4;
+                    margin: 0;
+                }
+            }
+        </style>
+        <div class="controls">
+            <button class="download-btn certificate-btn" id="downloadEmploymentCertificate">
+                <div class="spinner"></div>
+                <span>Download Employment Certificate as PDF</span>
+            </button>
+            <button class="download-btn salary-transfer-btn" id="downloadSalaryTransferForm"
+                style="background-color: #28a745;">
+                <div class="spinner"></div>
+                <span>Download Salary Transfer Form as PDF</span>
+            </button>
+        </div>
+        <div class="page-wrapper" style="display: none;">
+            <div class="certificate-container" style="direction: ltr;">
+                <div class="header">
+                    <div class="date-section">
+                        <span class="label">Date:</span>
+                        <span class="value" id="current-date-en"></span>
+                    </div>
+                    <div class="date-section" style="font-family: 'Cairo';direction: rtl;">
+                        <span class="label">التاريخ <p style="display: inline-block;">:</p></span>
+                        <span class="value" id="current-date-ar"></span>
+                    </div>
+                </div>
+
+                <div class="title-section">
+                    <div class="title-en">Employment Certificate</div>
+                    <div class="title-ar">خطاب تعريف</div>
+                </div>
+
+                <div class="to-section">
+                    <div>TO:</div>
+                    <div>
+                        <p style="display: inline-block;">:</p>إلى
+                    </div>
+                </div>
+
+                <div class="certification-text">
+                    <div class="text-en">
+                        AL Mawarid Manpower Company certifies that the mentioned employee is working for it up to date
+                        as
+                        per
+                        the below data:
+                    </div>
+                    <div class="text-ar" style="direction: rtl;">
+                        تشهد شركة الموارد للقوى البشرية بأن الموضح بياناته أدناه يعمل لديها ومازال على رأس العمل حتى
+                        تاريخه
+                        حسب البيانات التالية <p style="display: inline-block;">:</p>
+                    </div>
+                </div>
+
+                <table class="details-table">
+                    <tr>
+                        <td>Name:</td>
+                        <td> <span class="value employeename"></span></td>
+                        <td> <span class="value employeename"></span></td>
+                        <td>الاسم</td>
+                    </tr>
+                    <tr>
+                        <td>Nationality:</td>
+                        <td> <span class="value nationality"></span></td>
+                        <td> <span class="value nationality"></span></td>
+                        <td>الجنسية</td>
+                    </tr>
+                    <tr>
+                        <td>Position:</td>
+                        <td> <span class="value position"></span></td>
+                        <td> <span class="value position"></span></td>
+                        <td>المهنة</td>
+                    </tr>
+                    <tr>
+                        <td>Emp. ID No:</td>
+                        <td> <span class="value employeeId"></span></td>
+                        <td> <span class="value employeeId"></span></td>
+                        <td>الرقم الوظيفي</td>
+                    </tr>
+                    <tr>
+                        <td>Identity No:</td>
+                        <td> <span class="value iqamaNumber"></span></td>
+                        <td> <span class="value iqamaNumber"></span></td>
+                        <td>رقم الهوية</td>
+                    </tr>
+                    <tr>
+                        <td>Date of Joining:</td>
+                        <td> <span class="value dateofjoining"></span></td>
+                        <td> <span class="value dateofjoining"></span></td>
+                        <td>تاريخ التعيين</td>
+                    </tr>
+                </table>
+
+                <table class="salary-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <span class="ar">بدلات أخرى</span>
+                                <span class="en">Other Allowance</span>
+                            </th>
+                            <th>
+                                <span class="ar">بدل النقل</span>
+                                <span class="en">Transportation Allowance</span>
+                            </th>
+                            <th>
+                                <span class="ar">بدل السكن</span>
+                                <span class="en">Housing Allowance</span>
+                            </th>
+                            <th>
+                                <span class="ar">الراتب الأساسي</span>
+                                <span class="en">Basic Salary</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="height: 35px;"> <span class="value" id="otherAllowance"></span></td>
+                            <td style="height: 35px;"> <span class="value" id="transportationAllowance"></span></td>
+                            <td style="height: 35px;"> <span class="value" id="housingAllowance"></span></td>
+                            <td style="height: 35px;"> <span class="value" id="basicSalary"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="closing-section">
+                    <div class="text-en">
+                        This certificate is issue upon his request without any liability or responsibility on our part.
+                        <br><br>
+                        Regards,
+                    </div>
+                    <div class="text-ar" style="direction: rtl;">
+                        وقد تم إصدار هذا التعريف بناء على طلبه دون أدنى مسئولية على الشركة.
+                        <br><br>
+                        ولكم تحياتنا <p style="display: inline-block;">،،،</p>
+                    </div>
+                </div>
+
+                <div class="signature-area">
+                    <div class="signature-line"></div>
+                    <div class="signatory-name">عصام العرابي</div>
+                    <div class="signatory-title">مدير عام إدارة التشغيل</div>
+                </div>
+            </div>
+
+
+            <div class="salary-transfer-container" style="direction: ltr;">
+                <div class="header" style="justify-content: right;">
+                    <div class="date-section" style="direction: rtl;">
+                        التاريخ : &nbsp;&nbsp; <span id="current-date-ar-2"></span> م
+                    </div>
+                </div>
+
+                <div class="content-head">
+                    <div class="form-title">نموذج تحويل وتثبيت الراتب الشهري</div>
+                </div>
+
+                <div class="salutation">المكرم <p style="display: inline-block;">/</p> مدير الموارد البشرية
+                    &nbsp;&nbsp;&nbsp; بشركة الموارد للقوى البشرية
+                </div>
+                <div style="margin-bottom: 20px;direction: rtl;">السلام عليكم ورحمة الله وبركاته <p
+                        style="display: inline-block;">،،،
+                    </p>
+                </div>
+
+                <div style="line-height: 2; margin-bottom: 30px;direction: rtl;">
+                    لقد اتفقت مع بنك <span class="bankName" style="font-weight: 700;">[Bank Name]</span> ،
+                    على أن يتم تحويل راتبي الشهري وأية مستحقات أخرى لحسابي رقم <span class="ibanNo"
+                        style="font-weight: 700;">[IBAN No]</span> وذلك إبتداءاً من شهر <span class="currentMonth"
+                        style="font-weight: 700;">[Month]</span> /<span class="currentYear"
+                        style="font-weight: 700;">[Year]</span> ، على أن لا يتم إلغاء هذا الإجراء إلا بخطاب موجه لكم من
+                    البنك المذكور<p style="display: inline-block;">.</p> مقدرين تعاونكم <p
+                        style="display: inline-block;">
+                        .
+                    </p>
+                </div>
+
+                <table class="summary-table" style="direction: rtl;">
+                    <tr>
+                        <td style="width: 15%; font-weight: 700;">الاسم</td>
+                        <td style="width: 35%;" class="employeename"></td>
+                        <td style="width: 20%; font-weight: 700;">الرقم الوظيفي</td>
+                        <td style="width: 30%;" class="iqama-nationality-no">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">رقم الهوية</td>
+                        <td class="iqamaNumber"></td>
+                        <td style="font-weight: 700;">التوقيع</td>
+                        <td></td>
+                    </tr>
+                </table>
+
+                <div class="double-line"></div>
+
+                <div class="salutation"
+                    style="margin-top: 30px;display:flex;justify-content: space-evenly;direction: rtl;">
+                    <div style="margin-left: auto;">
+                        السادة
+                        <p style="display: inline-block;">/</p>
+                    </div>
+
+                    <div style="margin-left: auto;">المحترمين</div>
+                </div>
+                <div class="salutation" style="direction: rtl;">الموضوع <p style="display: inline-block;">:</p> تحويل
+                    وتثبيت رواتب ومستحقات
+                    موظفنا
+                    السيد <p style="display: inline-block;">/</p> <span class="employeename"></span></div>
+
+                <div style="line-height: 1.8; margin-bottom: 30px; text-align: justify;direction: rtl;">
+                    بناء على طلب الموظف الموضح بياناته أعلاه نفيدكم بأنه لا مانع لدينا من تحويل راتبه أعلاه لحسابه لديكم
+                    رقم <span class="ibanNo"></span> اعتباراً من الفترة المشار إليها أعلاه ونتعهد بالاستمرار في
+                    تحويل مرتباته الشهرية ومستحقات نهاية خدمته لنفس الحساب ما لم نحصل على إشعار خطي منكم يفيد بإنتهاء
+                    الالتزامات المالية المترتبة عليه لصالحكم <p style="display: inline-block;">،</p> وفي حال إنتهاء
+                    خدمته
+                    لأي سبب كان نتعهد بإبلاغكم بالإيميل
+                    الرسمى المحدد من قبلكم ومن ثم تحويل جميع ماقد يكون مستحقاً له حينذاك إلى الحساب المشار إليه أعلاه<p
+                        style="display: inline-block;">.</p>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 40px;direction: rtl;">
+                    ولكم تحياتي<p style="display: inline-block;">،،،</p>
+                </div>
+
+                <div class="signature-area" style="margin-left: 0; width: 250px;">
+                    <div class="signature-line"></div>
+                    <div class="signatory-name" style="text-align: center;">مدير عام إدارة التشغيل</div>
+                    <div class="signatory-title" style="text-align: center;">عصام العرابي</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bank Details Modal -->
+        <div id="bankDetailsModal" class="modal-popup-overlay">
+            <div class="modal-popup-content">
+                <div class="modal-popup-header">
+                    <h2>Bank Details Required</h2>
+                </div>
+                <div class="form-group">
+                    <label for="modalBankName">Bank Name <span style="color:red">*</span></label>
+                    <input type="text" id="modalBankName" placeholder="e.g. Al Rajhi Bank">
+                    <div id="bankNameError" class="error-msg">Bank Name is required</div>
+                </div>
+                <div class="form-group">
+                    <label for="modalIbanNo">IBAN No <span style="color:red">*</span></label>
+                    <input type="text" id="modalIbanNo" placeholder="SA...">
+                    <div id="ibanNoError" class="error-msg">IBAN No is required</div>
+                </div>
+                <div class="modal-popup-footer">
+                    <button class="modal-popup-btn cancel" id="cancelpopup">Cancel</button>
+                    <button class="modal-popup-btn confirm" id="submitpopup">Generate PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const bcpURL = "https://bcp.mawarid.com.sa";
+        const userIdDefault = "SelfService";
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        var currentEmployeeId = '';
+        if (window.location.hostname === "portal.mawarid.com.sa") {
+            currentEmployeeId = userInfo.EmployeeId;
+        } else if (window.location.hostname === "localhost" || window.location.hostname === "") {
+            currentEmployeeId = "1098483";//"1056641";idris bhai empId/1098483
+        }
+        const script = document.createElement('script');
+        script.src = 'https://code.jquery.com/jquery-3.6.0.min.js'; // URL of the script
+        script.type = 'text/javascript';
+        script.onload = function () {
+            // You can now use jQuery or whatever the script provides
+            console.log('script loaded sucessfully');
+            $(document).on('click', '#downloadEmploymentCertificate', function (e) {
+                downloadPDF('certificate');
+            });
+            $(document).on('click', '#downloadSalaryTransferForm', function (e) {
+                downloadPDF('salary-transfer');
+            });
+            $(document).on('click', '#cancelpopup', function (e) {
+                closeBankModal()
+            });
+            $(document).on('click', '#submitpopup', function (e) {
+                submitBankDetails()
+            });
+        };
+        document.head.appendChild(script);
+        const script2 = document.createElement('script');
+        script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js'; // URL of the script
+        script2.type = 'text/javascript';
+        script2.onload = function () {
+            // You can now use jQuery or whatever the script provides
+            console.log('script loaded sucessfully');
+        };
+        document.head.appendChild(script2);
+        function setCurrentDate() {
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            const formattedDate = `${day}/${month}/${year}`;
+            $("#current-date-en").text(formattedDate);
+            $("#current-date-ar").text(formattedDate);
+            $("#current-date-ar-2").text(formattedDate)
+
+            // Month and Year for Salary Transfer
+            $(".currentMonth").text(month);
+            $(".currentYear").text(year);
+        }
+
+        async function downloadPDF(type) {
+            if (type === 'salary-transfer') {
+                showBankModal();
+                return;
+            }
+            await executeDownloadFlow('certificate');
+        }
+
+        function showBankModal() {
+            document.getElementById('bankDetailsModal').style.display = 'flex';
+            // Clear previous errors/values
+            document.getElementById('modalBankName').value = '';
+            document.getElementById('modalIbanNo').value = '';
+            document.getElementById('bankNameError').style.display = 'none';
+            document.getElementById('ibanNoError').style.display = 'none';
+        }
+
+        function closeBankModal() {
+            document.getElementById('bankDetailsModal').style.display = 'none';
+        }
+
+        async function submitBankDetails() {
+            const bankName = document.getElementById('modalBankName').value.trim();
+            const ibanNo = document.getElementById('modalIbanNo').value.trim();
+            let isValid = true;
+
+            if (!bankName) {
+                document.getElementById('bankNameError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('bankNameError').style.display = 'none';
+            }
+
+            if (!ibanNo) {
+                document.getElementById('ibanNoError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('ibanNoError').style.display = 'none';
+            }
+
+            if (isValid) {
+                $(".bankName").text(bankName);
+                $(".ibanNo").text(ibanNo);
+                closeBankModal();
+                await executeDownloadFlow('salary-transfer');
+            }
+        }
+
+        async function executeDownloadFlow(type) {
+            const btnSelector = type === 'certificate' ? '.certificate-btn' : '.salary-transfer-btn';
+            const containerSelector = type === 'certificate' ? '.certificate-container' : '.salary-transfer-container';
+            const btn = document.querySelector(btnSelector);
+            btn.classList.add('btn-load');
+
+            try {
+                await getEmployeeDetailsByEmployeeIdOrName();
+                const element = document.querySelector(containerSelector);
+                const style = document.createElement('style');
+                style.innerHTML = `
+                    :root {
+                --font-en: 'Inter', sans-serif;
+                --font-ar: 'Cairo', sans-serif;
+              }
+
+              * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                letter-spacing: normal !important;
+              }
+                `;
+                element.appendChild(style);
+                // Temporary styles to ensure clean capture and prevent blank pages
+                const originalBoxShadow = element.style.boxShadow;
+                element.style.boxShadow = 'none';
+
+                const opt = {
+                    margin: 0, // Zero margin, rely on container padding
+                    filename: type === 'certificate' ? 'Employment_Certificate.pdf' : 'Salary_Transfer_Form.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true,
+                        letterRendering: true,
+                        letterSpacing: 'normal',
+                        scrollY: 0,
+                        scrollX: 0,
+                        windowWidth: document.documentElement.offsetWidth // Use actual window width to avoid clipping
+                    },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak: { mode: 'avoid-all' }
+                };
+
+                // New Promise-based usage:
+                await html2pdf().set(opt).from(element).toPdf().get('pdf').then(function (pdf) {
+                    // Ensure the total pages is 1
+                    const totalPages = pdf.internal.getNumberOfPages();
+                    if (totalPages > 1) {
+                        pdf.deletePage(totalPages);
+                    }
+                }).save();
+
+                element.style.boxShadow = originalBoxShadow;
+            } catch (error) {
+                console.error("PDF generation failed:", error);
+            } finally {
+                btn.classList.remove('btn-load');
+            }
+        }
+
+        function getEmployeeDetailsByEmployeeIdOrName() {
+            setCurrentDate();
+            // API URL
+            const apiUrl = `${bcpURL}/api/v1/erp/getEmployeeDetailsByEmployeeIdOrName?_employeeIdOrName=${currentEmployeeId}&_Company=MWD&user-id=${userIdDefault}`;
+            // Make API call and return promise
+            return fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    const details = data.RetListValue[0];
+                    // Use classes to update multiple spans and .text() instead of .val()
+                    $(".iqamaNumber").text(details.iqamaNumber);
+                    $(".nationality").text(details.nationality);
+                    $(".employeename").text(details.employeeName);
+                    $('.position').text(details.Position);
+                    $('.employeeId').text(details.employeeId);
+                    $('.iqama-nationality-no').html(details.iqamaNumber);
+                    const now = new Date(details.dateOfJoining);
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const year = now.getFullYear();
+                    const formattedDate = `${day}/${month}/${year}`;
+                    $('.dateofjoining').text(formattedDate);
+
+                    // Fixed IDs for unique table values
+                    $('#basicSalary').text(details.BasicSalary);
+                    $('#housingAllowance').text(details.HousingAllowance);
+                    $('#transportationAllowance').text(details.TransportationAllowance);
+                    $('#otherAllowance').text(details.OtherAllowance);
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                });
+        }
+
+    </script>
+</body>
+
+</html>
