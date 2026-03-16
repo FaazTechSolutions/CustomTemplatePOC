@@ -1,1127 +1,1205 @@
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        .ss-main-dashboard {
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 0 24px;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Top section containing sidebar profile and create requests tiles */
-.ss-main-dashboard .top-section {
-  display: flex;
-  gap: 90px;
-  align-items: flex-start;
-}
-
-/* Sidebar profile card - smaller and vertical */
-.ss-main-dashboard .sidebar-profile {
-  flex: 0 0 260px;
-  display: flex;
-  flex-direction: column;
-  background: #fff;
-  padding: 24px 32px;
-  border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(44,54,73,0.11);
-  align-items: center;
-  height: fit-content;
-}
-
-.ss-main-dashboard .sidebar-profile .profile-pic {
-  width: 96px;
-  height: 96px;
-  margin-bottom: 24px;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 2px 10px rgba(44,54,73,0.10);
-}
-
-.ss-main-dashboard .sidebar-profile .profile-meta h2 {
-  font-size: 26px;
-  margin-bottom: 14px;
-  text-align: center;
-  color: #37436b;
-}
-
-.ss-main-dashboard .sidebar-profile .profile-meta span {
-  font-size: 14px;
-  margin-bottom: 8px;
-  color: #6476b2;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-/* Create Requests tiles section expanded to full width */
-.ss-main-dashboard .top-create-requests {
-  flex: 1;
-}
-
-.ss-main-dashboard .create-requests-widget {
-  margin: 0; /* Removed some margin as spacing done by top-section */
-}
-
-.ss-main-dashboard .create-requests-widget h3 {
-  margin-left: 4px;
-  color: #38436b;
-  margin-bottom: 20px;
-  font-size: 21px;
-}
-
-.ss-main-dashboard .tiles-row {
-  display: flex;
-  gap: 26px;
-  flex-wrap: wrap;
-}
-
-.ss-main-dashboard .request-tile {
-  flex: 1 1 120px;
-  min-width: 140px;
-  max-width: 180px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
-  border-radius: 18px;
-  min-height: 110px;
-  cursor: pointer;
-  transition: box-shadow 0.18s, transform 0.12s;
-  box-shadow: 0 2px 12px rgba(40, 54, 85, 0.09);
-  font-weight: 500;
-  font-size: 17px;
-  color: #263270;
-  text-align: center;
-  border-top: 5px solid transparent;
-}
-
-.ss-main-dashboard .request-tile i {
-  font-size: 37px;
-  margin-bottom: 10px;
-  opacity: 0.91;
-}
-
-.ss-main-dashboard .request-tile.leave {
-  border-top: 5px solid #4267b2;
-}
-.ss-main-dashboard .request-tile.loan {
-  border-top: 5px solid #b06973;
-}
-.ss-main-dashboard .request-tile.item {
-  border-top: 5px solid #b39ddb;
-}
-.ss-main-dashboard .request-tile.business {
-  border-top: 5px solid #26b8b5;
-}
-
-.ss-main-dashboard .request-tile:hover {
-  box-shadow: 0 5px 18px rgba(40, 54, 85, 0.12), 0 1.5px 4px rgba(44, 54, 73, 0.08);
-  transform: translateY(-4px) scale(1.04);
-  background: #f8fafc;
-}
-
-/* Dashboard Cards */
-.ss-main-dashboard .dashboard-wrapper h3 {
-  color: #38436b;
-  margin: 38px 0 16px 10px;
-  font-size: 21px;
-}
-.ss-main-dashboard .card-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  margin-bottom: 32px;
-}
-.ss-main-dashboard .dashboard-card {
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 2px 12px rgba(44, 54, 73, 0.08);
-  min-width: 270px;
-  max-width: 280px;
-  flex: 1 1 270px;
-  display: flex;
-  flex-direction: column;
-}
-.ss-main-dashboard .card-header {
-  padding: 14px 20px;
-  border-radius: 14px 14px 0 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #fff;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  user-select: none;
-}
-.ss-main-dashboard .dashboard-card.leave .card-header {
-  background: #4267b2;
-}
-.ss-main-dashboard .dashboard-card.loan .card-header {
-  background: #b06973;
-}
-.ss-main-dashboard .dashboard-card.trip .card-header {
-  background: #26b8b5;
-}
-.ss-main-dashboard .dashboard-card.item .card-header {
-  background: #b39ddb;
-}
-.ss-main-dashboard .dashboard-card.purchase .card-header {
-  background: #a5974b;
-}
-.ss-main-dashboard .card-content {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 12px 20px 20px 20px;
-  gap: 10px 18px;
-  justify-content: space-between;
-}
-.ss-main-dashboard .card-content span {
-  display: flex;
-  align-items: center;
-  font-size: 15px;
-  gap: 5px;
-}
-.ss-main-dashboard .label {
-  font-size: 13px;
-  background: #f3f4f6;
-  border-radius: 7px;
-  padding: 3px 10px;
-  font-weight: 500;
-  margin-right: 3px;
-  color: #888;
-  user-select: none;
-}
-.ss-main-dashboard .label.approved {
-  color: #238750;
-  background: #e6f5eb;
-}
-.ss-main-dashboard .label.cancel {
-  color: #db4747;
-  background: #fbebeb;
-}
-.ss-main-dashboard .label.error {
-  color: #7d41cb;
-  background: #ebe7f8;
-}
-.ss-main-dashboard .label.submitted {
-  color: #ffae08;
-  background: #fdf3e6;
-}
-.ss-main-dashboard .label.total {
-  color: #2f66af;
-  background: #e5edfb;
-}
-.ss-main-dashboard .label.draft {
-  color: #4662e0;
-  background: #e4e9f8;
-}
-.dash2 {
-    display: grid;
-    flex: 1 1 auto;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1rem;
-}
-.dash2-card {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    padding-left: .25rem;
-    padding-right: .25rem;
-    background-color: rgb(238 242 255 / 1);
-    border-radius: 1rem;
-    display: flex
-;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-.tag_leave {
-    background: #4267b2;
-    color: #fff !important;
-}
-.tag_loan {
-    background: #b06973;
-    color: #fff !important;
-}
-.tag_business {
-    background: #26b8b5;
-    color: #fff !important;
-}
-.tag_store {
-    background: #b39ddb;
-    color: #fff !important;
-}
-.tag_purchase {
-    background: #a5974b;
-    color: #fff !important;
-}
-.dash2-card .inlinecount {
-    font-size: 3rem;
-    letter-spacing: -.025em;
-    line-height: 1;
-    font-weight: 600;
-}
-.dash2-card .inlinename {
-    font-size: 1rem;
-    font-weight: 500;
-    margin-top: .25rem;
-}
-/* Dashboard container */
-.dashboard-container {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px;
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* Widget styles */
-.widget {
-    background-color: #ffffff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.widget-title {
-    font-size: 15px;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-.widget-count {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #4CAF50;
-}
-.vacation {
-    color:green;
-}
-.visa {
-    color: orange;
-}
-.adult {
-    color: #1F3A68;
-}
-.child {
-    color: #512D6D;
-}
-.infant {
-    color: #009688;
-}
-  #info-logout {
-    animation: blinkBackground 1s infinite;
-  }
-
-  @keyframes blinkBackground {
-    0% { background-color: orange; }
-    50% { background-color: #f7b844; }
-    100% { background-color: #f5c161; }
-  }
-/* Mobile responsiveness */
-@media (max-width: 1024px) {
-    .dashboard-container {
-        grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets */
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .ss-main-dashboard {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
     }
-}
 
-@media (max-width: 600px) {
+    /* Top section containing sidebar profile and create requests tiles */
+    .ss-main-dashboard .top-section {
+      display: flex;
+      gap: 90px;
+      align-items: flex-start;
+    }
+
+    /* Sidebar profile card - smaller and vertical */
+    .ss-main-dashboard .sidebar-profile {
+      flex: 0 0 260px;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      padding: 24px 32px;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(44, 54, 73, 0.11);
+      align-items: center;
+      height: fit-content;
+    }
+
+    .ss-main-dashboard .sidebar-profile .profile-pic {
+      width: 96px;
+      height: 96px;
+      margin-bottom: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 2px 10px rgba(44, 54, 73, 0.10);
+    }
+
+    .ss-main-dashboard .sidebar-profile .profile-meta h2 {
+      font-size: 26px;
+      margin-bottom: 14px;
+      text-align: center;
+      color: #37436b;
+    }
+
+    .ss-main-dashboard .sidebar-profile .profile-meta span {
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #6476b2;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Create Requests tiles section expanded to full width */
+    .ss-main-dashboard .top-create-requests {
+      flex: 1;
+    }
+
+    .ss-main-dashboard .create-requests-widget {
+      margin: 0;
+      /* Removed some margin as spacing done by top-section */
+    }
+
+    .ss-main-dashboard .create-requests-widget h3 {
+      margin-left: 4px;
+      color: #38436b;
+      margin-bottom: 20px;
+      font-size: 21px;
+    }
+
+    .ss-main-dashboard .tiles-row {
+      display: flex;
+      gap: 26px;
+      flex-wrap: wrap;
+    }
+
+    .ss-main-dashboard .request-tile {
+      flex: 1 1 120px;
+      min-width: 140px;
+      max-width: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border-radius: 18px;
+      min-height: 110px;
+      cursor: pointer;
+      transition: box-shadow 0.18s, transform 0.12s;
+      box-shadow: 0 2px 12px rgba(40, 54, 85, 0.09);
+      font-weight: 500;
+      font-size: 17px;
+      color: #263270;
+      text-align: center;
+      border-top: 5px solid transparent;
+    }
+
+    .ss-main-dashboard .request-tile i {
+      font-size: 37px;
+      margin-bottom: 10px;
+      opacity: 0.91;
+    }
+
+    .ss-main-dashboard .request-tile.leave {
+      border-top: 5px solid #4267b2;
+    }
+
+    .ss-main-dashboard .request-tile.loan {
+      border-top: 5px solid #b06973;
+    }
+
+    .ss-main-dashboard .request-tile.item {
+      border-top: 5px solid #b39ddb;
+    }
+
+    .ss-main-dashboard .request-tile.business {
+      border-top: 5px solid #26b8b5;
+    }
+
+    .ss-main-dashboard .request-tile:hover {
+      box-shadow: 0 5px 18px rgba(40, 54, 85, 0.12), 0 1.5px 4px rgba(44, 54, 73, 0.08);
+      transform: translateY(-4px) scale(1.04);
+      background: #f8fafc;
+    }
+
+    /* Dashboard Cards */
+    .ss-main-dashboard .dashboard-wrapper h3 {
+      color: #38436b;
+      margin: 38px 0 16px 10px;
+      font-size: 21px;
+    }
+
+    .ss-main-dashboard .card-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+
+    .ss-main-dashboard .dashboard-card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(44, 54, 73, 0.08);
+      min-width: 270px;
+      max-width: 280px;
+      flex: 1 1 270px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ss-main-dashboard .card-header {
+      padding: 14px 20px;
+      border-radius: 14px 14px 0 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+
+    .ss-main-dashboard .dashboard-card.leave .card-header {
+      background: #4267b2;
+    }
+
+    .ss-main-dashboard .dashboard-card.loan .card-header {
+      background: #b06973;
+    }
+
+    .ss-main-dashboard .dashboard-card.trip .card-header {
+      background: #26b8b5;
+    }
+
+    .ss-main-dashboard .dashboard-card.item .card-header {
+      background: #b39ddb;
+    }
+
+    .ss-main-dashboard .dashboard-card.purchase .card-header {
+      background: #a5974b;
+    }
+
+    .ss-main-dashboard .card-content {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 12px 20px 20px 20px;
+      gap: 10px 18px;
+      justify-content: space-between;
+    }
+
+    .ss-main-dashboard .card-content span {
+      display: flex;
+      align-items: center;
+      font-size: 15px;
+      gap: 5px;
+    }
+
+    .ss-main-dashboard .label {
+      font-size: 13px;
+      background: #f3f4f6;
+      border-radius: 7px;
+      padding: 3px 10px;
+      font-weight: 500;
+      margin-right: 3px;
+      color: #888;
+      user-select: none;
+    }
+
+    .ss-main-dashboard .label.approved {
+      color: #238750;
+      background: #e6f5eb;
+    }
+
+    .ss-main-dashboard .label.cancel {
+      color: #db4747;
+      background: #fbebeb;
+    }
+
+    .ss-main-dashboard .label.error {
+      color: #7d41cb;
+      background: #ebe7f8;
+    }
+
+    .ss-main-dashboard .label.submitted {
+      color: #ffae08;
+      background: #fdf3e6;
+    }
+
+    .ss-main-dashboard .label.total {
+      color: #2f66af;
+      background: #e5edfb;
+    }
+
+    .ss-main-dashboard .label.draft {
+      color: #4662e0;
+      background: #e4e9f8;
+    }
+
+    .dash2 {
+      display: grid;
+      flex: 1 1 auto;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+
+    .dash2-card {
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+      padding-left: .25rem;
+      padding-right: .25rem;
+      background-color: rgb(238 242 255 / 1);
+      border-radius: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tag_leave {
+      background: #4267b2;
+      color: #fff !important;
+    }
+
+    .tag_loan {
+      background: #b06973;
+      color: #fff !important;
+    }
+
+    .tag_business {
+      background: #26b8b5;
+      color: #fff !important;
+    }
+
+    .tag_store {
+      background: #b39ddb;
+      color: #fff !important;
+    }
+
+    .tag_purchase {
+      background: #a5974b;
+      color: #fff !important;
+    }
+
+    .dash2-card .inlinecount {
+      font-size: 3rem;
+      letter-spacing: -.025em;
+      line-height: 1;
+      font-weight: 600;
+    }
+
+    .dash2-card .inlinename {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-top: .25rem;
+    }
+
+    /* Dashboard container */
     .dashboard-container {
-        grid-template-columns: 1fr; /* 1 column on mobile */
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Widget styles */
+    .widget {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
     }
 
     .widget-title {
-        font-size: 1rem; /* Smaller font for mobile */
+      font-size: 15px;
+      color: #333;
+      margin-bottom: 10px;
     }
 
     .widget-count {
-        font-size: 2rem; /* Adjust count size */
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #4CAF50;
     }
-}
-    </style>
+
+    .vacation {
+      color: green;
+    }
+
+    .visa {
+      color: orange;
+    }
+
+    .adult {
+      color: #1F3A68;
+    }
+
+    .child {
+      color: #512D6D;
+    }
+
+    .infant {
+      color: #009688;
+    }
+
+    #info-logout {
+      animation: blinkBackground 1s infinite;
+    }
+
+    @keyframes blinkBackground {
+      0% {
+        background-color: orange;
+      }
+
+      50% {
+        background-color: #f7b844;
+      }
+
+      100% {
+        background-color: #f5c161;
+      }
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 1024px) {
+      .dashboard-container {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 columns on tablets */
+      }
+    }
+
+    @media (max-width: 600px) {
+      .dashboard-container {
+        grid-template-columns: 1fr;
+        /* 1 column on mobile */
+      }
+
+      .widget-title {
+        font-size: 1rem;
+        /* Smaller font for mobile */
+      }
+
+      .widget-count {
+        font-size: 2rem;
+        /* Adjust count size */
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <div class="ss-main-dashboard">
-  <span class="p-2 alert alert-warning text-center d-none" id="info-leave">
-    <i class="tabler ti ti-info-circle-filled text-dark" style="font-size: 14px;"></i>
-    {{Translate 'Please Edit the Profile and update the Employee Id / Mobile Number,after updating the details please
-    logout and login'}}
-  </span>
-  <span class="p-2 alert alert-warning text-center d-none" id="info-logout">
-    <i class="tabler ti ti-info-circle-filled text-dark" style="font-size: 14px;"></i>
-    {{Translate 'please logout and login the application'}}
-  </span>
-  <div class="top-section row">
+  <div class="ss-main-dashboard">
+    <span class="p-2 alert alert-warning text-center d-none" id="info-leave">
+      <i class="tabler ti ti-info-circle-filled text-dark" style="font-size: 14px;"></i>
+      {{Translate 'Please Edit the Profile and update the Employee Id / Mobile Number,after updating the details please
+      logout and login'}}
+    </span>
+    <span class="p-2 alert alert-warning text-center d-none" id="info-logout">
+      <i class="tabler ti ti-info-circle-filled text-dark" style="font-size: 14px;"></i>
+      {{Translate 'please logout and login the application'}}
+    </span>
+    <div class="top-section row">
 
 
-    <!-- Profile Card Sidebar -->
-    <div class="profile-card sidebar-profile col-12">
-      {{#if data.[0].Profile}}
-      <img src="{{System.ServerUrl}}{{data.[0].Profile}}" class="profile-pic" alt="Profile Picture" />
-      {{else}}
-      <img src="https://cdn-icons-png.flaticon.com/128/847/847969.png" alt="Default Profile" class="profile-pic">
-      {{/if}}
+      <!-- Profile Card Sidebar -->
+      <div class="profile-card sidebar-profile col-12">
+        {{#if data.[0].Profile}}
+        <img src="{{System.ServerUrl}}{{data.[0].Profile}}" class="profile-pic" alt="Profile Picture" />
+        {{else}}
+        <img src="https://cdn-icons-png.flaticon.com/128/847/847969.png" alt="Default Profile" class="profile-pic">
+        {{/if}}
 
-      <div class="profile-meta">
-        <a id="updateProfile" href="javascript:void(0)" class="d-flex justify-content-end" style="font-size: 14px;">
-          <span>
-            <i class="fas fa-pen pointer"></i>
-            {{Translate 'Edit Profile'}}
-          </span>
-        </a>
+        <div class="profile-meta">
+          <a id="updateProfile" href="javascript:void(0)" class="d-flex justify-content-end" style="font-size: 14px;">
+            <span>
+              <i class="fas fa-pen pointer"></i>
+              {{Translate 'Edit Profile'}}
+            </span>
+          </a>
 
-        <a id="updateProfile1" href="javascript:void(0)" class="d-none justify-content-end" style="font-size: 14px;">
-          <span>
-            <i class="fas fa-pen pointer"></i>
-            {{Translate 'Edit Profile'}}
-          </span>
-        </a>
+          <a id="updateProfile1" href="javascript:void(0)" class="d-none justify-content-end" style="font-size: 14px;">
+            <span>
+              <i class="fas fa-pen pointer"></i>
+              {{Translate 'Edit Profile'}}
+            </span>
+          </a>
 
-        <h2>{{data.[0].Name}}</h2>
-        <span><i class="fa fa-id-badge"></i> {{Translate 'Employee ID'}}: {{data.[0].EmployeeId}}</span>
-        <span><i class="fa fa-envelope"></i> {{data.[0].Email}}</span>
-        <span><i class="fa fa-phone"></i> {{data.[0].MobileNumber}}</span>
+          <h2>{{data.[0].Name}}</h2>
+          <span><i class="fa fa-id-badge"></i> {{Translate 'Employee ID'}}: {{data.[0].EmployeeId}}</span>
+          <span><i class="fa fa-envelope"></i> {{data.[0].Email}}</span>
+          <span><i class="fa fa-phone"></i> {{data.[0].MobileNumber}}</span>
+        </div>
       </div>
-    </div>
-    <!-- Create Requests Tiles -->
-    <div class="create-requests-widget top-create-requests col-12">
-      <h3 class="">{{Translate 'Create Requests'}}</h3>
-      <div class="tiles-row">
-        <a id="createLeaveRequestBtn" href="javascript:void(0)">
-          <div class="request-tile leave">
-            <i class="fa fa-plane"></i>
-            <span>{{Translate 'Leave'}}</span>
-          </div>
-        </a>
-        <a id="createLoanRequestBtn" href="javascript:void(0)">
-          <div class="request-tile loan">
-            <i class="fa fa-university"></i>
-            <span>{{Translate 'Loan'}}</span>
-          </div>
-        </a>
-        <a id="createStoreItemRequestBtn" href="javascript:void(0)">
-          <div class="request-tile item">
-            <i class="fa fa-box"></i>
-            <span>{{Translate 'Store Item'}}</span>
-          </div>
-        </a>
-        <a id="createBusinessTripBtn" href="javascript:void(0)">
-          <div class="request-tile business">
-            <i class="fa fa-briefcase"></i>
-            <span>{{Translate 'Business'}}</span>
-          </div>
-        </a>
-        <a id="createPurchaseRequestBtn" href="javascript:void(0)">
-          <div class="request-tile business">
-            <i class="ti ti-shopping-cart-copy"></i>
-            <span>{{Translate 'Purchase'}}</span>
-          </div>
-        </a>
+      <!-- Create Requests Tiles -->
+      <div class="create-requests-widget top-create-requests col-12">
+        <h3 class="">{{Translate 'Create Requests'}}</h3>
+        <div class="tiles-row">
+          <a id="createLeaveRequestBtn" href="javascript:void(0)">
+            <div class="request-tile leave">
+              <i class="fa fa-plane"></i>
+              <span>{{Translate 'Leave'}}</span>
+            </div>
+          </a>
+          <a id="createLoanRequestBtn" href="javascript:void(0)">
+            <div class="request-tile loan">
+              <i class="fa fa-university"></i>
+              <span>{{Translate 'Loan'}}</span>
+            </div>
+          </a>
+          <a id="createStoreItemRequestBtn" href="javascript:void(0)">
+            <div class="request-tile item">
+              <i class="fa fa-box"></i>
+              <span>{{Translate 'Store Item'}}</span>
+            </div>
+          </a>
+          <a id="createBusinessTripBtn" href="javascript:void(0)">
+            <div class="request-tile business">
+              <i class="fa fa-briefcase"></i>
+              <span>{{Translate 'Business'}}</span>
+            </div>
+          </a>
+          <a id="createPurchaseRequestBtn" href="javascript:void(0)">
+            <div class="request-tile business">
+              <i class="ti ti-shopping-cart-copy"></i>
+              <span>{{Translate 'Purchase'}}</span>
+            </div>
+          </a>
+        </div>
       </div>
+
     </div>
 
-  </div>
+    {{#if PageData}}
+    <!-- Dashboard Cards -->
 
-  {{#if PageData}}
-  <!-- Dashboard Cards -->
+    <div class="dashboard-wrapper">
+      <div id="countDiv"> </div>
+      <div class="card-row">
 
-  <div class="dashboard-wrapper">
-    <div id="countDiv"> </div>
-    <div class="card-row">
+        <div class="create-requests-widget top-create-requests">
+          <h3 class="">{{Translate 'letter Download'}}</h3>
+          <div class="">
+            <div class="letter-container">
+              <style>
+                .letter-container {
+                  /* background-color: #f5f5f5; */
+                  font-family: var(--font-en);
+                  font-size: 14px;
+                  color: #1a1a1a;
+                  line-height: 1.6;
+                  letter-spacing: normal !important;
+                }
 
-      <div class="create-requests-widget top-create-requests">
-        <h3 class="">{{Translate 'letter Download'}}</h3>
-        <div class="">
-          <div class="letter-container">
-            <style>
-              .letter-container {
-                /* background-color: #f5f5f5; */
-                font-family: var(--font-en);
-                font-size: 14px;
-                color: #1a1a1a;
-                line-height: 1.6;
-                letter-spacing: normal !important;
-              }
+                .certificate-container {
+                  width: 210mm;
+                  /* Remove min-height to prevent pushing to 2nd page if there's slight overflow */
+                  padding: 20mm;
+                  margin: 0 auto;
+                  background: #fff;
+                  box-sizing: border-box;
+                  position: relative;
+                  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                  -webkit-print-color-adjust: exact;
+                  print-color-adjust: exact;
+                }
 
-              .certificate-container {
-                width: 210mm;
-                /* Remove min-height to prevent pushing to 2nd page if there's slight overflow */
-                padding: 20mm;
-                margin: 0 auto;
-                background: #fff;
-                box-sizing: border-box;
-                position: relative;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-              }
+                /* Outer wrapper for screen spacing */
+                .page-wrapper {
+                  padding: 40px 0;
+                  background-color: #f5f5f5;
+                  /* Match body bg */
+                  min-height: 100vh;
+                }
 
-              /* Outer wrapper for screen spacing */
-              .page-wrapper {
-                padding: 40px 0;
-                background-color: #f5f5f5;
-                /* Match body bg */
-                min-height: 100vh;
-              }
+                .header {
+                  display: flex;
+                  justify-content: space-between;
+                  margin-bottom: 40px;
+                  font-weight: 500;
+                }
 
-              .header {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 40px;
-                font-weight: 500;
-              }
+                .date-section {
+                  display: flex;
+                  gap: 10px;
+                }
 
-              .date-section {
-                display: flex;
-                gap: 10px;
-              }
+                .title-section {
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 40px;
+                  border-bottom: 1px solid transparent;
+                  /* Placeholder for spacing */
+                }
 
-              .title-section {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 40px;
-                border-bottom: 1px solid transparent;
-                /* Placeholder for spacing */
-              }
+                .title-en {
+                  font-size: 20px;
+                  font-weight: 700;
+                }
 
-              .title-en {
-                font-size: 20px;
-                font-weight: 700;
-              }
+                .title-ar {
+                  font-family: var(--font-ar);
+                  font-size: 22px;
+                  font-weight: 700;
+                  text-align: right;
+                }
 
-              .title-ar {
-                font-family: var(--font-ar);
-                font-size: 22px;
-                font-weight: 700;
-                text-align: right;
-              }
+                .to-section {
+                  display: flex;
+                  justify-content: space-between;
+                  margin-bottom: 25px;
+                  font-weight: 700;
+                }
 
-              .to-section {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 25px;
-                font-weight: 700;
-              }
+                .certification-text {
+                  display: flex;
+                  justify-content: space-between;
+                  margin-bottom: 30px;
+                  gap: 40px;
+                }
 
-              .certification-text {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 30px;
-                gap: 40px;
-              }
-
-              .text-en {
-                /* flex: 1;
+                .text-en {
+                  /* flex: 1;
                 text-align: left; */
-              }
-
-              .text-ar {
-                /* flex: 1; */
-                text-align: right;
-                font-family: var(--font-ar);
-                /* direction: rtl; */
-              }
-
-              table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-bottom: 20px;
-              }
-
-              th,
-              td {
-                border: 1px solid #000;
-                padding: 8px 12px;
-                text-align: center;
-              }
-
-              .details-table td {
-                height: 35px;
-                text-align: left;
-              }
-
-              .details-table td:nth-child(1) {
-                width: 25%;
-                font-weight: 700;
-              }
-
-              .details-table td:nth-child(2) {
-                width: 25%;
-              }
-
-              .details-table td:nth-child(3) {
-                width: 25%;
-              }
-
-              .details-table td:nth-child(4) {
-                width: 25%;
-                font-family: var(--font-ar);
-                text-align: right;
-                font-weight: 700;
-                /* direction: rtl; */
-              }
-
-              .salary-table th {
-                font-weight: 600;
-                background-color: transparent;
-              }
-
-              .salary-table th .ar {
-                display: block;
-                font-family: var(--font-ar);
-                margin-bottom: 5px;
-              }
-
-              .closing-section {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 30px;
-                margin-bottom: 40px;
-                gap: 40px;
-              }
-
-              .signature-area {
-                margin-top: 60px;
-                text-align: center;
-                width: 300px;
-                margin-left: auto;
-                margin-right: auto;
-              }
-
-              .signature-line {
-                border-top: 1px solid #1a1a1a;
-                margin-bottom: 15px;
-                width: 100%;
-              }
-
-              .signatory-name {
-                font-family: var(--font-ar);
-                /* text-align: right; */
-                font-size: 16px;
-                font-weight: 700;
-                margin-bottom: 5px;
-              }
-
-              .signatory-title {
-                /* text-align: right; */
-                font-family: var(--font-ar);
-                font-size: 14px;
-              }
-
-              /* Download Button Styling */
-              .controls {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 10px;
-                margin-top: 10px;
-              }
-
-              .download-btn {
-                background-color: orange;
-                color: #fff;
-                border: none;
-                padding: 12px 24px;
-                font-family: var(--font-en);
-                font-weight: 600;
-                cursor: pointer;
-                border-radius: 4px;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                transition: background-color 0.3s;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-              }
-
-              .download-btn:hover {
-                background-color: #f7b439;
-              }
-
-              .download-btn.btn-load {
-                pointer-events: none;
-                opacity: 0.8;
-              }
-
-              .download-btn .spinner {
-                display: none;
-                width: 18px;
-                height: 18px;
-                border: 2px solid #ffffff;
-                border-top: 2px solid transparent;
-                border-radius: 50%;
-                animation: spin 0.8s linear infinite;
-              }
-
-              .download-btn.btn-load .spinner {
-                display: inline-block;
-              }
-
-              .download-btn.btn-load span {
-                display: none;
-              }
-
-              @keyframes spin {
-                0% {
-                  transform: rotate(0deg);
                 }
 
-                100% {
-                  transform: rotate(360deg);
-                }
-              }
-
-              .salary-transfer-container {
-                width: 210mm;
-                padding: 20mm;
-                margin: 0 auto;
-                background: #fff;
-                box-sizing: border-box;
-                position: relative;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-                font-family: var(--font-ar);
-                /* direction: rtl; */
-                text-align: right;
-              }
-
-              .salary-transfer-container .content-head {
-                text-align: center;
-                margin-bottom: 30px;
-              }
-
-              .salary-transfer-container .form-title {
-                font-size: 20px;
-                font-weight: 700;
-                /* text-decoration: underline; */
-                margin-bottom: 30px;
-              }
-
-              .salary-transfer-container .salutation {
-                margin-bottom: 15px;
-                font-weight: 700;
-              }
-
-              .summary-table {
-                width: 100%;
-                margin: 20px 0;
-                border-collapse: collapse;
-              }
-
-              .summary-table td {
-                padding: 10px;
-                text-align: center;
-                vertical-align: middle;
-              }
-
-              /* Modal Styles */
-              .modal-popup-overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100vh;
-                background: rgba(0, 0, 0, 0.6);
-                backdrop-filter: blur(4px);
-                z-index: 2000;
-                justify-content: center;
-                align-items: center;
-              }
-
-              .modal-popup-content {
-                background: #fff;
-                padding: 30px;
-                border-radius: 12px;
-                width: 400px;
-                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-                animation: slideIn 0.3s ease-out;
-                direction: ltr;
-                /* Keeping modal inputs LTR for easier typing */
-                text-align: left;
-              }
-
-              @keyframes slideIn {
-                from {
-                  transform: translateY(-20px);
-                  opacity: 0;
+                .text-ar {
+                  /* flex: 1; */
+                  text-align: right;
+                  font-family: var(--font-ar);
+                  /* direction: rtl; */
                 }
 
-                to {
-                  transform: translateY(0);
-                  opacity: 1;
-                }
-              }
-
-              .modal-popup-header {
-                margin-bottom: 20px;
-                border-bottom: 1px solid #eee;
-                padding-bottom: 10px;
-              }
-
-              .modal-popup-header h2 {
-                margin: 0;
-                font-size: 1.2rem;
-                color: #333;
-              }
-
-              .form-group {
-                margin-bottom: 15px;
-              }
-
-              .form-group label {
-                display: block;
-                margin-bottom: 5px;
-                font-weight: 600;
-                color: #555;
-                font-size: 0.9rem;
-              }
-
-              .form-group input {
-                width: 100%;
-                padding: 10px;
-                border: 1.5px solid #ddd;
-                border-radius: 6px;
-                font-size: 1rem;
-                transition: border-color 0.2s;
-              }
-
-              .form-group input:focus {
-                outline: none;
-                border-color: orange;
-              }
-
-              .modal-popup-footer {
-                display: flex;
-                justify-content: flex-end;
-                gap: 10px;
-                margin-top: 25px;
-              }
-
-              .modal-popup-btn {
-                padding: 10px 20px;
-                border-radius: 6px;
-                cursor: pointer;
-                font-weight: 600;
-                border: none;
-                transition: background 0.2s;
-              }
-
-              .modal-popup-btn.cancel {
-                background: #f1f1f1;
-                color: #666;
-              }
-
-              .modal-popup-btn.cancel:hover {
-                background: #e5e5e5;
-              }
-
-              .modal-popup-btn.confirm {
-                background: orange;
-                color: #fff;
-              }
-
-              .modal-popup-btn.confirm:hover {
-                background: #f7b439;
-              }
-
-              .error-msg {
-                color: #d32f2f;
-                font-size: 0.8rem;
-                margin-top: 4px;
-                display: none;
-              }
-
-              .double-line {
-                border-top: 3px double #000;
-                margin: 20px 0;
-              }
-
-              @media print {
-                .controls {
-                  display: none;
+                table {
+                  width: 100%;
+                  border-collapse: collapse;
+                  margin-bottom: 20px;
                 }
 
-                body {
-                  background: none;
+                th,
+                td {
+                  border: 1px solid #000;
+                  padding: 8px 12px;
+                  text-align: center;
                 }
 
-                .certificate-container,
-                .salary-transfer-container {
-                  margin: 0;
-                  box-shadow: none;
+                .details-table td {
+                  height: 35px;
+                  text-align: left;
+                }
+
+                .details-table td:nth-child(1) {
+                  width: 25%;
+                  font-weight: 700;
+                }
+
+                .details-table td:nth-child(2) {
+                  width: 25%;
+                }
+
+                .details-table td:nth-child(3) {
+                  width: 25%;
+                }
+
+                .details-table td:nth-child(4) {
+                  width: 25%;
+                  font-family: var(--font-ar);
+                  text-align: right;
+                  font-weight: 700;
+                  /* direction: rtl; */
+                }
+
+                .salary-table th {
+                  font-weight: 600;
+                  background-color: transparent;
+                }
+
+                .salary-table th .ar {
+                  display: block;
+                  font-family: var(--font-ar);
+                  margin-bottom: 5px;
+                }
+
+                .closing-section {
+                  display: flex;
+                  justify-content: space-between;
+                  margin-top: 30px;
+                  margin-bottom: 40px;
+                  gap: 40px;
+                }
+
+                .signature-area {
+                  margin-top: 60px;
+                  text-align: center;
+                  width: 300px;
+                  margin-left: auto;
+                  margin-right: auto;
+                }
+
+                .signature-line {
+                  border-top: 1px solid #1a1a1a;
+                  margin-bottom: 15px;
                   width: 100%;
                 }
 
-                @page {
-                  size: A4;
-                  margin: 0;
+                .signatory-name {
+                  font-family: var(--font-ar);
+                  /* text-align: right; */
+                  font-size: 16px;
+                  font-weight: 700;
+                  margin-bottom: 5px;
                 }
-              }
-            </style>
-            <div class="controls">
-              <button class="download-btn certificate-btn" id="downloadEmploymentCertificate">
-                <div class="spinner"></div>
-                <span>Download Employment Certificate as PDF</span>
-              </button>
-              <button class="download-btn salary-transfer-btn" id="downloadSalaryTransferForm"
-                style="background-color: #28a745;">
-                <div class="spinner"></div>
-                <span>Download Salary Transfer Form as PDF</span>
-              </button>
-            </div>
-            <div class="page-wrapper" style="display: none;">
-              <div class="certificate-container" style="direction: ltr;">
-                <div class="header">
-                  <div class="date-section">
-                    <span class="label">Date:</span>
-                    <span class="value" id="current-date-en"></span>
-                  </div>
-                  <div class="date-section" style="font-family: 'Cairo';direction: rtl;">
-                    <span class="label">التاريخ <p style="display: inline-block;">:</p></span>
-                    <span class="value" id="current-date-ar"></span>
-                  </div>
-                </div>
 
-                <div class="title-section">
-                  <div class="title-en">Employment Certificate</div>
-                  <div class="title-ar">خطاب تعريف</div>
-                </div>
+                .signatory-title {
+                  /* text-align: right; */
+                  font-family: var(--font-ar);
+                  font-size: 14px;
+                }
 
-                <div class="to-section">
-                  <div>TO:</div>
-                  <div>
-                    <p style="display: inline-block;">:</p>إلى
+                /* Download Button Styling */
+                .controls {
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  gap: 10px;
+                  margin-top: 10px;
+                }
+
+                .download-btn {
+                  background-color: orange;
+                  color: #fff;
+                  border: none;
+                  padding: 12px 24px;
+                  font-family: var(--font-en);
+                  font-weight: 600;
+                  cursor: pointer;
+                  border-radius: 4px;
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  transition: background-color 0.3s;
+                  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                }
+
+                .download-btn:hover {
+                  background-color: #f7b439;
+                }
+
+                .download-btn.btn-load {
+                  pointer-events: none;
+                  opacity: 0.8;
+                }
+
+                .download-btn .spinner {
+                  display: none;
+                  width: 18px;
+                  height: 18px;
+                  border: 2px solid #ffffff;
+                  border-top: 2px solid transparent;
+                  border-radius: 50%;
+                  animation: spin 0.8s linear infinite;
+                }
+
+                .download-btn.btn-load .spinner {
+                  display: inline-block;
+                }
+
+                .download-btn.btn-load span {
+                  display: none;
+                }
+
+                @keyframes spin {
+                  0% {
+                    transform: rotate(0deg);
+                  }
+
+                  100% {
+                    transform: rotate(360deg);
+                  }
+                }
+
+                .salary-transfer-container {
+                  width: 210mm;
+                  padding: 20mm;
+                  margin: 0 auto;
+                  background: #fff;
+                  box-sizing: border-box;
+                  position: relative;
+                  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                  -webkit-print-color-adjust: exact;
+                  print-color-adjust: exact;
+                  font-family: var(--font-ar);
+                  /* direction: rtl; */
+                  text-align: right;
+                }
+
+                .salary-transfer-container .content-head {
+                  text-align: center;
+                  margin-bottom: 30px;
+                }
+
+                .salary-transfer-container .form-title {
+                  font-size: 20px;
+                  font-weight: 700;
+                  /* text-decoration: underline; */
+                  margin-bottom: 30px;
+                }
+
+                .salary-transfer-container .salutation {
+                  margin-bottom: 15px;
+                  font-weight: 700;
+                }
+
+                .summary-table {
+                  width: 100%;
+                  margin: 20px 0;
+                  border-collapse: collapse;
+                }
+
+                .summary-table td {
+                  padding: 10px;
+                  text-align: center;
+                  vertical-align: middle;
+                }
+
+                /* Modal Styles */
+                .modal-popup-overlay {
+                  display: none;
+                  position: fixed;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100vh;
+                  background: rgba(0, 0, 0, 0.6);
+                  backdrop-filter: blur(4px);
+                  z-index: 2000;
+                  justify-content: center;
+                  align-items: center;
+                }
+
+                .modal-popup-content {
+                  background: #fff;
+                  padding: 30px;
+                  border-radius: 12px;
+                  width: 400px;
+                  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+                  animation: slideIn 0.3s ease-out;
+                  direction: ltr;
+                  /* Keeping modal inputs LTR for easier typing */
+                  text-align: left;
+                }
+
+                @keyframes slideIn {
+                  from {
+                    transform: translateY(-20px);
+                    opacity: 0;
+                  }
+
+                  to {
+                    transform: translateY(0);
+                    opacity: 1;
+                  }
+                }
+
+                .modal-popup-header {
+                  margin-bottom: 20px;
+                  border-bottom: 1px solid #eee;
+                  padding-bottom: 10px;
+                }
+
+                .modal-popup-header h2 {
+                  margin: 0;
+                  font-size: 1.2rem;
+                  color: #333;
+                }
+
+                .form-group {
+                  margin-bottom: 15px;
+                }
+
+                .form-group label {
+                  display: block;
+                  margin-bottom: 5px;
+                  font-weight: 600;
+                  color: #555;
+                  font-size: 0.9rem;
+                }
+
+                .form-group input {
+                  width: 100%;
+                  padding: 10px;
+                  border: 1.5px solid #ddd;
+                  border-radius: 6px;
+                  font-size: 1rem;
+                  transition: border-color 0.2s;
+                }
+
+                .form-group input:focus {
+                  outline: none;
+                  border-color: orange;
+                }
+
+                .modal-popup-footer {
+                  display: flex;
+                  justify-content: flex-end;
+                  gap: 10px;
+                  margin-top: 25px;
+                }
+
+                .modal-popup-btn {
+                  padding: 10px 20px;
+                  border-radius: 6px;
+                  cursor: pointer;
+                  font-weight: 600;
+                  border: none;
+                  transition: background 0.2s;
+                }
+
+                .modal-popup-btn.cancel {
+                  background: #f1f1f1;
+                  color: #666;
+                }
+
+                .modal-popup-btn.cancel:hover {
+                  background: #e5e5e5;
+                }
+
+                .modal-popup-btn.confirm {
+                  background: orange;
+                  color: #fff;
+                }
+
+                .modal-popup-btn.confirm:hover {
+                  background: #f7b439;
+                }
+
+                .error-msg {
+                  color: #d32f2f;
+                  font-size: 0.8rem;
+                  margin-top: 4px;
+                  display: none;
+                }
+
+                .double-line {
+                  border-top: 3px double #000;
+                  margin: 20px 0;
+                }
+
+                @media print {
+                  .controls {
+                    display: none;
+                  }
+
+                  body {
+                    background: none;
+                  }
+
+                  .certificate-container,
+                  .salary-transfer-container {
+                    margin: 0;
+                    box-shadow: none;
+                    width: 100%;
+                  }
+
+                  @page {
+                    size: A4;
+                    margin: 0;
+                  }
+                }
+              </style>
+              <div class="controls">
+                <button class="download-btn certificate-btn" id="downloadEmploymentCertificate">
+                  <div class="spinner"></div>
+                  <span>Download Employment Certificate as PDF</span>
+                </button>
+                <button class="download-btn salary-transfer-btn" id="downloadSalaryTransferForm"
+                  style="background-color: #28a745;">
+                  <div class="spinner"></div>
+                  <span>Download Salary Transfer Form as PDF</span>
+                </button>
+              </div>
+              <div class="page-wrapper" style="display: none;">
+                <div class="certificate-container" style="direction: ltr;">
+                  <div class="header">
+                    <div class="date-section">
+                      <span class="label">Date:</span>
+                      <span class="value" id="current-date-en"></span>
+                    </div>
+                    <div class="date-section" style="font-family: 'Cairo';direction: rtl;">
+                      <span class="label">التاريخ <p style="display: inline-block;">:</p></span>
+                      <span class="value" id="current-date-ar"></span>
+                    </div>
                   </div>
-                </div>
 
-                <div class="certification-text">
-                  <div class="text-en">
-                    AL Mawarid Manpower Company certifies that the mentioned employee is working for it up to date
-                    as
-                    per
-                    the below data:
+                  <div class="title-section">
+                    <div class="title-en">Employment Certificate</div>
+                    <div class="title-ar">خطاب تعريف</div>
                   </div>
-                  <div class="text-ar" style="direction: rtl;">
-                    تشهد شركة الموارد للقوى البشرية بأن الموضح بياناته أدناه يعمل لديها ومازال على رأس العمل حتى
-                    تاريخه
-                    حسب البيانات التالية <p style="display: inline-block;">:</p>
+
+                  <div class="to-section">
+                    <div>TO: &nbsp;<span class="certToEn" style="font-weight: normal;"></span></div>
+                    <div>
+                      <span class="certToAr" style="font-family: var(--font-ar);font-weight: normal;"></span> &nbsp;<p
+                        style="display: inline-block;">:</p>إلى
+                    </div>
                   </div>
-                </div>
 
-                <table class="details-table">
-                  <tr>
-                    <td>Name:</td>
-                    <td> <span class="value employeename"></span></td>
-                    <td> <span class="value employeename"></span></td>
-                    <td>الاسم</td>
-                  </tr>
-                  <tr>
-                    <td>Nationality:</td>
-                    <td> <span class="value nationality"></span></td>
-                    <td> <span class="value nationality"></span></td>
-                    <td>الجنسية</td>
-                  </tr>
-                  <tr>
-                    <td>Position:</td>
-                    <td> <span class="value position"></span></td>
-                    <td> <span class="value position"></span></td>
-                    <td>المهنة</td>
-                  </tr>
-                  <tr>
-                    <td>Emp. ID No:</td>
-                    <td> <span class="value employeeId"></span></td>
-                    <td> <span class="value employeeId"></span></td>
-                    <td>الرقم الوظيفي</td>
-                  </tr>
-                  <tr>
-                    <td>Identity No:</td>
-                    <td> <span class="value iqamaNumber"></span></td>
-                    <td> <span class="value iqamaNumber"></span></td>
-                    <td>رقم الهوية</td>
-                  </tr>
-                  <tr>
-                    <td>Date of Joining:</td>
-                    <td> <span class="value dateofjoining"></span></td>
-                    <td> <span class="value dateofjoining"></span></td>
-                    <td>تاريخ التعيين</td>
-                  </tr>
-                </table>
+                  <div class="certification-text">
+                    <div class="text-en">
+                      AL Mawarid Manpower Company certifies that the mentioned employee is working for it up to date
+                      as
+                      per
+                      the below data:
+                    </div>
+                    <div class="text-ar" style="direction: rtl;">
+                      تشهد شركة الموارد للقوى البشرية بأن الموضح بياناته أدناه يعمل لديها ومازال على رأس العمل حتى
+                      تاريخه
+                      حسب البيانات التالية <p style="display: inline-block;">:</p>
+                    </div>
+                  </div>
 
-                <table class="salary-table">
-                  <thead>
+                  <table class="details-table">
                     <tr>
-                      <th>
-                        <span class="ar">بدلات أخرى</span>
-                        <span class="en">Other Allowance</span>
-                      </th>
-                      <th>
-                        <span class="ar">بدل النقل</span>
-                        <span class="en">Transportation Allowance</span>
-                      </th>
-                      <th>
-                        <span class="ar">بدل السكن</span>
-                        <span class="en">Housing Allowance</span>
-                      </th>
-                      <th>
-                        <span class="ar">الراتب الأساسي</span>
-                        <span class="en">Basic Salary</span>
-                      </th>
+                      <td>Name:</td>
+                      <td> <span class="value employeename"></span></td>
+                      <td> <span class="value employeename"></span></td>
+                      <td>الاسم</td>
                     </tr>
-                  </thead>
-                  <tbody>
                     <tr>
-                      <td style="height: 35px;"> <span class="value" id="otherAllowance"></span></td>
-                      <td style="height: 35px;"> <span class="value" id="transportationAllowance"></span></td>
-                      <td style="height: 35px;"> <span class="value" id="housingAllowance"></span></td>
-                      <td style="height: 35px;"> <span class="value" id="basicSalary"></span></td>
+                      <td>Nationality:</td>
+                      <td> <span class="value nationality"></span></td>
+                      <td> <span class="value nationality"></span></td>
+                      <td>الجنسية</td>
                     </tr>
-                  </tbody>
-                </table>
+                    <tr>
+                      <td>Position:</td>
+                      <td> <span class="value position"></span></td>
+                      <td> <span class="value position"></span></td>
+                      <td>المهنة</td>
+                    </tr>
+                    <tr>
+                      <td>Emp. ID No:</td>
+                      <td> <span class="value employeeId"></span></td>
+                      <td> <span class="value employeeId"></span></td>
+                      <td>الرقم الوظيفي</td>
+                    </tr>
+                    <tr>
+                      <td>Identity No:</td>
+                      <td> <span class="value iqamaNumber"></span></td>
+                      <td> <span class="value iqamaNumber"></span></td>
+                      <td>رقم الهوية</td>
+                    </tr>
+                    <tr>
+                      <td>Date of Joining:</td>
+                      <td> <span class="value dateofjoining"></span></td>
+                      <td> <span class="value dateofjoining"></span></td>
+                      <td>تاريخ التعيين</td>
+                    </tr>
+                  </table>
 
-                <div class="closing-section">
-                  <div class="text-en">
-                    This certificate is issue upon his request without any liability or responsibility on our part.
-                    <br><br>
-                    Regards,
+                  <table class="salary-table">
+                    <thead>
+                      <tr>
+                        <th>
+                          <span class="ar">بدلات أخرى</span>
+                          <span class="en">Other Allowance</span>
+                        </th>
+                        <th>
+                          <span class="ar">بدل النقل</span>
+                          <span class="en">Transportation Allowance</span>
+                        </th>
+                        <th>
+                          <span class="ar">بدل السكن</span>
+                          <span class="en">Housing Allowance</span>
+                        </th>
+                        <th>
+                          <span class="ar">الراتب الأساسي</span>
+                          <span class="en">Basic Salary</span>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style="height: 35px;"> <span class="value" id="otherAllowance"></span></td>
+                        <td style="height: 35px;"> <span class="value" id="transportationAllowance"></span></td>
+                        <td style="height: 35px;"> <span class="value" id="housingAllowance"></span></td>
+                        <td style="height: 35px;"> <span class="value" id="basicSalary"></span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div class="closing-section">
+                    <div class="text-en">
+                      This certificate is issue upon his request without any liability or responsibility on our part.
+                      <br><br>
+                      Regards,
+                    </div>
+                    <div class="text-ar" style="direction: rtl;">
+                      وقد تم إصدار هذا التعريف بناء على طلبه دون أدنى مسئولية على الشركة.
+                      <br><br>
+                      ولكم تحياتنا <p style="display: inline-block;">،،،</p>
+                    </div>
                   </div>
-                  <div class="text-ar" style="direction: rtl;">
-                    وقد تم إصدار هذا التعريف بناء على طلبه دون أدنى مسئولية على الشركة.
-                    <br><br>
-                    ولكم تحياتنا <p style="display: inline-block;">،،،</p>
+
+                  <div class="signature-area">
+                    <div class="signature-line"></div>
+                    <div class="signatory-name">عصام العرابي</div>
+                    <div class="signatory-title">مدير عام إدارة التشغيل</div>
                   </div>
                 </div>
 
-                <div class="signature-area">
-                  <div class="signature-line"></div>
-                  <div class="signatory-name">عصام العرابي</div>
-                  <div class="signatory-title">مدير عام إدارة التشغيل</div>
+
+                <div class="salary-transfer-container" style="direction: ltr;">
+                  <div class="header" style="justify-content: right;">
+                    <div class="date-section" style="direction: rtl;">
+                      التاريخ : &nbsp;&nbsp; <span id="current-date-ar-2"></span> م
+                    </div>
+                  </div>
+
+                  <div class="content-head">
+                    <div class="form-title">نموذج تحويل وتثبيت الراتب الشهري</div>
+                  </div>
+
+                  <div class="salutation">المكرم <p style="display: inline-block;">/</p> مدير الموارد البشرية
+                    &nbsp;&nbsp;&nbsp; بشركة الموارد للقوى البشرية
+                  </div>
+                  <div style="margin-bottom: 20px;direction: rtl;">السلام عليكم ورحمة الله وبركاته <p
+                      style="display: inline-block;">،،،
+                    </p>
+                  </div>
+
+                  <div style="line-height: 2; margin-bottom: 30px;direction: rtl;">
+                    لقد اتفقت مع بنك <span class="bankName" style="font-weight: 700;">[Bank Name]</span> ،
+                    على أن يتم تحويل راتبي الشهري وأية مستحقات أخرى لحسابي رقم <span class="ibanNo"
+                      style="font-weight: 700;">[IBAN No]</span> وذلك إبتداءاً من شهر <span class="currentMonth"
+                      style="font-weight: 700;">[Month]</span> /<span class="currentYear"
+                      style="font-weight: 700;">[Year]</span> ، على أن لا يتم إلغاء هذا الإجراء إلا بخطاب موجه لكم من
+                    البنك المذكور<p style="display: inline-block;">.</p> مقدرين تعاونكم <p
+                      style="display: inline-block;">
+                      .
+                    </p>
+                  </div>
+
+                  <table class="summary-table" style="direction: rtl;">
+                    <tr>
+                      <td style="width: 15%; font-weight: 700;">الاسم</td>
+                      <td style="width: 35%;" class="employeename"></td>
+                      <td style="width: 20%; font-weight: 700;">الرقم الوظيفي</td>
+                      <td style="width: 30%;" class="iqama-nationality-no">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 700;">رقم الهوية</td>
+                      <td class="iqamaNumber"></td>
+                      <td style="font-weight: 700;">التوقيع</td>
+                      <td></td>
+                    </tr>
+                  </table>
+
+                  <div class="double-line"></div>
+
+                  <div class="salutation"
+                    style="margin-top: 30px;display:flex;justify-content: space-evenly;direction: rtl;">
+                    <div style="margin-left: auto;">
+                      السادة
+                      <p style="display: inline-block;">/</p>
+                    </div>
+
+                    <div style="margin-left: auto;">المحترمين</div>
+                  </div>
+                  <div class="salutation" style="direction: rtl;">الموضوع <p style="display: inline-block;">:</p> تحويل
+                    وتثبيت رواتب ومستحقات
+                    موظفنا
+                    السيد <p style="display: inline-block;">/</p> <span class="employeename"></span></div>
+
+                  <div style="line-height: 1.8; margin-bottom: 30px; text-align: justify;direction: rtl;">
+                    بناء على طلب الموظف الموضح بياناته أعلاه نفيدكم بأنه لا مانع لدينا من تحويل راتبه أعلاه لحسابه لديكم
+                    رقم <span class="ibanNo"></span> اعتباراً من الفترة المشار إليها أعلاه ونتعهد بالاستمرار في
+                    تحويل مرتباته الشهرية ومستحقات نهاية خدمته لنفس الحساب ما لم نحصل على إشعار خطي منكم يفيد بإنتهاء
+                    الالتزامات المالية المترتبة عليه لصالحكم <p style="display: inline-block;">،</p> وفي حال إنتهاء
+                    خدمته
+                    لأي سبب كان نتعهد بإبلاغكم بالإيميل
+                    الرسمى المحدد من قبلكم ومن ثم تحويل جميع ماقد يكون مستحقاً له حينذاك إلى الحساب المشار إليه أعلاه<p
+                      style="display: inline-block;">.</p>
+                  </div>
+
+                  <div style="text-align: center; margin-bottom: 40px;direction: rtl;">
+                    ولكم تحياتي<p style="display: inline-block;">،،،</p>
+                  </div>
+
+                  <div class="signature-area" style="margin-left: 0; width: 250px;">
+                    <div class="signature-line"></div>
+                    <div class="signatory-name" style="text-align: center;">مدير عام إدارة التشغيل</div>
+                    <div class="signatory-title" style="text-align: center;">عصام العرابي</div>
+                  </div>
                 </div>
               </div>
 
-
-              <div class="salary-transfer-container" style="direction: ltr;">
-                <div class="header" style="justify-content: right;">
-                  <div class="date-section" style="direction: rtl;">
-                    التاريخ : &nbsp;&nbsp; <span id="current-date-ar-2"></span> م
+              <!-- Bank Details Modal -->
+              <div id="bankDetailsModal" class="modal-popup-overlay">
+                <div class="modal-popup-content">
+                  <div class="modal-popup-header">
+                    <h2>Bank Details Required</h2>
                   </div>
-                </div>
-
-                <div class="content-head">
-                  <div class="form-title">نموذج تحويل وتثبيت الراتب الشهري</div>
-                </div>
-
-                <div class="salutation">المكرم <p style="display: inline-block;">/</p> مدير الموارد البشرية
-                  &nbsp;&nbsp;&nbsp; بشركة الموارد للقوى البشرية
-                </div>
-                <div style="margin-bottom: 20px;direction: rtl;">السلام عليكم ورحمة الله وبركاته <p
-                    style="display: inline-block;">،،،
-                  </p>
-                </div>
-
-                <div style="line-height: 2; margin-bottom: 30px;direction: rtl;">
-                  لقد اتفقت مع بنك <span class="bankName" style="font-weight: 700;">[Bank Name]</span> ،
-                  على أن يتم تحويل راتبي الشهري وأية مستحقات أخرى لحسابي رقم <span class="ibanNo"
-                    style="font-weight: 700;">[IBAN No]</span> وذلك إبتداءاً من شهر <span class="currentMonth"
-                    style="font-weight: 700;">[Month]</span> /<span class="currentYear"
-                    style="font-weight: 700;">[Year]</span> ، على أن لا يتم إلغاء هذا الإجراء إلا بخطاب موجه لكم من
-                  البنك المذكور<p style="display: inline-block;">.</p> مقدرين تعاونكم <p style="display: inline-block;">
-                    .
-                  </p>
-                </div>
-
-                <table class="summary-table" style="direction: rtl;">
-                  <tr>
-                    <td style="width: 15%; font-weight: 700;">الاسم</td>
-                    <td style="width: 35%;" class="employeename"></td>
-                    <td style="width: 20%; font-weight: 700;">الرقم الوظيفي</td>
-                    <td style="width: 30%;" class="iqama-nationality-no">
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="font-weight: 700;">رقم الهوية</td>
-                    <td class="iqamaNumber"></td>
-                    <td style="font-weight: 700;">التوقيع</td>
-                    <td></td>
-                  </tr>
-                </table>
-
-                <div class="double-line"></div>
-
-                <div class="salutation"
-                  style="margin-top: 30px;display:flex;justify-content: space-evenly;direction: rtl;">
-                  <div style="margin-left: auto;">
-                    السادة
-                    <p style="display: inline-block;">/</p>
+                  <div class="form-group">
+                    <label for="modalBankName">Bank Name <span style="color:red">*</span></label>
+                    <input type="text" id="modalBankName" placeholder="e.g. Al Rajhi Bank">
+                    <div id="bankNameError" class="error-msg">Bank Name is required</div>
                   </div>
-
-                  <div style="margin-left: auto;">المحترمين</div>
-                </div>
-                <div class="salutation" style="direction: rtl;">الموضوع <p style="display: inline-block;">:</p> تحويل
-                  وتثبيت رواتب ومستحقات
-                  موظفنا
-                  السيد <p style="display: inline-block;">/</p> <span class="employeename"></span></div>
-
-                <div style="line-height: 1.8; margin-bottom: 30px; text-align: justify;direction: rtl;">
-                  بناء على طلب الموظف الموضح بياناته أعلاه نفيدكم بأنه لا مانع لدينا من تحويل راتبه أعلاه لحسابه لديكم
-                  رقم <span class="ibanNo"></span> اعتباراً من الفترة المشار إليها أعلاه ونتعهد بالاستمرار في
-                  تحويل مرتباته الشهرية ومستحقات نهاية خدمته لنفس الحساب ما لم نحصل على إشعار خطي منكم يفيد بإنتهاء
-                  الالتزامات المالية المترتبة عليه لصالحكم <p style="display: inline-block;">،</p> وفي حال إنتهاء
-                  خدمته
-                  لأي سبب كان نتعهد بإبلاغكم بالإيميل
-                  الرسمى المحدد من قبلكم ومن ثم تحويل جميع ماقد يكون مستحقاً له حينذاك إلى الحساب المشار إليه أعلاه<p
-                    style="display: inline-block;">.</p>
-                </div>
-
-                <div style="text-align: center; margin-bottom: 40px;direction: rtl;">
-                  ولكم تحياتي<p style="display: inline-block;">،،،</p>
-                </div>
-
-                <div class="signature-area" style="margin-left: 0; width: 250px;">
-                  <div class="signature-line"></div>
-                  <div class="signatory-name" style="text-align: center;">مدير عام إدارة التشغيل</div>
-                  <div class="signatory-title" style="text-align: center;">عصام العرابي</div>
+                  <div class="form-group">
+                    <label for="modalIbanNo">IBAN No <span style="color:red">*</span></label>
+                    <input type="text" id="modalIbanNo" placeholder="SA...">
+                    <div id="ibanNoError" class="error-msg">IBAN No is required</div>
+                  </div>
+                  <div class="modal-popup-footer">
+                    <button class="modal-popup-btn cancel" id="cancelpopup">Cancel</button>
+                    <button class="modal-popup-btn confirm" id="submitpopup">Generate PDF</button>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Bank Details Modal -->
-            <div id="bankDetailsModal" class="modal-popup-overlay">
-              <div class="modal-popup-content">
-                <div class="modal-popup-header">
-                  <h2>Bank Details Required</h2>
-                </div>
-                <div class="form-group">
-                  <label for="modalBankName">Bank Name <span style="color:red">*</span></label>
-                  <input type="text" id="modalBankName" placeholder="e.g. Al Rajhi Bank">
-                  <div id="bankNameError" class="error-msg">Bank Name is required</div>
-                </div>
-                <div class="form-group">
-                  <label for="modalIbanNo">IBAN No <span style="color:red">*</span></label>
-                  <input type="text" id="modalIbanNo" placeholder="SA...">
-                  <div id="ibanNoError" class="error-msg">IBAN No is required</div>
-                </div>
-                <div class="modal-popup-footer">
-                  <button class="modal-popup-btn cancel" id="cancelpopup">Cancel</button>
-                  <button class="modal-popup-btn confirm" id="submitpopup">Generate PDF</button>
+              <!-- Certificate Details Modal -->
+              <div id="certificateDetailsModal" class="modal-popup-overlay">
+                <div class="modal-popup-content">
+                  <div class="modal-popup-header">
+                    <h2>Employement Certificate Details Required</h2>
+                  </div>
+                  <div class="form-group">
+                    <label for="modalToEn">To (English) <span style="color:red">*</span></label>
+                    <input type="text" id="modalToEn" placeholder="e.g. Whom it may concern">
+                    <div id="toEnError" class="error-msg">To (English) is required</div>
+                  </div>
+                  <div class="form-group" style="text-align: right;">
+                    <label for="modalToAr">إلى (عربي) <span style="color:red">*</span></label>
+                    <input type="text" id="modalToAr" placeholder="إلى من يهمه الأمر"
+                      style="text-align: right; direction: rtl;">
+                    <div id="toArError" class="error-msg" style="text-align: right; direction: rtl;">هذا الحقل مطلوب
+                    </div>
+                  </div>
+                  <div class="modal-popup-footer" style="flex-direction: row-reverse;">
+                    <button class="modal-popup-btn confirm" id="submitCertPopup">Generate PDF</button>
+                    <button class="modal-popup-btn cancel" id="cancelCertPopup">Cancel</button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="card-row">
-      <!-- Repeat 5 approval cards here (Leave, Loan, Business Trip, Item, Purchase) as in previous design -->
-      <!-- <div class="dashboard-card leave">
+      <div class="card-row">
+        <!-- Repeat 5 approval cards here (Leave, Loan, Business Trip, Item, Purchase) as in previous design -->
+        <!-- <div class="dashboard-card leave">
         <div class="card-header"><i class="fa fa-plane"></i> Leave Request</div>
         <div class="card-content">
            <span><span class="label draft">Draft</span>{{PageData.Data.LeaveRequestForApprover.[0].Draft}}</span>
@@ -1176,245 +1254,246 @@
           <span><span class="label total">Total</span>{{PageData.Data.PurchaseRequestForApprover.[0].TotalCount}}</span>
         </div>
       </div> -->
-      <div class="create-requests-widget top-create-requests">
-        <h3 class="">{{Translate 'My Pending Approvals'}}</h3>
-        <div class="dash2 pb-3">
+        <div class="create-requests-widget top-create-requests">
+          <h3 class="">{{Translate 'My Pending Approvals'}}</h3>
+          <div class="dash2 pb-3">
 
-          <div class="dash2-card tag_leave">
-            <div class="inlinecount">{{PageData.Data.PendingApprovals.LeaveRequest}}</div>
-            <div class="inlinename">{{Translate 'Leave'}}</div>
+            <div class="dash2-card tag_leave">
+              <div class="inlinecount">{{PageData.Data.PendingApprovals.LeaveRequest}}</div>
+              <div class="inlinename">{{Translate 'Leave'}}</div>
+            </div>
+            <div class="dash2-card tag_loan">
+              <div class="inlinecount">{{PageData.Data.PendingApprovals.LoanRequest}}</div>
+              <div class="inlinename">{{Translate 'Loan'}}</div>
+            </div>
+            <div class="dash2-card tag_business">
+              <div class="inlinecount">{{PageData.Data.PendingApprovals.BusinessTrip}}</div>
+              <div class="inlinename">{{Translate 'Business'}}</div>
+            </div>
+            <div class="dash2-card tag_store">
+              <div class="inlinecount">{{PageData.Data.PendingApprovals.StoreItemRequests}}</div>
+              <div class="inlinename">{{Translate 'Store Item'}}</div>
+            </div>
+            <div class="dash2-card tag_purchase">
+              <div class="inlinecount">{{PageData.Data.PendingApprovals.PurchaseRequests}}</div>
+              <div class="inlinename">{{Translate 'Purchase'}}</div>
+            </div>
           </div>
-          <div class="dash2-card tag_loan">
-            <div class="inlinecount">{{PageData.Data.PendingApprovals.LoanRequest}}</div>
-            <div class="inlinename">{{Translate 'Loan'}}</div>
+        </div>
+      </div>
+
+      <h3 class="">{{Translate 'My Requests'}}</h3>
+      <div class="card-row">
+        <!-- Repeat 3 request cards here (Leave, Loan, Business Trip) as below -->
+        <div class="dashboard-card leave">
+          <div class="card-header"><i class="fa fa-plane"></i> {{Translate 'Leave Request'}}</div>
+          <div class="card-content">
+            <span><span class="label draft">{{Translate 'Draft'}}</span>{{PageData.Data.LeaveRequest.[0].Draft}}</span>
+            <span><span class="label approved">{{Translate
+                'Approved'}}</span>{{PageData.Data.LeaveRequest.[0].Approved}}</span>
+            <span><span class="label submitted">{{Translate
+                'Submitted'}}</span>{{PageData.Data.LeaveRequest.[0].Submitted}}</span>
+            <span><span class="label cancel">{{Translate
+                'Cancel'}}</span>{{PageData.Data.LeaveRequest.[0].Rejected}}</span>
+            <span><span class="label error">{{Translate 'Error'}}</span>{{PageData.Data.LeaveRequest.[0].Error}}</span>
+            <span><span class="label total">{{Translate
+                'Total'}}</span>{{PageData.Data.LeaveRequest.[0].TotalCount}}</span>
           </div>
-          <div class="dash2-card tag_business">
-            <div class="inlinecount">{{PageData.Data.PendingApprovals.BusinessTrip}}</div>
-            <div class="inlinename">{{Translate 'Business'}}</div>
+        </div>
+        <!-- (Repeat cards Loan, Business Trip as in the dashboard design above) -->
+        <div class="dashboard-card loan">
+          <div class="card-header"><i class="fa fa-university"></i> Loan Request</div>
+          <div class="card-content">
+            <span><span class="label draft">{{Translate 'Draft'}}</span>{{PageData.Data.LoanRequest.[0].Draft}}</span>
+            <span><span class="label approved">{{Translate
+                'Approved'}}</span>{{PageData.Data.LoanRequest.[0].Approved}}</span>
+            <span><span class="label submitted">{{Translate
+                'Submitted'}}</span>{{PageData.Data.LoanRequest.[0].Submitted}}</span>
+            <span><span class="label cancel">{{Translate
+                'Cancel'}}</span>{{PageData.Data.LoanRequest.[0].Rejected}}</span>
+            <span><span class="label error">{{Translate 'Error'}}</span>{{PageData.Data.LoanRequest.[0].Error}}</span>
+            <span><span class="label total">{{Translate
+                'Total'}}</span>{{PageData.Data.LoanRequest.[0].TotalCount}}</span>
           </div>
-          <div class="dash2-card tag_store">
-            <div class="inlinecount">{{PageData.Data.PendingApprovals.StoreItemRequests}}</div>
-            <div class="inlinename">{{Translate 'Store Item'}}</div>
+        </div>
+        <div class="dashboard-card trip">
+          <div class="card-header"><i class="fa fa-briefcase"></i> {{Translate 'Business Trip'}}</div>
+          <div class="card-content">
+            <span><span class="label draft">{{Translate 'Draft'}}</span>{{PageData.Data.BusinessTrip.[0].Draft}}</span>
+            <span><span class="label approved">{{Translate
+                'Approved'}}</span>{{PageData.Data.BusinessTrip.[0].Approved}}</span>
+            <span><span class="label submitted">{{Translate
+                'Submitted'}}</span>{{PageData.Data.BusinessTrip.[0].Submitted}}</span>
+            <span><span class="label cancel">{{Translate
+                'Cancel'}}</span>{{PageData.Data.BusinessTrip.[0].Rejected}}</span>
+            <span><span class="label error">{{Translate 'Error'}}</span>{{PageData.Data.BusinessTrip.[0].Error}}</span>
+            <span><span class="label total">{{Translate
+                'Total'}}</span>{{PageData.Data.BusinessTrip.[0].TotalCount}}</span>
           </div>
-          <div class="dash2-card tag_purchase">
-            <div class="inlinecount">{{PageData.Data.PendingApprovals.PurchaseRequests}}</div>
-            <div class="inlinename">{{Translate 'Purchase'}}</div>
+        </div>
+        <div class="dashboard-card item">
+          <div class="card-header"><i class="fa fa-box"></i> {{Translate 'Store Item Request'}}</div>
+          <div class="card-content">
+            <span><span class="label draft">{{Translate 'Draft'}}</span>{{PageData.Data.ItemRequest.[0].Draft}}</span>
+            <span><span class="label approved">{{Translate
+                'Approved'}}</span>{{PageData.Data.ItemRequest.[0].Approved}}</span>
+            <span><span class="label submitted">{{Translate
+                'Submitted'}}</span>{{PageData.Data.ItemRequest.[0].Submitted}}</span>
+            <span><span class="label cancel">{{Translate
+                'Cancel'}}</span>{{PageData.Data.ItemRequest.[0].Rejected}}</span>
+            <span><span class="label error">{{Translate 'Error'}}</span>{{PageData.Data.ItemRequest.[0].Error}}</span>
+            <span><span class="label total">{{Translate
+                'Total'}}</span>{{PageData.Data.ItemRequest.[0].TotalCount}}</span>
+          </div>
+        </div>
+        <div class="dashboard-card purchase">
+          <div class="card-header"><i class="fa fa-shopping-cart"></i> {{Translate 'Purchase Request'}}</div>
+          <div class="card-content">
+            <span><span class="label draft">{{Translate
+                'Draft'}}</span>{{PageData.Data.PurchaseRequest.[0].Draft}}</span>
+            <span><span class="label approved">{{Translate
+                'Approved'}}</span>{{PageData.Data.PurchaseRequest.[0].Approved}}</span>
+            <span><span class="label submitted">{{Translate
+                'Submitted'}}</span>{{PageData.Data.PurchaseRequest.[0].Submitted}}</span>
+            <span><span class="label cancel">{{Translate
+                'Cancel'}}</span>{{PageData.Data.PurchaseRequest.[0].Rejected}}</span>
+            <span><span class="label error">{{Translate
+                'Error'}}</span>{{PageData.Data.PurchaseRequest.[0].Error}}</span>
+            <span><span class="label total">{{Translate
+                'Total'}}</span>{{PageData.Data.PurchaseRequest.[0].TotalCount}}</span>
           </div>
         </div>
       </div>
     </div>
 
-    <h3 class="">{{Translate 'My Requests'}}</h3>
-    <div class="card-row">
-      <!-- Repeat 3 request cards here (Leave, Loan, Business Trip) as below -->
-      <div class="dashboard-card leave">
-        <div class="card-header"><i class="fa fa-plane"></i> {{Translate 'Leave Request'}}</div>
-        <div class="card-content">
-          <span><span class="label draft">{{Translate 'Draft'}}</span>{{PageData.Data.LeaveRequest.[0].Draft}}</span>
-          <span><span class="label approved">{{Translate
-              'Approved'}}</span>{{PageData.Data.LeaveRequest.[0].Approved}}</span>
-          <span><span class="label submitted">{{Translate
-              'Submitted'}}</span>{{PageData.Data.LeaveRequest.[0].Submitted}}</span>
-          <span><span class="label cancel">{{Translate
-              'Cancel'}}</span>{{PageData.Data.LeaveRequest.[0].Rejected}}</span>
-          <span><span class="label error">{{Translate 'Error'}}</span>{{PageData.Data.LeaveRequest.[0].Error}}</span>
-          <span><span class="label total">{{Translate
-              'Total'}}</span>{{PageData.Data.LeaveRequest.[0].TotalCount}}</span>
-        </div>
-      </div>
-      <!-- (Repeat cards Loan, Business Trip as in the dashboard design above) -->
-      <div class="dashboard-card loan">
-        <div class="card-header"><i class="fa fa-university"></i> Loan Request</div>
-        <div class="card-content">
-          <span><span class="label draft">{{Translate 'Draft'}}</span>{{PageData.Data.LoanRequest.[0].Draft}}</span>
-          <span><span class="label approved">{{Translate
-              'Approved'}}</span>{{PageData.Data.LoanRequest.[0].Approved}}</span>
-          <span><span class="label submitted">{{Translate
-              'Submitted'}}</span>{{PageData.Data.LoanRequest.[0].Submitted}}</span>
-          <span><span class="label cancel">{{Translate
-              'Cancel'}}</span>{{PageData.Data.LoanRequest.[0].Rejected}}</span>
-          <span><span class="label error">{{Translate 'Error'}}</span>{{PageData.Data.LoanRequest.[0].Error}}</span>
-          <span><span class="label total">{{Translate
-              'Total'}}</span>{{PageData.Data.LoanRequest.[0].TotalCount}}</span>
-        </div>
-      </div>
-      <div class="dashboard-card trip">
-        <div class="card-header"><i class="fa fa-briefcase"></i> {{Translate 'Business Trip'}}</div>
-        <div class="card-content">
-          <span><span class="label draft">{{Translate 'Draft'}}</span>{{PageData.Data.BusinessTrip.[0].Draft}}</span>
-          <span><span class="label approved">{{Translate
-              'Approved'}}</span>{{PageData.Data.BusinessTrip.[0].Approved}}</span>
-          <span><span class="label submitted">{{Translate
-              'Submitted'}}</span>{{PageData.Data.BusinessTrip.[0].Submitted}}</span>
-          <span><span class="label cancel">{{Translate
-              'Cancel'}}</span>{{PageData.Data.BusinessTrip.[0].Rejected}}</span>
-          <span><span class="label error">{{Translate 'Error'}}</span>{{PageData.Data.BusinessTrip.[0].Error}}</span>
-          <span><span class="label total">{{Translate
-              'Total'}}</span>{{PageData.Data.BusinessTrip.[0].TotalCount}}</span>
-        </div>
-      </div>
-      <div class="dashboard-card item">
-        <div class="card-header"><i class="fa fa-box"></i> {{Translate 'Store Item Request'}}</div>
-        <div class="card-content">
-          <span><span class="label draft">{{Translate 'Draft'}}</span>{{PageData.Data.ItemRequest.[0].Draft}}</span>
-          <span><span class="label approved">{{Translate
-              'Approved'}}</span>{{PageData.Data.ItemRequest.[0].Approved}}</span>
-          <span><span class="label submitted">{{Translate
-              'Submitted'}}</span>{{PageData.Data.ItemRequest.[0].Submitted}}</span>
-          <span><span class="label cancel">{{Translate
-              'Cancel'}}</span>{{PageData.Data.ItemRequest.[0].Rejected}}</span>
-          <span><span class="label error">{{Translate 'Error'}}</span>{{PageData.Data.ItemRequest.[0].Error}}</span>
-          <span><span class="label total">{{Translate
-              'Total'}}</span>{{PageData.Data.ItemRequest.[0].TotalCount}}</span>
-        </div>
-      </div>
-      <div class="dashboard-card purchase">
-        <div class="card-header"><i class="fa fa-shopping-cart"></i> {{Translate 'Purchase Request'}}</div>
-        <div class="card-content">
-          <span><span class="label draft">{{Translate
-              'Draft'}}</span>{{PageData.Data.PurchaseRequest.[0].Draft}}</span>
-          <span><span class="label approved">{{Translate
-              'Approved'}}</span>{{PageData.Data.PurchaseRequest.[0].Approved}}</span>
-          <span><span class="label submitted">{{Translate
-              'Submitted'}}</span>{{PageData.Data.PurchaseRequest.[0].Submitted}}</span>
-          <span><span class="label cancel">{{Translate
-              'Cancel'}}</span>{{PageData.Data.PurchaseRequest.[0].Rejected}}</span>
-          <span><span class="label error">{{Translate
-              'Error'}}</span>{{PageData.Data.PurchaseRequest.[0].Error}}</span>
-          <span><span class="label total">{{Translate
-              'Total'}}</span>{{PageData.Data.PurchaseRequest.[0].TotalCount}}</span>
-        </div>
-      </div>
-    </div>
+    {{/if}}
   </div>
 
 
-</div>
-{{/if}}
-
-
-<script>
+  <script>
     var _this = this;
-console.log(_this);
-const script3 = document.createElement('script');
-            script3.src = 'https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js';
-            script3.type = 'text/javascript';
-            script3.onload = function () {
-            console.log('Handlebars loaded!');
+    console.log(_this);
+    const script3 = document.createElement('script');
+    script3.src = 'https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js';
+    script3.type = 'text/javascript';
+    script3.onload = function () {
+      console.log('Handlebars loaded!');
 
-            // Now you can safely use Handlebars
-            Handlebars.registerHelper('Translate', function (value) {
-        let _ret =value;
-        if(!value)
-            _ret ="";
-        
+      // Now you can safely use Handlebars
+      Handlebars.registerHelper('Translate', function (value) {
+        let _ret = value;
+        if (!value)
+          _ret = "";
+
         let Lang = localStorage.getItem("CurrentLanguage");
 
         if (!Lang) {
-            return _ret;
+          return _ret;
         }
-        if(!(window.location.hostname === "portal.mawarid.com.sa")){
-            return _ret;
+        if (!(window.location.hostname === "portal.mawarid.com.sa")) {
+          return _ret;
         }
         if (!_this.globalService.systemLabels) {
-            return _ret;
+          return _ret;
         }
-       
+
         try {
 
-            if (value.substring(0, 3) == "LBL") {
-      
-              let _label = _this.globalService.systemLabels.filter(x => x.LabelId == value)[0];
-              if (_label) {
-                let _ret = value;
-                if(_label[Lang]) {
-                  _ret = _label[Lang];
-                }
-                else if(_label.DefaultValue) {
-                  _ret = _label.DefaultValue
-                }
-                _ret =  _ret
+          if (value.substring(0, 3) == "LBL") {
+
+            let _label = _this.globalService.systemLabels.filter(x => x.LabelId == value)[0];
+            if (_label) {
+              let _ret = value;
+              if (_label[Lang]) {
+                _ret = _label[Lang];
               }
-              else 
+              else if (_label.DefaultValue) {
+                _ret = _label.DefaultValue
+              }
+              _ret = _ret
+            }
+            else
               _ret = value;
-            }
-            else {
-      
-              let _value = value.toLowerCase().trim();
-              let _label = _this.globalService.systemLabels.filter(x => x.DefaultValue.toLowerCase().trim() == _value)[0];
-              if (_label) {
-                _ret =  _label[Lang] ? _label[Lang] : value
-              }
-              else 
-              _ret =  value;
-          
-            }
           }
-          catch (error) {
-            _ret =  value
+          else {
+
+            let _value = value.toLowerCase().trim();
+            let _label = _this.globalService.systemLabels.filter(x => x.DefaultValue.toLowerCase().trim() == _value)[0];
+            if (_label) {
+              _ret = _label[Lang] ? _label[Lang] : value
+            }
+            else
+              _ret = value;
+
           }
+        }
+        catch (error) {
+          _ret = value
+        }
 
-        return  _ret;
-        });
-			  loadDashboard();
-            };
-            document.body.appendChild(script3);
-
-
-
-
-$(document).on('click', '#createLeaveRequestBtn', function (e) {
- debugger;
-  let _row =_this.currentPageData;
-let _createLeaveRequest =_this.InternalLink[0];
- _this._clickInternalLink(_createLeaveRequest);
-        });
+        return _ret;
+      });
+      loadDashboard();
+    };
+    document.body.appendChild(script3);
 
 
-$(document).on('click', '#createLoanRequestBtn', function (e) {
- debugger;
-  let _row =_this.currentPageData;
-let _createLeaveRequest =_this.InternalLink[1];
- _this._clickInternalLink(_createLeaveRequest);
-        });
-$(document).on('click', '#createBusinessTripBtn', function (e) {
- debugger;
-  let _row =_this.currentPageData;
-let _createLeaveRequest =_this.InternalLink[2];
- _this._clickInternalLink(_createLeaveRequest);
-        });
-$(document).on('click', '#createPurchaseRequestBtn', function (e) {
- debugger;
-  let _row =_this.currentPageData;
-let _createLeaveRequest =_this.InternalLink[3];
- _this._clickInternalLink(_createLeaveRequest);
-        });
-$(document).on('click', '#createStoreItemRequestBtn', function (e) {
- debugger;
-  let _row =_this.currentPageData;
-let _createLeaveRequest =_this.InternalLink[4];
- _this._clickInternalLink(_createLeaveRequest);
-        });
-// $(document).on('click', '#updateProfile', function (e) {debugger
-//   let _row =_this.currentPageData;
-// let _updateProfile =_this.InternalLink[5];
-//  _this._clickInternalLink(_updateProfile,_row[0]);
-// });
 
 
-$(document).on('click', '#updateProfile', function (e) {debugger
-  let _row =_this.currentPageData;
-  _this.editData(_row[0]);	
-});
+    $(document).on('click', '#createLeaveRequestBtn', function (e) {
+      debugger;
+      let _row = _this.currentPageData;
+      let _createLeaveRequest = _this.InternalLink[0];
+      _this._clickInternalLink(_createLeaveRequest);
+    });
 
 
-function loadDashboard(){debugger
+    $(document).on('click', '#createLoanRequestBtn', function (e) {
+      debugger;
+      let _row = _this.currentPageData;
+      let _createLeaveRequest = _this.InternalLink[1];
+      _this._clickInternalLink(_createLeaveRequest);
+    });
+    $(document).on('click', '#createBusinessTripBtn', function (e) {
+      debugger;
+      let _row = _this.currentPageData;
+      let _createLeaveRequest = _this.InternalLink[2];
+      _this._clickInternalLink(_createLeaveRequest);
+    });
+    $(document).on('click', '#createPurchaseRequestBtn', function (e) {
+      debugger;
+      let _row = _this.currentPageData;
+      let _createLeaveRequest = _this.InternalLink[3];
+      _this._clickInternalLink(_createLeaveRequest);
+    });
+    $(document).on('click', '#createStoreItemRequestBtn', function (e) {
+      debugger;
+      let _row = _this.currentPageData;
+      let _createLeaveRequest = _this.InternalLink[4];
+      _this._clickInternalLink(_createLeaveRequest);
+    });
+    // $(document).on('click', '#updateProfile', function (e) {debugger
+    //   let _row =_this.currentPageData;
+    // let _updateProfile =_this.InternalLink[5];
+    //  _this._clickInternalLink(_updateProfile,_row[0]);
+    // });
 
-if(_this.PageLoadData && _this.PageLoadData[0] && _this.PageLoadData[0].data[0] && _this.PageLoadData[0].data[0].$id){
-  const $countDiv = $("#countDiv");
-  $countDiv.empty();
-  const values = _this.PageLoadData[0].data[0];
-  let templateSource  = `
+
+    $(document).on('click', '#updateProfile', function (e) {
+      debugger
+      let _row = _this.currentPageData;
+      _this.editData(_row[0]);
+    });
+
+
+    function loadDashboard() {
+      debugger
+
+      if (_this.PageLoadData && _this.PageLoadData[0] && _this.PageLoadData[0].data[0] && _this.PageLoadData[0].data[0].$id) {
+        const $countDiv = $("#countDiv");
+        $countDiv.empty();
+        const values = _this.PageLoadData[0].data[0];
+        let templateSource = `
   
   <h3>My Balance</h3>
   <div class="dashboard-container">
@@ -1442,154 +1521,202 @@ if(_this.PageLoadData && _this.PageLoadData[0] && _this.PageLoadData[0].data[0] 
         <div class="widget-count infant">${convertToTwoDigits(values.InfantTicketBalance)}</div>
     </div>
 </div>`;
-  $countDiv.html(handlebarCompile(templateSource));
-}
-						 if(_this.currentPageData && _this.currentPageData[0] && !_this.currentPageData[0].EmployeeId){
-						   const $info = $('#info-leave');
-                        	$info.removeClass('d-none');
-						 }
-}
-function info(){
- const userInfo = JSON.parse(localStorage.getItem('userInfo'));
- if(_this.currentPageData && _this.currentPageData[0] && _this.currentPageData[0].EmployeeId && userInfo && !userInfo.EmployeeId){
- const $info = $('#info-logout');
-  $info.removeClass('d-none');
- }
-}
-$(document).ready(function() {
-    setInterval(function() {
-	  info();
-    }, 20000); // 20,000 ms = 20 seconds
-});
+        $countDiv.html(handlebarCompile(templateSource));
+      }
+      if (_this.currentPageData && _this.currentPageData[0] && !_this.currentPageData[0].EmployeeId) {
+        const $info = $('#info-leave');
+        $info.removeClass('d-none');
+      }
+    }
+    function info() {
+      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+      if (_this.currentPageData && _this.currentPageData[0] && _this.currentPageData[0].EmployeeId && userInfo && !userInfo.EmployeeId) {
+        const $info = $('#info-logout');
+        $info.removeClass('d-none');
+      }
+    }
+    $(document).ready(function () {
+      setInterval(function () {
+        info();
+      }, 20000); // 20,000 ms = 20 seconds
+    });
 
 
-function handlebarCompile(templateSource){
-            let template = Handlebars.compile(templateSource);
-            return  template();
-        }
-function convertToTwoDigits(value) {
-            let val = parseFloat(value);
-            let decimalPart = val % 1;  // Get the decimal part (remainder after dividing by 1)
-            let decimalDigits = decimalPart.toString().split('.')[1]?.length || 0;
-            if(val != 0 && decimalDigits > 2){
-            return val.toFixed(2);
-            }else{
-                return value;
-            }
-        }
+    function handlebarCompile(templateSource) {
+      let template = Handlebars.compile(templateSource);
+      return template();
+    }
+    function convertToTwoDigits(value) {
+      let val = parseFloat(value);
+      let decimalPart = val % 1;  // Get the decimal part (remainder after dividing by 1)
+      let decimalDigits = decimalPart.toString().split('.')[1]?.length || 0;
+      if (val != 0 && decimalDigits > 2) {
+        return val.toFixed(2);
+      } else {
+        return value;
+      }
+    }
 
 
-        const bcpURL = "https://bcp.mawarid.com.sa";
-        const userIdDefault = "SelfService";
-        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-        var currentEmployeeId = '';
-        if (window.location.hostname === "portal.mawarid.com.sa") {
-            currentEmployeeId = userInfo.EmployeeId;
-        } else if (window.location.hostname === "localhost" || window.location.hostname === "") {
-            currentEmployeeId = "1098483";//"1056641";idris bhai empId/1098483
-        }
-        const script = document.createElement('script');
-        script.src = 'https://code.jquery.com/jquery-3.6.0.min.js'; // URL of the script
-        script.type = 'text/javascript';
-        script.onload = function () {
-            // You can now use jQuery or whatever the script provides
-            console.log('script loaded sucessfully');
-            $(document).on('click', '#downloadEmploymentCertificate', function (e) {
-                downloadPDF('certificate');
-            });
-            $(document).on('click', '#downloadSalaryTransferForm', function (e) {
-                downloadPDF('salary-transfer');
-            });
-            $(document).on('click', '#cancelpopup', function (e) {
-                closeBankModal()
-            });
-            $(document).on('click', '#submitpopup', function (e) {
-                submitBankDetails()
-            });
-        };
-        document.head.appendChild(script);
-        const script2 = document.createElement('script');
-        script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js'; // URL of the script
-        script2.type = 'text/javascript';
-        script2.onload = function () {
-            // You can now use jQuery or whatever the script provides
-            console.log('script loaded sucessfully');
-        };
-        document.head.appendChild(script2);
-        function setCurrentDate() {
-            const now = new Date();
-            const day = String(now.getDate()).padStart(2, '0');
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const year = now.getFullYear();
-            const formattedDate = `${day}/${month}/${year}`;
-            $("#current-date-en").text(formattedDate);
-            $("#current-date-ar").text(formattedDate);
-            $("#current-date-ar-2").text(formattedDate)
+    const bcpURL = "https://bcp.mawarid.com.sa";
+    const userIdDefault = "SelfService";
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    var currentEmployeeId = '';
+    if (window.location.hostname === "portal.mawarid.com.sa") {
+      currentEmployeeId = userInfo.EmployeeId;
+    } else if (window.location.hostname === "localhost" || window.location.hostname === "") {
+      currentEmployeeId = "1098483";//"1056641";idris bhai empId/1098483
+    }
+    const script = document.createElement('script');
+    script.src = 'https://code.jquery.com/jquery-3.6.0.min.js'; // URL of the script
+    script.type = 'text/javascript';
+    script.onload = function () {
+      // You can now use jQuery or whatever the script provides
+      console.log('script loaded sucessfully');
+      $(document).on('click', '#downloadEmploymentCertificate', function (e) {
+        downloadPDF('certificate');
+      });
+      $(document).on('click', '#downloadSalaryTransferForm', function (e) {
+        downloadPDF('salary-transfer');
+      });
+      $(document).on('click', '#cancelpopup', function (e) {
+        closeBankModal()
+      });
+      $(document).on('click', '#submitpopup', function (e) {
+        submitBankDetails()
+      });
+      $(document).on('click', '#cancelCertPopup', function (e) {
+        closeCertModal()
+      });
+      $(document).on('click', '#submitCertPopup', function (e) {
+        submitCertDetails()
+      });
+    };
+    document.head.appendChild(script);
+    const script2 = document.createElement('script');
+    script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js'; // URL of the script
+    script2.type = 'text/javascript';
+    script2.onload = function () {
+      // You can now use jQuery or whatever the script provides
+      console.log('script loaded sucessfully');
+    };
+    document.head.appendChild(script2);
+    function setCurrentDate() {
+      const now = new Date();
+      const day = String(now.getDate()).padStart(2, '0');
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const year = now.getFullYear();
+      const formattedDate = `${day}/${month}/${year}`;
+      $("#current-date-en").text(formattedDate);
+      $("#current-date-ar").text(formattedDate);
+      $("#current-date-ar-2").text(formattedDate)
 
-            // Month and Year for Salary Transfer
-            $(".currentMonth").text(month);
-            $(".currentYear").text(year);
-        }
+      // Month and Year for Salary Transfer
+      $(".currentMonth").text(month);
+      $(".currentYear").text(year);
+    }
 
-        async function downloadPDF(type) {
-            if (type === 'salary-transfer') {
-                showBankModal();
-                return;
-            }
-            await executeDownloadFlow('certificate');
-        }
+    async function downloadPDF(type) {
+      if (type === 'salary-transfer') {
+        showBankModal();
+        return;
+      }
+      if (type === 'certificate') {
+        showCertModal();
+        return;
+      }
+    }
 
-        function showBankModal() {
-            document.getElementById('bankDetailsModal').style.display = 'flex';
-            // Clear previous errors/values
-            document.getElementById('modalBankName').value = '';
-            document.getElementById('modalIbanNo').value = '';
-            document.getElementById('bankNameError').style.display = 'none';
-            document.getElementById('ibanNoError').style.display = 'none';
-        }
+    function showCertModal() {
+      document.getElementById('certificateDetailsModal').style.display = 'flex';
+      document.getElementById('modalToEn').value = '';
+      document.getElementById('modalToAr').value = '';
+      document.getElementById('toEnError').style.display = 'none';
+      document.getElementById('toArError').style.display = 'none';
+    }
 
-        function closeBankModal() {
-            document.getElementById('bankDetailsModal').style.display = 'none';
-        }
+    function closeCertModal() {
+      document.getElementById('certificateDetailsModal').style.display = 'none';
+    }
 
-        async function submitBankDetails() {
-            const bankName = document.getElementById('modalBankName').value.trim();
-            const ibanNo = document.getElementById('modalIbanNo').value.trim();
-            let isValid = true;
+    async function submitCertDetails() {
+      const toEn = document.getElementById('modalToEn').value.trim();
+      const toAr = document.getElementById('modalToAr').value.trim();
+      let isValid = true;
 
-            if (!bankName) {
-                document.getElementById('bankNameError').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('bankNameError').style.display = 'none';
-            }
+      if (!toEn) {
+        document.getElementById('toEnError').style.display = 'block';
+        isValid = false;
+      } else {
+        document.getElementById('toEnError').style.display = 'none';
+      }
 
-            if (!ibanNo) {
-                document.getElementById('ibanNoError').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('ibanNoError').style.display = 'none';
-            }
+      if (!toAr) {
+        document.getElementById('toArError').style.display = 'block';
+        isValid = false;
+      } else {
+        document.getElementById('toArError').style.display = 'none';
+      }
 
-            if (isValid) {
-                $(".bankName").text(bankName);
-                $(".ibanNo").text(ibanNo);
-                closeBankModal();
-                await executeDownloadFlow('salary-transfer');
-            }
-        }
+      if (isValid) {
+        $(".certToEn").text(toEn);
+        $(".certToAr").text(toAr);
+        closeCertModal();
+        await executeDownloadFlow('certificate');
+      }
+    }
 
-        async function executeDownloadFlow(type) {
-            const btnSelector = type === 'certificate' ? '.certificate-btn' : '.salary-transfer-btn';
-            const containerSelector = type === 'certificate' ? '.certificate-container' : '.salary-transfer-container';
-            const btn = document.querySelector(btnSelector);
-            btn.classList.add('btn-load');
+    function showBankModal() {
+      document.getElementById('bankDetailsModal').style.display = 'flex';
+      // Clear previous errors/values
+      document.getElementById('modalBankName').value = '';
+      document.getElementById('modalIbanNo').value = '';
+      document.getElementById('bankNameError').style.display = 'none';
+      document.getElementById('ibanNoError').style.display = 'none';
+    }
 
-            try {
-                await getEmployeeDetailsByEmployeeIdOrName();
-                const element = document.querySelector(containerSelector);
-                const style = document.createElement('style');
-                style.innerHTML = `
+    function closeBankModal() {
+      document.getElementById('bankDetailsModal').style.display = 'none';
+    }
+
+    async function submitBankDetails() {
+      const bankName = document.getElementById('modalBankName').value.trim();
+      const ibanNo = document.getElementById('modalIbanNo').value.trim();
+      let isValid = true;
+
+      if (!bankName) {
+        document.getElementById('bankNameError').style.display = 'block';
+        isValid = false;
+      } else {
+        document.getElementById('bankNameError').style.display = 'none';
+      }
+
+      if (!ibanNo) {
+        document.getElementById('ibanNoError').style.display = 'block';
+        isValid = false;
+      } else {
+        document.getElementById('ibanNoError').style.display = 'none';
+      }
+
+      if (isValid) {
+        $(".bankName").text(bankName);
+        $(".ibanNo").text(ibanNo);
+        closeBankModal();
+        await executeDownloadFlow('salary-transfer');
+      }
+    }
+
+    async function executeDownloadFlow(type) {
+      const btnSelector = type === 'certificate' ? '.certificate-btn' : '.salary-transfer-btn';
+      const containerSelector = type === 'certificate' ? '.certificate-container' : '.salary-transfer-container';
+      const btn = document.querySelector(btnSelector);
+      btn.classList.add('btn-load');
+
+      try {
+        await getEmployeeDetailsByEmployeeIdOrName();
+        const element = document.querySelector(containerSelector);
+        const style = document.createElement('style');
+        style.innerHTML = `
                     :root {
                 --font-en: 'Inter', sans-serif;
                 --font-ar: 'Cairo', sans-serif;
@@ -1602,86 +1729,87 @@ function convertToTwoDigits(value) {
                 letter-spacing: normal !important;
               }
                 `;
-                element.appendChild(style);
-                // Temporary styles to ensure clean capture and prevent blank pages
-                const originalBoxShadow = element.style.boxShadow;
-                element.style.boxShadow = 'none';
+        element.appendChild(style);
+        // Temporary styles to ensure clean capture and prevent blank pages
+        const originalBoxShadow = element.style.boxShadow;
+        element.style.boxShadow = 'none';
 
-                const opt = {
-                    margin: 0, // Zero margin, rely on container padding
-                    filename: type === 'certificate' ? 'Employment_Certificate.pdf' : 'Salary_Transfer_Form.pdf',
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: {
-                        scale: 2,
-                        useCORS: true,
-                        letterRendering: true,
-                        letterSpacing: 'normal',
-                        scrollY: 0,
-                        scrollX: 0,
-                        windowWidth: document.documentElement.offsetWidth // Use actual window width to avoid clipping
-                    },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                    pagebreak: { mode: 'avoid-all' }
-                };
+        const opt = {
+          margin: 0, // Zero margin, rely on container padding
+          filename: type === 'certificate' ? 'Employment_Certificate.pdf' : 'Salary_Transfer_Form.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            letterRendering: true,
+            letterSpacing: 'normal',
+            scrollY: 0,
+            scrollX: 0,
+            windowWidth: document.documentElement.offsetWidth // Use actual window width to avoid clipping
+          },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+          pagebreak: { mode: 'avoid-all' }
+        };
 
-                // New Promise-based usage:
-                await html2pdf().set(opt).from(element).toPdf().get('pdf').then(function (pdf) {
-                    // Ensure the total pages is 1
-                    const totalPages = pdf.internal.getNumberOfPages();
-                    if (totalPages > 1) {
-                        pdf.deletePage(totalPages);
-                    }
-                }).save();
+        // New Promise-based usage:
+        await html2pdf().set(opt).from(element).toPdf().get('pdf').then(function (pdf) {
+          // Ensure the total pages is 1
+          const totalPages = pdf.internal.getNumberOfPages();
+          if (totalPages > 1) {
+            pdf.deletePage(totalPages);
+          }
+        }).save();
 
-                element.style.boxShadow = originalBoxShadow;
-            } catch (error) {
-                console.error("PDF generation failed:", error);
-            } finally {
-                btn.classList.remove('btn-load');
-            }
+        element.style.boxShadow = originalBoxShadow;
+      } catch (error) {
+        console.error("PDF generation failed:", error);
+      } finally {
+        btn.classList.remove('btn-load');
+      }
+    }
+
+    function getEmployeeDetailsByEmployeeIdOrName() {
+      setCurrentDate();
+      // API URL
+      const apiUrl = `${bcpURL}/api/v1/erp/getEmployeeDetailsByEmployeeIdOrName?_employeeIdOrName=${currentEmployeeId}&_Company=MWD&user-id=${userIdDefault}`;
+      // Make API call and return promise
+      return fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
         }
+      })
+        .then(response => {
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+          return response.json();
+        })
+        .then(data => {
+          const details = data.RetListValue[0];
+          // Use classes to update multiple spans and .text() instead of .val()
+          $(".iqamaNumber").text(details.iqamaNumber);
+          $(".nationality").text(details.nationality);
+          $(".employeename").text(details.employeeName);
+          $('.position').text(details.Position);
+          $('.employeeId').text(details.employeeId);
+          $('.iqama-nationality-no').html(details.iqamaNumber);
+          const now = new Date(details.dateOfJoining);
+          const day = String(now.getDate()).padStart(2, '0');
+          const month = String(now.getMonth() + 1).padStart(2, '0');
+          const year = now.getFullYear();
+          const formattedDate = `${day}/${month}/${year}`;
+          $('.dateofjoining').text(formattedDate);
 
-        function getEmployeeDetailsByEmployeeIdOrName() {
-            setCurrentDate();
-            // API URL
-            const apiUrl = `${bcpURL}/api/v1/erp/getEmployeeDetailsByEmployeeIdOrName?_employeeIdOrName=${currentEmployeeId}&_Company=MWD&user-id=${userIdDefault}`;
-            // Make API call and return promise
-            return fetch(apiUrl, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(response => {
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    return response.json();
-                })
-                .then(data => {
-                    const details = data.RetListValue[0];
-                    // Use classes to update multiple spans and .text() instead of .val()
-                    $(".iqamaNumber").text(details.iqamaNumber);
-                    $(".nationality").text(details.nationality);
-                    $(".employeename").text(details.employeeName);
-                    $('.position').text(details.Position);
-                    $('.employeeId').text(details.employeeId);
-                    $('.iqama-nationality-no').html(details.iqamaNumber);
-                    const now = new Date(details.dateOfJoining);
-                    const day = String(now.getDate()).padStart(2, '0');
-                    const month = String(now.getMonth() + 1).padStart(2, '0');
-                    const year = now.getFullYear();
-                    const formattedDate = `${day}/${month}/${year}`;
-                    $('.dateofjoining').text(formattedDate);
-
-                    // Fixed IDs for unique table values
-                    $('#basicSalary').text(details.BasicSalary);
-                    $('#housingAllowance').text(details.HousingAllowance);
-                    $('#transportationAllowance').text(details.TransportationAllowance);
-                    $('#otherAllowance').text(details.OtherAllowance);
-                })
-                .catch(error => {
-                    console.error("Error fetching data:", error);
-                });
-        }
-</script>
+          // Fixed IDs for unique table values
+          $('#basicSalary').text(details.BasicSalary);
+          $('#housingAllowance').text(details.HousingAllowance);
+          $('#transportationAllowance').text(details.TransportationAllowance);
+          $('#otherAllowance').text(details.OtherAllowance);
+        })
+        .catch(error => {
+          console.error("Error fetching data:", error);
+        });
+    }
+  </script>
 </body>
+
 </html>

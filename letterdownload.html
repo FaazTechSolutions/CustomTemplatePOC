@@ -474,9 +474,10 @@
                 </div>
 
                 <div class="to-section">
-                    <div>TO:</div>
+                    <div>TO: &nbsp;<span class="certToEn" style="font-weight: normal;"></span></div>
                     <div>
-                        <p style="display: inline-block;">:</p>إلى
+                        <span class="certToAr" style="font-family: var(--font-ar);font-weight: normal;"></span> &nbsp;<p
+                            style="display: inline-block;">:</p>إلى
                     </div>
                 </div>
 
@@ -693,6 +694,31 @@
                 </div>
             </div>
         </div>
+
+        <!-- Certificate Details Modal -->
+        <div id="certificateDetailsModal" class="modal-popup-overlay">
+            <div class="modal-popup-content">
+                <div class="modal-popup-header">
+                    <h2>Employement Certificate Details Required</h2>
+                </div>
+                <div class="form-group">
+                    <label for="modalToEn">To (English) <span style="color:red">*</span></label>
+                    <input type="text" id="modalToEn" placeholder="e.g. Whom it may concern">
+                    <div id="toEnError" class="error-msg">To (English) is required</div>
+                </div>
+                <div class="form-group" style="text-align: right;">
+                    <label for="modalToAr">إلى (عربي) <span style="color:red">*</span></label>
+                    <input type="text" id="modalToAr" placeholder="إلى من يهمه الأمر"
+                        style="text-align: right; direction: rtl;">
+                    <div id="toArError" class="error-msg" style="text-align: right; direction: rtl;">هذا الحقل مطلوب
+                    </div>
+                </div>
+                <div class="modal-popup-footer" style="flex-direction: row-reverse;">
+                    <button class="modal-popup-btn confirm" id="submitCertPopup">Generate PDF</button>
+                    <button class="modal-popup-btn cancel" id="cancelCertPopup">Cancel</button>
+                </div>
+            </div>
+        </div>
     </div>
     <script>
         const bcpURL = "https://bcp.mawarid.com.sa";
@@ -721,6 +747,12 @@
             });
             $(document).on('click', '#submitpopup', function (e) {
                 submitBankDetails()
+            });
+            $(document).on('click', '#cancelCertPopup', function (e) {
+                closeCertModal()
+            });
+            $(document).on('click', '#submitCertPopup', function (e) {
+                submitCertDetails()
             });
         };
         document.head.appendChild(script);
@@ -752,7 +784,49 @@
                 showBankModal();
                 return;
             }
-            await executeDownloadFlow('certificate');
+            if (type === 'certificate') {
+                showCertModal();
+                return;
+            }
+        }
+
+        function showCertModal() {
+            document.getElementById('certificateDetailsModal').style.display = 'flex';
+            document.getElementById('modalToEn').value = '';
+            document.getElementById('modalToAr').value = '';
+            document.getElementById('toEnError').style.display = 'none';
+            document.getElementById('toArError').style.display = 'none';
+        }
+
+        function closeCertModal() {
+            document.getElementById('certificateDetailsModal').style.display = 'none';
+        }
+
+        async function submitCertDetails() {
+            const toEn = document.getElementById('modalToEn').value.trim();
+            const toAr = document.getElementById('modalToAr').value.trim();
+            let isValid = true;
+
+            if (!toEn) {
+                document.getElementById('toEnError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('toEnError').style.display = 'none';
+            }
+
+            if (!toAr) {
+                document.getElementById('toArError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('toArError').style.display = 'none';
+            }
+
+            if (isValid) {
+                $(".certToEn").text(toEn);
+                $(".certToAr").text(toAr);
+                closeCertModal();
+                await executeDownloadFlow('certificate');
+            }
         }
 
         function showBankModal() {
