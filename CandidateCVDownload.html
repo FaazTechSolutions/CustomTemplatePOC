@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate CV Download</title>
+        <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+
+</head>
+
+<body>
+
+    <div class="letter-container">
+        <style>
+            .letter-container {
+                /* background-color: #f5f5f5; */
+                font-family: var(--font-en);
+                font-size: 14px;
+                color: #1a1a1a;
+                line-height: 1.6;
+                letter-spacing: normal !important;
+            }
+
+            .certificate-container {
+                width: 210mm;
+                /* Remove min-height to prevent pushing to 2nd page if there's slight overflow */
+                padding: 20mm;
+                margin: 0 auto;
+                background: #fff;
+                box-sizing: border-box;
+                position: relative;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            /* Outer wrapper for screen spacing */
+            .page-wrapper {
+                padding: 40px 0;
+                background-color: #f5f5f5;
+                /* Match body bg */
+                min-height: 100vh;
+            }
+
+            .header {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 40px;
+                font-weight: 500;
+            }
+
+            .date-section {
+                display: flex;
+                gap: 10px;
+            }
+
+            .title-section {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 40px;
+                border-bottom: 1px solid transparent;
+                /* Placeholder for spacing */
+            }
+
+            .title-en {
+                font-size: 20px;
+                font-weight: 700;
+            }
+
+            .title-ar {
+                font-family: var(--font-ar);
+                font-size: 22px;
+                font-weight: 700;
+                text-align: right;
+            }
+
+            .to-section {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 25px;
+                font-weight: 700;
+            }
+
+            .certification-text {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 30px;
+                gap: 40px;
+            }
+
+            .text-en {
+                /* flex: 1;
+                text-align: left; */
+            }
+
+            .text-ar {
+                /* flex: 1; */
+                text-align: right;
+                font-family: var(--font-ar);
+                /* direction: rtl; */
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+
+            th,
+            td {
+                border: 1px solid #000;
+                padding: 8px 12px;
+                text-align: center;
+            }
+
+            .details-table td {
+                height: 35px;
+                text-align: left;
+            }
+
+            .details-table td:nth-child(1) {
+                width: 25%;
+                font-weight: 700;
+            }
+
+            .details-table td:nth-child(2) {
+                width: 25%;
+            }
+
+            .details-table td:nth-child(3) {
+                width: 25%;
+            }
+
+            .details-table td:nth-child(4) {
+                width: 25%;
+                font-family: var(--font-ar);
+                text-align: right;
+                font-weight: 700;
+                /* direction: rtl; */
+            }
+
+            .salary-table th {
+                font-weight: 600;
+                background-color: transparent;
+            }
+
+            .salary-table th .ar {
+                display: block;
+                font-family: var(--font-ar);
+                margin-bottom: 5px;
+            }
+
+            .closing-section {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 30px;
+                margin-bottom: 40px;
+                gap: 40px;
+            }
+
+            .signature-area {
+                margin-top: 60px;
+                text-align: center;
+                width: 300px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .signature-line {
+                border-top: 1px solid #1a1a1a;
+                margin-bottom: 15px;
+                width: 100%;
+            }
+
+            .signatory-name {
+                font-family: var(--font-ar);
+                /* text-align: right; */
+                font-size: 16px;
+                font-weight: 700;
+                margin-bottom: 5px;
+            }
+
+            .signatory-title {
+                /* text-align: right; */
+                font-family: var(--font-ar);
+                font-size: 14px;
+            }
+
+            /* Download Button Styling */
+            .controls {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                margin-top: 10px;
+            }
+
+            .download-btn {
+                background-color: orange;
+                color: #fff;
+                border: none;
+                padding: 12px 24px;
+                font-family: var(--font-en);
+                font-weight: 600;
+                cursor: pointer;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: background-color 0.3s;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            .download-btn:hover {
+                background-color: #f7b439;
+            }
+
+            .download-btn.btn-load {
+                pointer-events: none;
+                opacity: 0.8;
+            }
+
+            .download-btn .spinner {
+                display: none;
+                width: 18px;
+                height: 18px;
+                border: 2px solid #ffffff;
+                border-top: 2px solid transparent;
+                border-radius: 50%;
+                animation: spin 0.8s linear infinite;
+            }
+
+            .download-btn.btn-load .spinner {
+                display: inline-block;
+            }
+
+            .download-btn.btn-load span {
+                display: none;
+            }
+
+            .message-container .spinner {
+                display: none;
+                width: 18px;
+                height: 18px;
+                border: 2px solid #ccc;
+                border-top: 2px solid #ff9800;
+                border-radius: 50%;
+                animation: spin 0.8s linear infinite;
+            }
+
+            .message-container.load .spinner {
+                display: inline-block;
+            }
+
+            .message-container.load span {
+                display: none;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .salary-transfer-container {
+                width: 210mm;
+                padding: 20mm;
+                margin: 0 auto;
+                background: #fff;
+                box-sizing: border-box;
+                position: relative;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                font-family: var(--font-ar);
+                /* direction: rtl; */
+                text-align: right;
+            }
+
+            .salary-transfer-container .content-head {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            .salary-transfer-container .form-title {
+                font-size: 20px;
+                font-weight: 700;
+                /* text-decoration: underline; */
+                margin-bottom: 30px;
+            }
+
+            .salary-transfer-container .salutation {
+                margin-bottom: 15px;
+                font-weight: 700;
+            }
+
+            .summary-table {
+                width: 100%;
+                margin: 20px 0;
+                border-collapse: collapse;
+            }
+
+            .summary-table td {
+                padding: 10px;
+                text-align: center;
+                vertical-align: middle;
+            }
+
+            /* Modal Styles */
+            .modal-popup-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(4px);
+                z-index: 2000;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .modal-popup-content {
+                background: #fff;
+                padding: 30px;
+                border-radius: 12px;
+                width: 400px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+                animation: slideIn 0.3s ease-out;
+                direction: ltr;
+                /* Keeping modal inputs LTR for easier typing */
+                text-align: left;
+            }
+
+            @keyframes slideIn {
+                from {
+                    transform: translateY(-20px);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            .modal-popup-header {
+                margin-bottom: 20px;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 10px;
+            }
+
+            .modal-popup-header h2 {
+                margin: 0;
+                font-size: 1.2rem;
+                color: #333;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: 600;
+                color: #555;
+                font-size: 0.9rem;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 10px;
+                border: 1.5px solid #ddd;
+                border-radius: 6px;
+                font-size: 1rem;
+                transition: border-color 0.2s;
+            }
+
+            .form-group input:focus {
+                outline: none;
+                border-color: orange;
+            }
+
+            .modal-popup-footer {
+                display: flex;
+                justify-content: flex-end;
+                gap: 10px;
+                margin-top: 25px;
+            }
+
+            .modal-popup-btn {
+                padding: 10px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 600;
+                border: none;
+                transition: background 0.2s;
+            }
+
+            .modal-popup-btn.cancel {
+                background: #f1f1f1;
+                color: #666;
+            }
+
+            .modal-popup-btn.cancel:hover {
+                background: #e5e5e5;
+            }
+
+            .modal-popup-btn.confirm {
+                background: orange;
+                color: #fff;
+            }
+
+            .modal-popup-btn.confirm:hover {
+                background: #f7b439;
+            }
+
+            .error-msg {
+                color: #d32f2f;
+                font-size: 0.8rem;
+                margin-top: 4px;
+                display: none;
+            }
+
+            .double-line {
+                border-top: 3px double #000;
+                margin: 20px 0;
+            }
+
+            .d-none {
+                display: none;
+            }
+
+            .message-container {
+                padding: 10px;
+                color: red;
+                text-align: center;
+            }
+
+            @media print {
+                .controls {
+                    display: none;
+                }
+
+                body {
+                    background: none;
+                }
+
+                .certificate-container,
+                .salary-transfer-container {
+                    margin: 0;
+                    box-shadow: none;
+                    width: 100%;
+                }
+
+                @page {
+                    size: A4;
+                    margin: 0;
+                }
+            }
+        </style>
+        <div class="message-container">
+            <div class="spinner"></div>
+            <span id="message"></span>
+        </div>
+        <div class="controls">
+            <button class="download-btn d-none dynamic-btn-cv" id="downloadCV">
+                <div class="spinner"></div>
+                <span>Download CV</span>
+            </button>
+        </div>
+    </div>
+    <script>
+        var _this = this;
+        console.log("SCRIPT EXECUTED");
+        var token = localStorage.getItem("eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9");
+        var GraphApiURL = "";
+        var userId = localStorage.getItem('UserId');
+        var companyId = localStorage.getItem('CompanyId');
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        var ApplicationNO = '';
+        if (window.location.hostname === "portal.mawarid.com.sa") {
+            token = localStorage.getItem("eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9");
+            ApplicationNO = _this.ParentData.RecId;
+            GraphApiURL = _this.globalService.SysParameter.GraphApiURL ? _this.globalService.SysParameter.GraphApiURL : "https://portal.mawarid.com.sa/apps4x-api/graph-api"
+        } else if (window.location.hostname === "localhost" || window.location.hostname === "") {
+            ApplicationNO = "45048";
+            userId = "a.hyder";
+            companyId = "LGE0000001";
+            GraphApiURL = "https://portal.mawarid.com.sa/apps4x-api/graph-api";
+            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJBRzAwMTEzIiwiTmFtZSI6IkFwcGxpY2F0aW9uIFN1cHBvcnQiLCJFbWFpbCI6ImFwcC5zdXBAbWF3YXJpZC5jb20iLCJNb2JpbGVOdW1iZXIiOiIwNTA3MzAzNDE1IiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSIsImV4cCI6MTc4MTIzODkwOCwiaXNzIjoiYXBwczR4LmNvbSIsImF1ZCI6ImFwcHM0eC5jb20ifQ._9wgTkcQmLyDa7WzfJiDG--VnGS3peuB7TFFwMFBtXI";
+        }
+        const script = document.createElement('script');
+        script.src = 'https://code.jquery.com/jquery-3.6.0.min.js'; // URL of the script
+        script.type = 'text/javascript';
+        script.onload = function () {
+            // You can now use jQuery or whatever the script provides
+            console.log('script loaded sucessfully');
+        };
+        document.head.appendChild(script);
+
+        function validateCandidateCV() {
+            const btn = document.querySelector('.message-container');
+            btn.classList.add('load');
+            // API URL
+            const apiUrl = `${GraphApiURL}/api/v1/Integration/ValidateCandidateCVDetails?applicationNumber=${ApplicationNO}`;
+            // Make API call and return promise
+            return fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "User-Id": userId,
+                    "CompanyId": companyId
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    btn.classList.remove('load');
+                    const details = data.Data;
+                    // Use classes to update multiple spans and .text() instead of .val()
+                    $("#message").text(details.message);
+                    const $downloadCV = $('#downloadCV');
+                    $downloadCV.removeClass('d-none');
+                })
+                .catch(error => {
+                    btn.classList.remove('load');
+                    console.error("Error fetching data:", error);
+                });
+        }
+
+        let isDownloading = false;
+
+        function downloadCandidateCV() {
+             console.log("downloadCandidateCV called");
+
+            if (isDownloading) {
+                return;
+            }
+
+            isDownloading = true;
+
+            const btn = document.querySelector('.message-container');
+            btn.classList.add('load');
+
+            const apiUrl = `${GraphApiURL}/api/v1/Integration/GenerateCandidateCVDetailsPdf?applicationNumber=${ApplicationNO}`;
+
+            fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "User-Id": userId,
+                    "CompanyId": companyId
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("error");
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = "Candidate_CV.pdf";
+
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+
+                    window.URL.revokeObjectURL(url);
+                    $("#DynamicWidget_close_df3a18dc1d1d4825931e074047650b13").trigger("click");
+                })
+                .catch(console.error)
+                .finally(() => {
+                    isDownloading = false;
+                    btn.classList.remove('load');
+                });
+        }
+
+        validateCandidateCV();
+
+            const randomButtonClass = 'dynamic-btn-cv-' + Math.random().toString(36).substring(2, 10);
+
+            $('#downloadCV').addClass(randomButtonClass);
+
+            console.log(randomButtonClass);
+            $(document).on('click', '.' + randomButtonClass, function () {debugger
+                console.log("BUTTON CLICK EVENT");
+                downloadCandidateCV();
+            });
+        
+
+
+    </script>
+</body>
+
+</html>
