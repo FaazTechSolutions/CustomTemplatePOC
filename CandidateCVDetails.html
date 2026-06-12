@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #f2aa1c;
+            --dark: #3b4e68;
+            --muted: #6c7a89;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+
+        /* ── Puppeteer + print both use this ── */
+        html, body {
+            width: 210mm;
+            margin: 0;
+            padding: 0;
+            background: #fff;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* Preview only */
+        @media screen {
+            body {
+                background: #e0e5ec;
+                display: flex;
+                justify-content: center;
+                padding: 30px 0 60px;
+                min-height: 100vh;
+                width: auto;
+            }
+        }
+
+        /* ── PAGE ── */
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        @media screen {
+            .page { box-shadow: 0 10px 30px rgba(0,0,0,.15); }
+        }
+
+        /* ══════════════════════════════════════
+           TOP BAR — logo + tags
+        ══════════════════════════════════════ */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 22px 55px 22px 55px;
+        }
+
+        .top-tags {
+            display: flex;
+            height: 30px;
+            font-size: 9px;
+            color: #fff;
+            gap: 0;
+        }
+        .tag-left {
+            background: #5d6771;
+            padding: 4px 18px 4px 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            line-height: 1.3;
+            clip-path: polygon(0 0, 100% 0, 88% 100%, 0% 100%);
+            min-width: 96px;
+        }
+        .tag-right {
+            background: #4a544c;
+            padding: 4px 14px 4px 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+            line-height: 1.3;
+            margin-left: -10px;
+            clip-path: polygon(12% 0, 100% 0, 100% 100%, 0% 100%);
+            min-width: 96px;
+            text-align: right;
+        }
+
+        .logo-img {
+            height: 38px;
+            width: auto;
+        }
+
+        /* ══════════════════════════════════════
+           HERO SECTION
+           Uses a grid: [text-col] [portrait] [fullbody] [gold-accent]
+           Everything in flow — no absolute positioning
+        ══════════════════════════════════════ */
+        .hero {
+            display: grid;
+            /* text | portrait | fullbody | right-accent */
+            grid-template-columns: 1fr 148px 218px 50px;
+            grid-template-rows: auto auto;
+            padding-left: 55px;
+            gap: 0;
+            position: relative;
+        }
+
+        /* Left gold bar under text — spans rows */
+        .gold-bar-left {
+            grid-column: 1;
+            grid-row: 2;
+            background: var(--gold);
+            height: 88px;
+            margin-left: -55px;          /* bleed to edge */
+            padding-left: 55px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Identity text — row 1, col 1 */
+        .identity {
+            grid-column: 1;
+            grid-row: 1;
+            padding-top: 18px;
+            padding-bottom: 10px;
+            padding-right: 12px;
+        }
+        .cv-title {
+            color: var(--gold);
+            font-size: 58px;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 6px;
+            letter-spacing: 2px;
+        }
+        .cv-name {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--dark);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 4px;
+        }
+        .cv-country {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+        .cv-meta {
+            font-size: 13px;
+            font-weight: 600;
+            color: #555d66;
+            line-height: 1.45;
+        }
+
+        /* QR sits on gold bar, row 2 col 1 — overlaid via negative margin trick */
+        .qr-on-bar {
+            /* inside gold-bar-left */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .qr-box {
+            width: 72px;
+            height: 72px;
+            background: #fff;
+            border: 3px solid var(--dark);
+            border-radius: 4px;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .qr-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: brightness(0.2);
+        }
+        .qr-label {
+            margin-top: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: .5px;
+        }
+
+        /* Portrait photo — rows 1+2, col 2 */
+        .portrait-wrap {
+            grid-column: 2;
+            grid-row: 1 / 3;
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 0;
+            padding-top: 40px;
+            padding-left: 10px;
+        }
+        .portrait-frame {
+            width: 132px;
+            height: 188px;
+            border: 1px solid #c8d1d9;
+            padding: 4px;
+            background: #fff;
+        }
+        .portrait-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #f5f5f5;
+        }
+
+        /* Full body photo — rows 1+2, col 3 */
+        .fullbody-wrap {
+            grid-column: 3;
+            grid-row: 1 / 3;
+            display: flex;
+            align-items: flex-end;
+            padding-top: 20px;
+            padding-left: 12px;
+        }
+        .fullbody-frame {
+            width: 200px;
+            height: 310px;
+            border: 1px solid #c8d1d9;
+            padding: 4px;
+            background: #fff;
+        }
+        .fullbody-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #f5f5f5;
+        }
+
+        /* Right gold accent col — rows 1+2 */
+        .gold-accent-right {
+            grid-column: 4;
+            grid-row: 1 / 3;
+            background: var(--gold);
+            /* bleeds to right edge */
+            margin-right: 0;
+            min-height: 100%;
+        }
+
+        /* ══════════════════════════════════════
+           CONTENT AREA
+        ══════════════════════════════════════ */
+        .content-area {
+            display: flex;
+            gap: 0;
+            padding: 28px 55px 50px 55px;
+            position: relative;
+        }
+
+        .col-left  { flex: 1; padding-right: 28px; }
+        .col-right { flex: 1; padding-left: 28px; border-left: 1px solid #eee; }
+
+        /* ── Section ── */
+        .section {
+            position: relative;
+            padding-left: 26px;
+            margin-bottom: 30px;
+        }
+        .section-line {
+            position: absolute;
+            left: 5px;
+            top: 8px;
+            bottom: 6px;
+            width: 2px;
+            background: var(--gold);
+        }
+        .dot-top {
+            position: absolute;
+            left: -1px;
+            top: 1px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--gold);
+        }
+        .section h2 {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 14px;
+            text-transform: capitalize;
+        }
+
+        /* ── Details table ── */
+        table.details-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table.details-table td {
+            padding-bottom: 5px;
+            vertical-align: top;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+        table.details-table td.lbl {
+            color: var(--muted);
+            width: 120px;
+            font-weight: 500;
+        }
+        table.details-table td.val {
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        /* ── Experience ── */
+        .exp-role {
+            position: relative;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 7px;
+            padding-left: 0;
+        }
+        .exp-role::before {
+            content: '';
+            position: absolute;
+            left: -23px;
+            top: 4px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--gold);
+        }
+        .exp-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+        .exp-details span { display: flex; }
+        .exp-details .lbl { width: 130px; font-weight: 500; }
+        .exp-details .val { color: var(--dark); font-weight: 700; }
+
+        .main-roles-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        .role-list {
+            list-style: none;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.7;
+        }
+
+        /* ── Skills ── */
+        .skills-list {
+            list-style: none;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.7;
+        }
+        .skills-list li {
+            position: relative;
+            padding-left: 14px;
+        }
+        .skills-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--gold);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* ── Watermark ── */
+        .watermark {
+            position: fixed; /* 'fixed' repeats on every printed page */
+            right: 15mm;
+            bottom: 15mm;
+            width: 320px;
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: -1; /* Keeps it behind text */
+        }
+        .watermark img { width: 100%; height: auto; }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div class="top-tags">
+            <div class="tag-left"><span>Local Source</span><span>Global Reach</span></div>
+            <div class="tag-right"><span>مصدر محلي</span><span>امتداد عالمي</span></div>
+        </div>
+        <img class="logo-img" src="https://portal.mawarid.com.sa/apps4x/assets/img/mawarid-logo-2.png" alt="Al Mawarid"/>
+    </div>
+
+    <!-- HERO GRID -->
+    <div class="hero">
+
+        <!-- Col 1 row 1: text -->
+        <div class="identity">
+            <div class="cv-title">C.V</div>
+            <div class="cv-name">{{PersonalDetails.firstName}} {{PersonalDetails.lastName}}</div>
+            <div class="cv-country">{{PersonalDetails.PlaceOfBirth}}</div>
+            <div class="cv-meta">
+                <div>{{PersonalDetails.Position}}</div>
+                <div>{{PersonalDetails.ExpectedSalary}}</div>
+                <div>{{PersonalDetails.ExperienceSummary}}</div>
+            </div>
+        </div>
+
+        <!-- Col 1 row 2: gold bar + QR -->
+        <div class="gold-bar-left">
+            {{#if PersonalDetails.QrCodeUrl}}
+            <div class="qr-on-bar">
+                <div class="qr-box">
+                    <img src="https://portal.mawarid.com.sa/apps4x-api/{{PersonalDetails.QrCodeUrl}}" alt="QR"/>
+                </div>
+                <div class="qr-label">Video</div>
+            </div>
+            {{/if}}
+        </div>
+
+        <!-- Col 2: portrait photo -->
+        <div class="portrait-wrap">
+            <div class="portrait-frame">
+                <img src="https://portal.mawarid.com.sa/apps4x-api/{{PersonalDetails.PassportSizePhoto_Path}}" alt="Portrait"/>
+            </div>
+        </div>
+
+        <!-- Col 3: full body photo -->
+        <div class="fullbody-wrap">
+            <div class="fullbody-frame">
+                <img src="https://portal.mawarid.com.sa/apps4x-api/{{PersonalDetails.FullSizePhoto_Path}}" alt="Full Body"/>
+            </div>
+        </div>
+
+        <!-- Col 4: right gold accent -->
+        <div class="gold-accent-right"></div>
+
+    </div>
+
+    <!-- CONTENT AREA -->
+    <div class="content-area">
+        <div class="col-left">
+
+            <!-- Personal Details -->
+            <div class="section">
+                <div class="section-line"></div>
+                <div class="dot-top"></div>
+                <h2>Personal Details</h2>
+                <table class="details-table">
+                    <tr><td class="lbl">Religion:</td><td class="val">{{PersonalDetails.Religion}}</td></tr>
+                    <tr><td class="lbl">Date Of Birth:</td><td class="val"><span id="formatted-birthdate">{{PersonalDetails.birthDate}}</span></td></tr>
+                    <tr><td class="lbl">Place Of Birth:</td><td class="val">{{PersonalDetails.PlaceOfBirth}}</td></tr>
+                    <tr><td class="lbl">Age:</td><td class="val">{{PersonalDetails.Age}}</td></tr>
+                    <tr><td class="lbl">Marital Status:</td><td class="val">{{PersonalDetails.martialStatus}}</td></tr>
+                    <tr><td class="lbl">No. Of Children:</td><td class="val">{{PersonalDetails.NumberOfChildren}}</td></tr>
+                    <tr><td class="lbl">Weight:</td><td class="val">{{PersonalDetails.Weight}}</td></tr>
+                    <tr><td class="lbl">Height:</td><td class="val">{{PersonalDetails.Height}}</td></tr>
+                    <tr><td class="lbl">Educational:</td><td class="val">{{PersonalDetails.EducationLevel}}</td></tr>
+                </table>
+            </div>
+
+            <!-- Languages -->
+            <div class="section">
+                <div class="section-line"></div>
+                <div class="dot-top"></div>
+                <h2>Languages</h2>
+                <table class="details-table">
+                    {{#each Languages}}
+                    <tr><td class="lbl">Language:</td><td class="val">{{LanguageName}} / {{LanguageLevel_Desc}}</td></tr>
+                    {{/each}}
+                </table>
+            </div>
+
+            <!-- Skills -->
+            <div class="section">
+                <div class="section-line"></div>
+                <div class="dot-top"></div>
+                <h2>Skills</h2>
+                <ul class="skills-list">
+                    {{#each Skills}}<li>{{SkillName}}</li>{{/each}}
+                </ul>
+            </div>
+
+        </div><!-- /col-left -->
+
+        <div class="col-right">
+
+            <!-- Experience -->
+            {{#if Experience}}
+            <div class="section">
+                <div class="section-line"></div>
+                <div class="dot-top"></div>
+                <h2>Experience</h2>
+                {{#each Experience}}
+                <div class="exp-role">{{Position}}</div>
+                <div class="exp-details">
+                    {{#if Workplace}}<span><span class="lbl">Workplace:</span><span class="val">{{Workplace}}</span></span>{{/if}}
+                    {{#if DurationYears}}<span><span class="lbl">Experience duration:</span><span class="val">{{DurationYears}} years</span></span>{{/if}}
+                    {{#if Country}}<span><span class="lbl">Country:</span><span class="val">{{Country}}</span></span>{{/if}}
+                </div>
+                {{#if MainRoles}}
+                <div class="main-roles-title">Main Roles:</div>
+                <ul class="role-list"><li>{{MainRoles}}</li></ul>
+                {{/if}}
+                {{/each}}
+            </div>
+            {{/if}}
+
+            <!-- Specialization -->
+            {{#if Specialization}}
+            <div class="section">
+                <div class="section-line"></div>
+                <div class="dot-top"></div>
+                <h2>Specialization</h2>
+                <ul class="skills-list">
+                    {{#each Specialization}}<li>{{SpecializationName}}</li>{{/each}}
+                </ul>
+            </div>
+            {{/if}}
+
+            <!-- Gulf Experience -->
+            {{#if GulfExperience}}
+            <div class="section">
+                <div class="section-line"></div>
+                <div class="dot-top"></div>
+                <h2>Gulf Experience</h2>
+                {{#each GulfExperience}}
+                <div class="exp-role">{{Position}}</div>
+                <div class="exp-details">
+                    {{#if Workplace}}<span><span class="lbl">Workplace:</span><span class="val">{{Workplace}}</span></span>{{/if}}
+                    {{#if YearsOfExperience}}<span><span class="lbl">Experience duration:</span><span class="val">{{YearsOfExperience}} years</span></span>{{/if}}
+                    {{#if Country}}<span><span class="lbl">Country:</span><span class="val">{{Country}}</span></span>{{/if}}
+                </div>
+                {{#if MainRoles}}
+                <div class="main-roles-title">Main Roles:</div>
+                <ul class="role-list"><li>{{MainRoles}}</li></ul>
+                {{/if}}
+                {{/each}}
+            </div>
+            {{/if}}
+
+            <!-- Saudi Experience -->
+            {{#if SaudiExperience}}
+            <div class="section">
+                <div class="section-line"></div>
+                <div class="dot-top"></div>
+                <h2>Saudi Experience</h2>
+                {{#each SaudiExperience}}
+                <div class="exp-role">{{Position}}</div>
+                <div class="exp-details">
+                    {{#if OrganizationName}}<span><span class="lbl">Organization:</span><span class="val">{{OrganizationName}}</span></span>{{/if}}
+                    {{#if DurationYears}}<span><span class="lbl">Experience duration:</span><span class="val">{{DurationYears}} years</span></span>{{/if}}
+                </div>
+                {{#if MainRoles}}
+                <div class="main-roles-title">Main Roles:</div>
+                <ul class="role-list"><li>{{MainRoles}}</li></ul>
+                {{/if}}
+                {{/each}}
+            </div>
+            {{/if}}
+
+        </div><!-- /col-right -->
+
+    </div><!-- /content-area -->
+
+</div>
+
+<!-- Watermark (MUST be outside .page to repeat on every PDF page) -->
+<!-- <div class="watermark">
+    <img src="https://portal.mawarid.com.sa/apps4x/assets/img/mawarid_logo_BG.png" alt=""/>
+</div> -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var el = document.getElementById("formatted-birthdate");
+        if (el && el.innerText) {
+            var d = new Date(el.innerText.trim());
+            if (!isNaN(d.getTime())) {
+                el.innerText =
+                    String(d.getDate()).padStart(2,'0') + '/' +
+                    String(d.getMonth()+1).padStart(2,'0') + '/' +
+                    d.getFullYear();
+            }
+        }
+    });
+</script>
+</body>
+</html>
