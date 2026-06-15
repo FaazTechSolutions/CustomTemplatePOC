@@ -192,7 +192,7 @@
       <div class="modal-body">
 
         <!-- Drop zone -->
-        <div class="drop-zone" id="drop-zone" tabindex="0" role="button" aria-describedby="drop-hint">
+        <div class="drop-zone" id="drop-zone" style="cursor: pointer;" tabindex="0" role="button" aria-describedby="drop-hint">
           <div class="drop-zone-inner" id="drop-zone-inner">
             <div class="drop-icon">
               <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
@@ -203,13 +203,11 @@
               </svg>
             </div>
             <p class="drop-text">Drag &amp; drop your file here</p>
-            <!-- <p class="drop-hint" id="drop-hint">or click to browse</p> -->
+            <p class="drop-hint" id="drop-hint" style="font-size: 12px; color: var(--clr-text-3); margin-top: 4px;">or click to browse</p>
           </div>
         </div>
 
-        <div style="margin-top: 12px; text-align: center;">
-          <input type="file" id="file-input" class="file-input-native" accept="*/*" aria-label="Choose file" />
-        </div>
+        <input type="file" id="file-input" class="file-input-native" accept="*/*" aria-label="Choose file" style="display: none;" multiple />
 
         <!-- File preview -->
         <div class="file-preview hidden" id="file-preview">

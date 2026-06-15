@@ -264,6 +264,10 @@
   background: #f0fdf4;
 }
 
+.attachment-manager-widget .tile.uploaded .tile-required-indicator {
+  display: none !important;
+}
+
 /* Tile icon */
 .attachment-manager-widget .tile-icon-wrap {
   width: 44px;

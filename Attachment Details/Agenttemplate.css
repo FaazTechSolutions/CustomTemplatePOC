@@ -263,6 +263,10 @@
   background: #f0fdf4;
 }
 
+.attachment-manager-widget .tile.uploaded .tile-required-indicator {
+  display: none !important;
+}
+
 /* Tile icon */
 .attachment-manager-widget .tile-icon-wrap {
   width: 44px;
@@ -912,9 +916,10 @@
 /* File preview */
 .attachment-manager-widget .file-preview {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 11px 14px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: 10px 12px;
   border-radius: var(--radius-md);
   background: var(--clr-surface-2);
   border: 1px solid var(--clr-border);
