@@ -14,11 +14,11 @@ const CONFIG = {
   // REF_REC_ID:  '{{Query.RecId}}',
   REF_REC_ID: recId,
   ENDPOINT:
-    "https://portal.mawarid.com.sa/apps4x-api/api/v1/metaobject/{{Local.CompanyId}}/byobjectId?objectId=9d4eed72bbae44e5af7ca824a95b4423",
+    `https://portal.mawarid.com.sa/apps4x-api/api/v1/metaobject/${CompanyId}/byobjectId?objectId=9d4eed72bbae44e5af7ca824a95b4423`,
   FILES_BASE:
-    "https://portal.mawarid.com.sa/apps4x-api/api/v1/attachment/{{Local.CompanyId}}/files",
+    `https://portal.mawarid.com.sa/apps4x-api/api/v1/attachment/${CompanyId}/files`,
   DOWNLOAD_BASE:
-    "https://portal.mawarid.com.sa/apps4x-api/api/v1/attachment/{{Local.CompanyId}}/download",
+    `https://portal.mawarid.com.sa/apps4x-api/api/v1/attachment/${CompanyId}/download`,
   //  ENDPOINT:       'https://portal.mawarid.com.sa/apps4x-api/api/v1/metaobject/LGE0000001/byobjectId?objectId=9d4eed72bbae44e5af7ca824a95b4423',
   // FILES_BASE:     'https://portal.mawarid.com.sa/apps4x-api/api/v1/attachment/LGE0000001/files',
   // DOWNLOAD_BASE:  'https://portal.mawarid.com.sa/apps4x-api/api/v1/attachment/LGE0000001/download',
