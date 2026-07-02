@@ -1,0 +1,60 @@
+body {
+    font-family: 'Calibri', 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    padding: 20px;
+    margin: 0;
+}
+
+.rsr-report-container {
+    width: 100%;
+    overflow-x: auto;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+#rsrTable {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 1200px;
+}
+
+#rsrTable th, #rsrTable td {
+    border: 1px solid #444;
+    padding: 4px 8px;
+    text-align: center;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+#rsrTable .header-row th {
+    background-color: #D9D9D9;
+    font-weight: bold;
+    color: #000;
+    white-space: normal;
+    min-width: 80px;
+    vertical-align: middle;
+}
+
+#rsrTable .header-row .subject-header {
+    background-color: #595959;
+    color: #fff;
+    width: 250px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+#rsrTable .header-row .total-header {
+    background-color: #595959;
+    color: #fff;
+    width: 60px;
+}
+
+#rsrTable .subject-cell {
+    text-align: left;
+    font-weight: bold;
+    background-color: #f9f9f9;
+}
+
+#rsrTable .total-cell {
+    background-color: #f9f9f9;
+}
