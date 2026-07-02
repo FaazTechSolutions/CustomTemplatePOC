@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Details</title>
+    <link rel="stylesheet" href="report-styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="monthlyDetails-report-container" dir="auto">
+    <table id="monthlyDetailsTable">
+        <!-- Table content will be generated dynamically here -->
+    </table>
+    <div class="chart-section">
+        <div class="chart-header">
+            <h2>Monthly Details Chart</h2>
+            <select id="chartSubjectSelector" class="chart-selector"></select>
+        </div>
+        <div class="chart-canvas-container">
+            <canvas id="monthlyChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="Monthly Details.js"></script>
+</body>
+</html>

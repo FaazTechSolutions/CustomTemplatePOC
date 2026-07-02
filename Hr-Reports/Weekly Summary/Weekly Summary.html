@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Summary</title>
+    <link rel="stylesheet" href="report-styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="weeklySummary-report-container" dir="auto">
+  
+    <table id="weeklySummaryTable">
+        <!-- Table content will be generated dynamically here -->
+    </table>
+      <div class="chart-section">
+        <div class="chart-header">
+            <h2>Weekly Performance Chart</h2>
+            <select id="chartSubjectSelector" class="chart-selector"></select>
+        </div>
+        <div class="chart-canvas-container">
+            <canvas id="weeklyChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="Weekly Summary.js"></script>
+</body>
+</html>
