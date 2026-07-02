@@ -117,7 +117,7 @@ function renderTable(response) {
 }
 
 function initChart(data, weekCols, canvasId) {
-  const selector = document.getElementById("chartSubjectSelector");
+  const selector = document.getElementById("monthlyDetailsSelector");
   const canvas = document.getElementById(canvasId);
   if (!selector || !canvas) return;
 
@@ -149,16 +149,21 @@ function initChart(data, weekCols, canvasId) {
 
   selector.addEventListener("change", (e) => {
     const selectedKey = e.target.value;
-    updateChart(groupsMap.get(selectedKey), weekCols, ctx, selectedKey);
+    updateChart(groupsMap.get(selectedKey), weekCols, ctx, selectedKey, canvasId);
   });
 
   if (uniqueGroups.length > 0) {
-    updateChart(groupsMap.get(uniqueGroups[0]), weekCols, ctx, uniqueGroups[0]);
+    updateChart(groupsMap.get(uniqueGroups[0]), weekCols, ctx, uniqueGroups[0], canvasId);
   }
 }
 
-function updateChart(rows, weekCols, ctx, groupKey) {
+function updateChart(rows, weekCols, ctx, groupKey, canvasId) {
   const labels = weekCols;
+  
+  let existingChart = Chart.getChart(ctx.canvas);
+  if (existingChart) {
+    existingChart.destroy();
+  }
   
   if (detailsChartInstance) {
     detailsChartInstance.destroy();

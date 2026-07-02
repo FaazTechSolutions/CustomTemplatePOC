@@ -119,7 +119,7 @@ function renderTable(response) {
 }
 
 function initChart(data, weekCols) {
-  const selector = document.getElementById("chartSubjectSelector");
+  const selector = document.getElementById("weeklySummarySelector");
   const canvas = document.getElementById("weeklyChart");
   if (!selector || !canvas) return;
 
@@ -161,6 +161,11 @@ function initChart(data, weekCols) {
 
 function updateChart(rows, weekCols, ctx, groupKey) {
   const labels = weekCols;
+
+  let existingChart = Chart.getChart(ctx.canvas);
+  if (existingChart) {
+    existingChart.destroy();
+  }
 
   if (weeklyChartInstance) {
     weeklyChartInstance.destroy();
