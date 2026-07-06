@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mawarid – Attachment Details (Test Harness)</title>
+  <meta name="description" content="Test page for the Mawarid Attachment Details custom template." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f1f4f8;
+      min-height: 100vh;
+      padding: 24px 16px 60px;
+    }
+    .page-shell {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .page-top {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 20px;
+    }
+    .page-logo {
+      font-size: 20px; font-weight: 700; color: #1e293b;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .page-logo span {
+      background: #fdbd3f; color: #1a1100;
+      border-radius: 6px; padding: 3px 8px; font-size: 12px; font-weight: 700;
+    }
+    .test-note {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 4px solid #fdbd3f;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #78350f;
+    }
+    .test-note strong { font-weight: 600; }
+    .file-id-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 16px;
+    }
+    .file-id-row input {
+      flex: 1;
+      padding: 9px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: monospace;
+      background: #fff;
+      color: #1e293b;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .file-id-row input:focus { border-color: #fdbd3f; box-shadow: 0 0 0 3px rgba(253,189,63,.18); }
+    .file-id-row button {
+      padding: 9px 18px;
+      background: #fdbd3f;
+      border: 1px solid #e0a820;
+      border-radius: 8px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      color: #1a1100;
+      transition: background .15s;
+    }
+    .file-id-row button:hover { background: #e0a820; }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+
+    <div class="page-top">
+      <div class="page-logo">
+        Mawarid Portal <span>Test Harness</span>
+      </div>
+    </div>
+
+    <div class="test-note">
+      <strong>Developer Note:</strong> Enter a <code>FileId</code> below and click <strong>Load</strong> to test the widget.
+      In production the FileId is resolved automatically from <code>globalService.route.queryParams</code> or <code>ParentData.FileId</code>.
+      Make sure you are logged in to the portal so the BCP proxy can retrieve a valid token.
+    </div>
+
+    <div class="file-id-row">
+      <input type="text" id="test-file-id" placeholder="Enter FileId (GUID)…"
+             value="1c4cfe26-854a-447e-8eeb-64105748b3bd" />
+      <button id="test-load-btn">Load</button>
+    </div>
+
+    <!-- ════ Widget Root ════ -->
+    <div id="widget-root"></div>
+
+  </div>
+
+  <!-- jQuery + SweetAlert2 (widget deps) -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Inject the widget HTML + CSS + JS dynamically so the harness can reload -->
+  <script>
+    var widgetHtml = null;
+
+    function loadWidget(fileId) {
+      if (!widgetHtml) {
+        // Load widget HTML first
+        $.get('attachment-details.html', function(html) {
+          widgetHtml = html;
+          injectWidget(fileId);
+        }).fail(function() {
+          $('#widget-root').html('<p style="color:red;padding:16px">Could not load attachment-details.html. Make sure all files are in the same folder.</p>');
+        });
+      } else {
+        injectWidget(fileId);
+      }
+    }
+
+    function injectWidget(fileId) {
+      // Remove old scripts injected by previous widget load
+      $('script[data-adt]').remove();
+      $('link[data-adt]').remove();
+
+      $('#widget-root').html(widgetHtml);
+
+      // Override FileId via window variable (picked up by attachment-details.js)
+      window.ADT_FILE_ID_OVERRIDE = fileId || $('#test-file-id').val().trim();
+
+      // Dynamically add the widget CSS
+      if (!$('link[href="attachment-details.css"]').length) {
+        $('<link rel="stylesheet" href="attachment-details.css" data-adt="1"/>').appendTo('head');
+      }
+
+      // Dynamically load JS (reload each time by appending cache-bust)
+      var $s = $('<script data-adt="1"/>').attr('src', 'attachment-details.js?t=' + Date.now());
+      $('body').append($s);
+    }
+
+    // Patch attachment-details.js to honour ADT_FILE_ID_OVERRIDE
+    // (The JS already falls back to a URL param; we also expose via URLSearchParams trick)
+    $('#test-load-btn').on('click', function() {
+      var fid = $('#test-file-id').val().trim();
+      if (!fid) { alert('Please enter a FileId'); return; }
+      // Set as search param so URLSearchParams picks it up
+      var url = new URL(window.location);
+      url.searchParams.set('FileId', fid);
+      window.history.replaceState({}, '', url);
+      loadWidget(fid);
+    });
+
+    // Auto-load on page open with default/URL FileId
+    $(function() {
+      var urlFid = new URLSearchParams(window.location.search).get('FileId');
+      if (urlFid) $('#test-file-id').val(urlFid);
+      loadWidget(urlFid || $('#test-file-id').val().trim());
+    });
+  </script>
+</body>
+</html>

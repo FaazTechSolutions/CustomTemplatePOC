@@ -1,0 +1,106 @@
+<div class="ppd-widget">
+  <style>
+    .ppd-widget .hidden {
+      display: none !important;
+    }
+
+    .ppd-widget .d-none {
+      display: none !important;
+    }
+  </style>
+
+  <!-- ===== TOOLBAR ===== -->
+  <div class="ppd-toolbar">
+    <div class="ppd-toolbar-left">
+      <div class="ppd-toolbar-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+          stroke-width="2.2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="ppd-toolbar-title">Payment Proposal Details</h1>
+        <p class="ppd-toolbar-sub">Review vendor payment proposal information</p>
+      </div>
+    </div>
+    <div class="ppd-toolbar-right d-none">
+      <div class="ppd-status-badge" id="ppd-status-badge">
+        <span class="ppd-badge-dot"></span>
+        <span class="ppd-badge-label" id="ppd-badge-label">Loading…</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LOADING SKELETON ===== -->
+  <div class="ppd-skeleton-wrap" id="ppd-skeleton">
+    <div class="ppd-skeleton-card">
+      <div class="ppd-sk-row wide"></div>
+      <div class="ppd-sk-row medium"></div>
+      <div class="ppd-sk-row narrow"></div>
+      <div style="margin-top:24px;">
+        <div class="ppd-sk-row medium"></div>
+        <div class="ppd-sk-row wide"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ERROR STATE ===== -->
+  <div class="ppd-error-state hidden" id="ppd-error">
+    <div class="ppd-error-icon">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+    </div>
+    <h3>Failed to load details</h3>
+    <p id="ppd-error-msg">An unexpected error occurred.</p>
+    <button class="ppd-btn-retry" id="ppd-btn-retry">Try Again</button>
+  </div>
+
+  <!-- ===== MAIN DETAILS CARD ===== -->
+  <div class="ppd-details-wrap hidden" id="ppd-details-wrap">
+
+    <!-- Meta info bar -->
+    <div class="ppd-meta-bar" id="ppd-meta-bar">
+      <!-- Injected by JS -->
+    </div>
+
+    <!-- Highlights Grid (Vendor / Amount) -->
+    <div class="ppd-highlights" id="ppd-highlights">
+      <!-- Injected by JS -->
+    </div>
+
+    <!-- Additional fields section -->
+    <div class="ppd-fields-section" id="ppd-fields-section">
+      <div class="ppd-fields-header">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6" />
+          <line x1="8" y1="12" x2="21" y2="12" />
+          <line x1="8" y1="18" x2="21" y2="18" />
+          <line x1="3" y1="6" x2="3.01" y2="6" />
+          <line x1="3" y1="12" x2="3.01" y2="12" />
+          <line x1="3" y1="18" x2="3.01" y2="18" />
+        </svg>
+        Record Information
+      </div>
+      <div class="ppd-fields-grid" id="ppd-fields-grid">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+
+  </div><!-- /ppd-details-wrap -->
+
+  <!-- ── Dependencies (CDN) ── -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./payment-proposal-details.css" />
+  <script src="./payment-proposal-details.js"></script>
+</div>
