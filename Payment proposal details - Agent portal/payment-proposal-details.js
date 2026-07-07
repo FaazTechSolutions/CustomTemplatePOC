@@ -21,8 +21,6 @@ var _this = this;
   var $details = $w.find('#ppd-details-wrap');
   var $badge = $w.find('#ppd-status-badge');
   var $badgeLbl = $w.find('#ppd-badge-label');
-  var $metaBar = $w.find('#ppd-meta-bar');
-  var $highlights = $w.find('#ppd-highlights');
   var $fieldsGrid = $w.find('#ppd-fields-grid');
   var $btnRetry = $w.find('#ppd-btn-retry');
 
@@ -157,55 +155,64 @@ var _this = this;
   function renderDetails(data) {
     $details.removeClass('hidden');
 
-    /* ── Meta Chips ── */
-    var chips = [];
-    chips.push({ l: 'Transaction No', v: TRANSACTION_NUMBER });
-    if (data.Company || data.CompanyId) chips.push({ l: 'Company', v: data.Company || data.CompanyId });
-    if (data.Status) chips.push({ l: 'Status', v: data.Status });
-
-    $metaBar.html(chips.map(function (c) {
-      return '<div class="ppd-meta-chip"><span>' + escHtml(c.l) + ':</span><strong>' + escHtml(c.v) + '</strong></div>';
-    }).join(''));
-
-    /* ── Highlights (Vendor / Amount) ── */
-    var highlightsHtml = '';
-    if (data.VendorName || data.VendorAccount) {
-      highlightsHtml += '<div class="ppd-highlight-item vendor">' +
-        '<div class="lbl">Vendor</div>' +
-        '<div class="val">' + escHtml(data.VendorName || data.VendorAccount) + '</div>' +
-        '</div>';
-    }
-
-    if (data.Amount || data.TotalAmount) {
-      var curr = data.Currency ? ' ' + data.Currency : '';
-      highlightsHtml += '<div class="ppd-highlight-item amount">' +
-        '<div class="lbl">Total Amount</div>' +
-        '<div class="val">' + escHtml(data.Amount || data.TotalAmount) + curr + '</div>' +
-        '</div>';
-    }
-
-    if (highlightsHtml) {
-      $highlights.html(highlightsHtml).show();
-    } else {
-      $highlights.hide();
-    }
-
-    /* ── Iterate Dynamic Fields ── */
-    var html = '';
-    var skipKeys = ['VendorName', 'VendorAccount', 'Amount', 'TotalAmount', 'Currency'];
-
+    var dataFields = {};
     $.each(data, function (key, val) {
-      if (skipKeys.indexOf(key) !== -1) return;
       if (typeof val === 'object' && val !== null) return;
-
-      var label = prettyLabel(String(key));
-      var value = val !== null && val !== undefined && val !== '' ? String(val) : '—';
-
-      html += '<div class="ppd-field-item">'
-        + '<p class="ppd-field-label">' + escHtml(label) + '</p>'
-        + '<p class="ppd-field-value">' + escHtml(value) + '</p>'
-        + '</div>';
+      dataFields[key] = val !== null && val !== undefined && val !== '' ? String(val) : '—';
     });
+
+    function popField(key) {
+      var val = dataFields[key];
+      delete dataFields[key];
+      return val || '—';
+    }
+
+    var orderedFields = [];
+
+    orderedFields.push({ label: 'Transaction No', value: TRANSACTION_NUMBER });
+    orderedFields.push({ label: 'Transaction Number', value: popField('TransactionNumber') });
+
+    var vendorVal = dataFields['VendorName'] || dataFields['VendorAccount'] || '—';
+    delete dataFields['VendorName'];
+    delete dataFields['VendorAccount'];
+    orderedFields.push({ label: 'Vendor', value: vendorVal });
+    
+    orderedFields.push({ label: 'Description', value: popField('Description') });
+    orderedFields.push({ label: 'Sid', value: popField('Sid') });
+    orderedFields.push({ label: 'Name', value: popField('Name') });
+    orderedFields.push({ label: 'Trans Date', value: popField('TransDate') });
+    orderedFields.push({ label: 'Total Earning', value: popField('TotalEarning') });
+    orderedFields.push({ label: 'Payment Type', value: popField('PaymentType') });
+    orderedFields.push({ label: 'Net Amount', value: popField('NetAmount') });
+    orderedFields.push({ label: 'Total Deduction', value: popField('TotalDeduction') });
+
+    var extraFields = [];
+    var totalAmountVal = dataFields['Amount'] || dataFields['TotalAmount'];
+    if (totalAmountVal) {
+      var curr = dataFields['Currency'] ? ' ' + dataFields['Currency'] : '';
+      extraFields.push({ label: 'Total Amount', value: totalAmountVal + curr });
+    }
+    delete dataFields['Amount'];
+    delete dataFields['TotalAmount'];
+    delete dataFields['Currency'];
+    delete dataFields['Company'];
+    delete dataFields['CompanyId'];
+    delete dataFields['Status'];
+
+    $.each(dataFields, function(key, val) {
+      extraFields.push({ label: prettyLabel(key), value: val });
+    });
+
+    var allFields = orderedFields.concat(extraFields);
+
+    var html = '';
+    for (var k = 0; k < allFields.length; k++) {
+      var item = allFields[k];
+      html += '<div class="ppd-field-item">'
+        + '<p class="ppd-field-label">' + escHtml(item.label) + '</p>'
+        + '<p class="ppd-field-value">' + escHtml(item.value) + '</p>'
+        + '</div>';
+    }
 
     $fieldsGrid.html(html || '<p style="padding:16px;color:var(--clr-text-3)">No additional fields provided.</p>');
   }
