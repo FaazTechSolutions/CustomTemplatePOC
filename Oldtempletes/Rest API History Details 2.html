@@ -1,0 +1,61 @@
+<!-- Include Toastr (only once in your app, if not already added) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<div class="apiHistoryContainer">
+  <div class="section">
+    <div class="meta">
+      <div class="meta-item"><strong>Service Name:</strong> {{data.0.ServiceName}}</div>
+      <div class="meta-item"><strong>Method Name:</strong> {{data.0.MethodName}}</div>
+      <div class="meta-item"><strong>HTTP Method:</strong> {{data.0.Method}}</div>
+      <div class="meta-item"><strong>Status:</strong>{{data.0.Status}}</div>
+      <div class="meta-item"><strong>Created By:</strong> {{data.0.CreatedBy}}</div>
+      <div class="meta-item"><strong>Created Date:</strong>{{data.0.CreatedDatetime}}</div>
+      <div class="meta-item"><strong>Project Name:</strong> {{data.0.ProjectName}}</div>
+      <div class="meta-item"><strong>Customer Name:</strong>{{data.0.CustomerName}}</div>
+      <div class="meta-item"><strong>DataAreaId:</strong> {{data.0.DataAreaId}}</div>
+      <div class="meta-item"><strong>Comments:</strong> {{data.0.Comments}}</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      Request URL
+      <span class="copy-icon" onclick="copyContent('reqUrl')">📋</span>
+    </div>
+    <pre id="reqUrl">{{data.0.Url}}</pre>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      Client URL
+      <span class="copy-icon" onclick="copyContent('clientUrl')">📋</span>
+    </div>
+    <pre id="clientUrl">{{data.0.ClientUrl}}</pre>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      Header
+      <span class="copy-icon" onclick="copyContent('header')">📋</span>
+    </div>
+    <pre id="header" class="json-viewer">{{ data.0.Header}}</pre>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      Request Body
+      <span class="copy-icon" onclick="copyContent('requestBody')">📋</span>
+    </div>
+    <pre id="requestBody" class="json-viewer">{{ data.0.RequestBody}}</pre>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      Response
+      <span class="copy-icon" onclick="copyContent('response')">📋</span>
+    </div>
+    <pre id="response" class="json-viewer">{{ data.0.Response}}</pre>
+  </div>
+</div>

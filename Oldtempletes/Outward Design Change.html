@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outward Request Details</title>
+    <!-- Basic Bootstrap for flex utilities (used in the original HTML) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* --- Root Variables for Theming --- */
+        :root {
+            --primary-color: #0056b3;
+            --primary-hover: #004494;
+            --secondary-color: #f0f4f8;
+            --text-dark: #212529;
+            --text-light: #6c757d;
+            --card-bg: #ffffff;
+            --border-color: #dee2e6;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --border-radius: 12px;
+            --pre-bg: #f8f9fa;
+        }
+
+        body {
+            background-color: #f4f7fc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-dark);
+        }
+
+        .outline {
+            padding: 25px;
+            max-width: 900px;
+            margin: 20px auto;
+        }
+
+        /* --- Page Header --- */
+        .page-title {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .badge-status {
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.6em 1em;
+            border-radius: 50rem; /* Pill shape */
+        }
+
+        /* --- Card Styling --- */
+        .outwardCard {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            background: var(--card-bg);
+            margin-bottom: 25px;
+            overflow: hidden; /* Ensures child elements respect border-radius */
+        }
+
+        .outwardCard-header {
+            background-color: var(--secondary-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .outwardCard-body {
+            padding: 1.5rem;
+        }
+
+        /* --- Basic Info Section (Grid Layout) --- */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .info-item .info-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-item .info-value {
+            font-weight: 500;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-item.full-width {
+            grid-column: 1 / -1; /* Span full width */
+        }
+        
+        /* --- URL and Preformatted Text Styling --- */
+        #reqUrl {
+            background-color: var(--pre-bg);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+            white-space: nowrap;
+            overflow-x: auto;
+            flex-grow: 1;
+        }
+        
+        pre {
+            background: var(--pre-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            max-height: 450px;
+            overflow: auto;
+            font-size: 0.9rem;
+            font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+        }
+        
+        /* Syntax Highlighting Colors */
+        pre .text-primary { color: #0d6efd !important; font-weight: bold; }
+        pre .text-success { color: #198754 !important; }
+        pre .text-danger { color: #dc3545 !important; }
+        pre .text-info { color: #0dcaf0 !important; }
+        pre .text-muted { color: #6c757d !important; }
+
+
+        /* --- Copy Button --- */
+        .copy-btn {
+            background-color: transparent;
+            color: var(--primary-color);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="outline">
+        <div class="d-flex align-items-center justify-content-between mb-4 pb-2">
+            <div>
+                <h4 class="page-title mb-1">Outward Request Details</h4>
+                <p class="text-muted mb-0">View full details of the ZATCA API request</p>
+            </div>
+            <span id="statusBadge" class="badge-status"></span>
+        </div>
+
+        <div id="detailsContainer">
+            <!-- Dynamic content will be injected here -->
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // --- MOCK DATA FOR DEMONSTRATION ---
+        // In your actual implementation, this will come from 'this.currentPageData[0]'
+        var mockJsonData = {
+            Status: "OK",
+            RequestURL: "https://api.zatca.gov.sa/v1/compliance/invoices",
+            ResponseCode: 200,
+            CreatedBy: "api-user@example.com",
+            CreatedDatetime: new Date().toISOString(),
+            Payload: JSON.stringify({
+                invoiceHash: "E0C5E0A5F1A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5D6E7F8A9B0C1D2E3F4A5B6C7",
+                uuid: "a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6",
+                invoice: "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48SW52b2ljZT48L0ludm9pY2U+"
+            }, null, 2),
+            Response: JSON.stringify({
+                clearanceStatus: "CLEARED",
+                reportingStatus: "REPORTED",
+                qrCode: "ARdGFiY28gQnJvdGhlcnMgQ28uIEx0ZC4DFzMwMDAwMDAwMDAwMDAwMwQDMjAyMi0wOS0xNVQwMDowMDowMFoFBDQ2MC4wMAYDNTkuODA...",
+                validationResults: {
+                    status: "PASS",
+                    infoMessages: [],
+                    warningMessages: [],
+                    errorMessages: []
+                }
+            }, null, 2)
+        };
+        // Use mock data for the example. Replace `mockJsonData` with `this.currentPageData[0]` in your code.
+        var JsonData = mockJsonData; 
+        // var JsonData = this.currentPageData[0]; // YOUR ORIGINAL LINE
+        // ---------------------------------
+
+        const outwardRequest = JsonData;
+
+        $(document).ready(function () {
+            if (!outwardRequest) {
+                $("#detailsContainer").html("<p>No data available for this request.</p>");
+                return;
+            }
+
+            const d = outwardRequest;
+            const statusColor = d.Status === "OK" ? "bg-success text-white" : "bg-danger text-white";
+            $("#statusBadge").addClass(statusColor).text(d.Status);
+
+            // Rebuilt HTML with new, cleaner structure
+            const html = `
+                <div class="outwardCard">
+                    <div class="outwardCard-header">Basic Information</div>
+                    <div class="outwardCard-body">
+                        <div class="info-grid">
+                            <div class="info-item full-width">
+                                <span class="info-label">Request URL</span>
+                                <div class="info-value">
+                                    <code id="reqUrl">${d.RequestURL}</code>
+                                    <span class="copy-btn" id="copyUrl">Copy</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Response Code</span>
+                                <span class="info-value">${d.ResponseCode}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Created By</span>
+                                <span class="info-value">${d.CreatedBy}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Created Date</span>
+                                <span class="info-value">${new Date(d.CreatedDatetime).toLocaleString()}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="outwardCard">
+                    <div class="outwardCard-header">
+                        <span>Payload</span>
+                        <span class="copy-btn" id="copyPayload">Copy Payload</span>
+                    </div>
+                    <div class="outwardCard-body">
+                        <pre id="payloadContent">${syntaxHighlight(d.Payload)}</pre>
+                    </div>
+                </div>
+
+                <div class="outwardCard">
+                    <div class="outwardCard-header">
+                        <span>Response</span>
+                        <span class="copy-btn" id="copyResponse">Copy Response</span>
+                    </div>
+                    <div class="outwardCard-body">
+                        <pre id="responseContent">${syntaxHighlight(d.Response)}</pre>
+                    </div>
+                </div>
+            `;
+            $("#detailsContainer").html(html);
+
+            // All event handlers remain the same and will work with the new structure
+            $("#copyUrl").click(() => copyContent('reqUrl'));
+            $("#copyPayload").click(() => copyContent('payloadContent'));
+            $("#copyResponse").click(() => copyContent('responseContent'));
+        });
+
+        // --- UNCHANGED HELPER FUNCTIONS ---
+
+        function showToast(message, duration = 2000) {
+            const toast = $('<div>')
+                .text(message)
+                .css({ // Styling can be moved to a CSS class for better maintainability
+                    position: 'fixed',
+                    bottom: '30px',
+                    right: '30px',
+                    background: '#333',
+                    color: '#fff',
+                    padding: '12px 20px',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+                    fontSize: '15px',
+                    opacity: '0',
+                    transition: 'opacity 0.3s ease, transform 0.3s ease',
+                    transform: 'translateY(20px)',
+                    zIndex: 9999
+                })
+                .appendTo('body');
+
+            setTimeout(() => toast.css({ 'opacity': '1', 'transform': 'translateY(0)' }), 10);
+            setTimeout(() => {
+                toast.css({ 'opacity': '0', 'transform': 'translateY(20px)' });
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        function copyContent(elementId) {
+            const $el = $('#' + elementId);
+            if ($el.length === 0) return;
+
+            // For <pre> and <code>, .text() is the correct method
+            const text = $el.text().trim();
+            if (!text) return;
+
+            if (navigator.clipboard && document.hasFocus()) {
+                navigator.clipboard.writeText(text)
+                    .then(() => showToast('Copied to clipboard ✅'))
+                    .catch(() => fallbackCopy(text));
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const $temp = $('<textarea>');
+            $('body').append($temp);
+            $temp.val(text).select();
+            try {
+                document.execCommand('copy');
+                showToast('Copied to clipboard ✅');
+            } catch (err) {
+                showToast('Failed to copy ❌');
+                console.error('Fallback copy failed', err);
+            }
+            $temp.remove();
+        }
+
+        function syntaxHighlight(json) {
+            // Check if the input is a string, if not, stringify it.
+            if (typeof json != 'string') {
+                json = JSON.stringify(json, undefined, 2);
+            }
+            // First parse to re-format, then stringify again. This ensures consistent spacing.
+            try {
+                json = JSON.stringify(JSON.parse(json), undefined, 2);
+            } catch (e) {
+                // If it's not valid JSON, just display it as plain text after escaping
+                return json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            }
+
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            
+            return json.replace(
+                /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(\.\d+)?([eE][+\-]?\d+)?)/g,
+                function (match) {
+                    let cls = 'text-danger'; // Default for numbers
+                    if (/^"/.test(match)) {
+                        if (/:$/.test(match)) {
+                            cls = 'text-primary'; // Key
+                        } else {
+                            cls = 'text-success'; // String value
+                        }
+                    } else if (/true|false/.test(match)) {
+                        cls = 'text-info'; // Boolean
+                    } else if (/null/.test(match)) {
+                        cls = 'text-muted'; // Null
+                    }
+                    return `<span class="${cls}">${match}</span>`;
+                }
+            );
+        }
+    </script>
+</body>
+</html>

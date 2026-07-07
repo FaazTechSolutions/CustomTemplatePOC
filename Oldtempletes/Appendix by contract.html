@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Agent Contract Report</title>
+    <style>
+        .bodyAppendixReport {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+
+        .headingAppendixReport {
+            text-align: center;
+        }
+
+        .filters {
+            margin-bottom: 15px;
+        }
+
+        .filters input {
+            padding: 6px;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        .accordion {
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .accordion-header {
+            background-color: #f0f0f0;
+            padding: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .accordion-body {
+            display: none;
+            padding: 10px;
+        }
+
+        .accordion-body table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .accordion-body th,
+        .accordion-body td {
+            border: 1px solid #999;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        .accordion-body th {
+            background-color: #f0f0f0;
+        }
+
+        .accordion-header {
+            background-color: #f0f0f0;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 8px;
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body class="bodyAppendixReport">
+    <h2 class="headingAppendixReport">Agent Contract & Appendix Report</h2>
+
+    <div id="accordionContainer"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+
+    <script>
+        //#region  json data
+        let data = [
+            {
+                "ContractNumber": "CON0000004",
+                "ContractDate": "2025-03-11T00:00:00",
+                "ContractStatus": "Approved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 1,
+                "ContractGuaranteeDays": 1,
+                "ContractFees": 1,
+                "ContractPenaltyClause": 1,
+                "ContractSector": "Individual",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000003",
+                "Status": "AgencyApproved",
+                "Type": null,
+                "FromDate": null,
+                "ToDate": null,
+                "EffectiveDuration": 21,
+                "ArrivalDays": null,
+                "GuaranteeDays": null,
+                "Fees": null,
+                "PenaltyClause": null,
+                "CreatedDatetime": "2025-03-18T11:45:54.81"
+            },
+            {
+                "ContractNumber": "CON0000004",
+                "ContractDate": "2025-03-11T00:00:00",
+                "ContractStatus": "Approved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 1,
+                "ContractGuaranteeDays": 1,
+                "ContractFees": 1,
+                "ContractPenaltyClause": 1,
+                "ContractSector": "Individual",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000004",
+                "Status": "AgencyApproved",
+                "Type": null,
+                "FromDate": null,
+                "ToDate": null,
+                "EffectiveDuration": 5,
+                "ArrivalDays": null,
+                "GuaranteeDays": null,
+                "Fees": null,
+                "PenaltyClause": null,
+                "CreatedDatetime": "2025-03-19T08:44:03.757"
+            },
+            {
+                "ContractNumber": "CON0000005",
+                "ContractDate": "2025-03-18T00:00:00",
+                "ContractStatus": "Approved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 2,
+                "ContractGuaranteeDays": 1,
+                "ContractFees": 12,
+                "ContractPenaltyClause": 3,
+                "ContractSector": "Individual",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000005",
+                "Status": "Rejected",
+                "Type": null,
+                "FromDate": null,
+                "ToDate": null,
+                "EffectiveDuration": 10,
+                "ArrivalDays": null,
+                "GuaranteeDays": null,
+                "Fees": null,
+                "PenaltyClause": null,
+                "CreatedDatetime": "2025-03-19T10:09:04.433"
+            },
+            {
+                "ContractNumber": "CON0000006",
+                "ContractDate": "2025-03-18T00:00:00",
+                "ContractStatus": "Approved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 2,
+                "ContractGuaranteeDays": 2,
+                "ContractFees": 2,
+                "ContractPenaltyClause": 2,
+                "ContractSector": "Business",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000006",
+                "Status": "Rejected",
+                "Type": null,
+                "FromDate": null,
+                "ToDate": null,
+                "EffectiveDuration": 7,
+                "ArrivalDays": null,
+                "GuaranteeDays": null,
+                "Fees": null,
+                "PenaltyClause": null,
+                "CreatedDatetime": "2025-03-19T11:35:48.73"
+            },
+            {
+                "ContractNumber": "CON0000007",
+                "ContractDate": "2025-03-18T00:00:00",
+                "ContractStatus": "Rejected",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 2,
+                "ContractGuaranteeDays": 2,
+                "ContractFees": 2,
+                "ContractPenaltyClause": 2,
+                "ContractSector": "Individual",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000007",
+                "Status": "Submitted",
+                "Type": null,
+                "FromDate": null,
+                "ToDate": null,
+                "EffectiveDuration": 6,
+                "ArrivalDays": null,
+                "GuaranteeDays": null,
+                "Fees": null,
+                "PenaltyClause": null,
+                "CreatedDatetime": "2025-03-19T12:56:31.58"
+            },
+            {
+                "ContractNumber": "CON0000013",
+                "ContractDate": "2025-03-18T00:00:00",
+                "ContractStatus": "Approved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 22,
+                "ContractGuaranteeDays": 2,
+                "ContractFees": 2,
+                "ContractPenaltyClause": 2,
+                "ContractSector": "Business",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000008",
+                "Status": "Draft",
+                "Type": null,
+                "FromDate": null,
+                "ToDate": null,
+                "EffectiveDuration": 231,
+                "ArrivalDays": null,
+                "GuaranteeDays": null,
+                "Fees": null,
+                "PenaltyClause": null,
+                "CreatedDatetime": "2025-03-20T13:03:01.417"
+            },
+            {
+                "ContractNumber": "CON0000017",
+                "ContractDate": "2025-03-13T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 12,
+                "ContractGuaranteeDays": 23,
+                "ContractFees": 12,
+                "ContractPenaltyClause": 12,
+                "ContractSector": "All",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000009",
+                "Status": "Draft",
+                "Type": "Existing",
+                "FromDate": null,
+                "ToDate": null,
+                "EffectiveDuration": null,
+                "ArrivalDays": 12,
+                "GuaranteeDays": 23,
+                "Fees": 12,
+                "PenaltyClause": 12,
+                "CreatedDatetime": "2025-03-23T12:03:41.347"
+            },
+            {
+                "ContractNumber": "CON0000017",
+                "ContractDate": "2025-03-13T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 12,
+                "ContractGuaranteeDays": 23,
+                "ContractFees": 12,
+                "ContractPenaltyClause": 12,
+                "ContractSector": "All",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000010",
+                "Status": "Draft",
+                "Type": "New",
+                "FromDate": null,
+                "ToDate": null,
+                "EffectiveDuration": null,
+                "ArrivalDays": 12,
+                "GuaranteeDays": 23,
+                "Fees": 12,
+                "PenaltyClause": 12,
+                "CreatedDatetime": "2025-03-23T12:27:12.383"
+            },
+            {
+                "ContractNumber": "CON0000027",
+                "ContractDate": "2025-03-24T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 20,
+                "ContractGuaranteeDays": 40,
+                "ContractFees": 30,
+                "ContractPenaltyClause": 10,
+                "ContractSector": "All",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000011",
+                "Status": "Submitted",
+                "Type": "Existing",
+                "FromDate": "2025-03-24T00:00:00",
+                "ToDate": "2025-03-31T00:00:00",
+                "EffectiveDuration": 8,
+                "ArrivalDays": 20,
+                "GuaranteeDays": 40,
+                "Fees": 30,
+                "PenaltyClause": 10,
+                "CreatedDatetime": "2025-03-24T11:50:45.777"
+            },
+            {
+                "ContractNumber": "CON0000028",
+                "ContractDate": "2025-04-01T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 1,
+                "ContractGuaranteeDays": 1,
+                "ContractFees": 1,
+                "ContractPenaltyClause": 1,
+                "ContractSector": "All",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000012",
+                "Status": "Submitted",
+                "Type": "Existing",
+                "FromDate": "2025-03-12T00:00:00",
+                "ToDate": "2025-03-19T00:00:00",
+                "EffectiveDuration": 43,
+                "ArrivalDays": 1,
+                "GuaranteeDays": 1,
+                "Fees": 1,
+                "PenaltyClause": 1,
+                "CreatedDatetime": "2025-03-24T14:23:54.913"
+            },
+            {
+                "ContractNumber": "CON0000028",
+                "ContractDate": "2025-04-01T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 1,
+                "ContractGuaranteeDays": 1,
+                "ContractFees": 1,
+                "ContractPenaltyClause": 1,
+                "ContractSector": "All",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000013",
+                "Status": "Submitted",
+                "Type": "New",
+                "FromDate": "2025-03-12T00:00:00",
+                "ToDate": "2025-03-27T00:00:00",
+                "EffectiveDuration": 32,
+                "ArrivalDays": 1,
+                "GuaranteeDays": 1,
+                "Fees": 1,
+                "PenaltyClause": 1,
+                "CreatedDatetime": "2025-03-24T14:28:16.507"
+            },
+            {
+                "ContractNumber": "CON0000028",
+                "ContractDate": "2025-04-01T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 1,
+                "ContractGuaranteeDays": 1,
+                "ContractFees": 1,
+                "ContractPenaltyClause": 1,
+                "ContractSector": "All",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000014",
+                "Status": "Submitted",
+                "Type": "Existing",
+                "FromDate": "2025-03-05T00:00:00",
+                "ToDate": "2025-03-26T00:00:00",
+                "EffectiveDuration": 34,
+                "ArrivalDays": 1,
+                "GuaranteeDays": 1,
+                "Fees": 1,
+                "PenaltyClause": 1,
+                "CreatedDatetime": "2025-03-24T15:00:54.327"
+            },
+            {
+                "ContractNumber": "CON0000028",
+                "ContractDate": "2025-04-01T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 1,
+                "ContractGuaranteeDays": 1,
+                "ContractFees": 1,
+                "ContractPenaltyClause": 1,
+                "ContractSector": "All",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000017",
+                "Status": "Draft",
+                "Type": "Existing",
+                "FromDate": "2025-03-26T00:00:00",
+                "ToDate": "2025-03-29T00:00:00",
+                "EffectiveDuration": null,
+                "ArrivalDays": 1,
+                "GuaranteeDays": 1,
+                "Fees": 1,
+                "PenaltyClause": 1,
+                "CreatedDatetime": "2025-03-26T14:57:50.117"
+            },
+            {
+                "ContractNumber": "CON0000030",
+                "ContractDate": "2025-03-26T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 23,
+                "ContractGuaranteeDays": 232,
+                "ContractFees": 2323,
+                "ContractPenaltyClause": 23,
+                "ContractSector": "All",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000015",
+                "Status": "Draft",
+                "Type": "Existing",
+                "FromDate": "2025-04-01T00:00:00",
+                "ToDate": "2025-03-31T00:00:00",
+                "EffectiveDuration": 43,
+                "ArrivalDays": 23,
+                "GuaranteeDays": 232,
+                "Fees": 2323,
+                "PenaltyClause": 23,
+                "CreatedDatetime": "2025-03-25T13:46:10.6"
+            },
+            {
+                "ContractNumber": "CON0000031",
+                "ContractDate": "2025-03-25T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 30,
+                "ContractGuaranteeDays": 30,
+                "ContractFees": 5000,
+                "ContractPenaltyClause": 2,
+                "ContractSector": "Business",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000016",
+                "Status": "AgencyApproved",
+                "Type": "Existing",
+                "FromDate": "2025-04-25T00:00:00",
+                "ToDate": "2025-04-25T00:00:00",
+                "EffectiveDuration": null,
+                "ArrivalDays": 30,
+                "GuaranteeDays": 30,
+                "Fees": 5000,
+                "PenaltyClause": 2,
+                "CreatedDatetime": "2025-03-25T14:50:56.973"
+            },
+            {
+                "ContractNumber": "CON0000041",
+                "ContractDate": "2025-04-06T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 30,
+                "ContractGuaranteeDays": 10,
+                "ContractFees": 20,
+                "ContractPenaltyClause": 40,
+                "ContractSector": "Individual",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000023",
+                "Status": "Draft",
+                "Type": "New",
+                "FromDate": "2025-04-20T00:00:00",
+                "ToDate": "2025-04-27T00:00:00",
+                "EffectiveDuration": null,
+                "ArrivalDays": 30,
+                "GuaranteeDays": 10,
+                "Fees": 20,
+                "PenaltyClause": 40,
+                "CreatedDatetime": "2025-04-15T11:55:30.247"
+            },
+            {
+                "ContractNumber": "CON0000047",
+                "ContractDate": "2025-04-02T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 231,
+                "ContractGuaranteeDays": 231,
+                "ContractFees": 1212,
+                "ContractPenaltyClause": 232,
+                "ContractSector": "All",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000018",
+                "Status": "Submitted",
+                "Type": "New",
+                "FromDate": "2025-04-09T00:00:00",
+                "ToDate": "2025-04-17T00:00:00",
+                "EffectiveDuration": null,
+                "ArrivalDays": 231,
+                "GuaranteeDays": 231,
+                "Fees": 1212,
+                "PenaltyClause": 232,
+                "CreatedDatetime": "2025-04-09T17:41:20.877"
+            },
+            {
+                "ContractNumber": "CON0000047",
+                "ContractDate": "2025-04-02T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 231,
+                "ContractGuaranteeDays": 231,
+                "ContractFees": 1212,
+                "ContractPenaltyClause": 232,
+                "ContractSector": "All",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000019",
+                "Status": "Draft",
+                "Type": "Existing",
+                "FromDate": "2025-04-10T00:00:00",
+                "ToDate": "2025-04-17T00:00:00",
+                "EffectiveDuration": 23,
+                "ArrivalDays": 231,
+                "GuaranteeDays": 231,
+                "Fees": 1212,
+                "PenaltyClause": 232,
+                "CreatedDatetime": "2025-04-09T17:47:54.557"
+            },
+            {
+                "ContractNumber": "CON0000047",
+                "ContractDate": "2025-04-02T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 231,
+                "ContractGuaranteeDays": 231,
+                "ContractFees": 1212,
+                "ContractPenaltyClause": 232,
+                "ContractSector": "All",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000020",
+                "Status": "Draft",
+                "Type": "Existing",
+                "FromDate": "2025-04-11T00:00:00",
+                "ToDate": "2025-04-10T00:00:00",
+                "EffectiveDuration": 23,
+                "ArrivalDays": 231,
+                "GuaranteeDays": 231,
+                "Fees": 1212,
+                "PenaltyClause": 232,
+                "CreatedDatetime": "2025-04-09T17:53:23.037"
+            },
+            {
+                "ContractNumber": "CON0000053",
+                "ContractDate": "2025-04-03T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 1,
+                "ContractGuaranteeDays": 1,
+                "ContractFees": 1,
+                "ContractPenaltyClause": 1,
+                "ContractSector": "All",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000021",
+                "Status": "Submitted",
+                "Type": "New",
+                "FromDate": "2025-04-12T00:00:00",
+                "ToDate": "2025-04-15T00:00:00",
+                "EffectiveDuration": 3,
+                "ArrivalDays": 1,
+                "GuaranteeDays": 1,
+                "Fees": 1,
+                "PenaltyClause": 1,
+                "CreatedDatetime": "2025-04-10T09:44:51.577"
+            },
+            {
+                "ContractNumber": "CON0000053",
+                "ContractDate": "2025-04-03T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 1,
+                "ContractGuaranteeDays": 1,
+                "ContractFees": 1,
+                "ContractPenaltyClause": 1,
+                "ContractSector": "All",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000022",
+                "Status": "Submitted",
+                "Type": "Existing",
+                "FromDate": "2025-04-11T00:00:00",
+                "ToDate": "2025-06-04T00:00:00",
+                "EffectiveDuration": 54,
+                "ArrivalDays": 1,
+                "GuaranteeDays": 1,
+                "Fees": 1,
+                "PenaltyClause": 1,
+                "CreatedDatetime": "2025-04-10T09:50:05.367"
+            },
+            {
+                "ContractNumber": "CON0000059",
+                "ContractDate": "2025-04-15T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 30,
+                "ContractGuaranteeDays": 30,
+                "ContractFees": 1000,
+                "ContractPenaltyClause": 1,
+                "ContractSector": "Business",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000024",
+                "Status": "AgencyApproved",
+                "Type": "Existing",
+                "FromDate": "2025-04-15T00:00:00",
+                "ToDate": "2025-05-15T00:00:00",
+                "EffectiveDuration": 30,
+                "ArrivalDays": 30,
+                "GuaranteeDays": 30,
+                "Fees": 1000,
+                "PenaltyClause": 1,
+                "CreatedDatetime": "2025-04-15T15:01:27.503"
+            },
+            {
+                "ContractNumber": "CON0000059",
+                "ContractDate": "2025-04-15T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 30,
+                "ContractGuaranteeDays": 30,
+                "ContractFees": 1000,
+                "ContractPenaltyClause": 1,
+                "ContractSector": "Business",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000025",
+                "Status": "Approved",
+                "Type": "Existing",
+                "FromDate": "2025-04-17T00:00:00",
+                "ToDate": "2025-04-27T00:00:00",
+                "EffectiveDuration": 10,
+                "ArrivalDays": 30,
+                "GuaranteeDays": 30,
+                "Fees": 1000,
+                "PenaltyClause": 1,
+                "CreatedDatetime": "2025-04-17T14:26:13.04"
+            },
+            {
+                "ContractNumber": "CON0000059",
+                "ContractDate": "2025-04-15T00:00:00",
+                "ContractStatus": "AgencyApproved",
+                "ContractType": null,
+                "Nationality": "India",
+                "ContractArrivalDays": 30,
+                "ContractGuaranteeDays": 30,
+                "ContractFees": 1000,
+                "ContractPenaltyClause": 1,
+                "ContractSector": "Business",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000026",
+                "Status": "Draft",
+                "Type": "Existing",
+                "FromDate": null,
+                "ToDate": null,
+                "EffectiveDuration": null,
+                "ArrivalDays": 30,
+                "GuaranteeDays": 30,
+                "Fees": 1000,
+                "PenaltyClause": 1,
+                "CreatedDatetime": "2025-04-22T13:04:34.977"
+            },
+            {
+                "ContractNumber": "Ind-AG0000001-01-0000020",
+                "ContractDate": "2025-06-10T00:00:00",
+                "ContractStatus": "Active",
+                "ContractType": "Edit",
+                "Nationality": "India",
+                "ContractArrivalDays": 464,
+                "ContractGuaranteeDays": 54,
+                "ContractFees": 543,
+                "ContractPenaltyClause": 34,
+                "ContractSector": "Individual",
+                "AgentName": "India Agent",
+                "AgentId": "AG0000001",
+                "AppendixId": "APX0000027",
+                "Status": "Draft",
+                "Type": "Existing",
+                "FromDate": "2025-06-24T00:00:00",
+                "ToDate": "2025-06-25T00:00:00",
+                "EffectiveDuration": 1,
+                "ArrivalDays": 464,
+                "GuaranteeDays": 100,
+                "Fees": 543,
+                "PenaltyClause": 34,
+                "CreatedDatetime": "2025-06-24T09:57:12.303"
+            }
+        ];
+        //#endregion
+        function renderAccordion(filteredData) {
+            const groupedData = {};
+            filteredData.forEach(item => {
+                if (!groupedData[item.ContractNumber]) {
+                    groupedData[item.ContractNumber] = [];
+                }
+                groupedData[item.ContractNumber].push(item);
+            });
+
+            const container = $('#accordionContainer');
+            container.empty();
+
+            Object.keys(groupedData).forEach(contractNumber => {
+                const group = groupedData[contractNumber];
+
+                const $accordion = $('<div class="accordion"></div>');
+                const headerItem = group[group.length - 1]; // use first item for header details
+
+                const $header = $(`
+    <div class="accordion-header">
+        <div><strong>Contract Number:</strong> ${headerItem.ContractNumber}</div>
+        <div><strong>Contract Date:</strong> ${headerItem.ContractDate?.split('T')[0] ?? '-'}</div>
+        <div><strong>Status:</strong> ${headerItem.ContractStatus ?? '-'}</div>
+        <div><strong>Type:</strong> ${headerItem.ContractType ?? '-'}</div>
+        <div><strong>Nationality:</strong> ${headerItem.Nationality ?? '-'}</div>
+        <div><strong>Sector:</strong> ${headerItem.ContractSector ?? '-'}</div>
+        <div><strong>Arrival Days:</strong> ${headerItem.ContractArrivalDays ?? '-'}</div>
+        <div><strong>Guarantee Days:</strong> ${headerItem.ContractGuaranteeDays ?? '-'}</div>
+        <div><strong>Fees:</strong> ${headerItem.ContractFees ?? '-'}</div>
+        <div><strong>Penalty Clause:</strong> ${headerItem.ContractPenaltyClause ?? '-'}</div>
+    </div>
+`);
+
+                const $body = $('<div class="accordion-body"></div>');
+
+                const $table = $('<table></table>');
+                const $thead = $(`
+                    <thead><tr>
+                        <th>Appendix Id</th><th>Status</th><th>Type</th><th>From Date</th><th>To Date</th><th>Effective Duration</th><th>Arrival Days</th><th>Guarantee Days</th>
+                        <th>Fees</th><th>Penalty Clause</th><th>Created Date</th>
+                    </tr></thead>
+                `);
+                const $tbody = $('<tbody></tbody>');
+
+                group.forEach(item => {
+                    const fromDate = item.FromDate ? item.FromDate.split('T')[0] : '-';
+                    const toDate = item.ToDate ? item.ToDate.split('T')[0] : '-';
+                    const createdDate = item.CreatedDatetime ? item.CreatedDatetime.split('T')[0] : '-';
+
+                    $tbody.append(`
+                        <tr>
+                            <td>${item.AppendixId}</td>
+                            <td>${item.Status}</td>
+                            <td>${item.Type}</td>
+                            <td>${fromDate}</td>
+                            <td>${toDate}</td>
+                            <td>${item.EffectiveDuration}</td>
+                            <td>${item.ArrivalDays ?? '-'}</td>
+                            <td>${item.GuaranteeDays ?? '-'}</td>
+                            <td>${item.Fees ?? '-'}</td>
+                            <td>${item.PenaltyClause ?? '-'}</td>
+                            <td>${createdDate}</td>
+                        </tr>
+                    `);
+                });
+
+                $table.append($thead);
+                $table.append($tbody);
+                $body.append($table);
+
+                $accordion.append($header);
+                $accordion.append($body);
+                container.append($accordion);
+            });
+        }
+
+        $(document).on('click', '.accordion-header', function () {
+            $(this).next('.accordion-body').slideToggle();
+        });
+
+        $('#searchInput').on('keyup', function () {
+            const keyword = $(this).val().toLowerCase();
+            const filtered = data.filter(item =>
+                item.ContractNumber.toLowerCase().includes(keyword) ||
+                item.AgentId.toLowerCase().includes(keyword)
+            );
+            if (filtered.length === 0) {
+                toastr.warning("No matching contract or agent found.");
+            }
+            renderAccordion(filtered.length ? filtered : data);
+        });
+
+        renderAccordion(data);
+    </script>
+</body>
+
+</html>

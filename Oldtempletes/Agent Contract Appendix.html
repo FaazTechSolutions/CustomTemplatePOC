@@ -1,0 +1,152 @@
+<div class="dashboard">
+  <div class="row dashboardRow">
+    <div class="col dashboardCol">
+      <a href="https://portal.mawarid.com.sa/apps4x/#/apps/AgentContract/AppendixDraft" target="_blank">
+        <div class="tile">
+          <i class="fas fa-pencil-alt"></i>
+          <h3>{{Translate 'Draft'}}</h3>
+          <p>{{data.Draft}}</p>
+        </div>
+      </a>
+    </div>
+    <div class="col dashboardCol">
+      <a href="https://portal.mawarid.com.sa/apps4x/#/apps/AgentContract/AppendixSubmitted" target="_blank">
+        <div class="tile">
+          <i class="fas fa-check-circle"></i>
+          <h3>{{Translate 'Submitted'}}</h3>
+          <p>{{data.Submitted}}</p>
+        </div>
+      </a>
+    </div>
+    <div class="col dashboardCol">
+      <a href="https://portal.mawarid.com.sa/apps4x/#/apps/AgentContract/AppendixApproved" target="_blank">
+        <div class="tile">
+          <i class="fas fa-thumbs-up"></i>
+          <h3>{{Translate 'Approved'}}</h3>
+          <p>{{data.Approved}}</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col dashboardCol">
+      <a href="https://portal.mawarid.com.sa/apps4x/#/apps/AgentContract/AppendixAgencyApproved" target="_blank">
+        <div class="tile">
+          <i class="fas fa-check-double"></i>
+          <h3>{{Translate 'Agency Approved'}}</h3>
+          <p>{{data.AgencyApproved}}</p>
+        </div>
+      </a>
+    </div>
+    <div class="col dashboardCol">
+      <a href="https://portal.mawarid.com.sa/apps4x/#/apps/AgentContract/AppendixRejected" target="_blank">
+        <div class="tile">
+          <i class="fas fa-times-circle"></i>
+          <h3>{{Translate 'Rejected'}}</h3>
+          <p>{{data.Rejected}}</p>
+        </div>
+      </a>
+    </div>
+    <div class="col dashboardCol">
+      <a href="https://portal.mawarid.com.sa/apps4x/#/apps/AgentContract/AppendixAll" target="_blank">
+        <div class="tile">
+          <i class="fas fa-calendar-check"></i>
+          <h3>{{Translate 'Total Count'}}</h3>
+          <p>{{data.TotalCount}}</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<style>
+  /* New class name for the layout */
+  .dashboard {
+    width: 100%;
+    padding: 20px;
+  }
+
+  /* Row styling */
+  .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+
+  /* Column styling */
+  .col {
+    flex: 1;
+    min-width: 250px;
+    /* Minimum width for responsiveness */
+  }
+
+  /* Styling for each tile */
+  .tile {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #333;
+    position: relative;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+
+  .tile:hover {
+    transform: translateY(-10px);
+    background-color: #f1f1f1;
+    /* Light background on hover */
+  }
+
+  /* Title styling */
+  .tile h3 {
+    font-size: 18px;
+    margin-top: 10px;
+  }
+
+  /* Count text styling */
+  .tile p {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  /* Icon styling */
+  .tile i {
+    font-size: 40px;
+    /* Icon size */
+    color: #007bff;
+    margin-bottom: 10px;
+  }
+
+  /* Icon hover effect */
+  .tile:hover i {
+    color: #0056b3;
+    /* Darker color on hover for icon */
+  }
+
+  /* Responsiveness for mobile screens */
+  @media (max-width: 768px) {
+    .row {
+      flex-direction: column;
+      /* Stacks columns vertically on smaller screens */
+    }
+
+    .tile {
+      padding: 15px;
+    }
+
+    .tile h3 {
+      font-size: 16px;
+    }
+
+    .tile p {
+      font-size: 20px;
+    }
+
+    .tile i {
+      font-size: 35px;
+    }
+  }
+</style>

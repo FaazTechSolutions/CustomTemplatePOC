@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script>
+        window.onload = function () {
+            const jsonData = [
+                {
+                    ContractNumber: "CON0000065",
+                    Fees: 100,
+                    ArrivalDays: 60,
+                    GuaranteeDays: 30,
+                    PenaltyClause: 75
+                },
+                {
+                    ContractNumber: "CON0000066",
+                    Fees: 300,
+                    ArrivalDays: 45,
+                    GuaranteeDays: 20,
+                    PenaltyClause: 55
+                },
+                // {
+                //     ContractNumber: "CON0000067",
+                //     Fees: 100,
+                //     ArrivalDays: 45,
+                //     GuaranteeDays: 20,
+                //     PenaltyClause: 55
+                // },
+                // {
+                //     ContractNumber: "CON0000056",
+                //     Fees: 300,
+                //     ArrivalDays: 45,
+                //     GuaranteeDays: 20,
+                //     PenaltyClause: 55
+                // },
+                // {
+                //     ContractNumber: "CON00000789",
+                //     Fees: 30,
+                //     ArrivalDays: 45,
+                //     GuaranteeDays: 20,
+                //     PenaltyClause: 55
+                // },
+                // {
+                //     ContractNumber: "CON00034567",
+                //     Fees: 90,
+                //     ArrivalDays: 45,
+                //     GuaranteeDays: 20,
+                //     PenaltyClause: 55
+                // },
+                // {
+                //     ContractNumber: "CON0000066678",
+                //     Fees: 3,
+                //     ArrivalDays: 45,
+                //     GuaranteeDays: 20,
+                //     PenaltyClause: 55
+                // }
+            ];
+
+            // Prepare labels (metrics)
+            const metricLabels = ["Fees", "Arrival Days", "Guarantee Days", "Penalty Clause"];
+
+            // Contract numbers (used as series names)
+            const contractNumbers = jsonData.map(d => d.ContractNumber);
+
+            // Build data series for each contract
+            const seriesData = contractNumbers.map(contract => {
+                const contractData = jsonData.find(d => d.ContractNumber === contract);
+                return {
+                    type: "column",
+                    name: contract,
+                    showInLegend: true,
+                    dataPoints: [
+                        { label: "Fees", y: contractData.Fees },
+                        { label: "Arrival Days", y: contractData.ArrivalDays },
+                        { label: "Guarantee Days", y: contractData.GuaranteeDays },
+                        { label: "Penalty Clause", y: contractData.PenaltyClause }
+                    ]
+                };
+            });
+
+            const chart = new CanvasJS.Chart("feechart", {
+                animationEnabled: true,
+                dataPointWidth: 30,
+                exportEnabled: true,
+                title: {
+                    text: "Contract-wise Comparison"
+                },
+                axisY: {
+                    title: "Value"
+                },
+                // axisX: {
+                //     title: "Metrics"
+                // },
+                toolTip: {
+                    shared: true
+                },
+                legend: {
+                    verticalAlign: "bottom",
+                    horizontalAlign: "center"
+                },
+                data: seriesData
+            });
+
+            chart.render();
+        };
+    </script>
+</head>
+
+<body>
+    <div class="container mt-4">
+        <h2 class="text-center">Customer Comparison by Metric</h2>
+        <div id="feechart" style="height: 400px; width: 100%;"></div>
+    </div>
+
+    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+    <!-- Bootstrap optional -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</body>
+
+</html>

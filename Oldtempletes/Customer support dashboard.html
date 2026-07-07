@@ -1,0 +1,254 @@
+<div class="myAssignedTikcetDashboard">
+
+  <div class="">
+      <h5 class="mt-4 mb-2">{{Translate 'My Assigned Tickets' }}</h5>
+      <div class="row m-0">
+
+          <div class="col-md-3 col-lg-2_5 col-6">
+             <a target="_blank" href="https://portal.mawarid.com.sa/apps4x/#/apps/CustomerSupport/TicketsIHaveClosed">
+              <div class="info-box tag_Closed_my">
+                  <span class="info-box-icon">
+                          <i class="far fa-star"></i>
+                  </span>
+                  <div class="info-box-content">
+                      <span class="info-box-text"><b>{{Translate 'Closed' }}</b></span>
+                      <span class="info-box-number"><strong>{{data.MyAssignedTicket.Closed}}</strong></span>
+                      <div class="progress">
+                          <div class="progress-bar" style="width: {{data.MyAssignedTicket.Closed}}%"></div>
+                      </div>
+                  </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-md-3 col-lg-2_5 col-6">
+            <a target="_blank" href="https://portal.mawarid.com.sa/apps4x/#/apps/CustomerSupport/TicketsAssignedtoMe">
+              <div class="info-box tag_New_my">
+                  <span class="info-box-icon">
+                          <i class="far fa-envelope"></i>
+                  </span>
+                  <div class="info-box-content">
+                      <span class="info-box-text"><b>{{Translate 'New' }}</b></span>
+                      <span class="info-box-number"><strong>{{data.MyAssignedTicket.New}}</strong></span>
+                      <div class="progress">
+                          <div class="progress-bar" style="width: {{data.MyAssignedTicket.New}}%"></div>
+                      </div>
+                  </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-md-3 col-lg-2_5 col-6">
+            <a target="_blank" href="https://portal.mawarid.com.sa/apps4x/#/apps/CustomerSupport/ReopenedTicketsByMe">
+              <div class="info-box tag_ReOpen_my">
+                  <span class="info-box-icon">
+                          <i class="fa fa-envelope-open"></i>
+                  </span>
+                  <div class="info-box-content">
+                      <span class="info-box-text"><b>{{Translate 'ReOpen' }}</b></span>
+                      <span class="info-box-number"><strong>{{data.MyAssignedTicket.ReOpen}}</strong></span>
+                      <div class="progress">
+                          <div class="progress-bar" style="width: {{data.MyAssignedTicket.ReOpen}}%"></div>
+                      </div>
+                  </div>
+              </div>
+            </a>
+          </div>
+         
+          <div class="col-md-3 col-lg-2_5 col-6">
+            <a target="_blank" href=" https://portal.mawarid.com.sa/apps4x/#/apps/CustomerSupport/ScheduledTicketsByMe">
+              <div class="info-box tag_Scheduled_my">
+                  <span class="info-box-icon">
+                          <i class="fa fa-calendar-week"></i>
+                  </span>
+                  <div class="info-box-content">
+                      <span class="info-box-text"><b>{{Translate 'Scheduled' }}</b></span>
+                      <span class="info-box-number"><strong>{{data.MyAssignedTicket.Scheduled}}</strong></span>
+                      <div class="progress">
+                          <div class="progress-bar" style="width: {{data.MyAssignedTicket.Scheduled}}%"></div>
+                      </div>
+                  </div>
+              </div>
+              </a>
+          </div>
+
+          <div class="col-md-3 col-lg-2_5 col-6">
+            <a target="_blank" href="https://portal.mawarid.com.sa/apps4x/#/apps/CustomerSupport/TotalTicketsForMe">
+              <div class="info-box tag_Total_my">
+                  <span class="info-box-icon">
+                          <i class="fa fa-calendar-week"></i>
+                  </span>
+                  <div class="info-box-content">
+                      <span class="info-box-text"><b>{{Translate 'Total' }}</b></span>
+                      <span class="info-box-number"><strong>{{data.MyAssignedTicket.TotalCount}}</strong></span>
+                      <div class="progress">
+                          <div class="progress-bar" style="width: {{data.MyAssignedTicket.TotalCount}}%"></div>
+                      </div>
+                  </div>
+              </div>
+            </a>
+          </div>
+
+      </div>
+  </div>
+
+
+  <div class="">
+      <h5 class="mt-4 mb-2">{{Translate 'All Tickets' }}</h5>
+      <div class="row m-0">
+
+          <div class="col-md-3 col-sm-6 col-6">
+            <a class="link" target="_blank" href="https://portal.mawarid.com.sa/apps4x/#/apps/CustomerSupport/ClosedCHDTickets">
+              <div class="info-box">
+                  <span class="info-box-icon tag_Closed"><i class="far fa-star"></i></span>
+                  <div class="info-box-content">
+                      <span class="info-box-text">{{Translate 'Closed' }}</span>
+                      <span class="info-box-number">{{data.AllTickets.Closed}}</span>
+                  </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-md-3 col-sm-6 col-6">
+            <a class="link" target="_blank" href="https://portal.mawarid.com.sa/apps4x/#/apps/CustomerSupport/NewTickets">
+              <div class="info-box">
+                  <span class="info-box-icon tag_New"><i class="far fa-envelope"></i></span>
+                  <div class="info-box-content">
+                      <span class="info-box-text">{{Translate 'New' }}</span>
+                      <span class="info-box-number">{{data.AllTickets.New}}</span>
+                  </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-md-3 col-sm-6 col-6">
+            <a class="link" target="_blank" href="https://portal.mawarid.com.sa/apps4x/#/apps/CustomerSupport/ReOpenTickets">
+              <div class="info-box">
+                  <span class="info-box-icon tag_ReOpen"><i class="fa fa-envelope-open"></i></span>
+                  <div class="info-box-content">
+                      <span class="info-box-text">{{Translate 'ReOpen' }}</span>
+                      <span class="info-box-number">{{data.AllTickets.ReOpen}}</span>
+                  </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-md-3 col-sm-6 col-6">
+            <a class="link" target="_blank" href="https://portal.mawarid.com.sa/apps4x/#/apps/CustomerSupport/ScheduledTickets">
+              <div class="info-box">
+                  <span class="info-box-icon tag_Scheduled"><i class="fa fa-calendar-week"></i></span>
+                  <div class="info-box-content">
+                      <span class="info-box-text">{{Translate 'Scheduled' }}</span>
+                      <span class="info-box-number">{{data.AllTickets.Scheduled}}</span>
+                  </div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-md-3 col-sm-6 col-6">
+            <a class="link" target="_blank" href=" https://portal.mawarid.com.sa/apps4x/#/apps/CustomerSupport/AllCHDTickets">
+              <div class="info-box">
+                  <span class="info-box-icon tag_Total"><i class="far fa-bookmark"></i></span>
+                  <div class="info-box-content">
+                      <span class="info-box-text">{{Translate 'Total' }}</span>
+                      <span class="info-box-number">{{data.AllTickets.TotalCount}}</span>
+                  </div>
+              </div>
+            </a>
+          </div>
+
+      </div>
+  </div>
+
+  <div class="row m-0 mt-5 pb-3 catTech">
+
+      <div class="col-lg-12">
+          <h5 class="mb-2">{{Translate 'Coordinators Request by Customer' }}</h5>
+        <div class="header">
+            <div class="search">
+                <div class="search-input">
+                    <input id="requestbycoordinatorwithcustomer_search" type="text" placeholder="{{Translate 'Search Coordinator With Customer' }}"
+                        class="form-control">
+                </div>
+            </div>
+        </div>
+    <div style="max-height: 270px;overflow-y: auto;">
+         <table class="table table-head-fixed m-0" id="sortcoordinatorwithcustomer-table">
+                <thead>
+                    <tr>
+                        <th data-order="asc" data-column="Name">{{Translate 'NAME' }}</th>
+                        <th data-order="asc" data-column="CustomerCode">{{Translate 'CUSTOMER CODE' }}</th>
+                        <th data-order="asc" data-column="New">{{Translate 'NEW' }}</th>
+                        <th data-order="asc" data-column="InProgress">{{Translate 'INPROGRESS' }}</th>
+                        <th data-order="asc" data-column="Scheduled">{{Translate 'SCHEDULED' }}</th>
+                        <th data-order="asc" data-column="ReOpen">{{Translate 'REOPEN' }}</th>
+                        <th data-order="asc" data-column="Closed">{{Translate 'ClOSED' }}</th>
+                        <th data-order="asc" data-column="TotalCount">{{Translate 'TOTAL' }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each data.tempData}}
+                    <tr>
+                        <td>{{Name}}</td>
+                        <td>{{CustomerCode}}</td>
+                        <td>{{New}}</td>
+                        <td>{{InProgress}}</td>
+                        <td>{{Scheduled}}</td>
+                        <td>{{ReOpen}}</td>
+                        <td>{{Closed}}</td>
+                        <td>{{TotalCount}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+    </div>
+      </div>
+     
+    </div>
+    
+    <div class="row m-0 mt-5 pb-3 catTech">
+    
+        <div class="col-lg-12">
+            <h5 class="mb-2">{{Translate 'Request by Coordinators' }}</h5>
+          <div class="header">
+              <div class="search">
+                  <div class="search-input">
+                      <input id="requestbycoordinator_search" type="text" placeholder="{{Translate 'Search By Coordinator' }}"
+                          class="form-control">
+                  </div>
+              </div>
+          </div>
+      <div style="max-height: 270px;overflow-y: auto;">
+           <table class="table table-head-fixed m-0" id="sortcoordinator-table">
+                  <thead>
+                      <tr>
+                          <th data-order="asc" data-column="Name">{{Translate 'NAME' }}</th>
+                          <th data-order="asc" data-column="CustomerCode">{{Translate 'CUSTOMER CODE' }}</th>
+                          <th data-order="asc" data-column="New">{{Translate 'NEW' }}</th>
+                          <th data-order="asc" data-column="InProgress">{{Translate 'INPROGRESS' }}</th>
+                          <th data-order="asc" data-column="Scheduled">{{Translate 'SCHEDULED' }}</th>
+                          <th data-order="asc" data-column="ReOpen">{{Translate 'REOPEN' }}</th>
+                          <th data-order="asc" data-column="Closed">{{Translate 'ClOSED' }}</th>
+                          <th data-order="asc" data-column="TotalCount">{{Translate 'TOTAL' }}</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {{#each data.TechtempData}}
+                      <tr>
+                          <td>{{Name}}</td>
+                          <td>{{CustomerCode}}</td>
+                          <td>{{New}}</td>
+                          <td>{{InProgress}}</td>
+                          <td>{{Scheduled}}</td>
+                          <td>{{ReOpen}}</td>
+                          <td>{{Closed}}</td>
+                          <td>{{TotalCount}}</td>
+                      </tr>
+                      {{/each}}
+                  </tbody>
+              </table>
+      </div>
+        </div>
+       
+      </div>
+</div>

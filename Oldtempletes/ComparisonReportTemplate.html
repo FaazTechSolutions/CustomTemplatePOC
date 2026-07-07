@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>CanvasJS Chart</title>
+</head>
+<body>
+    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+
+    <script>
+        window.onload = function () {
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                theme: "light2",
+                title: {
+                    text: "Count by Date"
+                },
+                axislabel: {
+                    title: "Date",
+                    labelAngle: -45
+                },
+                axisY: {
+                    title: "Count",
+                    includeZero: true
+                },
+                data: [{        
+                    type: "column",
+                    indexLabel: "{y}",
+                    indexLabelPlacement: "outside",
+                    indexLabelFontWeight: "bold",
+                    dataPoints: [
+                        { label: "2025-03-06", y: 1 },
+                        { label: "2025-03-08", y: 1 },
+                        { label: "2025-03-10", y: 1 },
+                        { label: "2025-03-17", y: 6 },
+                        { label: "2025-03-18", y: 25 },
+                        { label: "2025-03-19", y: 29 },
+                        { label: "2025-03-20", y: 4 },
+                        { label: "2025-03-21", y: 1 },
+                        { label: "2025-03-23", y: 2 },
+                        { label: "2025-03-27", y: 1 },
+                        { label: "2025-04-05", y: 1 },
+                        { label: "2025-04-06", y: 2 },
+                        { label: "2025-04-07", y: 1 },
+                        { label: "2025-04-08", y: 1 },
+                        { label: "2025-04-09", y: 1 },
+                        { label: "2025-04-10", y: 1 },
+                        { label: "2025-04-17", y: 2 },
+                        { label: "2025-04-20", y: 1 },
+                        { label: "2025-04-21", y: 1 },
+                        { label: "2025-04-24", y: 1 },
+                        { label: "2025-04-26", y: 1 },
+                        { label: "2025-04-27", y: 2 },
+                        { label: "2025-05-12", y: 1 },
+                        { label: "2025-05-13", y: 1 },
+                        { label: "2025-05-14", y: 1 },
+                        { label: "2025-05-15", y: 1 },
+                        { label: "2025-05-17", y: 1 },
+                        { label: "2025-05-18", y: 2 },
+                        { label: "2025-05-19", y: 1 },
+                        { label: "2025-05-21", y: 1 },
+                        { label: "2025-05-25", y: 1 },
+                        { label: "2025-05-28", y: 1 },
+                        { label: "2025-05-29", y: 1 },
+                        { label: "2025-06-03", y: 2 },
+                        { label: "2025-06-04", y: 2 },
+                        { label: "2025-06-15", y: 1 },
+                        { label: "2025-06-16", y: 1 },
+                        { label: "2025-06-19", y: 1 }
+                    ]
+                }]
+            });
+            chart.render();
+        }
+    </script>
+     <!-- Working CanvasJS CDN -->
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</body>
+</html>

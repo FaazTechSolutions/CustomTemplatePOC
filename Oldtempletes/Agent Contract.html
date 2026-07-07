@@ -1,0 +1,186 @@
+<style>
+    .dashboard {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .dashboardRow {
+        gap: 15px !important;
+        margin-bottom: 15px !important;
+    }
+
+    .dashboardCol {
+        flex: 1 !important;
+        max-width: 200px !important
+    }
+
+    .tile {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        color: #333;
+        position: relative;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .tile:hover {
+        transform: translateY(-10px);
+        background-color: #f1f1f1;
+        /* Light background on hover */
+    }
+
+    .tile h3 {
+        font-size: 13px !important;
+        margin-top: 10px;
+    }
+
+    .tile p {
+        font-size: 24px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .tile i {
+        font-size: 40px;
+        /* Icon size */
+        color: #007bff;
+        margin-bottom: 10px;
+    }
+
+    .tile:hover i {
+        color: #0056b3;
+        /* Darker color on hover for icon */
+    }
+
+    @media (max-width: 768px) {
+        .row {
+            flex-direction: column;
+            /* Stacks columns vertically on smaller screens */
+        }
+
+        .tile {
+            padding: 15px;
+        }
+
+        .tile h3 {
+            font-size: 16px;
+        }
+
+        .tile p {
+            font-size: 20px;
+        }
+
+        .tile i {
+            font-size: 35px;
+        }
+    }
+</style>
+
+<div class="dashboard">
+    <div class="row dashboardRow">
+        <!-- Draft -->
+        <div class="col dashboardCol">
+            <a href="https://portal.mawarid.com.sa/apps4x/#/apps/AgentContract/Contracts" target="_blank">
+                <div class="tile">
+                    <i class="fas fa-pencil-alt"></i>
+                    <h3>{{ Translate 'Draft'}}</h3>
+                    <p>{{data.Draft}}</p>
+                </div>
+            </a>
+        </div>
+        <!-- Recruiter GM Approval -->
+        <div class="col dashboardCol">
+            <a href="https://portal.mawarid.com.sa/apps4x/#/apps/AgentContract/Contracts" target="_blank">
+                <div class="tile">
+                    <i class="fas fa-thumbs-up"></i>
+                    <h3>{{Translate 'Recruiter GM Approval'}}</h3>
+                    <p>{{data.RecruiterGMApproval}}</p>
+                </div>
+            </a>
+        </div>
+        <!-- Legal Department Approval -->
+        <div class="col dashboardCol">
+            <a href="https://portal.mawarid.com.sa/apps4x/#/apps/AgentContract/Contracts" target="_blank">
+                <div class="tile">
+                    <i class="fas fa-thumbs-up"></i>
+                    <h3>{{Translate 'Legal Department Approval'}}</h3>
+                    <p>{{data.LegalDepartmentApproval}}</p>
+                </div>
+            </a>
+        </div>
+        <!-- Document Signature -->
+        <div class="col dashboardCol">
+            <a href="https://portal.mawarid.com.sa/apps4x/#/apps/AgentContract/Contracts" target="_blank">
+                <div class="tile">
+                    <i class="fas fa-folder-open"></i>
+                    <h3>{{Translate 'Document Signature'}}</h3>
+                    <p>{{data.DocumentSignature}}</p>
+                </div>
+            </a>
+        </div>
+        <!-- Approved -->
+        <div class="col dashboardCol">
+            <a href="https://portal.mawarid.com.sa/apps4x/#/apps/AgentContract/Contracts" target="_blank">
+                <div class="tile">
+                    <i class="fas fa-thumbs-up"></i>
+                    <h3>{{Translate 'Approved'}}</h3>
+                    <p>{{data.Approved}}</p>
+                </div>
+            </a>
+        </div>
+        <!-- Agency Approved -->
+        <div class="col dashboardCol">
+            <a href="https://portal.mawarid.com.sa/apps4x/#/apps/AgentContract/Contracts" target="_blank">
+                <div class="tile">
+                    <i class="fas fa-check-double"></i>
+                    <h3>{{Translate 'Agency Approved'}}</h3>
+                    <p>{{data.AgencyApproved}}</p>
+                </div>
+            </a>
+        </div>
+        <!-- CEO Approval -->
+        <div class="col dashboardCol">
+            <a href="https://portal.mawarid.com.sa/apps4x/#/apps/AgentContract/Contracts" target="_blank">
+                <div class="tile">
+                    <i class="fas fa-thumbs-up"></i>
+                    <h3>{{Translate 'CEO Approval'}}</h3>
+                    <p>{{data.CEOApproval}}</p>
+                </div>
+            </a>
+        </div>
+        <!-- Active -->
+        <div class="col dashboardCol">
+            <a href="https://portal.mawarid.com.sa/apps4x/#/apps/AgentContract/Contracts" target="_blank">
+                <div class="tile">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>{{Translate 'Active'}}</h3>
+                    <p>{{data.Active}}</p>
+                </div>
+            </a>
+        </div>
+        <!-- Rejected -->
+        <div class="col dashboardCol">
+            <a href="https://portal.mawarid.com.sa/apps4x/#/apps/AgentContract/Contracts" target="_blank">
+                <div class="tile">
+                    <i class="fas fa-times-circle"></i>
+                    <h3>{{Translate 'Rejected'}}</h3>
+                    <p>{{data.Rejected}}</p>
+                </div>
+            </a>
+        </div>
+        <!-- Total Count -->
+        <div class="col dashboardCol">
+            <a href="https://portal.mawarid.com.sa/apps4x/#/apps/AgentContract/Contracts" target="_blank">
+                <div class="tile">
+                    <i class="fas fa-calendar-check"></i>
+                    <h3>{{Translate 'Total Count'}}</h3>
+                    <p>{{data.TotalCount}}</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+
+</div>

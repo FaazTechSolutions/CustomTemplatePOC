@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruitment Project Summary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --surface-color: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            
+            /* Header Colors mapping Excel sheet */
+            --header-dark: #334155;
+            --header-light: #e2e8f0;
+            --highlight-yellow: #fde047;
+            --highlight-red: #fee2e2;
+            --text-red: #ef4444;
+        }
+
+        .rs-summary-wrapper {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .rs-summary-wrapper .dashboard-container {
+            width: 100%;
+            max-width: 1400px;
+            background: var(--surface-color);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        .rs-summary-wrapper .header {
+            margin-bottom: 30px;
+        }
+
+        .rs-summary-wrapper .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+
+        .rs-summary-wrapper .header p {
+            margin: 5px 0 0 0;
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .rs-summary-wrapper .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .rs-summary-wrapper table {
+            border-collapse: collapse;
+            width: 100%;
+            text-align: left;
+            min-width: 800px;
+        }
+
+        .rs-summary-wrapper th, .rs-summary-wrapper td {
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        /* 1st Column (Row Headers) Styling */
+        .rs-summary-wrapper tr td:first-child, .rs-summary-wrapper tr th:first-child {
+            position: sticky;
+            left: 0;
+            font-weight: 600;
+            background-color: #f8fafc;
+            z-index: 2;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.02);
+            color: var(--text-primary);
+        }
+
+        /* Top Header Styling */
+        .rs-summary-wrapper tr.project-header th {
+            background-color: var(--header-dark);
+            color: white;
+            text-align: center;
+            font-weight: 600;
+            padding: 20px 16px;
+        }
+        
+        .rs-summary-wrapper tr.project-header th:first-child {
+            background-color: var(--header-dark);
+            color: white;
+            text-align: left;
+        }
+
+        .rs-summary-wrapper tr.reference-row td {
+            background-color: var(--header-light);
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* Alternating hover effect */
+        .rs-summary-wrapper tr:hover td:not(:first-child) {
+            background-color: #f1f5f9;
+            transition: background-color 0.2s ease;
+        }
+        
+        .rs-summary-wrapper tr:hover td:first-child {
+            background-color: #f1f5f9;
+        }
+
+        /* Specific Cell Highlights based on Excel structure */
+        .rs-summary-wrapper tr.target-row td { background-color: var(--highlight-yellow); font-weight: 600;}
+        .rs-summary-wrapper tr.target-row td:first-child { background-color: white; }
+        
+        .rs-summary-wrapper tr.status-row td { background-color: #fbbf24; font-weight: 600; color: #78350f; text-align: center;}
+        .rs-summary-wrapper tr.status-row td:first-child { background-color: white; color: var(--text-primary); text-align: left;}
+        
+        .rs-summary-wrapper tr.backed-out td:first-child { color: var(--text-red); }
+        .rs-summary-wrapper tr.backed-out td { color: var(--text-red); font-weight: 500; }
+        
+        /* Arabic Text alignment support */
+        .rs-summary-wrapper .arabic-text {
+            direction: rtl;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fallback for Arabic */
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="rs-summary-wrapper">
+        <div class="dashboard-container">
+            <div class="header">
+                <h1>Recruitment Project Summary</h1>
+                <p>Interactive dashboard view optimized from API response.</p>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="summaryTable">
+                    <!-- Table will be generated by JavaScript -->
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let apiData = [];
+
+        // Definitions for the rows based on the API properties
+        const rowDefinitions = [
+            { label: "Reference No", key: "ReferenceNo", cssClass: "reference-row", isCenter: true },
+            { label: "Nationality", key: "Nationality", isCenter: true },
+            { label: "Profession", key: "Profession", isArabic: true, isCenter: true },
+            { label: "Owner", key: "Owner", isCenter: true },
+            { label: "Hiring Date", key: "HiringDateString", isCenter: true },
+            { label: "Authorization Date", key: "AuthorizationDateString", isCenter: true },
+            { label: "Quantity", key: "Quantity", isCenter: true },
+            { label: "Remaining (1st this Month)", key: "Remaining", isCenter: true },
+            { label: "Target (This Month)", key: "TargetThisMonth", cssClass: "target-row", isCenter: true },
+            { label: "Status", key: "Status", cssClass: "status-row", isCenter: true },
+            { label: "A) Backed Out", key: "BackedOut", cssClass: "backed-out", isCenter: true },
+            { label: "C) Not Started", key: "NotStarted", isCenter: true },
+            { label: "D) UNDER MEDICAL", key: "UnderMedical", isCenter: true },
+            { label: "Medical Done Waiting Fitness", key: "MedicalDoneWaitingFitness", isCenter: true },
+            { label: "Medical Fit", key: "MedicalFit", isCenter: true },
+            { label: "Medically Unfit", key: "MedicallyUnfit", isCenter: true },
+            { label: "Under Medical Treatment", key: "UnderMedicalTreatment", isCenter: true },
+            { label: "Drop Out", key: "DropOut", isCenter: true },
+            { label: "Under VFS", key: "UnderVFS", isCenter: true },
+            { label: "Under Stamping", key: "UnderStamping", isCenter: true },
+            { label: "Visa Stamped", key: "VisaStamped", isCenter: true },
+            { label: "Ticket Confirmed", key: "TicketConfirmed", isCenter: true },
+            { label: "Arrival", key: "Arrival", isCenter: true },
+            { label: "Employed", key: "Employed", isCenter: true }
+        ];
+
+        function renderTable() {
+            const table = document.getElementById("summaryTable");
+            let html = "";
+
+            if (!apiData || apiData.length === 0) {
+                table.innerHTML = "<tr><td style='text-align:center; padding: 20px;'>No data available</td></tr>";
+                return;
+            }
+
+            // 1. Render Row 1: Project Name (Header)
+            html += `<tr class="project-header">`;
+            html += `<th>Subject (Jun-2026)</th>`;
+            apiData.forEach(item => {
+                // If text contains arabic, apply arabic-text class
+                const isArabic = item.ProjectName && /[\u0600-\u06FF]/.test(item.ProjectName);
+                html += `<th class="${isArabic ? 'arabic-text' : ''}">${item.ProjectName || '-'}</th>`;
+            });
+            html += `</tr>`;
+
+            // 2. Render subsequent rows dynamically based on rowDefinitions
+            rowDefinitions.forEach(def => {
+                html += `<tr class="${def.cssClass || ''}">`;
+                html += `<td>${def.label}</td>`;
+                
+                apiData.forEach(item => {
+                    const val = item[def.key];
+                    const isArabicData = def.isArabic || (val && /[\u0600-\u06FF]/.test(val));
+                    const alignCenter = def.isCenter ? 'text-align: center;' : '';
+                    html += `<td style="${alignCenter}" class="${isArabicData ? 'arabic-text' : ''}">${val !== null && val !== undefined && val !== "" ? val : '-'}</td>`;
+                });
+                
+                html += `</tr>`;
+            });
+
+            table.innerHTML = html;
+        }
+
+        async function loadData() {
+            try {
+                const response = await fetch("https://portal.mawarid.com.sa/apps4x-api/api/v1/LGE0000001/connector/CON0000001/sql/sysobjectexecute?object_Type=V&objectName=vw_RecruitmentProjectSummary", {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiI5OTQzMjIxMzIxIiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSIsImV4cCI6MTc4MzQwMTc0MywiaXNzIjoiYXBwczR4LmNvbSIsImF1ZCI6ImFwcHM0eC5jb20ifQ.zMeuUaWtKv476d0CfycKNmWcI_DU6YLme2H1lpfZhzs',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const result = await response.json();
+                
+                if (result && result.Data) {
+                    apiData = result.Data.map(item => ({
+                        ...item,
+                        ReferenceNo: item.RecruitingID,
+                        Status: item.ProjectStatus,
+                        HiringDateString: item.HiringDate ? new Date(item.HiringDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' }).replace(/ /g, '-') : '',
+                        AuthorizationDateString: item.AuthorizationDate ? new Date(item.AuthorizationDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' }).replace(/ /g, '-') : ''
+                    }));
+                }
+                renderTable();
+            } catch (error) {
+                console.error("Error loading API data:", error);
+                document.getElementById("summaryTable").innerHTML = `<tr><td style="text-align:center; padding: 20px; color: red;">Failed to load data. Please check API connection.</td></tr>`;
+            }
+        }
+
+        // Initialize table on load by fetching data
+        window.onload = loadData;
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>ZATCA Invoice Details — Fixed Right Column</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+
+    <style>
+        :root {
+            --brand-1: #004aad;
+            --brand-2: #007bff;
+            --muted: #777;
+            --zatchaCard-bg: #fff;
+            --panel-bg: #f9fafc;
+            --json-bg: #f9fbfe;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: Inter, Segoe UI, Arial, sans-serif;
+            background: #f5f8fc;
+            color: #222;
+        }
+
+        .zatchaPage {
+            max-width: 1400px;
+            margin: 32px auto;
+            padding: 0 18px;
+        }
+
+        .zatchaCard {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 6px 20px rgba(10, 20, 40, 0.06);
+            overflow: hidden;
+            border: 0;
+        }
+
+        .zatchaCard-header {
+            background: linear-gradient(90deg, #004aad, #007bff);
+            color: #fff;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .zatchaCard-header .title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600
+        }
+
+        .zatchaCard-body {
+            padding: 18px;
+            background: #fff
+        }
+
+        /* main layout: left flexible, right fixed width that doesn't stretch zatchaPage */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            /* right column fixed to 420px */
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width:1080px) {
+            .main-layout {
+                grid-template-columns: 1fr 360px;
+            }
+        }
+
+        @media (max-width:860px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* allow children to shrink properly (important for overflow) */
+        .main-layout>* {
+            min-width: 0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .info-item {
+            background: #f9fafc;
+            border-radius: 10px;
+            padding: 10px 12px;
+            border: 1px solid #eef2f7;
+            min-width: 0;
+            /* important for proper shrink */
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: #777
+        }
+
+        .info-value {
+            font-weight: 600;
+            margin-top: 6px;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        table th {
+            background: #f3f5f9;
+            font-weight: 600;
+        }
+
+        /* JSON / long text viewers */
+        .json-viewer {
+            background: #f9fbfe;
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid #e6ebf2;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+            font-size: 13px;
+            max-height: 300px;
+            /* limit height */
+            overflow: auto;
+            /* enable scrolling */
+            white-space: pre-wrap;
+            word-break: break-all;
+            overflow-wrap: anywhere;
+        }
+
+        /* small scroll hint for very long lines */
+        .json-viewer::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+
+        .json-viewer::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 6px;
+        }
+
+        /* QR wrapper: responsive canvas inside fixed column */
+        .qr-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #fafbff;
+            border-radius: 10px;
+            border: 1px solid #eef2f7;
+        }
+
+        .qr-wrapper canvas {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* right column children should not overflow layout */
+        .right-column>* {
+            min-width: 0;
+        }
+
+        /* toast */
+        .toast-fixed {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #333;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 6px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity .28s ease;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .toast-fixed.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* copy icon button in zatchaCard header */
+        .icon-btn {
+            background: transparent;
+            border: 0;
+            color: #fff;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px;
+            border-radius: 8px;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        /* small responsive tweaks */
+        @media (max-width:540px) {
+            .json-viewer {
+                max-height: 220px;
+                font-size: 12px;
+            }
+
+            .zatchaCard-header {
+                padding: 12px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="zatchaPage">
+        <!-- top summary -->
+        <div class="zatchaCard mb-4">
+            <div class="zatchaCard-header">
+                <div class="title"><i class="ti ti-file-invoice"></i> ZATCA Invoice Details</div>
+                <div style="display:flex;align-items:center;gap:10px">
+                    <span id="statusBadge" class="badge bg-warning text-dark"
+                        style="font-weight:600;padding:.45rem .6rem"></span>
+                </div>
+            </div>
+            <div class="zatchaCard-body">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Invoice Number</div>
+                        <div class="info-value" id="invoiceNumber">—</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">UUID</div>
+                        <div class="info-value" id="uuid">—</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Created By</div>
+                        <div class="info-value" id="createdBy">—</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Created On</div>
+                        <div class="info-value" id="createdOn">—</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- main two-column (left flexible, right fixed) -->
+        <div class="main-layout">
+            <!-- LEFT: core business info -->
+            <div>
+                <!-- supplier -->
+                <div class="zatchaCard mb-3">
+                    <div class="zatchaCard-header">
+                        <div class="title"><i class="ti ti-building-store"></i> Supplier</div>
+                    </div>
+                    <div class="zatchaCard-body">
+                        <div class="info-grid" id="supplierInfoGrid">
+                            <!-- filled dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- customer -->
+                <div class="zatchaCard mb-3">
+                    <div class="zatchaCard-header">
+                        <div class="title"><i class="ti ti-user"></i> Customer</div>
+                    </div>
+                    <div class="zatchaCard-body">
+                        <div class="info-grid" id="customerInfoGrid"></div>
+                    </div>
+                </div>
+
+                <!-- line items -->
+                <div class="zatchaCard mb-3">
+                    <div class="zatchaCard-header">
+                        <div class="title"><i class="ti ti-list-details"></i> Line Items</div>
+                    </div>
+                    <div class="zatchaCard-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-borderless mb-0">
+                                <thead class="small text-muted" style="background:#fafbff">
+                                    <tr>
+                                        <th>Item</th>
+                                        <th class="text-end">Qty</th>
+                                        <th class="text-end">Price</th>
+                                        <th class="text-end">Tax %</th>
+                                        <th class="text-end">Tax Amount</th>
+                                        <th class="text-end">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lineItemsTbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- summary -->
+                <div class="zatchaCard mb-3">
+                    <div class="zatchaCard-header">
+                        <div class="title"><i class="ti ti-report-money"></i> Summary</div>
+                    </div>
+                    <div class="zatchaCard-body">
+                        <div class="info-grid" id="summaryGrid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: QR + payload (fixed width) -->
+            <div class="right-column">
+                <div class="zatchaCard mb-3">
+                    <div class="zatchaCard-header">
+                        <div class="title"><i class="ti ti-qrcode"></i> QR Code</div>
+                        <div>
+                            <button id="copyQR" class="icon-btn" title="Copy QR value"><i
+                                    class="ti ti-copy"></i></button>
+                        </div>
+                    </div>
+                    <div class="zatchaCard-body">
+                        <div class="qr-wrapper">
+                            <div id="qrCanvasWrap" style="width:240px;max-width:100%;"></div>
+                            <div class="json-viewer" id="qrData" aria-label="QR data"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="zatchaCard">
+                    <div class="zatchaCard-header">
+                        <div class="title"><i class="ti ti-code"></i> Payload</div>
+                        <div>
+                            <button id="copyPayload" class="icon-btn" title="Copy payload"><i
+                                    class="ti ti-copy"></i></button>
+                        </div>
+                    </div>
+                    <div class="zatchaCard-body">
+                        <div id="payloadViewer" class="json-viewer" aria-label="Payload viewer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- toast -->
+    <div id="toast" class="toast-fixed" role="status" aria-live="polite">Copied</div>
+
+    <script>
+        // Replace this with your real JSON object (the one you provided).
+        const jsonData = {
+            "EGSUnitId": "3c570d54-a137-45d6-acbc-72218495ef19",
+            "EventId": "f2b4a85b-2c54-4fa5-a837-ec6c7d10af58",
+            "InvoiceNumber": "INV-00830724",
+            "BillingReference": null,
+            "Payload": "{\"ValidationMessages\":[],\"UUID\":\"f2b4a85b-2c54-4fa5-a837-ec6c7d10af58\",\"ICV\":1,\"PreviousInvoiceHash\":\"NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ==\",\"InvoiceTypeCode\":\"388\",\"InvoiceSubTypeCode\":\"0211010\",\"IssuedDate\":\"2023-05-31\",\"IssuedTime\":\"12:00:00\",\"IsSimpleDocument\":true,\"DocumentType\":\"SIMPLIFIED_TAX_INVOICE\",\"InvoiceNumber\":\"INV-00830724\",\"IssuedDateTime\":\"2023-05-31T00:00:00\",\"ActualDeliveryDate\":\"2023-06-21T00:00:00\",\"LatestDeliveryDate\":\"2023-06-21T00:00:00\",\"DocumentCurrencyCode\":\"SAR\",\"TaxCurrencyCode\":\"SAR\",\"PaymentMean\":\"48\",\"BillingReference\":\"\",\"ReasonsForIssuance\":\"New Request\",\"SupplierInfo\":{\"IDType\":\"CRN\",\"ID\":\"7001727788\",\"VATNumber\":\"301123578700003\",\"RegistrationName\":\"1010343697\",\"PartyPostalAddress\":{\"StreetName\":\"Ibn Warqa\",\"AdditionalStreetName\":\"Al Rawdah Dist.\",\"BuildingNumber\":\"7017\",\"PlotIdentification\":\"11\",\"CitySubdivisionName\":\"11\",\"CityName\":\"Riyadh\",\"PostalZone\":\"13211\",\"CountrySubentity\":\"11\",\"Country\":\"SA\"}},\"CustomerInfo\":{\"IDType\":\"IQA\",\"ID\":\"SA AL\",\"VATNumber\":null,\"RegistrationName\":null,\"PartyPostalAddress\":null},\"InvoiceLineItems\":[{\"ID\":\"1\",\"InvoicedQuantity\":1.0,\"LineExtensionAmount\":100.00,\"TaxAmount\":15.00,\"RoundingAmount\":115.00,\"TaxSchemeId\":\"S\",\"TaxScheme\":\"VAT\",\"TaxPercent\":15.0,\"ItemName\":\"1\",\"PriceAmount\":100.00,\"DiscountAmount\":0.0},{\"ID\":\"2\",\"InvoicedQuantity\":1.0,\"LineExtensionAmount\":100.00,\"TaxAmount\":15.00,\"RoundingAmount\":115.00,\"TaxSchemeId\":\"S\",\"TaxScheme\":\"VAT\",\"TaxPercent\":15.0,\"ItemName\":\"2\",\"PriceAmount\":100.00,\"DiscountAmount\":0.0}],\"LegalMonetaryTotal\":{\"LineExtensionAmount\":200.00,\"DocumentLevelDiscountAmount\":0.00,\"ChargeTotalAmount\":0.0,\"TaxExclusiveAmount\":200.00,\"TaxInclusiveAmount\":230.00,\"PrepaidAmount\":0.0,\"PayableAmount\":230.00,\"TotalTaxAmount\":30.00,\"RoundingAmount\":0.0},\"VatBreakDowns\":[{\"TaxableAmount\":200.00,\"TaxAmount\":30.00,\"TaxCategory\":\"S\",\"Percent\":15.0,\"TaxExemptionReasonCode\":\"\",\"TaxExemptionReason\":\"\"}],\"Discount\":{\"DiscountAmount\":0.0,\"TaxCategory\":\"0\",\"TaxPercent\":\"0\"}}",
+            "Status": "NOT_REPORTED",
+            "UUID": "f2b4a85b-2c54-4fa5-a837-ec6c7d10af58",
+            "ICV": 1,
+            "PreviousInvoiceHash": "NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ==",
+            "InvoiceHash": "wJZ89xsnyEvGgUkGZij9LYa32SbFd4npc0ibDOtJe/I=",
+            "QR": "AQoxMDEwMzQzNjk3Ag8zMDExMjM1Nzg3MDAwMDMDFDIwMjMtMDUtMzFUMTI6MDA6MDBaBAYyMzAuMDAFBTMwLjAwBix3Slo4OXhzbnlFdkdnVWtHWmlqOUxZYTMyU2JGZDRucGMwaWJET3RKZS9JPQdgTUVRQ0lDbFFRa2FMUEdYS3llTGM0Sjl0VHBoQTc5L0QwbDRqOFBYeTAydXZja2hvQWlBS3dPMndSUkl6ZDUrNlI3N1lJdWZoa1diNVJMLzdRZ081UHdpQTcrY1ZNdz09CFgwVjAQBgcqhkjOPQIBBgUrgQQACgNCAAS0ZGGDcchtL8sCFk012pHZDBNy2Y2FJEZMoFGvLg12TreYlnuGSkrVafFuXnq7Qz8/3PSUc/GapJlBCjqLaJS8CUcwRQIhAJR5HSv60VZ+bgPFMkrfsZkKjW2juUlMbQEXHYPIoiLmAiA0Je0QAKyu59xvMNwizM1PcdAxrgMqfkC1PET8s9B1cQ==",
+            "Comments": null,
+            "CreatedDatetime": "2023-06-21T17:11:14.377",
+            "CreatedBy": "CRM",
+            "ModifiedDatetime": null,
+            "ModifiedBy": null,
+            "DataAreaId": "MWD",
+            "RecId": 1,
+            "RecVersion": "AAAAAAAAB90="
+        };
+
+        // parse payload safely
+        let payload = {};
+        try { payload = JSON.parse(jsonData.Payload); } catch (e) { payload = { error: 'Invalid payload JSON' }; }
+
+        // fill top summary
+        $('#invoiceNumber').text(jsonData.InvoiceNumber || '—');
+        $('#uuid').text(payload.UUID || jsonData.UUID || '—');
+        $('#createdBy').text(jsonData.CreatedBy || '—');
+        $('#createdOn').text((jsonData.CreatedDatetime || '').replace('T', ' ').split('.')[0] || '—');
+
+        // status badge color
+        const status = (jsonData.Status || '').toUpperCase();
+        const $statusBadge = $('#statusBadge');
+        $statusBadge.text(status);
+        $statusBadge.removeClass();
+        $statusBadge.addClass('badge');
+        if (status === 'REPORTED') $statusBadge.addClass('bg-success');
+        else if (status === 'NOT_REPORTED') $statusBadge.addClass('bg-warning text-dark');
+        else if (status === 'FAILED' || status === 'ERROR') $statusBadge.addClass('bg-danger');
+        else $statusBadge.addClass('bg-secondary');
+
+        // supplier info grid
+        const s = payload.SupplierInfo || {};
+        const supplierHtml = `
+      <div class="info-item"><div class="info-label">Name</div><div class="info-value">${escapeHtml(s.RegistrationName || '-')}</div></div>
+      <div class="info-item"><div class="info-label">CRN</div><div class="info-value">${escapeHtml(s.ID || '-')}</div></div>
+      <div class="info-item"><div class="info-label">VAT</div><div class="info-value">${escapeHtml(s.VATNumber || '-')}</div></div>
+      <div class="info-item"><div class="info-label">Address</div><div class="info-value">${escapeHtml(((s.PartyPostalAddress || {}).StreetName || '') + ((s.PartyPostalAddress || {}).AdditionalStreetName ? ', ' + (s.PartyPostalAddress || {}).AdditionalStreetName : '') + ', ' + ((s.PartyPostalAddress || {}).CityName || '') + ((s.PartyPostalAddress || {}).PostalZone ? ', ' + (s.PartyPostalAddress || {}).PostalZone : ''))}</div></div>
+    `;
+        $('#supplierInfoGrid').html(supplierHtml);
+
+        // customer info
+        const c = payload.CustomerInfo || {};
+        const customerHtml = `
+      <div class="info-item"><div class="info-label">Type</div><div class="info-value">${escapeHtml(c.IDType || '-')}</div></div>
+      <div class="info-item"><div class="info-label">ID</div><div class="info-value">${escapeHtml(c.ID || '-')}</div></div>
+      <div class="info-item"><div class="info-label">VAT</div><div class="info-value">${escapeHtml(c.VATNumber || '-')}</div></div>
+    `;
+        $('#customerInfoGrid').html(customerHtml);
+
+        // line items table
+        const items = Array.isArray(payload.InvoiceLineItems) ? payload.InvoiceLineItems : [];
+        const $tbody = $('#lineItemsTbody').empty();
+        if (items.length === 0) {
+            $tbody.append(`<tr><td colspan="6" class="text-muted">No line items</td></tr>`);
+        } else {
+            items.forEach(it => {
+                const itemName = escapeHtml(it.ItemName || it.ID || '-');
+                const qty = (it.InvoicedQuantity != null) ? it.InvoicedQuantity : '-';
+                const price = (typeof it.PriceAmount === 'number') ? it.PriceAmount.toFixed(2) : (it.PriceAmount || '-');
+                const taxP = (it.TaxPercent != null) ? (it.TaxPercent + '%') : '-';
+                const taxA = (typeof it.TaxAmount === 'number') ? it.TaxAmount.toFixed(2) : (it.TaxAmount || '-');
+                const total = (typeof it.RoundingAmount === 'number') ? it.RoundingAmount.toFixed(2) : (it.RoundingAmount || '-');
+                $tbody.append(`<tr>
+          <td>${itemName}</td>
+          <td class="text-end">${qty}</td>
+          <td class="text-end">${price}</td>
+          <td class="text-end">${taxP}</td>
+          <td class="text-end">${taxA}</td>
+          <td class="text-end">${total}</td>
+        </tr>`);
+            });
+        }
+
+        // summary grid
+        const L = payload.LegalMonetaryTotal || {};
+        const currency = payload.DocumentCurrencyCode || '';
+        $('#summaryGrid').html(`
+      <div class="info-item"><div class="info-label">Sub Total</div><div class="info-value">${(L.TaxExclusiveAmount != null) ? Number(L.TaxExclusiveAmount).toFixed(2) + ' ' + currency : '-'}</div></div>
+      <div class="info-item"><div class="info-label">Tax</div><div class="info-value">${(L.TotalTaxAmount != null) ? Number(L.TotalTaxAmount).toFixed(2) + ' ' + currency : '-'}</div></div>
+      <div class="info-item"><div class="info-label">Total</div><div class="info-value">${(L.TaxInclusiveAmount != null) ? Number(L.TaxInclusiveAmount).toFixed(2) + ' ' + currency : '-'}</div></div>
+      <div class="info-item"><div class="info-label">Currency</div><div class="info-value">${currency || '-'}</div></div>
+    `);
+
+        // payload viewer (pretty)
+        $('#payloadViewer').text(JSON.stringify(payload, null, 2));
+
+        // QR area text (long string but scrollable)
+        $('#qrData').text(jsonData.QR || '-');
+
+        // generate QR (responsive inside wrapper)
+        const qrSize = 220;
+        const qrCanvasWrap = document.getElementById('qrCanvasWrap');
+        // create canvas with QRious
+        const canvas = document.createElement('canvas');
+        canvas.style.maxWidth = '100%';
+        canvas.style.height = 'auto';
+        qrCanvasWrap.appendChild(canvas);
+        new QRious({ element: canvas, value: jsonData.QR || '', size: qrSize });
+
+        // copy helpers + toast
+        let toastTimer = null;
+        function showToast(msg) {
+            const $t = $('#toast');
+            $t.text(msg || 'Copied').addClass('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => $t.removeClass('show'), 1800);
+        }
+        function copyText(text, msg) {
+            if (!navigator.clipboard) { // fallback
+                const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+                try { document.execCommand('copy'); showToast(msg); } catch (e) { console.error(e); }
+                ta.remove();
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => showToast(msg), () => showToast('Copy failed'));
+        }
+
+        function showToast(message, duration = 2000) {
+            const toast = $('<div>')
+                .text(message)
+                .css({
+                    position: 'fixed',
+                    bottom: '30px',
+                    right: '30px',
+                    background: '#333',
+                    color: '#fff',
+                    padding: '10px 18px',
+                    borderRadius: '6px',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
+                    fontSize: '14px',
+                    opacity: '0',
+                    transition: 'opacity 0.3s',
+                    zIndex: 9999
+                })
+                .appendTo('body');
+
+            setTimeout(() => toast.css('opacity', '1'), 10);
+            setTimeout(() => {
+                toast.css('opacity', '0');
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        function copyContent(elementId) {
+            const $el = $('#' + elementId);
+            if ($el.length === 0) return;
+
+            const text = $el.text().trim();
+            if (!text) return;
+
+            if (navigator.clipboard && document.hasFocus()) {
+                navigator.clipboard.writeText(text)
+                    .then(() => showToast('Copied to clipboard ✅'))
+                    .catch(() => fallbackCopy(text, $el));
+            } else {
+                fallbackCopy(text, $el);
+            }
+        }
+
+        function fallbackCopy(text, $el) {
+            const $temp = $('<textarea>');
+            $('body').append($temp);
+            $temp.val(text).select();
+            try {
+                document.execCommand('copy');
+                showToast('Copied to clipboard ✅');
+            } catch (err) {
+                console.error('Failed to copy', err);
+            }
+            $temp.remove();
+        }
+
+        // handlers
+        $('#copyPayload').on('click', () => copyContent('payloadViewer'));
+        $('#copyQR').on('click', () => copyContent('qrData'));
+
+        // small util: escape html for safety when injecting
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str).replace(/[&<>"]/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[s]));
+        }
+
+        // ensure layout doesn't overflow horizontally on tiny screens (extra safety)
+        $(window).on('resize', () => {
+            // nothing required — CSS handles responsive right column — kept as placeholder
+        });
+    </script>
+</body>
+
+</html>

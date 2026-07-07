@@ -1,0 +1,64 @@
+<div class="apiHistoryContainer">
+    <h2 class="apiHistoryh2">API History Details</h2>
+
+    <div class="section">
+      <div class="meta">
+        <div class="meta-item"><strong>Service Name:</strong> ERP</div>
+        <div class="meta-item"><strong>Method Name:</strong> getCustStatement</div>
+        <div class="meta-item"><strong>HTTP Method:</strong> POST</div>
+        <div class="meta-item"><strong>Status:</strong> Success</div>
+        <div class="meta-item"><strong>Created By:</strong> Public</div>
+        <div class="meta-item"><strong>Created Date:</strong> 2025-10-22T11:27:03.05</div>
+        <div class="meta-item"><strong>Project Name:</strong> 0</div>
+        <div class="meta-item"><strong>Customer Name:</strong> 0</div>
+        <div class="meta-item"><strong>DataAreaId:</strong> MWD</div>
+        <div class="meta-item"><strong>Comments:</strong> Completed</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Request URL</div>
+      <pre>https://almawarid.operations.dynamics.com/api/services/MWMawaridServiceGroup/MWMawaridService/getCustStatement</pre>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Client URL</div>
+      <pre>/getCustStatement</pre>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Header</div>
+      <pre>{
+  "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIs...",
+  "Content-Type": "application/json"
+}</pre>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Request Body</div>
+      <pre>{
+  "_custaccount": "CBN0006291",
+  "_projid": "BR0002411",
+  "legalEntity": "MWD"
+}</pre>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Response</div>
+      <pre id="responseRaw">[
+  {
+    "$id": "1",
+    "AccountNum": "CBN0006291",
+    "AmountCur": 43867.06,
+    "Credit": 0.0,
+    "Debit": 43867.06,
+    "TransDate": "2025-02-28T12:00:00",
+    "CustName": "noon company",
+    "Descrption": "Monthly Invoice BR0002411-2025-02",
+    "Invoice": "MWD-477986"
+  },
+  ... (Total 39 Records)
+]</pre>
+    </div>
+
+  </div>

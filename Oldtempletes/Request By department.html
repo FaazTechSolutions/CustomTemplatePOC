@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Department Ticket Status Overview</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
+      color: #222;
+      margin-bottom: 30px;
+      font-weight: 700;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .chart-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 18px 16px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .chart-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .chart-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #111;
+    }
+
+    .info-list {
+      flex: 1;
+      font-size: 14px;
+      line-height: 1.8;
+      margin-right: 12px;
+    }
+
+    .info-list span {
+      display: flex;
+      justify-content: space-between;
+      width: 140px;
+      font-weight: 500;
+    }
+
+    .Open { color: #f9a825; }
+    .Closed { color: #43a047; }
+    .Cancelled { color: #e53935; }
+
+    .chart-container {
+      width: 110px;
+      height: 110px;
+    }
+
+    @media (max-width: 600px) {
+      .chart-card {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+      }
+      .info-list span { width: 100%; }
+      .chart-container {
+        margin-top: 10px;
+        align-self: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Tickets by Status (All Departments)</h2>
+  <div class="chart-grid" id="chartGrid"></div>
+
+  <script>
+    const data = [
+      { "Name": "CRM", "Open": 56, "Closed": 1098, "Cancelled": 230 },
+      { "Name": "ERP", "Open": 11, "Closed": 467, "Cancelled": 38 },
+      { "Name": "Portal", "Open": 143, "Closed": 262, "Cancelled": 36 },
+      { "Name": "System Issue", "Open": 27, "Closed": 500, "Cancelled": 33 },
+      { "Name": "Hardware Issue", "Open": 72, "Closed": 243, "Cancelled": 32 },
+      { "Name": "General", "Open": 16, "Closed": 38, "Cancelled": 15 },
+      { "Name": "HR", "Open": 15, "Closed": 0, "Cancelled": 6 },
+      { "Name": "Finance", "Open": 115, "Closed": 2030, "Cancelled": 46 },
+      { "Name": "Maintenance", "Open": 227, "Closed": 9069, "Cancelled": 117 }
+    ];
+
+    const chartGrid = document.getElementById("chartGrid");
+
+    data.forEach((dept, index) => {
+      const card = document.createElement("div");
+      card.className = "chart-card";
+      card.innerHTML = `
+        <div>
+          <div class="chart-title">${dept.Name}</div>
+          <div class="info-list">
+            <span class="Open">Open : ${dept.Open}</span>
+            <span class="Closed">Closed : ${dept.Closed}</span>
+            <span class="Cancelled">Cancelled : ${dept.Cancelled}</span>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="chart-${index}"></canvas>
+        </div>
+      `;
+      chartGrid.appendChild(card);
+
+      const ctx = document.getElementById(`chart-${index}`).getContext("2d");
+      new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels: ["Open", "Closed", "Cancelled"],
+          datasets: [{
+            data: [dept.Open, dept.Closed, dept.Cancelled],
+            backgroundColor: ["#fdd835", "#a5d6a7", "#ef9a9a"],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false },
+            title: { display: false }
+          },
+          layout: { padding: 0 }
+        }
+      });
+
+      card.addEventListener("mouseenter", () => card.style.backgroundColor = "#f9f9f9");
+      card.addEventListener("mouseleave", () => card.style.backgroundColor = "#fff");
+    });
+  </script>
+</body>
+</html>

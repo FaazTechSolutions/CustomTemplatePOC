@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Coordinator Ticket Dashboard</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-grid-departmentWise {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .chart-card-Userwise {
+            background: #fff;
+            border-radius: 14px;
+            padding: 18px 16px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .chart-card-Userwise:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #111;
+        }
+
+        .info-list {
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-right: 12px;
+        }
+
+        .info-list span {
+            display: flex;
+            justify-content: space-between;
+            width: 140px;
+            font-weight: 500;
+        }
+
+        .New {
+            color: #1e88e5;
+        }
+
+        .Closed {
+            color: #43a047;
+        }
+
+        .Total {
+            color: #6d4c41;
+        }
+
+        .Submitted {
+            color: #fb8c00;
+        }
+
+        .Expired {
+            color: #e53935;
+        }
+
+        .chart-container {
+            width: 110px;
+            height: 110px;
+        }
+
+        @media (max-width: 600px) {
+            .chart-card-Userwise {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+
+            .info-list span {
+                width: 100%;
+            }
+
+            .chart-container {
+                margin-top: 10px;
+                align-self: center;
+            }
+        }
+
+        div#custom_template_dynamic_list_69a9f18a7d6e4cdca1066ebfee350e85 {
+            padding: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chart-grid-departmentWise" id="chartGrid-Userwise"></div>
+
+    <script>
+        const data = [
+    {
+        "DepartmentId": "DPT0000001",
+        "Name": "IT",
+        "Total": 225,
+        "New": 125,
+        "Submitted": 0,
+        "Closed": 85,
+        "Expired": 0
+    },
+    {
+        "DepartmentId": "DPT0000002",
+        "Name": "Finance",
+        "Total": 90,
+        "New": 50,
+        "Submitted": 0,
+        "Closed": 39,
+        "Expired": 0
+    },
+    {
+        "DepartmentId": "DPT0000007",
+        "Name": "Marketing",
+        "Total": 360,
+        "New": 200,
+        "Submitted": 0,
+        "Closed": 124,
+        "Expired": 0
+    },
+    {
+        "DepartmentId": "DPT0000009",
+        "Name": "Maintenance",
+        "Total": 1733,
+        "New": 1027,
+        "Submitted": 0,
+        "Closed": 702,
+        "Expired": 0
+    },
+    {
+        "DepartmentId": "DPT0000021",
+        "Name": "Shared Services",
+        "Total": 270,
+        "New": 180,
+        "Submitted": 0,
+        "Closed": 86,
+        "Expired": 0
+    }
+];
+
+        const chartGrid = document.getElementById("chartGrid-Userwise");
+
+        data.forEach((departmentWise) => {
+            const card = document.createElement("div");
+            card.className = "chart-card-Userwise";
+            card.innerHTML = `
+        <div>
+          <div class="chart-title">${departmentWise.Name}</div>
+          <div class="info-list">
+            <span class="New">New : ${departmentWise.New}</span>
+            <span class="Closed">Closed : ${departmentWise.Closed}</span>
+            <span class="Expired">Expired : ${departmentWise.Expired}</span>
+            <span class="Submitted">Submitted : ${departmentWise.Submitted}</span>
+            <span class="Total">Total : ${departmentWise.Total}</span>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="chart-${departmentWise.DepartmentId}"></canvas>
+        </div>
+      `;
+            chartGrid.appendChild(card);
+
+            const ctx = document.getElementById(`chart-${departmentWise.DepartmentId}`).getContext("2d");
+            new Chart(ctx, {
+                type: "pie",
+                data: {
+                    labels: ["New", "Closed", "Expired", "Submitted", "Total"],
+                    datasets: [{
+                        data: [departmentWise.New, departmentWise.Closed, departmentWise.Expired, departmentWise.Submitted, departmentWise.Total],
+                        backgroundColor: ["#1e88e5", "#43a047", "#e53935", "#fb8c00", "#6d4c41"],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false },
+                        title: { display: false }
+                    },
+                    layout: { padding: 0 }
+                }
+            });
+
+            card.addEventListener("mouseenter", () => card.style.backgroundColor = "#f9f9f9");
+            card.addEventListener("mouseleave", () => card.style.backgroundColor = "#fff");
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+        
+        .tiles-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .tile {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .tile::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+        }
+        
+        .tile.new::before {
+            background-color: #3498db;
+        }
+        
+        .tile.scheduled::before {
+            background-color: #9b59b6;
+        }
+        
+        .tile.in-progress::before {
+            background-color: #f39c12;
+        }
+        
+        .tile.reopen::before {
+            background-color: #e74c3c;
+        }
+        
+        .tile.closed::before {
+            background-color: #2ecc71;
+        }
+        
+        .tile.total::before {
+            background-color: #34495e;
+        }
+        
+        .tile-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .tile.new .tile-icon {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+        
+        .tile.scheduled .tile-icon {
+            background-color: rgba(155, 89, 182, 0.1);
+            color: #9b59b6;
+        }
+        
+        .tile.in-progress .tile-icon {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: #f39c12;
+        }
+        
+        .tile.reopen .tile-icon {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+        
+        .tile.closed .tile-icon {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+        }
+        
+        .tile.total .tile-icon {
+            background-color: rgba(52, 73, 94, 0.1);
+            color: #34495e;
+        }
+        
+        .tile-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .tile-count {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .tile.new .tile-count {
+            color: #3498db;
+        }
+        
+        .tile.scheduled .tile-count {
+            color: #9b59b6;
+        }
+        
+        .tile.in-progress .tile-count {
+            color: #f39c12;
+        }
+        
+        .tile.reopen .tile-count {
+            color: #e74c3c;
+        }
+        
+        .tile.closed .tile-count {
+            color: #2ecc71;
+        }
+        
+        .tile.total .tile-count {
+            color: #34495e;
+        }
+        
+        .tile-change {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        
+        .tile-change.positive {
+            color: #2ecc71;
+        }
+        
+        .tile-change.negative {
+            color: #e74c3c;
+        }
+        
+        @media (max-width: 768px) {
+            .tiles-container {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .tiles-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Status Dashboard</h1>
+            <p class="description">Overview of all ticket statuses</p>
+        </header>
+        
+        <div class="tiles-container">
+            <div class="tile new">
+                <div class="tile-icon">📋</div>
+                <div class="tile-title">New</div>
+                <div class="tile-count">24</div>
+            </div>
+            
+            <div class="tile scheduled">
+                <div class="tile-icon">📅</div>
+                <div class="tile-title">Scheduled</div>
+                <div class="tile-count">18</div>
+            </div>
+            
+            <div class="tile in-progress">
+                <div class="tile-icon">⚙️</div>
+                <div class="tile-title">In Progress</div>
+                <div class="tile-count">42</div>
+            </div>
+            
+            <div class="tile reopen">
+                <div class="tile-icon">🔄</div>
+                <div class="tile-title">Reopen</div>
+                <div class="tile-count">7</div>
+            </div>
+            
+            <div class="tile closed">
+                <div class="tile-icon">✅</div>
+                <div class="tile-title">Closed</div>
+                <div class="tile-count">156</div>
+            </div>
+            
+            <div class="tile total">
+                <div class="tile-icon">📊</div>
+                <div class="tile-title">Total</div>
+                <div class="tile-count">247</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // You can update the counts dynamically with JavaScript
+        // Example: document.querySelector('.tile.new .tile-count').textContent = '30';
+        
+        // Add animation on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const tiles = document.querySelectorAll('.tile');
+            tiles.forEach((tile, index) => {
+                tile.style.opacity = '0';
+                tile.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    tile.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    tile.style.opacity = '1';
+                    tile.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

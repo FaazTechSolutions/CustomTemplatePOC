@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>E-Invoice Details | Al Mawarid</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --brand: #004aad;
+      --light: #f4f6f8;
+      --card: #ffffff;
+      --danger: #dc3545;
+      --success: #28a745;
+      --text-dark: #222;
+      --text-light: #666;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--light);
+      font-family: 'Segoe UI', sans-serif;
+      color: var(--text-dark);
+    }
+
+    header {
+      background: linear-gradient(90deg, var(--brand), #007bff);
+      color: #fff;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 500;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+    .invalid { background: var(--danger); }
+    .valid { background: var(--success); }
+
+    main {
+      max-width: 1300px;
+      margin: 40px auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 25px;
+      padding: 0 20px;
+    }
+
+    @media (max-width: 900px) {
+      main { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 15px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+      padding: 25px;
+      margin-bottom: 20px;
+      transition: transform 0.2s ease;
+    }
+    .card:hover { transform: translateY(-2px); }
+
+    .card h2 {
+      margin-top: 0;
+      color: var(--brand);
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 6px;
+      margin-bottom: 15px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    .info-item {
+      background: #fafbfc;
+      padding: 10px 15px;
+      border-radius: 10px;
+    }
+
+    .label { font-size: 0.85rem; color: var(--text-light); }
+    .value { font-weight: 600; margin-top: 4px; color: var(--text-dark); }
+
+    .log {
+      border-left: 5px solid var(--danger);
+      background: #fff5f5;
+      padding: 12px 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .icon {
+      width: 18px;
+      height: 18px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>E-Invoice #<span id="invNo"></span></h1>
+    <span class="status-badge" id="statusBadge"></span>
+  </header>
+
+  <main>
+    <!-- Left -->
+    <div>
+      <div class="card">
+        <h2>📄 Basic Information</h2>
+        <div class="info-grid" id="basicInfo"></div>
+      </div>
+
+      <div class="card">
+        <h2>🏢 Supplier Information</h2>
+        <div class="info-grid" id="supplierInfo"></div>
+      </div>
+
+      <div class="card">
+        <h2>👤 Customer Information</h2>
+        <div class="info-grid" id="customerInfo"></div>
+      </div>
+    </div>
+
+    <!-- Right -->
+    <div>
+      <div class="card">
+        <h2>💰 Monetary Totals</h2>
+        <div class="info-grid" id="monetaryInfo"></div>
+      </div>
+
+      <div class="card">
+        <h2>⚠️ Validation Results</h2>
+        <div id="comments"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Sample JSON
+    const data = {
+      "EGSUnitId": "3c570d54-a137-45d6-acbc-72218495ef19",
+      "EventId": "1b978047-01d2-4d86-864b-215862dadb37",
+      "Payload": "{\"DocumentType\":\"SIMPLIFIED_CREDIT_NOTE\",\"InvoiceNumber\":\"CRD-00000012\",\"IssuedDateTime\":\"2023-06-25T00:00:00\",\"ActualDeliveryDate\":\"2023-11-04T00:00:00\",\"DocumentCurrencyCode\":\"SAR\",\"TaxCurrencyCode\":\"SAR\",\"ReasonsForIssuance\":\"Compensation\",\"SupplierInfo\":{\"ID\":\"1010343697\",\"VATNumber\":\"301123578700003\",\"RegistrationName\":\"Al Mawarid Manpower\",\"PartyPostalAddress\":{\"StreetName\":\"Ibn Warqa\",\"BuildingNumber\":\"7017\",\"CityName\":\"Riyadh\",\"Country\":\"SA\"}},\"CustomerInfo\":{\"ID\":\"1001180247\",\"IDType\":\"NAT\"},\"LegalMonetaryTotal\":{\"TaxInclusiveAmount\":0.00,\"PayableAmount\":0.00,\"TotalTaxAmount\":0.00}}",
+      "Status": "invalid",
+      "Comments": "[{\"Type\":\"Faaz Validation\",\"Code\":\"BR-KSA-56\",\"Message\":\"BillingReference cannot be empty for Document Type SIMPLIFIED_CREDIT_NOTE\",\"Status\":\"Fail\"},{\"Type\":\"Faaz Validation\",\"Code\":\"BR-16\",\"Message\":\"An Invoice shall have at least one Invoice line (BG-25)\",\"Status\":\"Fail\"}]",
+      "CreatedBy": "CRM",
+      "CreatedDatetime": "2023-11-04T14:00:35.943"
+    };
+
+    const payload = JSON.parse(data.Payload);
+    const comments = JSON.parse(data.Comments);
+
+    // Header
+    document.getElementById("invNo").textContent = payload.InvoiceNumber;
+    const badge = document.getElementById("statusBadge");
+    badge.textContent = data.Status.toUpperCase();
+    badge.classList.add(data.Status.toLowerCase());
+
+    // Helper
+    const infoHTML = (label, val) =>
+      `<div class="info-item"><div class="label">${label}</div><div class="value">${val || '—'}</div></div>`;
+
+    // Basic Info
+    document.getElementById("basicInfo").innerHTML = [
+      infoHTML("Document Type", payload.DocumentType),
+      infoHTML("Issued Date", payload.IssuedDateTime.split('T')[0]),
+      infoHTML("Currency", payload.DocumentCurrencyCode),
+      infoHTML("Reason for Issuance", payload.ReasonsForIssuance),
+      infoHTML("Created By", data.CreatedBy),
+      infoHTML("Created On", new Date(data.CreatedDatetime).toLocaleString())
+    ].join("");
+
+    // Supplier
+    const s = payload.SupplierInfo, a = s.PartyPostalAddress;
+    document.getElementById("supplierInfo").innerHTML = [
+      infoHTML("Registration Name", s.RegistrationName),
+      infoHTML("CRN", s.ID),
+      infoHTML("VAT Number", s.VATNumber),
+      infoHTML("Street", a.StreetName),
+      infoHTML("City", a.CityName),
+      infoHTML("Country", a.Country)
+    ].join("");
+
+    // Customer
+    const c = payload.CustomerInfo;
+    document.getElementById("customerInfo").innerHTML = [
+      infoHTML("Customer ID", c.ID),
+      infoHTML("Type", c.IDType)
+    ].join("");
+
+    // Totals
+    const m = payload.LegalMonetaryTotal;
+    document.getElementById("monetaryInfo").innerHTML = [
+      infoHTML("Payable Amount", `${m.PayableAmount} ${payload.DocumentCurrencyCode}`),
+      infoHTML("Tax Inclusive Amount", m.TaxInclusiveAmount),
+      infoHTML("Total Tax Amount", m.TotalTaxAmount)
+    ].join("");
+
+    // Comments
+    document.getElementById("comments").innerHTML = comments.map(
+      x => `<div class="log"><strong>${x.Type} (${x.Code})</strong><p>${x.Message}</p><span class="status-badge invalid">${x.Status}</span></div>`
+    ).join("");
+  </script>
+</body>
+</html>
