@@ -1,4 +1,19 @@
 <div class="rsr-report-widget">
+    <!-- Date Filter -->
+    <div class="rsr-filter-bar">
+        <div class="rsr-filter-group">
+            <label for="rsrFromDate">From Date</label>
+            <input type="date" id="rsrFromDate" />
+        </div>
+        <div class="rsr-filter-group">
+            <label for="rsrToDate">To Date</label>
+            <input type="date" id="rsrToDate" />
+        </div>
+        <button id="rsrSearchBtn" type="button" onclick="rsrSearch()">Search</button>
+        <button id="rsrExportBtn" type="button" onclick="rsrExport()">Export Excel</button>
+        <button id="rsrClearBtn" type="button" onclick="rsrClear()">Clear</button>
+    </div>
+
     <div class="rsr-report-container" dir="auto">
         <table id="rsrTable">
             <!-- Table content will be generated dynamically here -->
