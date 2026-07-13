@@ -1,16 +1,16 @@
 var _this = this;
 
 (function ($) {
-  
+
   /* ──────────────────────────────────────────────────────────────
      1. DOM CACHE
      ────────────────────────────────────────────────────────────── */
   var $w = $('.rsr-report-container');
   var $table = $w.find('#rsrTable');
-  
+
   // Fallback if .rsr-report-container isn't wrapping it properly
   if ($table.length === 0) {
-      $table = $('#rsrTable');
+    $table = $('#rsrTable');
   }
 
   /* ──────────────────────────────────────────────────────────────
@@ -39,7 +39,7 @@ var _this = this;
         return;
       }
     }
-    
+
     if (!data || data.length === 0) return;
 
     // Define the row structure exactly like the image
@@ -141,21 +141,19 @@ var _this = this;
       },
       {
         label: "Confirmed Completion (This Month)",
-        key: "ConfirmedCompletionThisMonth",
+        key: "ConfirmedCompletion",
         type: "number",
         isSum: true,
         bg: "green",
-        defaultEmpty: true,
       },
       {
         label: "Confirmed Completion (This Month) %",
-        key: "ConfirmedCompletionThisMonthPct",
-        type: "calc_confirmed_completion",
-        defaultEmpty: true,
+        key: "ConfirmedCompletionPercentage",
+        type: "percentage",
       },
       {
         label: "Q) ARRIVED (Overall)",
-        key: "Arrival",
+        key: "ArrivedOverall",
         type: "number",
         isSum: true,
         bg: "darkgreen",
@@ -163,15 +161,13 @@ var _this = this;
       {
         label: "Remaining (Overall)",
         key: "RemainingOverall",
-        type: "calc_overall_remaining",
+        type: "number",
         isSum: true,
-        defaultEmpty: true,
       },
       {
         label: "Completion (Overall) %",
-        key: "CompletionOverall",
-        type: "calc_overall_completion",
-        defaultEmpty: true,
+        key: "CompletionPercentage",
+        type: "percentage",
       },
     ];
 
@@ -210,6 +206,15 @@ var _this = this;
             cellStyle = "background-color: #92D050; font-weight: bold;"; // Green for completed
           } else if (val === "Canceled") {
             cellStyle = "background-color: #ffcccc; font-weight: bold;";
+          }
+        } else if (rowDef.type === "percentage") {
+          // API returns percentage values directly (e.g. 0.50 means 0.50%)
+          if (typeof val === "number") {
+            displayVal = val.toFixed(2) + "%";
+          } else if (val !== null && val !== undefined && val !== "") {
+            displayVal = parseFloat(val).toFixed(2) + "%";
+          } else {
+            displayVal = "0.00%";
           }
         } else if (rowDef.type.startsWith("calc")) {
           // Formatting for calculated percentage fields
@@ -286,28 +291,236 @@ var _this = this;
   }
 
   /* ──────────────────────────────────────────────────────────────
-     4. LOAD DATA 
+     4. API CONFIG
+     ────────────────────────────────────────────────────────────── */
+  var API_BASE = 'https://portal.mawarid.com.sa/apps4x-api/api/v1/LGE0000001/connector/CON0000001/sql/sysobjectexecute';
+  var API_PARAMS = 'object_Type=p&objectName=usp_GetRecruitmentProjectSummary';
+
+  function getAuthToken() {
+    // Try to get token from the portal context
+    if (_this && _this.globalService && _this.globalService.SysParameter && _this.globalService.SysParameter.Token) {
+      return _this.globalService.SysParameter.Token;
+    }
+    // Fallback: try localStorage (portal stores token here)
+    var storedToken = localStorage.getItem('eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9');
+    if (storedToken) return storedToken;
+    return '';
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     5. LOAD DATA
      ────────────────────────────────────────────────────────────── */
   async function fetchRSRData() {
+    var fromDate = $('#rsrFromDate').val();
+    var toDate = $('#rsrToDate').val();
+
+    if (!fromDate || !toDate) {
+      if (!$table.length) $table = $('#rsrTable');
+      $table.html('<tr><td colspan="30" style="text-align: center; padding: 20px; color: #666;">Please select From Date and To Date, then click Search.</td></tr>');
+      return;
+    }
+
+    // Show loading state
+    if (!$table.length) $table = $('#rsrTable');
+    $table.html('<tr><td colspan="30" style="text-align: center; padding: 20px;">Loading data...</td></tr>');
+
     try {
-      const data = _this.currentPageData;
+      var url = API_BASE + '?' + API_PARAMS + '&FromDate=' + encodeURIComponent(fromDate) + '&ToDate=' + encodeURIComponent(toDate);
+      var token = getAuthToken();
+
+      var response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('API returned status ' + response.status);
+      }
+
+      var result = await response.json();
+      var data = result ? result : [];
+
+      if (data.length === 0) {
+        $table.html('<tr><td colspan="30" style="text-align: center; padding: 20px; color: #666;">No records found for the selected date range.</td></tr>');
+        return;
+      }
+
       renderRSRTable(data);
     } catch (error) {
       console.error("Failed to fetch RSR data:", error);
       if (!$table.length) $table = $('#rsrTable');
       if ($table.length) {
-        $table.html(`<tr><td colspan="30" style="color: red; text-align: center; padding: 20px;">Error loading data: ${error.message}</td></tr>`);
+        $table.html('<tr><td colspan="30" style="color: red; text-align: center; padding: 20px;">Error loading data: ' + error.message + '</td></tr>');
       }
     }
   }
 
   /* ──────────────────────────────────────────────────────────────
-     5. BINDINGS & INIT
+     6. EXPORT TO EXCEL
      ────────────────────────────────────────────────────────────── */
-  /* Initialize immediately if DOM is ready */
-  $(document).ready(function () {
+  var EXPORT_URL = 'https://portal.mawarid.com.sa/apps4x-api/api/v1/rest/export';
+  var EXPORT_API_URL = 'api/v1/LGE0000001/connector/CON0000001/sql/sysobjectexecute';
+
+  // Column definitions matching the RSR response fields
+  var EXPORT_COLUMNS = [
+    { Field: "AgentId", Name: "Agent Id" },
+    { Field: "RecruitingID", Name: "Recruiting ID" },
+    { Field: "ProjectID", Name: "Project ID" },
+    { Field: "ProjectName", Name: "Project Name" },
+    { Field: "RecruitmentProjectDes", Name: "Description" },
+    { Field: "ProjectStatus", Name: "Status" },
+    { Field: "Owner", Name: "Owner" },
+    { Field: "ProfessionID", Name: "Profession ID" },
+    { Field: "Profession", Name: "Profession" },
+    { Field: "NationalityID", Name: "Nationality ID" },
+    { Field: "Nationality", Name: "Nationality" },
+    { Field: "Gender", Name: "Gender" },
+    { Field: "HiringDate", Name: "Hiring Date" },
+    { Field: "AuthorizationDate", Name: "Authorization Date" },
+    { Field: "Quantity", Name: "Quantity" },
+    { Field: "Remaining", Name: "Remaining" },
+    { Field: "BackedOut", Name: "Backed Out" },
+    { Field: "NotStarted", Name: "Not Started" },
+    { Field: "UnderMedical", Name: "Under Medical" },
+    { Field: "MedicalDoneWaitingFitness", Name: "Medical Done Waiting Fitness" },
+    { Field: "MedicalFit", Name: "Medical Fit" },
+    { Field: "MedicallyUnfit", Name: "Medically Unfit" },
+    { Field: "UnderMedicalTreatment", Name: "Under Medical Treatment" },
+    { Field: "DropOut", Name: "Drop Out" },
+    { Field: "UnderVFS", Name: "Under VFS" },
+    { Field: "UnderStamping", Name: "Under Stamping" },
+    { Field: "VisaStamped", Name: "Visa Stamped" },
+    { Field: "TicketConfirmed", Name: "Ticket Confirmed" },
+    { Field: "Arrival", Name: "Arrival" },
+    { Field: "Employed", Name: "Employed" },
+    { Field: "ArrivedOverall", Name: "Arrived Overall" },
+    { Field: "RemainingOverall", Name: "Remaining Overall" },
+    { Field: "ConfirmedCompletion", Name: "Confirmed Completion" },
+    { Field: "CompletionPercentage", Name: "Completion %" },
+    { Field: "ConfirmedCompletionPercentage", Name: "Confirmed Completion %" }
+  ];
+
+  async function exportToExcel() {
+    var fromDate = $('#rsrFromDate').val();
+    var toDate = $('#rsrToDate').val();
+    var token = getAuthToken();
+
+    if (!fromDate || !toDate) {
+      alert('Please select From Date and To Date before exporting.');
+      return;
+    }
+
+    // Build QueryString with filters
+    var queryParams = [
+      { Name: "object_Type", Value: "p" },
+      { Name: "objectName", Value: "usp_GetRecruitmentProjectSummary" },
+      { Name: "FromDate", Value: fromDate },
+      { Name: "ToDate", Value: toDate }
+    ];
+
+    var headerParams = [
+      { Name: "Authorization", Value: token },
+      { Name: "companyid", Value: "LGE0000001" }
+    ];
+
+    var exportBody = {
+      apiUrl: EXPORT_API_URL,
+      columnDef: JSON.stringify(EXPORT_COLUMNS),
+      filename: "RSR View Report Export",
+      QueryString: JSON.stringify(queryParams),
+      HeaderString: JSON.stringify(headerParams),
+      BodyString: "",
+      isTemplate: false,
+      ResponsePath: "",
+      Method: "GET"
+    };
+
+    // Show exporting state on button
+    var $btn = $('#rsrExportBtn');
+    var originalText = $btn.text();
+    $btn.text('Exporting...').prop('disabled', true);
+
+    try {
+      var response = await fetch(EXPORT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token,
+          'companyid': 'LGE0000001',
+          'appid': 'bf053c91ba5c42b48c9f96d0a8450e79'
+        },
+        body: JSON.stringify(exportBody)
+      });
+
+      if (!response.ok) {
+        throw new Error('Export API returned status ' + response.status);
+      }
+
+      // Response is a blob (Excel file)
+      var blob = await response.blob();
+      var downloadUrl = window.URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = 'RSR_View_Report_Export.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error("Failed to export RSR data:", error);
+      alert('Export failed: ' + error.message);
+    } finally {
+      $btn.text(originalText).prop('disabled', false);
+    }
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     7. BINDINGS & INIT
+     ────────────────────────────────────────────────────────────── */
+  function clearFilters() {
+    $('#rsrFromDate').val('');
+    $('#rsrToDate').val('');
+    if (!$table.length) $table = $('#rsrTable');
+    if ($table.length) {
+      $table.html('<tr><td colspan="30" style="text-align: center; padding: 20px; color: #666;">Please select From Date and To Date, then click Search.</td></tr>');
+    }
+  }
+
+  // Use event delegation so handlers work even if DOM is injected dynamically
+  $(document).on('click', '#rsrSearchBtn', function () {
     fetchRSRData();
   });
 
-})(window.jQuery || jQuery);
+  $(document).on('click', '#rsrExportBtn', function () {
+    exportToExcel();
+  });
 
+  $(document).on('click', '#rsrClearBtn', function () {
+    clearFilters();
+  });
+
+  // Expose globally as fallback for inline onclick
+  window.rsrSearch = function () {
+    fetchRSRData();
+  };
+
+  // window.rsrExport = function () {
+  //   exportToExcel();
+  // };
+
+  window.rsrClear = function () {
+    clearFilters();
+  };
+
+  // Show initial message
+  $(function () {
+    if (!$table.length) $table = $('#rsrTable');
+    if ($table.length) {
+      $table.html('<tr><td colspan="30" style="text-align: center; padding: 20px; color: #666;">Please select From Date and To Date, then click Search.</td></tr>');
+    }
+  });
+
+})(window.jQuery || jQuery);
