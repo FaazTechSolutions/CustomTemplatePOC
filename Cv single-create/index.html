@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Candidate CV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-header">
+            <h1>Candidate Profile Creation</h1>
+            <p>Fill in the required information to generate a new CV.</p>
+        </div>
+        
+        <form id="cvForm">
+            <!-- Profile Image Section -->
+            <div class="profile-section">
+                <div class="image-upload-wrapper">
+                    <img id="profilePreview" src="https://via.placeholder.com/120?text=Photo" alt="Profile Image">
+                    <label for="ProfileImage" class="upload-btn">Upload Photo</label>
+                    <input type="file" id="ProfileImage" name="ProfileImage" hidden accept="image/*">
+                </div>
+            </div>
+
+            <!-- Personal Information -->
+            <div class="form-section">
+                <h2>Personal Information</h2>
+                <div class="grid-container">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" id="Name" name="Name" placeholder="Full Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="date" id="DateofBirth" name="DateofBirth">
+                    </div>
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="number" id="Age" name="Age" readonly placeholder="Auto-calculated">
+                    </div>
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select id="Gender" name="Gender">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nationality</label>
+                        <select id="Nationality" name="Nationality">
+                            <option value="">Loading...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Religion</label>
+                        <input type="text" id="Religion" name="Religion" placeholder="E.g. Islam, Christianity">
+                    </div>
+                    <div class="form-group">
+                        <label>Marital Status</label>
+                        <select id="MaritalStatus" name="MaritalStatus">
+                            <option value="">Select Status</option>
+                            <option value="Single">Single</option>
+                            <option value="Married">Married</option>
+                            <option value="Divorced">Divorced</option>
+                            <option value="Widowed">Widowed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Place of Birth</label>
+                        <input type="text" id="PlaceofBirth" name="PlaceofBirth" placeholder="City, Country">
+                    </div>
+                    <div class="form-group">
+                        <label>Number of Children</label>
+                        <input type="number" id="NumberofChildren" name="NumberofChildren" min="0" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="PhoneNumber" name="PhoneNumber" placeholder="+1 234 567 8900">
+                    </div>
+                    <div class="form-group">
+                        <label>Passport Number</label>
+                        <input type="text" id="PassportNumber" name="PassportNumber" placeholder="Passport No.">
+                    </div>
+                    <div class="form-group">
+                        <label>Height (cm)</label>
+                        <input type="number" id="Height" name="Height" placeholder="175">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Professional Details -->
+            <div class="form-section">
+                <h2>Professional Details</h2>
+                <div class="grid-container">
+                    <div class="form-group">
+                        <label>Profession</label>
+                        <select id="Profession" name="Profession">
+                            <option value="">Loading...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Business Unit</label>
+                        <input type="text" id="BusinessUnit" name="BusinessUnit" placeholder="E.g. Engineering">
+                    </div>
+                    <div class="form-group">
+                        <label>Position</label>
+                        <input type="text" id="JobPosition" name="Position" placeholder="E.g. Senior Developer">
+                    </div>
+                    <div class="form-group">
+                        <label>Monthly Salary</label>
+                        <input type="number" id="MonthlySalary" name="MonthlySalary" placeholder="Amount">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills & Languages -->
+            <div class="form-section">
+                <h2>Skills & Languages</h2>
+                <div class="grid-container">
+                    <div class="form-group">
+                        <label>Skill Name</label>
+                        <input type="text" id="SkillName" name="SkillName" placeholder="E.g. JavaScript">
+                    </div>
+                    <div class="form-group">
+                        <label>Language Name</label>
+                        <input type="text" id="LanguageName" name="LanguageName" placeholder="E.g. English">
+                    </div>
+                    <div class="form-group">
+                        <label>Proficiency</label>
+                        <select id="Proficiency" name="Proficiency">
+                            <option value="">Select Proficiency</option>
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                            <option value="Native">Native</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Experience -->
+            <div class="form-section">
+                <h2>Experience</h2>
+                <div class="grid-container">
+                    <div class="form-group">
+                        <label>Workplace</label>
+                        <input type="text" id="Workplace" name="Workplace" placeholder="Company Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Experience Duration</label>
+                        <input type="text" id="Experienceduration" name="Experienceduration" placeholder="E.g. 5 Years">
+                    </div>
+                    <div class="form-group">
+                        <label>Country</label>
+                        <input type="text" id="Country" name="Country" placeholder="Country">
+                    </div>
+                    <div class="form-group">
+                        <label>Position</label>
+                        <input type="text" id="ExpPosition" name="ExpPosition" placeholder="Job Title">
+                    </div>
+                    <div class="form-group">
+                        <label>Education Level</label>
+                        <input type="text" id="Level" name="Level" placeholder="E.g. Bachelor's Degree, High School">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Roles</label>
+                        <textarea id="Roles" name="Roles" rows="3" placeholder="Describe key roles and responsibilities..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">Save Profile</button>
+            </div>
+        </form>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+                                <option value="Fluent">Fluent</option>
+                                <option value="Native">Native</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <template id="educationTemplate">
+                <div class="dynamic-item">
+                    <button type="button" class="btn-remove-item" title="Remove">&times;</button>
+                    <div class="grid g-1">
+                        <div class="field">
+                            <label>Education Level</label>
+                            <input type="text" name="Level[]" placeholder="E.g. Bachelor's Degree">
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <template id="experienceTemplate">
+                <div class="dynamic-item">
+                    <button type="button" class="btn-remove-item" title="Remove">&times;</button>
+                    <div class="grid g-4">
+                        <div class="field">
+                            <label>Workplace</label>
+                            <input type="text" name="Workplace[]" placeholder="Company Name">
+                        </div>
+                        <div class="field">
+                            <label>Duration (Years)</label>
+                            <input type="number" step="0.1" min="0" name="Experienceduration[]" placeholder="E.g. 5.5">
+                        </div>
+                        <div class="field">
+                            <label>Country</label>
+                            <select name="Country[]" class="country-select dynamic-country">
+                                <option value="">Select Country</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Position</label>
+                            <input type="text" name="ExpPosition[]" placeholder="Job Title">
+                        </div>
+                        <div class="field span-full">
+                            <label>Roles & Responsibilities</label>
+                            <textarea name="Roles[]" rows="2" placeholder="Describe key roles and responsibilities..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <div class="form-actions">
+                <button type="button" class="btn-secondary">Reset</button>
+                <button type="submit" class="btn-primary">Save Profile</button>
+            </div>
+        </form>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
