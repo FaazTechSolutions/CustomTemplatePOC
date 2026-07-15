@@ -4,62 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Candidate CV</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="form-container">
-        <div class="form-header">
-            <h1>Candidate Profile Creation</h1>
-            <p>Fill in the required information to generate a new CV.</p>
-        </div>
-        
-        <form id="cvForm">
-            <!-- Profile Image Section -->
-            <div class="profile-section">
-                <div class="image-upload-wrapper">
-                    <img id="profilePreview" src="https://via.placeholder.com/120?text=Photo" alt="Profile Image">
-                    <label for="ProfileImage" class="upload-btn">Upload Photo</label>
-                    <input type="file" id="ProfileImage" name="ProfileImage" hidden accept="image/*">
+    <div class="singlecreatecvcontainer">
+    <div class="app-wrapper">
+        <form id="cvForm" class="dashboard-form">
+            
+            <!-- LEFT PANEL: Personal Info -->
+            <div class="left-panel">
+                <div class="profile-header">
+                    <div class="avatar-ring">
+                        <img id="profilePreview" src="https://ui-avatars.com/api/?name=User&background=FFF9F0&color=F8B633" alt="Profile">
+                    </div>
+                    <div class="header-text">
+                        <h1>Candidate Profile</h1>
+                        <label for="ProfileImage" class="upload-link">Upload Photo</label>
+                        <input type="file" id="ProfileImage" name="ProfileImage" hidden accept="image/*">
+                    </div>
                 </div>
-            </div>
 
-            <!-- Personal Information -->
-            <div class="form-section">
-                <h2>Personal Information</h2>
-                <div class="grid-container">
-                    <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" id="Name" name="Name" placeholder="Full Name">
+                <div class="section-title">Personal Information</div>
+                <div class="grid g-2">
+                    <div class="field span-2">
+                        <label>Full Name</label>
+                        <input type="text" id="Name" name="Name" required>
                     </div>
-                    <div class="form-group">
+                    <div class="field">
                         <label>Date of Birth</label>
-                        <input type="date" id="DateofBirth" name="DateofBirth">
+                        <input type="date" id="DateofBirth" name="DateofBirth" required>
                     </div>
-                    <div class="form-group">
+                    <div class="field">
                         <label>Age</label>
-                        <input type="number" id="Age" name="Age" readonly placeholder="Auto-calculated">
+                        <input type="number" id="Age" name="Age" readonly>
                     </div>
-                    <div class="form-group">
+                    <div class="field">
                         <label>Gender</label>
-                        <select id="Gender" name="Gender">
+                        <select id="Gender" name="Gender" required>
                             <option value="">Select Gender</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
-                            <option value="Other">Other</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Nationality</label>
-                        <select id="Nationality" name="Nationality">
-                            <option value="">Loading...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Religion</label>
-                        <input type="text" id="Religion" name="Religion" placeholder="E.g. Islam, Christianity">
-                    </div>
-                    <div class="form-group">
+                    <div class="field">
                         <label>Marital Status</label>
                         <select id="MaritalStatus" name="MaritalStatus">
                             <option value="">Select Status</option>
@@ -69,133 +57,142 @@
                             <option value="Widowed">Widowed</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Place of Birth</label>
-                        <input type="text" id="PlaceofBirth" name="PlaceofBirth" placeholder="City, Country">
-                    </div>
-                    <div class="form-group">
-                        <label>Number of Children</label>
-                        <input type="number" id="NumberofChildren" name="NumberofChildren" min="0" placeholder="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Phone Number</label>
-                        <input type="tel" id="PhoneNumber" name="PhoneNumber" placeholder="+1 234 567 8900">
-                    </div>
-                    <div class="form-group">
-                        <label>Passport Number</label>
-                        <input type="text" id="PassportNumber" name="PassportNumber" placeholder="Passport No.">
-                    </div>
-                    <div class="form-group">
-                        <label>Height (cm)</label>
-                        <input type="number" id="Height" name="Height" placeholder="175">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Professional Details -->
-            <div class="form-section">
-                <h2>Professional Details</h2>
-                <div class="grid-container">
-                    <div class="form-group">
-                        <label>Profession</label>
-                        <select id="Profession" name="Profession">
+                    <div class="field span-2">
+                        <label>Nationality</label>
+                        <select id="Nationality" name="Nationality" required>
                             <option value="">Loading...</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Business Unit</label>
-                        <input type="text" id="BusinessUnit" name="BusinessUnit" placeholder="E.g. Engineering">
+                    <div class="field span-2">
+                        <label>Place of Birth</label>
+                        <input type="text" id="PlaceofBirth" name="PlaceofBirth">
                     </div>
-                    <div class="form-group">
-                        <label>Position</label>
-                        <input type="text" id="JobPosition" name="Position" placeholder="E.g. Senior Developer">
+                    <div class="field">
+                        <label>Religion</label>
+                        <input type="text" id="Religion" name="Religion">
                     </div>
-                    <div class="form-group">
-                        <label>Monthly Salary</label>
-                        <input type="number" id="MonthlySalary" name="MonthlySalary" placeholder="Amount">
+                    <div class="field">
+                        <label>Children</label>
+                        <input type="number" id="NumberofChildren" name="NumberofChildren">
+                    </div>
+                    <div class="field span-2">
+                        <label>Phone Number</label>
+                        <input type="tel" id="PhoneNumber" name="PhoneNumber">
+                    </div>
+                    <div class="field span-2">
+                        <label>Passport Number</label>
+                        <input type="text" id="PassportNumber" name="PassportNumber">
+                    </div>
+                    <div class="field">
+                        <label>Height (cm)</label>
+                        <input type="number" id="Height" name="Height">
+                    </div>
+                    <div class="field">
+                        <label>Weight (kg)</label>
+                        <input type="number" id="Weight" name="Weight">
+                    </div>
+                    
+                    <div class="field span-2" style="margin-top: 12px;">
+                        <label>Full Size Photo</label>
+                        <div class="file-drop-area" id="fullSizeDropArea" onclick="document.getElementById('FullSizeImage').click()">
+                            <div class="upload-icon-wrapper" id="fullSizeIcon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            </div>
+                            <div class="file-drop-text" id="fullSizeDropText">
+                                <span class="drop-msg">Click or drag image here</span>
+                                <span class="drop-submsg">SVG, PNG, JPG...</span>
+                            </div>
+                            <img id="fullSizePreviewImg" style="display: none; max-width: 100%; max-height: 250px; border-radius: 8px; object-fit: contain; margin-bottom: 8px;">
+                            <input type="file" id="FullSizeImage" name="FullSizeImage" accept="image/*" hidden>
+                            <div class="file-preview-name" id="fullSizeFileName"></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Skills & Languages -->
-            <div class="form-section">
-                <h2>Skills & Languages</h2>
-                <div class="grid-container">
-                    <div class="form-group">
-                        <label>Skill Name</label>
-                        <input type="text" id="SkillName" name="SkillName" placeholder="E.g. JavaScript">
-                    </div>
-                    <div class="form-group">
-                        <label>Language Name</label>
-                        <input type="text" id="LanguageName" name="LanguageName" placeholder="E.g. English">
-                    </div>
-                    <div class="form-group">
-                        <label>Proficiency</label>
-                        <select id="Proficiency" name="Proficiency">
-                            <option value="">Select Proficiency</option>
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
-                            <option value="Native">Native</option>
+            <!-- RIGHT PANEL: Professional, Skills, Languages, Experience -->
+            <div class="right-panel">
+                
+                <div class="section-title">Professional Details</div>
+                <div class="grid g-4" style="margin-bottom: 24px;">
+                    <div class="field span-2">
+                        <label>Profession</label>
+                        <select id="Profession" name="Profession" required>
+                            <option value="">Loading...</option>
                         </select>
                     </div>
-                </div>
-            </div>
-
-            <!-- Experience -->
-            <div class="form-section">
-                <h2>Experience</h2>
-                <div class="grid-container">
-                    <div class="form-group">
-                        <label>Workplace</label>
-                        <input type="text" id="Workplace" name="Workplace" placeholder="Company Name">
-                    </div>
-                    <div class="form-group">
-                        <label>Experience Duration</label>
-                        <input type="text" id="Experienceduration" name="Experienceduration" placeholder="E.g. 5 Years">
-                    </div>
-                    <div class="form-group">
-                        <label>Country</label>
-                        <input type="text" id="Country" name="Country" placeholder="Country">
-                    </div>
-                    <div class="form-group">
-                        <label>Position</label>
-                        <input type="text" id="ExpPosition" name="ExpPosition" placeholder="Job Title">
-                    </div>
-                    <div class="form-group">
+                    <div class="field span-1">
                         <label>Education Level</label>
-                        <input type="text" id="Level" name="Level" placeholder="E.g. Bachelor's Degree, High School">
+                        <select id="EducationLevel" name="EducationLevel[]" multiple required>
+                            <option value="">Loading...</option>
+                        </select>
                     </div>
-                    <div class="form-group full-width">
-                        <label>Roles</label>
-                        <textarea id="Roles" name="Roles" rows="3" placeholder="Describe key roles and responsibilities..."></textarea>
+                    <div class="field span-1">
+                        <label>Monthly Salary</label>
+                        <input type="number" id="MonthlySalary" name="MonthlySalary">
                     </div>
                 </div>
-            </div>
 
-            <div class="form-actions">
-                <button type="submit" class="submit-btn">Save Profile</button>
-            </div>
-        </form>
-    </div>
-    <script src="script.js"></script>
-</body>
-</html>
-                                <option value="Fluent">Fluent</option>
-                                <option value="Native">Native</option>
-                            </select>
+                <div class="dynamic-panels">
+                    <div class="dynamic-card">
+                        <div class="card-header">
+                            <span class="section-title">Skills</span>
+                            <button type="button" id="addSkillBtn" class="btn-icon" title="Add Skill">+</button>
                         </div>
+                        <div id="skillsContainer" class="dynamic-container"></div>
+                    </div>
+
+                    <div class="dynamic-card">
+                        <div class="card-header">
+                            <span class="section-title">Languages</span>
+                            <button type="button" id="addLanguageBtn" class="btn-icon" title="Add Language">+</button>
+                        </div>
+                        <div id="languagesContainer" class="dynamic-container"></div>
+                    </div>
+                </div>
+
+                <div class="dynamic-card" style="margin-bottom: 24px;">
+                    <div class="card-header">
+                        <span class="section-title">Experience</span>
+                        <button type="button" id="addExperienceBtn" class="btn-icon" title="Add Experience">+</button>
+                    </div>
+                    <div id="experienceContainer" class="dynamic-container"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Save Profile</button>
+                </div>
+
+            </div>
+            
+            <!-- TEMPLATES -->
+            <template id="skillTemplate">
+                <div class="dynamic-item">
+                    <button type="button" class="btn-remove-item" title="Remove">&times;</button>
+                    <div class="field">
+                        <label>Skill Name</label>
+                        <input type="text" name="SkillName[]" placeholder="E.g. JavaScript" required>
                     </div>
                 </div>
             </template>
 
-            <template id="educationTemplate">
+            <template id="languageTemplate">
                 <div class="dynamic-item">
                     <button type="button" class="btn-remove-item" title="Remove">&times;</button>
-                    <div class="grid g-1">
+                    <div class="grid g-2">
                         <div class="field">
-                            <label>Education Level</label>
-                            <input type="text" name="Level[]" placeholder="E.g. Bachelor's Degree">
+                            <label>Language</label>
+                            <input type="text" name="Language[]" placeholder="E.g. English" required>
+                        </div>
+                        <div class="field">
+                            <label>Proficiency</label>
+                            <select name="Proficiency[]" class="proficiency-select" required>
+                                <option value="">Select Proficiency</option>
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                                <option value="Native">Native</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -204,38 +201,35 @@
             <template id="experienceTemplate">
                 <div class="dynamic-item">
                     <button type="button" class="btn-remove-item" title="Remove">&times;</button>
-                    <div class="grid g-4">
-                        <div class="field">
+                    <div class="grid g-6">
+                        <div class="field span-2">
                             <label>Workplace</label>
                             <input type="text" name="Workplace[]" placeholder="Company Name">
                         </div>
-                        <div class="field">
-                            <label>Duration (Years)</label>
-                            <input type="number" step="0.1" min="0" name="Experienceduration[]" placeholder="E.g. 5.5">
+                        <div class="field span-1">
+                            <label>Duration (Yrs)</label>
+                            <input type="number" step="0.1" min="0" name="Experienceduration[]" placeholder="5.5">
                         </div>
-                        <div class="field">
+                        <div class="field span-1">
                             <label>Country</label>
                             <select name="Country[]" class="country-select dynamic-country">
-                                <option value="">Select Country</option>
+                                <option value="">Select</option>
                             </select>
                         </div>
-                        <div class="field">
+                        <div class="field span-2">
                             <label>Position</label>
                             <input type="text" name="ExpPosition[]" placeholder="Job Title">
                         </div>
                         <div class="field span-full">
                             <label>Roles & Responsibilities</label>
-                            <textarea name="Roles[]" rows="2" placeholder="Describe key roles and responsibilities..."></textarea>
+                            <textarea name="Roles[]" rows="1" placeholder="Responsibilities..."></textarea>
                         </div>
                     </div>
                 </div>
             </template>
 
-            <div class="form-actions">
-                <button type="button" class="btn-secondary">Reset</button>
-                <button type="submit" class="btn-primary">Save Profile</button>
-            </div>
         </form>
+    </div>
     </div>
     <script src="script.js"></script>
 </body>

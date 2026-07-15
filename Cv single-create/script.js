@@ -32,45 +32,90 @@ function initApp() {
     }
   });
 
+  const fullSizeInputUpload = document.getElementById("FullSizeImage");
+  const fullSizeFileName = document.getElementById("fullSizeFileName");
+  const fullSizePreviewImg = document.getElementById("fullSizePreviewImg");
+  const fullSizeDropText = document.getElementById("fullSizeDropText");
+  const fullSizeIcon = document.getElementById("fullSizeIcon");
+  const fullSizeDropArea = document.getElementById("fullSizeDropArea");
+
+  if (fullSizeInputUpload && fullSizeFileName) {
+    fullSizeInputUpload.addEventListener("change", function () {
+      if (this.files && this.files.length > 0) {
+        fullSizeFileName.textContent = this.files[0].name;
+        
+        // Large Image preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          if (fullSizePreviewImg) {
+            fullSizePreviewImg.src = e.target.result;
+            fullSizePreviewImg.style.display = "block";
+            if (fullSizeDropText) fullSizeDropText.style.display = "none";
+            if (fullSizeIcon) fullSizeIcon.style.display = "none";
+            if (fullSizeDropArea) fullSizeDropArea.style.flexDirection = "column";
+          }
+        };
+        reader.readAsDataURL(this.files[0]);
+
+      } else {
+        fullSizeFileName.textContent = "";
+        if (fullSizePreviewImg) {
+          fullSizePreviewImg.style.display = "none";
+          if (fullSizeDropText) fullSizeDropText.style.display = "flex";
+          if (fullSizeIcon) fullSizeIcon.style.display = "flex";
+          if (fullSizeDropArea) fullSizeDropArea.style.flexDirection = "row";
+        }
+      }
+    });
+  }
+
   // ─── Lazy Fetch Helper ───
   function setupLazyDropdown(id, placeholder, fetchCallback) {
     const select = document.getElementById(id);
     if (!select) return;
-    
+
     select.innerHTML = `<option value="">${placeholder}</option>`;
     initSearchableDropdown(select);
-    
+
     let hasFetched = false;
-    select.parentElement.addEventListener('click', (e) => {
-      const trigger = e.target.closest('.sd-trigger');
-      if (trigger && !hasFetched) {
-        e.stopPropagation(); // Prevent normal open
-        hasFetched = true;
-        trigger.querySelector('.sd-value').innerHTML = `<span class="sd-loader"></span> Loading...`;
-        
-        fetchCallback().then(() => {
-          const newSelect = document.getElementById(id);
-          if (newSelect) {
-            const newWrapper = newSelect.nextElementSibling;
-            if (newWrapper && newWrapper.classList.contains('sd-wrapper')) {
-              newWrapper.classList.add('sd-open');
-              const searchInput = newWrapper.querySelector('.sd-search');
-              if (searchInput) setTimeout(() => searchInput.focus(), 30);
-            }
-          }
-        }).catch((err) => {
-           console.error("Lazy dropdown error:", err);
-           const newSelect = document.getElementById(id);
-           if (newSelect && newSelect.nextElementSibling) {
-               const valEl = newSelect.nextElementSibling.querySelector('.sd-value');
-               if (valEl) valEl.textContent = placeholder;
-           } else {
-               trigger.querySelector('.sd-value').textContent = placeholder;
-           }
-           hasFetched = false;
-        });
-      }
-    }, true);
+    select.parentElement.addEventListener(
+      "click",
+      (e) => {
+        const trigger = e.target.closest(".sd-trigger");
+        if (trigger && !hasFetched) {
+          e.stopPropagation(); // Prevent normal open
+          hasFetched = true;
+          trigger.querySelector(".sd-value").innerHTML =
+            `<span class="sd-loader"></span> Loading...`;
+
+          fetchCallback()
+            .then(() => {
+              const newSelect = document.getElementById(id);
+              if (newSelect) {
+                const newWrapper = newSelect.parentElement;
+                if (newWrapper && newWrapper.classList.contains("sd-wrapper")) {
+                  newWrapper.classList.add("sd-open");
+                  const searchInput = newWrapper.querySelector(".sd-search");
+                  if (searchInput) setTimeout(() => searchInput.focus(), 30);
+                }
+              }
+            })
+            .catch((err) => {
+              console.error("Lazy dropdown error:", err);
+              const newSelect = document.getElementById(id);
+              if (newSelect && newSelect.parentElement) {
+                const valEl =
+                  newSelect.parentElement.querySelector(".sd-value");
+                if (valEl) valEl.textContent = placeholder;
+              } else {
+                trigger.querySelector(".sd-value").textContent = placeholder;
+              }
+              hasFetched = false;
+            });
+        }
+      },
+      true,
+    );
   }
 
   // ─── Fetch Nationality once & populate Nationality + cache for dynamic Country ───
@@ -96,8 +141,15 @@ function initApp() {
       window.cachedCountryMapping = nationalityMapping;
       const expTemplate = document.getElementById("experienceTemplate");
       if (expTemplate) {
-        const countrySelect = expTemplate.content.querySelector(".dynamic-country");
-        if (countrySelect) populateNativeSelect(countrySelect, items, nationalityMapping, "Country");
+        const countrySelect =
+          expTemplate.content.querySelector(".dynamic-country");
+        if (countrySelect)
+          populateNativeSelect(
+            countrySelect,
+            items,
+            nationalityMapping,
+            "Country",
+          );
       }
       document.querySelectorAll(".dynamic-country").forEach((select) => {
         populateNativeSelect(select, items, nationalityMapping, "Country");
@@ -120,7 +172,27 @@ function initApp() {
   };
 
   setupLazyDropdown("Profession", "Select Profession", () => {
-    return fetchAndPopulateMultiple(professionUrl, ["Profession"], professionMapping);
+    return fetchAndPopulateMultiple(
+      professionUrl,
+      ["Profession"],
+      professionMapping,
+    );
+  });
+
+  // ─── Fetch & Populate Education Dropdown ───
+  const educationUrl = `https://portal.mawarid.com.sa/apps4x-api/api/v1/data/${localStorage.getItem("CompanyId") || "LGE0000001"}?entityId=f33cd1a2ea3c497a98b2e3ec37d4d361&$page=0&$size=0&$orderbydirection=1`;
+  const educationMapping = {
+    value: "Level",
+    text: "Level",
+    labels: [{ key: "Level", label: "Level" }],
+  };
+
+  setupLazyDropdown("EducationLevel", "Select Education", () => {
+    return fetchAndPopulateMultiple(
+      educationUrl,
+      ["EducationLevel"],
+      educationMapping,
+    );
   });
 
   // ─── Upgrade ALL static selects to custom dropdown ───
@@ -146,7 +218,6 @@ function initApp() {
         dateofBirth: formData.get("DateofBirth") || "",
         nationality: formData.get("Nationality") || "",
         profession: formData.get("Profession") || "",
-        businessUnit: formData.get("BusinessUnit") || "",
         religion: formData.get("Religion") || "",
         maritalStatus: formData.get("MaritalStatus") || "",
         phoneNumber: formData.get("PhoneNumber") || "",
@@ -157,13 +228,12 @@ function initApp() {
         height: parseFloat(formData.get("Height")) || 0,
         monthlySalary: parseFloat(formData.get("MonthlySalary")) || 0,
         gender: formData.get("Gender") || "",
+        Education: formData.getAll("EducationLevel[]").join(",") || "",
         isPrimary: true,
         comments: "Available to start immediately",
         status: "Waiting for approval",
         confirmationStatus: "Pending",
-        additionalFields: {
-          Position: formData.get("Position") || ""
-        }
+        additionalFields: {},
       };
 
       // Skills
@@ -175,7 +245,7 @@ function initApp() {
 
       // Languages
       modelData.languages = [];
-      const langNames = formData.getAll("LanguageName[]");
+      const langNames = formData.getAll("Language[]");
       const langProfs = formData.getAll("Proficiency[]");
       langNames.forEach((name, i) => {
         if (name.trim() || langProfs[i]) {
@@ -186,12 +256,6 @@ function initApp() {
         }
       });
 
-      // Education
-      modelData.educations = [];
-      const eduLevels = formData.getAll("Level[]");
-      eduLevels.forEach((level) => {
-        if (level.trim()) modelData.educations.push(level.trim());
-      });
 
       // Experience
       modelData.experiences = [];
@@ -226,60 +290,65 @@ function initApp() {
       if (fileInput && fileInput.files.length > 0) {
         submitData.append("profileImage", fileInput.files[0]);
       }
+      
+      const fullSizeInput = document.getElementById("FullSizeImage");
+      if (fullSizeInput && fullSizeInput.files.length > 0) {
+        submitData.append("FullSizeImage", fullSizeInput.files[0]);
+      }
+      
       submitData.append("modelData", JSON.stringify(modelData));
 
-      const token = localStorage.getItem("token") || sessionStorage.getItem("token") || "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiI5OTQzMjIxMzIxIiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSIsImV4cCI6MTc4NDAwMTAyMCwiaXNzIjoiYXBwczR4LmNvbSIsImF1ZCI6ImFwcHM0eC5jb20ifQ.hasKBaNKJPvmZ3Fz2Tddg2L_UIVGAMQA2d1wzsc13Rg";
-
-      fetch("https://portal.mawarid.com.sa/apps4x-api/graph-api/api/v1/Integration/ProcessCandidateCVUpload", {
-        method: "POST",
-        headers: {
-          "Authorization": "Bearer " + token
+      fetch(
+        "https://portal.mawarid.com.sa/apps4x-api/graph-api/api/v1/Integration/ProcessCandidateCVUpload",
+        {
+          method: "POST",
+          headers: API_HEADERS,
+          body: submitData,
         },
-        body: submitData
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error("HTTP error " + response.status);
-        }
-        return response.json();
-      })
-      .then(result => {
-        console.log("Success:", result);
-        // Close the modal popup
-        const formContainer = document.querySelector('.singlecreatecvcontainer');
-        if (formContainer) {
-            const modal = formContainer.closest('[id^="DynamicWidget_"]') || formContainer.closest('.modal');
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("HTTP error " + response.status);
+          }
+          return response.json();
+        })
+        .then((result) => {
+          console.log("Success:", result);
+          // Close the modal popup
+          const formContainer = document.querySelector(
+            ".singlecreatecvcontainer",
+          );
+          if (formContainer) {
+            const modal =
+              formContainer.closest('[id^="DynamicWidget_"]') ||
+              formContainer.closest(".modal");
             if (modal) {
-                // Try to find the modal's close button in the header and click it for a clean Angular state update
-                const closeBtn = modal.querySelector('.modal-header button, [data-bs-dismiss="modal"]');
-                if (closeBtn) {
-                    closeBtn.click();
-                } else {
-                    // Fallback: forcefully hide it
-                    modal.classList.remove('d', 'block', 'd-block');
-                    modal.style.display = 'none';
-                }
+              // Try to find the modal's close button in the header and click it for a clean Angular state update
+              const closeBtn = modal.querySelector(
+                '.modal-header button, [data-bs-dismiss="modal"]',
+              );
+              if (closeBtn) {
+                closeBtn.click();
+              } else {
+                // Fallback: forcefully hide it
+                modal.classList.remove("d", "block", "d-block");
+                modal.style.display = "none";
+              }
             }
-        }
-      })
-      .catch(error => {
-        console.error("Error submitting CV:", error);
-      });
+          }
+        })
+        .catch((error) => {
+          console.error("Error submitting CV:", error);
+        });
     });
   }
 }
-
-
 
 // ─── Dynamic Form Sections ───
 function initDynamicSections() {
   setupDynamicList("addSkillBtn", "skillsContainer", "skillTemplate");
   setupDynamicList("addLanguageBtn", "languagesContainer", "languageTemplate");
-  setupDynamicList(
-    "addEducationBtn",
-    "educationContainer",
-    "educationTemplate",
-  );
+
   setupDynamicList(
     "addExperienceBtn",
     "experienceContainer",
@@ -326,12 +395,26 @@ function setupDynamicList(btnId, containerId, templateId) {
 }
 
 // ─── Common API Headers ───
-const token = localStorage.getItem(
-  "eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9",
-);
-const userId = localStorage.getItem("UserId");
-const companyId = localStorage.getItem("CompanyId");
+let token = "";
+let userId = "";
+let companyId = "";
 const userInfo = JSON.parse(localStorage.getItem("userInfo") || "null");
+
+if (window.location.hostname === "portal.mawarid.com.sa") {
+  token = localStorage.getItem(
+    "eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9",
+  );
+  userId = localStorage.getItem("UserId");
+  companyId = localStorage.getItem("CompanyId");
+} else if (
+  window.location.hostname === "localhost" ||
+  window.location.hostname === ""
+) {
+  token =
+    "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiI5OTQzMjIxMzIxIiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSIsImV4cCI6MTc4NDA5NzM5NSwiaXNzIjoiYXBwczR4LmNvbSIsImF1ZCI6ImFwcHM0eC5jb20ifQ.R4CYseL22lI7moSTPgo6Z4BcvICAcsHY7_WI61pUfkc";
+  userId = "a.hyder";
+  companyId = "LGE0000001";
+}
 
 const API_HEADERS = {
   accept: "application/json, text/plain, */*",
@@ -442,9 +525,12 @@ function reinitSearchableDropdown(nativeSelect) {
 function initSearchableDropdown(nativeSelect) {
   if (nativeSelect.parentElement.classList.contains("sd-wrapper")) return;
 
+  const isMultiple = nativeSelect.multiple;
   const options = Array.from(nativeSelect.options);
-  const placeholder = options[0]?.textContent || "Select...";
-  let selectedValue = nativeSelect.value;
+  const placeholder = options[0]?.textContent || (isMultiple ? "Select options..." : "Select...");
+  let selectedValues = isMultiple
+    ? Array.from(nativeSelect.selectedOptions).map(o => o.value).filter(v => v !== "")
+    : [nativeSelect.value];
   let focusedIndex = -1;
 
   nativeSelect.style.display = "none";
@@ -488,10 +574,18 @@ function initSearchableDropdown(nativeSelect) {
     }
   } catch (e) {}
 
+  // Helper to get grid template columns based on number of labels
+  const getGridCols = (count) => {
+    if (count === 1) return "1fr 28px";
+    if (count === 2) return "80px 1fr 28px";
+    return "80px 1fr 1fr 28px";
+  };
+
   // Build table header if applicable
   if (hasTableLayout) {
     const headerRow = document.createElement("div");
     headerRow.className = "sd-table-header";
+    headerRow.style.gridTemplateColumns = getGridCols(headerLabels.length);
     headerLabels.forEach((l) => {
       const cell = document.createElement("span");
       cell.className = "sd-th";
@@ -518,6 +612,7 @@ function initSearchableDropdown(nativeSelect) {
 
     if (labelsData && labelsData.length > 0) {
       item.className = "sd-item sd-table-row";
+      item.style.gridTemplateColumns = getGridCols(labelsData.length);
       let cellsHtml = labelsData
         .map((l) => `<span class="sd-td">${l.value}</span>`)
         .join("");
@@ -535,13 +630,14 @@ function initSearchableDropdown(nativeSelect) {
           .toLowerCase()
       : opt.textContent.toLowerCase();
 
-    if (opt.value === selectedValue && selectedValue !== "") {
+    if (selectedValues.includes(opt.value) && opt.value !== "") {
       item.classList.add("sd-active");
     }
 
-    item.addEventListener("click", () =>
-      selectItem(opt.value, opt.textContent),
-    );
+    item.addEventListener("click", (e) => {
+      e.stopPropagation();
+      selectItem(opt.value, opt.textContent);
+    });
     list.appendChild(item);
     allItems.push(item);
   });
@@ -556,16 +652,45 @@ function initSearchableDropdown(nativeSelect) {
 
   // ── Select an item ──
   function selectItem(value, text) {
-    selectedValue = value;
-    nativeSelect.value = value;
-    nativeSelect.dispatchEvent(new Event("change"));
-    trigger.querySelector(".sd-value").textContent = text;
-    trigger.classList.add("sd-selected");
-    // Update active state
-    allItems.forEach((it) =>
-      it.classList.toggle("sd-active", it.dataset.value === value),
-    );
-    closePanel();
+    if (isMultiple) {
+      const idx = selectedValues.indexOf(value);
+      if (idx > -1) {
+        selectedValues.splice(idx, 1);
+      } else {
+        selectedValues.push(value);
+      }
+      
+      Array.from(nativeSelect.options).forEach((opt) => {
+        if (opt.value === value) opt.selected = selectedValues.includes(value);
+      });
+      nativeSelect.dispatchEvent(new Event("change"));
+
+      if (selectedValues.length === 0) {
+        trigger.querySelector(".sd-value").textContent = placeholder;
+        trigger.classList.remove("sd-selected");
+      } else {
+        const texts = selectedValues.map((val) => {
+          const opt = Array.from(nativeSelect.options).find((o) => o.value === val);
+          return opt ? opt.textContent : val;
+        });
+        trigger.querySelector(".sd-value").textContent = texts.join(", ");
+        trigger.classList.add("sd-selected");
+      }
+
+      allItems.forEach((it) =>
+        it.classList.toggle("sd-active", selectedValues.includes(it.dataset.value)),
+      );
+    } else {
+      selectedValues = [value];
+      nativeSelect.value = value;
+      nativeSelect.dispatchEvent(new Event("change"));
+      trigger.querySelector(".sd-value").textContent = text;
+      trigger.classList.add("sd-selected");
+      allItems.forEach((it) =>
+        it.classList.toggle("sd-active", it.dataset.value === value),
+      );
+      closePanel();
+    }
   }
 
   // ── Search / Filter ──
@@ -655,8 +780,8 @@ function initSearchableDropdown(nativeSelect) {
 }
 
 // ─── Initialize Application ───
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initApp);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initApp);
 } else {
   initApp();
 }
