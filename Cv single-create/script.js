@@ -1,3 +1,19 @@
+let _this = this;
+let portalResponseData = _this ? _this.ResponseData : null;
+let portalRecordId = null;
+if (portalResponseData) {
+  let dataObj = portalResponseData;
+  if (dataObj.Data) {
+    dataObj = typeof dataObj.Data === "string" ? JSON.parse(dataObj.Data) : dataObj.Data;
+  }
+  portalRecordId = dataObj.RecId || dataObj.Id || dataObj.id || null;
+}
+// ─── App Mode Configuration (Create vs Update) ───
+// Automatically detect Update mode if portal data is provided. (Force true for local testing)
+let IS_EDIT_MODE = portalResponseData ? true : false; 
+let EDIT_CANDIDATE_ID = portalRecordId || null; 
+const IMAGE_BASE_URL = "https://portal.mawarid.com.sa/apps4x-api"; // Base URL for attachments
+
 function initApp() {
   // ─── Auto-calculate Age from DOB ───
   const dobInput = document.getElementById("DateofBirth");
@@ -43,20 +59,20 @@ function initApp() {
     fullSizeInputUpload.addEventListener("change", function () {
       if (this.files && this.files.length > 0) {
         fullSizeFileName.textContent = this.files[0].name;
-        
+
         // Large Image preview
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
           if (fullSizePreviewImg) {
             fullSizePreviewImg.src = e.target.result;
             fullSizePreviewImg.style.display = "block";
             if (fullSizeDropText) fullSizeDropText.style.display = "none";
             if (fullSizeIcon) fullSizeIcon.style.display = "none";
-            if (fullSizeDropArea) fullSizeDropArea.style.flexDirection = "column";
+            if (fullSizeDropArea)
+              fullSizeDropArea.style.flexDirection = "column";
           }
         };
         reader.readAsDataURL(this.files[0]);
-
       } else {
         fullSizeFileName.textContent = "";
         if (fullSizePreviewImg) {
@@ -97,6 +113,14 @@ function initApp() {
                   newWrapper.classList.add("sd-open");
                   const searchInput = newWrapper.querySelector(".sd-search");
                   if (searchInput) setTimeout(() => searchInput.focus(), 30);
+
+                  // Scroll the active item into view now that the list is populated
+                  setTimeout(() => {
+                    const activeItem = newWrapper.querySelector(".sd-active");
+                    if (activeItem) {
+                      activeItem.scrollIntoView({ block: "center" });
+                    }
+                  }, 50);
                 }
               }
             })
@@ -256,7 +280,6 @@ function initApp() {
         }
       });
 
-
       // Experience
       modelData.experiences = [];
       const expWorkplaces = formData.getAll("Workplace[]");
@@ -290,22 +313,34 @@ function initApp() {
       if (fileInput && fileInput.files.length > 0) {
         submitData.append("profileImage", fileInput.files[0]);
       }
-      
+
       const fullSizeInput = document.getElementById("FullSizeImage");
       if (fullSizeInput && fullSizeInput.files.length > 0) {
         submitData.append("FullSizeImage", fullSizeInput.files[0]);
       }
-      
+
       submitData.append("modelData", JSON.stringify(modelData));
 
-      fetch(
-        "https://portal.mawarid.com.sa/apps4x-api/graph-api/api/v1/Integration/ProcessCandidateCVUpload",
-        {
-          method: "POST",
-          headers: API_HEADERS,
-          body: submitData,
-        },
-      )
+      let apiUrl =
+        "https://portal.mawarid.com.sa/apps4x-api/graph-api/api/v1/Integration/ProcessCandidateCVUpload";
+      let apiMethod = "POST";
+
+      const targetId = EDIT_CANDIDATE_ID;
+
+      if (IS_EDIT_MODE && targetId) {
+        apiUrl = `https://portal.mawarid.com.sa/apps4x-api/graph-api/api/v1/Integration/ProcessCandidateCVUpload/${targetId}`;
+        apiMethod = "PUT";
+        
+        // Ensure the ID is passed inside the payload as well, since some APIs require it to update instead of create
+        modelData.RecId = targetId;
+        modelData.Id = targetId;
+      }
+
+      fetch(apiUrl, {
+        method: apiMethod,
+        headers: API_HEADERS,
+        body: submitData,
+      })
         .then((response) => {
           if (!response.ok) {
             throw new Error("HTTP error " + response.status);
@@ -411,7 +446,7 @@ if (window.location.hostname === "portal.mawarid.com.sa") {
   window.location.hostname === ""
 ) {
   token =
-    "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiI5OTQzMjIxMzIxIiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSIsImV4cCI6MTc4NDA5NzM5NSwiaXNzIjoiYXBwczR4LmNvbSIsImF1ZCI6ImFwcHM0eC5jb20ifQ.R4CYseL22lI7moSTPgo6Z4BcvICAcsHY7_WI61pUfkc";
+    "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiI5OTQzMjIxMzIxIiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSIsImV4cCI6MTc4NDI2OTk2NSwiaXNzIjoiYXBwczR4LmNvbSIsImF1ZCI6ImFwcHM0eC5jb20ifQ.kVmNDDJ6J65zah_90O_xHmDrYnV50cdi-HjPJgB5MEQ";
   userId = "a.hyder";
   companyId = "LGE0000001";
 }
@@ -480,6 +515,14 @@ async function fetchAndPopulateMultiple(url, selectIds, mapping) {
 }
 
 function populateNativeSelect(select, items, mapping, placeholderName) {
+  // Preserve existing selected value(s) for Edit Mode hydration
+  const isMultiple = select.multiple;
+  const preservedValues = isMultiple
+    ? Array.from(select.selectedOptions)
+        .map((o) => o.value)
+        .filter((v) => v !== "")
+    : [select.value].filter((v) => v !== "");
+
   select.innerHTML = `<option value="">Select ${placeholderName || ""}</option>`;
 
   items.forEach((item) => {
@@ -500,6 +543,17 @@ function populateNativeSelect(select, items, mapping, placeholderName) {
 
     select.appendChild(option);
   });
+
+  // Restore preserved values so custom dropdown initialization reads them
+  if (preservedValues.length > 0) {
+    if (isMultiple) {
+      Array.from(select.options).forEach((opt) => {
+        if (preservedValues.includes(opt.value)) opt.selected = true;
+      });
+    } else {
+      select.value = preservedValues[0];
+    }
+  }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -517,7 +571,15 @@ function reinitSearchableDropdown(nativeSelect) {
     const wrapper = nativeSelect.parentElement;
     wrapper.parentElement.insertBefore(nativeSelect, wrapper);
     wrapper.remove();
-    nativeSelect.style.display = "";
+    // Reset visually hidden styles
+    nativeSelect.style.position = "";
+    nativeSelect.style.opacity = "";
+    nativeSelect.style.width = "";
+    nativeSelect.style.height = "";
+    nativeSelect.style.overflow = "";
+    nativeSelect.style.clip = "";
+    nativeSelect.style.pointerEvents = "";
+    nativeSelect.style.zIndex = "";
   }
   initSearchableDropdown(nativeSelect);
 }
@@ -527,13 +589,41 @@ function initSearchableDropdown(nativeSelect) {
 
   const isMultiple = nativeSelect.multiple;
   const options = Array.from(nativeSelect.options);
-  const placeholder = options[0]?.textContent || (isMultiple ? "Select options..." : "Select...");
+  const placeholder =
+    options[0]?.textContent || (isMultiple ? "Select options..." : "Select...");
   let selectedValues = isMultiple
-    ? Array.from(nativeSelect.selectedOptions).map(o => o.value).filter(v => v !== "")
-    : [nativeSelect.value];
+    ? Array.from(nativeSelect.selectedOptions)
+        .map((o) => o.value)
+        .filter((v) => v !== "")
+    : nativeSelect.value
+      ? [nativeSelect.value]
+      : [];
   let focusedIndex = -1;
 
-  nativeSelect.style.display = "none";
+  // Determine initial trigger text based on selected values
+  let initialTriggerText = placeholder;
+  if (selectedValues.length > 0) {
+    if (isMultiple) {
+      const texts = selectedValues.map((val) => {
+        const opt = options.find((o) => o.value === val);
+        return opt ? opt.textContent : val;
+      });
+      initialTriggerText = texts.join(", ");
+    } else {
+      const opt = options.find((o) => o.value === selectedValues[0]);
+      if (opt) initialTriggerText = opt.textContent;
+    }
+  }
+
+  // Visually hide native select but keep it focusable for HTML5 validation
+  nativeSelect.style.position = "absolute";
+  nativeSelect.style.opacity = "0";
+  nativeSelect.style.width = "1px";
+  nativeSelect.style.height = "1px";
+  nativeSelect.style.overflow = "hidden";
+  nativeSelect.style.clip = "rect(0, 0, 0, 0)";
+  nativeSelect.style.pointerEvents = "none";
+  nativeSelect.style.zIndex = "-1";
 
   // ── Build DOM ──
   const wrapper = document.createElement("div");
@@ -542,7 +632,8 @@ function initSearchableDropdown(nativeSelect) {
 
   const trigger = document.createElement("div");
   trigger.className = "sd-trigger";
-  trigger.innerHTML = `<span class="sd-value">${placeholder}</span>${CHEVRON_SVG}`;
+  if (selectedValues.length > 0) trigger.classList.add("sd-selected");
+  trigger.innerHTML = `<span class="sd-value">${initialTriggerText}</span>${CHEVRON_SVG}`;
 
   const panel = document.createElement("div");
   panel.className = "sd-panel";
@@ -557,6 +648,17 @@ function initSearchableDropdown(nativeSelect) {
   searchInput.placeholder = "Type to search...";
   searchInput.autocomplete = "off";
   searchBar.appendChild(searchInput);
+
+  // Handle HTML5 validation focus
+  nativeSelect.addEventListener("invalid", () => {
+    wrapper.style.borderColor = "#dc3545"; // highlight red
+  });
+  nativeSelect.addEventListener("change", () => {
+    wrapper.style.borderColor = ""; // clear error
+  });
+  nativeSelect.addEventListener("focus", () => {
+    wrapper.focus();
+  });
 
   const list = document.createElement("div");
   list.className = "sd-list";
@@ -659,7 +761,7 @@ function initSearchableDropdown(nativeSelect) {
       } else {
         selectedValues.push(value);
       }
-      
+
       Array.from(nativeSelect.options).forEach((opt) => {
         if (opt.value === value) opt.selected = selectedValues.includes(value);
       });
@@ -670,7 +772,9 @@ function initSearchableDropdown(nativeSelect) {
         trigger.classList.remove("sd-selected");
       } else {
         const texts = selectedValues.map((val) => {
-          const opt = Array.from(nativeSelect.options).find((o) => o.value === val);
+          const opt = Array.from(nativeSelect.options).find(
+            (o) => o.value === val,
+          );
           return opt ? opt.textContent : val;
         });
         trigger.querySelector(".sd-value").textContent = texts.join(", ");
@@ -678,7 +782,10 @@ function initSearchableDropdown(nativeSelect) {
       }
 
       allItems.forEach((it) =>
-        it.classList.toggle("sd-active", selectedValues.includes(it.dataset.value)),
+        it.classList.toggle(
+          "sd-active",
+          selectedValues.includes(it.dataset.value),
+        ),
       );
     } else {
       selectedValues = [value];
@@ -780,8 +887,357 @@ function initSearchableDropdown(nativeSelect) {
 }
 
 // ─── Initialize Application ───
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initApp);
-} else {
+async function initializeApp() {
   initApp();
+
+  // If in Edit Mode, fetch and populate
+  if (IS_EDIT_MODE) {
+    // Change submit button text
+    const submitBtn = document.querySelector('#cvForm button[type="submit"]');
+    if (submitBtn) submitBtn.textContent = "Update Profile";
+
+    try {
+      // 1. Try to use injected ResponseData from the framework (e.g. Apps4x portal)
+      if (portalResponseData) {
+        console.log("Using injected ResponseData for Edit Mode");
+        let data = portalResponseData;
+        if (data.Data) {
+          data =
+            typeof data.Data === "string" ? JSON.parse(data.Data) : data.Data;
+        } else if (data.data) {
+          data = data.data;
+        }
+
+        // Dynamically grab the Candidate ID if available (prioritize RecId from either level)
+        const recordId = portalResponseData.RecId || data.RecId || portalResponseData.Id || data.Id || data.id;
+        if (recordId) {
+          EDIT_CANDIDATE_ID = recordId;
+          console.log("Found Edit Candidate ID:", EDIT_CANDIDATE_ID);
+        } else {
+          console.warn("Could not find RecId or Id in the provided data");
+        }
+
+        hydrateFormData(data);
+      }
+      // 2. Fallback to manual API fetch for local testing
+      else if (EDIT_CANDIDATE_ID) {
+        const response = await fetch(
+          `https://portal.mawarid.com.sa/apps4x-api/graph-api/api/v1/Integration/ProcessCandidateCVUpload/${EDIT_CANDIDATE_ID}`,
+          {
+            method: "GET",
+            headers: API_HEADERS,
+          },
+        );
+
+        if (response.ok) {
+          let data = await response.json();
+          if (data.Data) {
+            data =
+              typeof data.Data === "string" ? JSON.parse(data.Data) : data.Data;
+          } else if (data.data) {
+            data = data.data;
+          }
+          hydrateFormData(data);
+        } else {
+          console.error("Failed to load candidate data for edit mode.");
+        }
+      }
+    } catch (e) {
+      console.error("Error fetching/loading candidate data:", e);
+    }
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initializeApp);
+} else {
+  initializeApp();
+}
+
+// ─── Edit Mode Helper ───
+function hydrateFormData(data) {
+  if (!data) return;
+
+  // 1. Map Basic Fields
+  const basicFields = [
+    { key: "Name", id: "Name" },
+    { key: "DateofBirth", id: "DateofBirth" },
+    { key: "Age", id: "Age" },
+    { key: "Gender", id: "Gender" },
+    { key: "MaritalStatus", id: "MaritalStatus" },
+    { key: "Nationality", id: "Nationality" },
+    { key: "PlaceOfBirth", id: "PlaceofBirth" },
+    { key: "Religion", id: "Religion" },
+    { key: "NumberOfChildren", id: "Children" },
+    { key: "PhoneNumber", id: "PhoneNumber" },
+    { key: "PassportNumber", id: "PassportNumber" },
+    { key: "Height", id: "Height" },
+    { key: "Weight", id: "Weight" },
+    { key: "MonthlySalary", id: "MonthlySalary" },
+  ];
+
+  basicFields.forEach((fieldMapping) => {
+    let dataVal =
+      data[fieldMapping.key] !== undefined
+        ? data[fieldMapping.key]
+        : data[
+            fieldMapping.key.charAt(0).toLowerCase() + fieldMapping.key.slice(1)
+          ];
+    const el = document.getElementById(fieldMapping.id);
+
+    // Format DateofBirth if it contains 'T' (e.g. 2001-04-04T00:00:00)
+    if (
+      fieldMapping.key === "DateofBirth" &&
+      typeof dataVal === "string" &&
+      dataVal.includes("T")
+    ) {
+      dataVal = dataVal.split("T")[0];
+    }
+
+    if (el && dataVal !== undefined && dataVal !== null) {
+      el.value = dataVal;
+      // If it's a searchable dropdown, update its visual UI
+      const wrapper = el.closest && el.closest(".sd-wrapper");
+      if (wrapper) {
+        const sdValue = wrapper.querySelector(".sd-value");
+        if (sdValue) {
+          // If the select doesn't have the option yet, add it
+          if (!el.querySelector(`option[value="${dataVal}"]`)) {
+            const newOption = new Option(dataVal, dataVal, true, true);
+            el.add(newOption);
+          }
+          el.value = dataVal;
+          const selectedOption = el.options[el.selectedIndex];
+          sdValue.textContent = selectedOption ? selectedOption.text : dataVal;
+
+          // Update active state in the custom dropdown list
+          const items = wrapper.querySelectorAll(".sd-item");
+          items.forEach((item) => {
+            item.classList.toggle(
+              "sd-active",
+              item.getAttribute("data-value") === String(dataVal),
+            );
+          });
+        }
+      }
+    }
+  });
+
+  // 1b. Handle Images
+  const profileImagePath = data.ProfileImage_Path || data.profileImage_Path;
+  if (profileImagePath) {
+    const profilePreview = document.getElementById("profilePreview");
+    if (profilePreview) {
+      const sanitizedPath = profileImagePath.replace(/\\/g, "/");
+      const fullUrl = sanitizedPath.startsWith("http")
+        ? sanitizedPath
+        : `${IMAGE_BASE_URL}${sanitizedPath.startsWith("/") ? "" : "/"}${sanitizedPath}`;
+      profilePreview.src = fullUrl;
+    }
+  }
+
+  const fullSizeImagePath = data.FullSizeImage_Path || data.fullSizeImage_Path;
+  if (fullSizeImagePath) {
+    const fullSizePreviewImg = document.getElementById("fullSizePreviewImg");
+    if (fullSizePreviewImg) {
+      const sanitizedPath = fullSizeImagePath.replace(/\\/g, "/");
+      const fullUrl = sanitizedPath.startsWith("http")
+        ? sanitizedPath
+        : `${IMAGE_BASE_URL}${sanitizedPath.startsWith("/") ? "" : "/"}${sanitizedPath}`;
+
+      fullSizePreviewImg.src = fullUrl;
+      fullSizePreviewImg.style.display = "block";
+
+      const fullSizeDropText = document.getElementById("fullSizeDropText");
+      if (fullSizeDropText) fullSizeDropText.style.display = "none";
+      const fullSizeIcon = document.getElementById("fullSizeIcon");
+      if (fullSizeIcon) fullSizeIcon.style.display = "none";
+      const fullSizeDropArea = document.getElementById("fullSizeDropArea");
+      if (fullSizeDropArea) fullSizeDropArea.style.flexDirection = "column";
+
+      const fullSizeFileName = document.getElementById("fullSizeFileName");
+      if (fullSizeFileName) {
+        fullSizeFileName.textContent =
+          data.FullSizeImage_Name || data.fullSizeImage_Name || "";
+      }
+    }
+  }
+
+  // Handle Profession (Dropdown)
+  if (data.profession || data.Profession) {
+    const profVal = data.profession || data.Profession;
+    const profSelect = document.getElementById("Profession");
+    if (profSelect) {
+      if (!profSelect.querySelector(`option[value="${profVal}"]`)) {
+        profSelect.add(new Option(profVal, profVal, true, true));
+      }
+      profSelect.value = profVal;
+      const profWrapper = profSelect.closest(".sd-wrapper");
+      if (profWrapper) {
+        const sdValue = profWrapper.querySelector(".sd-value");
+        if (sdValue) sdValue.textContent = profVal;
+
+        const items = profWrapper.querySelectorAll(".sd-item");
+        items.forEach((item) => {
+          item.classList.toggle(
+            "sd-active",
+            item.getAttribute("data-value") === String(profVal),
+          );
+        });
+      }
+    }
+  }
+
+  // Handle Education (Multi-select)
+  if (data.education || data.Education) {
+    const eduVal = data.education || data.Education;
+    const eduSelect = document.getElementById("EducationLevel");
+    if (eduSelect) {
+      const selectedValues = eduVal.split(",").map((s) => s.trim());
+      selectedValues.forEach((val) => {
+        if (!eduSelect.querySelector(`option[value="${val}"]`)) {
+          eduSelect.add(new Option(val, val));
+        }
+      });
+      Array.from(eduSelect.options).forEach((opt) => {
+        opt.selected = selectedValues.includes(opt.value);
+      });
+
+      const eduWrapper = eduSelect.closest(".sd-wrapper");
+      if (eduWrapper) {
+        const sdValue = eduWrapper.querySelector(".sd-value");
+        const sdList = eduWrapper.querySelector(".sd-list");
+        if (sdValue) sdValue.textContent = eduVal;
+        if (sdList) {
+          const items = sdList.querySelectorAll(".sd-item");
+          items.forEach((item) => {
+            const itemVal = item.getAttribute("data-value");
+            item.classList.toggle(
+              "sd-active",
+              selectedValues.includes(itemVal),
+            );
+          });
+        }
+      }
+    }
+  }
+
+  // 2. Handle Dynamic Collections
+
+  // Skills
+  const skillsData = data.skills || data.Skills;
+  if (skillsData && Array.isArray(skillsData)) {
+    const container = document.getElementById("skillsContainer");
+    const addBtn = document.getElementById("addSkillBtn");
+    if (container && addBtn) {
+      container.innerHTML = ""; // Clear default rows
+      skillsData.forEach((skill) => {
+        addBtn.click();
+        const row = container.lastElementChild;
+        if (row) {
+          const input = row.querySelector('[name="SkillName[]"]');
+          // Handle string array or object array gracefully
+          const skillVal =
+            typeof skill === "string"
+              ? skill
+              : skill.skillName || skill.SkillName || "";
+          if (input) input.value = skillVal;
+        }
+      });
+    }
+  }
+
+  // Languages
+  const langData = data.languages || data.Languages;
+  if (langData && Array.isArray(langData)) {
+    const container = document.getElementById("languagesContainer");
+    const addBtn = document.getElementById("addLanguageBtn");
+    if (container && addBtn) {
+      container.innerHTML = "";
+      langData.forEach((lang) => {
+        addBtn.click();
+        const row = container.lastElementChild;
+        if (row) {
+          const nameInput = row.querySelector('[name="Language[]"]');
+          const profSelect = row.querySelector(
+            '[name="LanguageProficiency[]"]',
+          ); // Or 'Proficiency[]'
+          const profInputAlternative = row.querySelector(
+            '[name="Proficiency[]"]',
+          );
+
+          const profEl = profSelect || profInputAlternative;
+          const langNameVal =
+            lang.LanguageName || lang.languageName || lang.language || "";
+          const profVal = lang.Proficiency || lang.proficiency || "";
+
+          if (nameInput) nameInput.value = langNameVal;
+          if (profEl) {
+            profEl.value = profVal;
+            const wrapper = profEl.closest && profEl.closest(".sd-wrapper");
+            if (wrapper) {
+              const sdValue = wrapper.querySelector(".sd-value");
+              if (sdValue)
+                sdValue.textContent = profVal || "Select Proficiency";
+            }
+          }
+        }
+      });
+    }
+  }
+
+  // Experience
+  const expData = data.experiences || data.Experiences;
+  if (expData && Array.isArray(expData)) {
+    const container = document.getElementById("experienceContainer");
+    const addBtn = document.getElementById("addExperienceBtn");
+    if (container && addBtn) {
+      container.innerHTML = "";
+      expData.forEach((exp) => {
+        addBtn.click();
+        const row = container.lastElementChild;
+        if (row) {
+          const workplace = row.querySelector('[name="Workplace[]"]');
+          const duration = row.querySelector('[name="Experienceduration[]"]'); // Name differs slightly in HTML
+          const country = row.querySelector('[name="Country[]"]');
+          const position = row.querySelector('[name="ExpPosition[]"]'); // Or Position[]
+          const roles = row.querySelector('[name="Roles[]"]');
+
+          if (workplace) workplace.value = exp.Workplace || exp.workplace || "";
+          if (duration)
+            duration.value =
+              exp.ExperienceDuration ||
+              exp.experienceDuration ||
+              exp.duration ||
+              "";
+          if (position) position.value = exp.Position || exp.position || "";
+          if (roles) roles.value = exp.Roles || exp.roles || "";
+
+          if (country) {
+            const countryVal = exp.Country || exp.country || "";
+            if (
+              countryVal &&
+              !country.querySelector(`option[value="${countryVal}"]`)
+            ) {
+              country.add(new Option(countryVal, countryVal, true, true));
+            }
+            country.value = countryVal;
+            const wrapper = country.closest && country.closest(".sd-wrapper");
+            if (wrapper) {
+              const sdValue = wrapper.querySelector(".sd-value");
+              if (sdValue) sdValue.textContent = countryVal || "Select";
+
+              const items = wrapper.querySelectorAll(".sd-item");
+              items.forEach((item) => {
+                item.classList.toggle(
+                  "sd-active",
+                  item.getAttribute("data-value") === String(countryVal),
+                );
+              });
+            }
+          }
+        }
+      });
+    }
+  }
 }
