@@ -1100,8 +1100,8 @@
             userId = localStorage.getItem('UserId');
             companyId = localStorage.getItem('CompanyId');
         }else if (window.location.hostname === "localhost" || window.location.hostname === "" ){
-            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiI5OTQzMjIxMzIxIiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSIsImV4cCI6MTc3MjcwOTA5MiwiaXNzIjoiYXBwczR4LmNvbSIsImF1ZCI6ImFwcHM0eC5jb20ifQ.8eNmBmsENJ9y-Z0DcFceEu2MjAQdeXXN3Dan5uhoYTY";
-            currentEmployeeId = "1098483";//"1056641";idris bhai empId/1098483
+            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiI5OTQzMjIxMzIxIiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSIsImV4cCI6MTc4NDI3MjA4MCwiaXNzIjoiYXBwczR4LmNvbSIsImF1ZCI6ImFwcHM0eC5jb20ifQ.SbGathP-VMW2kV7fxqXdL3i1IDO1CTjRSWza2Aoo5nw";
+            currentEmployeeId = "1056641";//"1098483";idris bhai empId/1056641
             userId = "a.hyder";
             companyId = "LGE0000001";
         }
@@ -2064,8 +2064,10 @@
         </div>
         <div class="row mt-2">
             <div class="col-md-3"><b>{{Translate 'Expected Return'}}</b><br>${values.expectedReturnDate || "-"}</div>
+            ${values.vacationType === 'Annual' ? `
             <div class="col-md-3"><b>{{Translate 'Balance Before'}}</b><br>${convertToTwoDigits(values.VacationBalance) || "0"}</div>
             <div class="col-md-3"><b>{{Translate 'Balance After'}}</b><br>${convertToTwoDigits(values.vacationbalanceNew) || "0"}</div>
+            ` : ''}
             <div class="col-md-3"><b>{{Translate 'Is External'}}</b><br>${values.isExternal || "-"}</div>
         </div>
       </div>
