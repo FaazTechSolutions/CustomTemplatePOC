@@ -22,7 +22,7 @@ body { margin: 0; padding: 0; }
 
 .singlecreatecvcontainer {
     background: var(--bg-app);
-    height: calc(100vh - 80px);
+    height: calc(100vh - 50px);
     min-height: 500px;
     padding: 12px;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -34,7 +34,8 @@ body { margin: 0; padding: 0; }
 /* ─── Dashboard Layout ─── */
 .singlecreatecvcontainer .app-wrapper {
     max-width: 1320px;
-    height: 100%;
+    height: fit-content;
+    max-height: 100%;
     margin: 0 auto;
     background: var(--panel-bg);
     border-radius: var(--radius-main);
@@ -50,6 +51,7 @@ body { margin: 0; padding: 0; }
     flex-wrap: nowrap;
     flex: 1;
     overflow: hidden;
+    min-height: 0;
 }
 
 .singlecreatecvcontainer .left-panel {
@@ -391,9 +393,21 @@ body { margin: 0; padding: 0; }
 .singlecreatecvcontainer .btn-secondary:hover { background: #E2E8F0; }
 
 @media (max-width: 992px) {
-    .singlecreatecvcontainer .dashboard-form { flex-direction: column; }
-    .singlecreatecvcontainer .left-panel { flex: none; border-right: none; border-bottom: 1px solid var(--border); padding: 20px; }
-    .singlecreatecvcontainer .right-panel { padding: 20px; }
+    .singlecreatecvcontainer .dashboard-form { 
+        flex-direction: column; 
+        overflow-y: auto; 
+    }
+    .singlecreatecvcontainer .left-panel { 
+        flex: none; 
+        border-right: none; 
+        border-bottom: 1px solid var(--border); 
+        padding: 20px; 
+        overflow-y: visible; 
+    }
+    .singlecreatecvcontainer .right-panel { 
+        padding: 20px; 
+        overflow-y: visible; 
+    }
     .singlecreatecvcontainer .dynamic-panels { grid-template-columns: 1fr; }
 }
 
