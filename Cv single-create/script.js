@@ -4,14 +4,17 @@ let portalRecordId = null;
 if (portalResponseData) {
   let dataObj = portalResponseData;
   if (dataObj.Data) {
-    dataObj = typeof dataObj.Data === "string" ? JSON.parse(dataObj.Data) : dataObj.Data;
+    dataObj =
+      typeof dataObj.Data === "string"
+        ? JSON.parse(dataObj.Data)
+        : dataObj.Data;
   }
   portalRecordId = dataObj.RecId || dataObj.Id || dataObj.id || null;
 }
 // ─── App Mode Configuration (Create vs Update) ───
 // Automatically detect Update mode if portal data is provided. (Force true for local testing)
-let IS_EDIT_MODE = portalResponseData ? true : false; 
-let EDIT_CANDIDATE_ID = portalRecordId || null; 
+let IS_EDIT_MODE = portalResponseData ? true : false;
+let EDIT_CANDIDATE_ID = portalRecordId || null;
 const IMAGE_BASE_URL = "https://portal.mawarid.com.sa/apps4x-api"; // Base URL for attachments
 
 function initApp() {
@@ -19,7 +22,7 @@ function initApp() {
   const dobInput = document.getElementById("DateofBirth");
   const ageInput = document.getElementById("Age");
 
-  dobInput.addEventListener("change", (e) => {
+  dobInput.onchange = (e) => {
     if (e.target.value) {
       const dob = new Date(e.target.value);
       const today = new Date();
@@ -32,13 +35,13 @@ function initApp() {
     } else {
       ageInput.value = "";
     }
-  });
+  };
 
   // ─── Profile Image Preview ───
   const profileImageInput = document.getElementById("ProfileImage");
   const profilePreview = document.getElementById("profilePreview");
 
-  profileImageInput.addEventListener("change", function () {
+  profileImageInput.onchange = function () {
     if (this.files && this.files[0]) {
       const reader = new FileReader();
       reader.onload = function (e) {
@@ -46,7 +49,7 @@ function initApp() {
       };
       reader.readAsDataURL(this.files[0]);
     }
-  });
+  };
 
   const fullSizeInputUpload = document.getElementById("FullSizeImage");
   const fullSizeFileName = document.getElementById("fullSizeFileName");
@@ -56,7 +59,7 @@ function initApp() {
   const fullSizeDropArea = document.getElementById("fullSizeDropArea");
 
   if (fullSizeInputUpload && fullSizeFileName) {
-    fullSizeInputUpload.addEventListener("change", function () {
+    fullSizeInputUpload.onchange = function () {
       if (this.files && this.files.length > 0) {
         fullSizeFileName.textContent = this.files[0].name;
 
@@ -82,7 +85,7 @@ function initApp() {
           if (fullSizeDropArea) fullSizeDropArea.style.flexDirection = "row";
         }
       }
-    });
+    };
   }
 
   // ─── Lazy Fetch Helper ───
@@ -231,8 +234,17 @@ function initApp() {
   // ─── Form Submission Handler ───
   const cvForm = document.getElementById("cvForm");
   if (cvForm) {
-    cvForm.addEventListener("submit", function (e) {
+    cvForm.onsubmit = function (e) {
       e.preventDefault();
+
+      const submitBtn = cvForm.querySelector('button[type="submit"]');
+      const originalBtnContent = submitBtn ? submitBtn.innerHTML : "";
+      if (submitBtn) {
+        console.log("Form submit intercepted! Changing button state to loading...");
+        submitBtn.disabled = true;
+        // Use completely inline CSS to ensure it shows up regardless of style.css
+        submitBtn.innerHTML = '<span style="display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:sd-spin 1s linear infinite; margin-right:8px; vertical-align:middle;"></span>' + (IS_EDIT_MODE ? "Updating..." : "Saving...");
+      }
 
       // Extract standard fields
       const formData = new FormData(this);
@@ -330,7 +342,7 @@ function initApp() {
       if (IS_EDIT_MODE && targetId) {
         apiUrl = `https://portal.mawarid.com.sa/apps4x-api/graph-api/api/v1/Integration/ProcessCandidateCVUpload/${targetId}`;
         apiMethod = "PUT";
-        
+
         // Ensure the ID is passed inside the payload as well, since some APIs require it to update instead of create
         modelData.RecId = targetId;
         modelData.Id = targetId;
@@ -349,6 +361,10 @@ function initApp() {
         })
         .then((result) => {
           console.log("Success:", result);
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnContent;
+          }
           // Close the modal popup
           const formContainer = document.querySelector(
             ".singlecreatecvcontainer",
@@ -374,8 +390,12 @@ function initApp() {
         })
         .catch((error) => {
           console.error("Error submitting CV:", error);
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnContent;
+          }
         });
-    });
+    };
   }
 }
 
@@ -426,7 +446,7 @@ function setupDynamicList(btnId, containerId, templateId) {
   }
 
   // Add on click
-  btn.addEventListener("click", addItem);
+  btn.onclick = addItem;
 }
 
 // ─── Common API Headers ───
@@ -909,7 +929,12 @@ async function initializeApp() {
         }
 
         // Dynamically grab the Candidate ID if available (prioritize RecId from either level)
-        const recordId = portalResponseData.RecId || data.RecId || portalResponseData.Id || data.Id || data.id;
+        const recordId =
+          portalResponseData.RecId ||
+          data.RecId ||
+          portalResponseData.Id ||
+          data.Id ||
+          data.id;
         if (recordId) {
           EDIT_CANDIDATE_ID = recordId;
           console.log("Found Edit Candidate ID:", EDIT_CANDIDATE_ID);
@@ -968,7 +993,7 @@ function hydrateFormData(data) {
     { key: "Nationality", id: "Nationality" },
     { key: "PlaceOfBirth", id: "PlaceofBirth" },
     { key: "Religion", id: "Religion" },
-    { key: "NumberOfChildren", id: "Children" },
+    { key: "NumberOfChildren", id: "NumberofChildren" },
     { key: "PhoneNumber", id: "PhoneNumber" },
     { key: "PassportNumber", id: "PassportNumber" },
     { key: "Height", id: "Height" },
@@ -1127,11 +1152,19 @@ function hydrateFormData(data) {
   // Skills
   const skillsData = data.skills || data.Skills;
   if (skillsData && Array.isArray(skillsData)) {
+    const validSkills = skillsData.filter((skill) => {
+      const val =
+        typeof skill === "string"
+          ? skill
+          : skill.skillName || skill.SkillName || "";
+      return val.trim() !== "";
+    });
+
     const container = document.getElementById("skillsContainer");
     const addBtn = document.getElementById("addSkillBtn");
     if (container && addBtn) {
       container.innerHTML = ""; // Clear default rows
-      skillsData.forEach((skill) => {
+      validSkills.forEach((skill) => {
         addBtn.click();
         const row = container.lastElementChild;
         if (row) {
@@ -1144,17 +1177,24 @@ function hydrateFormData(data) {
           if (input) input.value = skillVal;
         }
       });
+      // Add at least one empty row if no valid skills found
+      if (validSkills.length === 0) addBtn.click();
     }
   }
 
   // Languages
   const langData = data.languages || data.Languages;
   if (langData && Array.isArray(langData)) {
+    const validLangs = langData.filter((lang) => {
+      const val = lang.LanguageName || lang.languageName || lang.language || "";
+      return val.trim() !== "";
+    });
+
     const container = document.getElementById("languagesContainer");
     const addBtn = document.getElementById("addLanguageBtn");
     if (container && addBtn) {
       container.innerHTML = "";
-      langData.forEach((lang) => {
+      validLangs.forEach((lang) => {
         addBtn.click();
         const row = container.lastElementChild;
         if (row) {
@@ -1183,17 +1223,24 @@ function hydrateFormData(data) {
           }
         }
       });
+      if (validLangs.length === 0) addBtn.click();
     }
   }
 
   // Experience
   const expData = data.experiences || data.Experiences;
   if (expData && Array.isArray(expData)) {
+    const validExps = expData.filter((exp) => {
+      const workplace = exp.Workplace || exp.workplace || "";
+      const position = exp.Position || exp.position || "";
+      return workplace.trim() !== "" || position.trim() !== "";
+    });
+
     const container = document.getElementById("experienceContainer");
     const addBtn = document.getElementById("addExperienceBtn");
     if (container && addBtn) {
       container.innerHTML = "";
-      expData.forEach((exp) => {
+      validExps.forEach((exp) => {
         addBtn.click();
         const row = container.lastElementChild;
         if (row) {
@@ -1238,6 +1285,7 @@ function hydrateFormData(data) {
           }
         }
       });
+      if (validExps.length === 0) addBtn.click();
     }
   }
 }
