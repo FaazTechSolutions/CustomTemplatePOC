@@ -19,7 +19,31 @@ document.addEventListener("DOMContentLoaded", () => {
 function initDashboard() {
   if (!dashboardData) return;
 
-  // 1. Populate Metrics Cards
+  // 1. Guard check: If the dashboard container isn't in the DOM, 
+  // the user might have navigated to another component. Exit early.
+  const allTicketsContainer = document.getElementById("all-tickets-metrics");
+  if (!allTicketsContainer) {
+    return;
+  }
+
+  // 2. Prevent infinite loops without using JSON.stringify (which can freeze the UI if data is huge)
+  let dataFingerprint = "empty";
+  try {
+    const allTotal = dashboardData.AllTickets ? dashboardData.AllTickets.TotalCount : 0;
+    const myTotal = dashboardData.MyAssignedTicket ? dashboardData.MyAssignedTicket.TotalCount : 0;
+    dataFingerprint = `${allTotal}_${myTotal}`;
+  } catch (e) {
+    // ignore
+  }
+
+  const isPopulated = allTicketsContainer.innerHTML.trim().length > 0;
+  
+  if (window._lastDashboardDataString === dataFingerprint && isPopulated) {
+    return;
+  }
+  window._lastDashboardDataString = dataFingerprint;
+
+  // 3. Populate Metrics Cards
   if (dashboardData.AllTickets) {
     populateMetrics("all-tickets-metrics", dashboardData.AllTickets);
     const allBadge = document.getElementById("all-total-badge");
@@ -34,7 +58,7 @@ function initDashboard() {
       dashboardData.MyAssignedTicket.TotalCount.toLocaleString() + " Tickets";
   }
 
-  // 2. Render Charts
+  // 4. Render Charts
   if (dashboardData.AllTicketsChart) {
     renderChart("allTicketsChart", dashboardData.AllTicketsChart);
   }
@@ -42,7 +66,7 @@ function initDashboard() {
     renderChart("myTicketsChart", dashboardData.MyAssignedTicketChart);
   }
 
-  // 3. Populate Tables directly from the JSON
+  // 5. Populate Tables directly from the JSON
   if (dashboardData.RequestbyCoordinatorWithCustomer) {
     populateCoordCustTable(dashboardData.RequestbyCoordinatorWithCustomer);
   }
@@ -55,32 +79,63 @@ function initDashboard() {
     );
   }
 
-  // 4. Initialize Search filtering
+  // 6. Initialize Search filtering
   initSearch("search-coord-cust", "coord-cust-table-body");
   initSearch("search-coord", "coord-table-body");
 }
 
 function populateMetrics(containerId, data) {
   const container = document.getElementById(containerId);
-  container.innerHTML = "";
+  if (!container) return;
 
   const keys = ["New", "InProgress", "Scheduled", "ReOpen", "Closed"];
 
+  let html = "";
   keys.forEach((key) => {
     const value = data[key];
-    const card = document.createElement("div");
-    card.className = `metric-item metric-${key.toLowerCase()}`;
-
-    card.innerHTML = `
+    html += `
+        <div class="metric-item metric-${key.toLowerCase()}">
             <div class="metric-value">${value.toLocaleString()}</div>
             <div class="metric-label">${key}</div>
-        `;
-    container.appendChild(card);
+        </div>
+    `;
   });
+  
+  container.innerHTML = html;
+}
+
+// Store charts globally to destroy them when the template re-renders
+if (!window._dashboardCharts) {
+  window._dashboardCharts = {};
 }
 
 function renderChart(canvasId, chartData) {
-  const ctx = document.getElementById(canvasId).getContext("2d");
+  // Destroy existing chart instance to prevent memory leaks and infinite resize loops
+  if (window._dashboardCharts[canvasId]) {
+    window._dashboardCharts[canvasId].destroy();
+  }
+
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return; // Guard in case canvas isn't in DOM
+  
+  // CRITICAL FIX: Force the parent container to have a fixed height.
+  // This mathematically prevents Chart.js Pie Charts from causing infinite 
+  // ResizeObserver loops when the modal opens and the layout shifts!
+  if (canvas.parentElement) {
+    canvas.parentElement.style.position = "relative";
+    canvas.parentElement.style.height = "300px";
+    canvas.parentElement.style.minHeight = "300px";
+    canvas.parentElement.style.width = "100%";
+    
+    // Manually set canvas size to prevent tiny charts when responsive is false
+    const parentWidth = canvas.parentElement.clientWidth || 400;
+    canvas.style.width = parentWidth + "px";
+    canvas.style.height = "300px";
+    canvas.width = parentWidth;
+    canvas.height = 300;
+  }
+  
+  const ctx = canvas.getContext("2d");
 
   // Filter out TotalCount if it's there to keep chart focused on categories
   const filteredData = chartData.filter(
@@ -91,7 +146,7 @@ function renderChart(canvasId, chartData) {
   const dataPoints = filteredData.map((item) => item.YAxisKey);
   const bgColors = labels.map((label) => statusColors[label] || "#333");
 
-  new Chart(ctx, {
+  const chart = new Chart(ctx, {
     type: "pie",
     data: {
       labels: labels,
@@ -105,8 +160,9 @@ function renderChart(canvasId, chartData) {
       ],
     },
     options: {
-      responsive: true,
+      responsive: false, // Prevents Angular ResizeObserver infinite loops
       maintainAspectRatio: false,
+      resizeDelay: 50,
       plugins: {
         legend: {
           position: "right",
@@ -119,10 +175,34 @@ function renderChart(canvasId, chartData) {
       },
     },
   });
+
+  window._dashboardCharts[canvasId] = chart;
 }
 
 function renderCoordinatorGroupChart(canvasId, data) {
-  const ctx = document.getElementById(canvasId).getContext("2d");
+  // Destroy existing chart instance to prevent memory leaks and infinite resize loops
+  if (window._dashboardCharts && window._dashboardCharts[canvasId]) {
+    window._dashboardCharts[canvasId].destroy();
+  }
+
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  
+  if (canvas.parentElement) {
+    canvas.parentElement.style.position = "relative";
+    canvas.parentElement.style.height = "350px";
+    canvas.parentElement.style.minHeight = "350px";
+    canvas.parentElement.style.width = "100%";
+
+    // Manually set canvas size to prevent tiny charts when responsive is false
+    const parentWidth = canvas.parentElement.clientWidth || 800;
+    canvas.style.width = parentWidth + "px";
+    canvas.style.height = "350px";
+    canvas.width = parentWidth;
+    canvas.height = 350;
+  }
+  
+  const ctx = canvas.getContext("2d");
 
   // Sort coordinators by total count descending and take top 10 for better readability
   const sortedData = [...data]
@@ -172,7 +252,7 @@ function renderCoordinatorGroupChart(canvasId, data) {
     },
   ];
 
-  new Chart(ctx, {
+  const chart = new Chart(ctx, {
     type: "bar",
     data: {
       labels: labels,
@@ -180,8 +260,9 @@ function renderCoordinatorGroupChart(canvasId, data) {
     },
     options: {
       indexAxis: "y", // Makes it a horizontal bar chart for better label reading
-      responsive: true,
+      responsive: false, // Prevents Angular ResizeObserver infinite loops
       maintainAspectRatio: false,
+      resizeDelay: 50,
       interaction: {
         mode: "index",
         axis: "y",
@@ -228,18 +309,21 @@ function renderCoordinatorGroupChart(canvasId, data) {
       },
     },
   });
+
+  if (window._dashboardCharts) {
+    window._dashboardCharts[canvasId] = chart;
+  }
 }
 
 function populateCoordCustTable(requests) {
   const tbody = document.getElementById("coord-cust-table-body");
-  tbody.innerHTML = "";
+  if (!tbody) return;
 
   // Sort by TotalCount descending
   const sorted = [...requests].sort((a, b) => b.TotalCount - a.TotalCount);
 
-  sorted.forEach((req) => {
-    const row = document.createElement("tr");
-
+  // Use string array mapping for massively improved DOM performance
+  const rowsHtml = sorted.map((req) => {
     // Use profile image if available, else initials
     let avatarHtml = "";
     if (req.Profile_Path) {
@@ -256,7 +340,8 @@ function populateCoordCustTable(requests) {
       avatarHtml = `<div class="coordinator-avatar">${initials}</div>`;
     }
 
-    row.innerHTML = `
+    return `
+        <tr>
             <td>
                 <div class="coordinator-name">
                     ${avatarHtml}
@@ -274,22 +359,22 @@ function populateCoordCustTable(requests) {
             <td><span class="status-pill pill-reopen">${req.ReOpen}</span></td>
             <td><span class="status-pill pill-closed">${req.Closed}</span></td>
             <td style="font-weight: 700;">${req.TotalCount}</td>
-        `;
+        </tr>
+    `;
+  }).join("");
 
-    tbody.appendChild(row);
-  });
+  tbody.innerHTML = rowsHtml;
 }
 
 function populateCoordTable(requests) {
   const tbody = document.getElementById("coord-table-body");
-  tbody.innerHTML = "";
+  if (!tbody) return;
 
   // Sort by TotalCount descending
   const sorted = [...requests].sort((a, b) => b.TotalCount - a.TotalCount);
 
-  sorted.forEach((req) => {
-    const row = document.createElement("tr");
-
+  // Use string array mapping for massively improved DOM performance
+  const rowsHtml = sorted.map((req) => {
     // Use profile image if available, else initials
     let avatarHtml = "";
     if (req.Profile_Path) {
@@ -306,7 +391,8 @@ function populateCoordTable(requests) {
       avatarHtml = `<div class="coordinator-avatar">${initials}</div>`;
     }
 
-    row.innerHTML = `
+    return `
+        <tr>
             <td>
                 <div class="coordinator-name">
                     ${avatarHtml}
@@ -322,10 +408,11 @@ function populateCoordTable(requests) {
             <td><span class="status-pill pill-reopen">${req.ReOpen}</span></td>
             <td><span class="status-pill pill-closed">${req.Closed}</span></td>
             <td style="font-weight: 700;">${req.TotalCount}</td>
-        `;
+        </tr>
+    `;
+  }).join("");
 
-    tbody.appendChild(row);
-  });
+  tbody.innerHTML = rowsHtml;
 }
 
 function initSearch(inputId, tbodyId) {
@@ -333,6 +420,10 @@ function initSearch(inputId, tbodyId) {
   const tbody = document.getElementById(tbodyId);
 
   if (searchInput && tbody) {
+    // Prevent adding multiple event listeners if evaluated repeatedly
+    if (searchInput._hasSearchListener) return;
+    searchInput._hasSearchListener = true;
+
     searchInput.addEventListener("keyup", function (e) {
       const term = e.target.value.toLowerCase();
       const rows = tbody.getElementsByTagName("tr");
