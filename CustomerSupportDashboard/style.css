@@ -1,0 +1,270 @@
+:root {
+  /* Colors */
+  --bg-color: #f4f7f6;
+  --sidebar-bg: #1e1e2d;
+  --sidebar-color: #a8a8b8;
+  --sidebar-active: #ffffff;
+  --sidebar-active-bg: #2b2b40;
+  
+  --card-bg: #ffffff;
+  --text-main: #333333;
+  --text-muted: #888888;
+  
+  --border-color: #eaedf1;
+  --primary-color: #3e64ff;
+  --primary-hover: #2948cf;
+  
+  /* Semantic Status Colors */
+  --color-new: #00d2fc;
+  --color-inprogress: #f5a623;
+  --color-scheduled: #8e44ad;
+  --color-reopen: #e74c3c;
+  --color-closed: #2ecc71;
+  
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+  
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  
+  --transition: all 0.25s ease;
+}
+
+.dashboard-wrapper * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.dashboard-wrapper {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  overflow-x: hidden;
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+
+
+/* Main Content */
+.dashboard-wrapper .main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+
+
+/* Dashboard Container */
+.dashboard-wrapper .dashboard-container {
+  padding: 20px 24px;
+}
+
+.dashboard-wrapper .page-title {
+  margin-bottom: 24px;
+}
+
+.dashboard-wrapper .page-title h1 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.dashboard-wrapper .page-title p {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* Dashboard Grid */
+.dashboard-wrapper .dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Cards */
+.dashboard-wrapper .section-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-md);
+}
+
+.dashboard-wrapper .section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 16px;
+}
+
+.dashboard-wrapper .section-header h3 {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dashboard-wrapper .section-header h3 i {
+  color: var(--primary-color);
+}
+
+.dashboard-wrapper .badge {
+  background: rgba(62, 100, 255, 0.1);
+  color: var(--primary-color);
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* Metrics Grid */
+.dashboard-wrapper .metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.dashboard-wrapper .metric-item {
+  background: var(--bg-color);
+  padding: 12px 8px;
+  border-radius: var(--radius-md);
+  text-align: center;
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+
+.dashboard-wrapper .metric-item:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-color);
+  background: var(--card-bg);
+}
+
+.dashboard-wrapper .metric-value {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.dashboard-wrapper .metric-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Status Specific Colors */
+.metric-new .metric-value { color: var(--color-new); }
+.metric-inprogress .metric-value { color: var(--color-inprogress); }
+.metric-scheduled .metric-value { color: var(--color-scheduled); }
+.metric-reopen .metric-value { color: var(--color-reopen); }
+.metric-closed .metric-value { color: var(--color-closed); }
+
+/* Charts */
+.dashboard-wrapper .chart-container {
+  position: relative;
+  height: 250px;
+  width: 100%;
+}
+
+/* Table Section */
+.dashboard-wrapper .table-section {
+  margin-top: 16px;
+}
+
+.dashboard-wrapper .table-responsive {
+  max-height: 350px;
+  overflow-y: auto;
+  overflow-x: auto;
+  /* styling the scrollbar for webkit */
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+.dashboard-wrapper .table-responsive::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.dashboard-wrapper .table-responsive::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 4px;
+}
+
+.dashboard-wrapper .data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dashboard-wrapper .data-table th, .dashboard-wrapper .data-table td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dashboard-wrapper .data-table th {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: #f8f9fa;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  box-shadow: 0 1px 0 var(--border-color); /* fake border for sticky header */
+}
+
+.dashboard-wrapper .data-table td {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.dashboard-wrapper .data-table tbody tr {
+  transition: var(--transition);
+}
+
+.dashboard-wrapper .data-table tbody tr:hover {
+  background-color: rgba(62, 100, 255, 0.03);
+}
+
+.dashboard-wrapper .coordinator-name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard-wrapper .coordinator-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.dashboard-wrapper .customer-code {
+  color: var(--primary-color);
+  font-family: monospace;
+  font-size: 13px;
+}
+
+/* Status Pills for table */
+.dashboard-wrapper .status-pill {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.pill-new { background: rgba(0, 210, 252, 0.1); color: var(--color-new); }
+.pill-inprogress { background: rgba(245, 166, 35, 0.1); color: var(--color-inprogress); }
+.pill-scheduled { background: rgba(142, 68, 173, 0.1); color: var(--color-scheduled); }
+.pill-reopen { background: rgba(231, 76, 60, 0.1); color: var(--color-reopen); }
+.pill-closed { background: rgba(46, 204, 113, 0.1); color: var(--color-closed); }
