@@ -359,6 +359,11 @@
                                     readonly>
                             </div>
                             <div class="mb-3 d-none">
+                                <label for="SourceApprovalManager" class="form-label">{{Translate 'SourceApprovalManager'}}</label>
+                                <input type="text" class="form-control" id="SourceApprovalManager" name="SourceApprovalManager"
+                                    readonly>
+                            </div>
+                            <div class="mb-3 d-none">
                                 <label for="isEdit" class="form-label">{{Translate 'isEdit'}}</label>
                                 <input type="text" class="form-control" id="isEdit" name="isEdit"
                                     readonly>
@@ -1090,6 +1095,7 @@
         var companyId = localStorage.getItem('CompanyId');
         const appId = "e6516de3ae824fd18d745fe9ac836cda";
         const AdministrationAppId = "APP0000006";
+        const ConnectorId = "CON0000001";
         const UserTableCollectionId = "ECN0000055";//collectionId
         const UserTableEntityId = "Users";//entityId
         const EntityId = 'a687fc357c3c4e748cb60bf97ea1b0b0';//leave Request EntityId
@@ -1100,7 +1106,7 @@
             userId = localStorage.getItem('UserId');
             companyId = localStorage.getItem('CompanyId');
         }else if (window.location.hostname === "localhost" || window.location.hostname === "" ){
-            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiI5OTQzMjIxMzIxIiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSIsImV4cCI6MTc4NDI3MjA4MCwiaXNzIjoiYXBwczR4LmNvbSIsImF1ZCI6ImFwcHM0eC5jb20ifQ.SbGathP-VMW2kV7fxqXdL3i1IDO1CTjRSWza2Aoo5nw";
+            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiI5OTQzMjIxMzIxIiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSIsImV4cCI6MTc4NDg2ODQ5MCwiaXNzIjoiYXBwczR4LmNvbSIsImF1ZCI6ImFwcHM0eC5jb20ifQ.EQWid7UNLhPzjeYYCWquVsZhDOd3ythETbNkZbZ6HtU";
             currentEmployeeId = "1056641";//"1098483";idris bhai empId/1056641
             userId = "a.hyder";
             companyId = "LGE0000001";
@@ -1253,6 +1259,13 @@
             }
             if (!$("[name='approvalmanagerid']").val()) {
                 Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please Fill The Approval Details'}}"), "warning");
+                // $loader.remove();
+                // $btn.prop('disabled', false);
+                hideLoader('nextStep');
+                return;
+            }
+            if (!$("[name='SourceApprovalManager']").val()) {
+                Swal.fire(handlebarCompile("{{Translate 'Warning'}}"), handlebarCompile("{{Translate 'Please Fill The SourceApprovalManager Details'}}"), "warning");
                 // $loader.remove();
                 // $btn.prop('disabled', false);
                 hideLoader('nextStep');
@@ -2322,8 +2335,9 @@
                     $("#paymentMethod").val("Monthly basis");
                     $("#vacationType").val("Annual");
                     $("#approvalmanagername").val(data.RetListValue[0].reportingEmployeeName);
-                    $('#approvalmanagernametext').html(data.RetListValue[0].reportingEmployeeName);
-                    $("#approvalmanagerid").val(data.RetListValue[0].reportingEmployeeId);
+                    //$('#approvalmanagernametext').html(data.RetListValue[0].reportingEmployeeName);
+                    // $("#approvalmanagerid").val(data.RetListValue[0].reportingEmployeeId);
+                    $("#SourceApprovalManager").val(data.RetListValue[0].reportingEmployeeId);
                     $("#EmployeePosition").val(data.RetListValue[0].positionName);
                     $('input[name="extensionleave2"]').prop('disabled', true);
                     hideLoader('nextStep');
@@ -2487,6 +2501,7 @@
                 "Notes": null,
                 "Status": "Draft",
                 "ApprovalManager": $("#approvalmanagerid").val(),
+                "SourceApprovalManager": $("#SourceApprovalManager").val(),
                 "LastWorkingDate": null,
                 "EmployeeJoinDate": null,
                 "AdultTicketPrice": parseInt($("#AdultTicketPrice").val()) || 0,
@@ -2743,7 +2758,8 @@
 
         function getApprovalManagerUserIdByEmployeeId(ApprovalManagerEmployeeId) {
             showLoader('nextStep');
-            const apiUrl = `${Apps4xApiUrl}api/v1/data/${companyId}?collectionId=${UserTableCollectionId}&entityid=${UserTableEntityId}&$filter:EmployeeId=li:${ApprovalManagerEmployeeId}`;
+            //const apiUrl = `${Apps4xApiUrl}api/v1/data/${companyId}?collectionId=${UserTableCollectionId}&entityid=${UserTableEntityId}&$filter:EmployeeId=li:${ApprovalManagerEmployeeId}`;
+            const apiUrl = `${Apps4xApiUrl}api/v1/${companyId}/connector/${ConnectorId}/sql/sysobjectexecute?object_Type=V&objectName=VW_GetUsers&$filter:SourceEmployeeId=eq:${ApprovalManagerEmployeeId}`;
             // Make API call
             fetch(apiUrl, {
                 method: "GET",
@@ -2763,6 +2779,10 @@
                     hideLoader('nextStep');
                     if(data && data.Data && data.Data.length > 0){
                     $("#ApprovalManagerUserId").val(data.Data[0].UserId);
+                    $("#approvalmanagerid").val(data.Data[0].EmployeeId);
+                    $("#approvalmanagername").val(data.Data[0].Name);
+                    // $('#approvalmanagernametext').text('');
+                    $('#approvalmanagernametext').html(data.Data[0].Name);
                     }
                     // console.log($("#ApprovalManagerUserId").val());
                 })
