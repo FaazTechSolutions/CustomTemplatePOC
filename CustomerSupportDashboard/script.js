@@ -1,10 +1,10 @@
 // --- Dashboard Data ---
 // In a real environment, you would fetch this from an API endpoint.
-let _this = this;
-let dashboardData = _this.currentPageData;
+var _this = this;
+var dashboardData = _this ? _this.currentPageData : null;
 
 // Colors mapping matching the CSS variables
-const statusColors = {
+var statusColors = {
   New: "#00d2fc",
   InProgress: "#f5a623",
   Scheduled: "#8e44ad",
@@ -17,6 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function initDashboard() {
+  if (typeof _this !== "undefined" && _this && _this.currentPageData) {
+    dashboardData = _this.currentPageData;
+  }
   if (!dashboardData) return;
 
   // 1. Guard check: If the dashboard container isn't in the DOM, 
@@ -36,7 +39,8 @@ function initDashboard() {
     // ignore
   }
 
-  const isPopulated = allTicketsContainer.innerHTML.trim().length > 0;
+  // Check children.length so HTML comments (<!-- JS Populated Cards -->) do not trigger false positives
+  const isPopulated = allTicketsContainer.children.length > 0;
   
   if (window._lastDashboardDataString === dataFingerprint && isPopulated) {
     return;
