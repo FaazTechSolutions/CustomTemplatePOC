@@ -256,6 +256,93 @@
   font-size: 13px;
 }
 
+/* Team Tickets Grid */
+.dashboard-wrapper .team-tickets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.dashboard-wrapper .team-ticket-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  border-top-width: 4px;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-wrapper .team-ticket-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.dashboard-wrapper .team-ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.dashboard-wrapper .team-ticket-header h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.dashboard-wrapper .team-ticket-total {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 20px;
+}
+
+.dashboard-wrapper .team-ticket-breakdown {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-color);
+  padding-top: 12px;
+  margin-top: auto;
+}
+
+.dashboard-wrapper .team-ticket-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dashboard-wrapper .team-ticket-stat.unassigned {
+  align-items: flex-start;
+}
+
+.dashboard-wrapper .team-ticket-stat.assigned {
+  align-items: flex-end;
+}
+
+.dashboard-wrapper .team-ticket-stat span {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dashboard-wrapper .team-ticket-stat strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.dashboard-wrapper .team-ticket-stat.unassigned strong {
+  color: var(--color-reopen);
+}
+
+.dashboard-wrapper .team-ticket-stat.assigned strong {
+  color: var(--color-closed);
+}
+
 /* Status Pills for table */
 .dashboard-wrapper .status-pill {
   padding: 4px 8px;
