@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Selection - Ticket Create Action</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Tabler Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.36.0/tabler-icons.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- jQuery & Handlebars -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --accent-color: #fdbd3f;
+            --border-color: #dee2e6;
+            --bg-light: #f8f9fa;
+        }
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            color: #333;
+        }
+        .form-container {
+            max-width: 880px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            border-top: 5px solid var(--primary-color);
+        }
+        .badge-title {
+            background: #fff;
+            position: absolute;
+            top: -12px;
+            left: 15px;
+            padding: 0 10px;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .required {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .readOnly {
+            opacity: 0.65 !important;
+            pointer-events: none !important;
+            background-color: #e9ecef !important;
+        }
+        
+        /* Loader Spinner */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #fdbd3f;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Custom Dropdown Styles */
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+        }
+        .dropdown-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 12px;
+        }
+        .dropdown-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        .dropdown-content {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            right: -100px;
+            min-width: 650px;
+            background-color: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            max-height: 440px;
+            overflow: hidden;
+            display: none;
+            z-index: 1050;
+            flex-direction: column;
+        }
+        @media (max-width: 768px) {
+            .dropdown-content {
+                min-width: 100%;
+                right: 0;
+            }
+        }
+        .dropdown-content.active {
+            display: flex;
+        }
+        .data-table-container {
+            overflow-y: auto;
+            max-height: 290px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .data-table th {
+            background-color: #f8fafc;
+            position: sticky;
+            top: 0;
+            padding: 12px 10px;
+            border-bottom: 2px solid #e2e8f0;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            z-index: 10;
+        }
+        .data-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: middle;
+        }
+        .data-table tbody tr:hover {
+            background-color: #f1f5f9;
+            cursor: pointer;
+        }
+        .data-table tbody tr.selected {
+            background-color: #e2e8f0;
+            font-weight: 600;
+        }
+        .filter-input {
+            width: 100%;
+            margin-top: 6px;
+            padding: 6px 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: normal;
+        }
+        .filter-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background-color: #fff;
+        }
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            font-size: 13px;
+            margin-bottom: 0;
+        }
+        .pagination-controls {
+            display: flex;
+            gap: 4px;
+        }
+        .pagination-btn {
+            padding: 4px 10px;
+            border: 1px solid #cbd5e1;
+            background-color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        .pagination-btn:hover:not(:disabled) {
+            background-color: #f1f5f9;
+            border-color: #94a3b8;
+        }
+        .pagination-btn.active {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Banner styles */
+        .mapping-banner {
+            border-left: 5px solid #dc3545;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #fff8f8;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.1);
+        }
+        .redirect-btn {
+            white-space: nowrap;
+            background-color: #f59e0b;
+            border-color: #d97706;
+            color: #fff !important;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(245, 158, 11, 0.25);
+            transition: all 0.2s;
+        }
+        .redirect-btn:hover {
+            background-color: #d97706;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(245, 158, 11, 0.35);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+            <h3 class="m-0 fw-bold text-primary"><i class="ti ti-users me-2"></i>{{Translate 'Customer Selection'}}</h3>
+        </div>
+
+        <!-- Alert & Redirect Button Banner (for empty coordinator lists or missing mapping) -->
+        <div id="mappingAlertBanner" class="mapping-banner mb-4 d-none">
+            <div class="d-flex align-items-center">
+                <i class="ti ti-alert-triangle text-danger fs-3 me-3"></i>
+                <div>
+                    <h6 class="mb-1 fw-bold text-danger">{{Translate 'Action Blocked: Cannot Proceed'}}</h6>
+                    <span id="mappingAlertText" class="text-secondary small">{{Translate 'Coordinator customer list is empty or customer is not mapped.'}}</span>
+                </div>
+            </div>
+            <div>
+                <a href="https://portal.mawarid.com.sa/apps4x/#/apps/CustomerSupport/Customer" target="_blank" class="btn btn-sm redirect-btn px-3 py-2 text-decoration-none d-flex align-items-center">
+                    <i class="ti ti-external-link me-1 fs-5"></i> {{Translate 'Manage / Map Customers'}}
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Form Content -->
+        <form id="customerSelectionForm" onsubmit="return false;">
+            <!-- Customer Selection Fieldset -->
+            <fieldset class="border p-4 mb-4 position-relative rounded-3 bg-white">
+                <span class="badge-title">{{Translate 'Customer Details'}}</span>
+                
+                <div class="row g-3">
+                    <!-- Customer Id (Dropdown Table) -->
+                    <div class="col-12 col-md-6">
+                        <label for="CustomerId" class="form-label fw-semibold">
+                            {{Translate 'Customer Code / Id'}} <span class="required">*</span>
+                        </label>
+                        <div class="custom-dropdown">
+                            <input type="text" class="form-control dropdown-input fw-semibold" id="CustomerId" name="CustomerId" placeholder="Select Customer Code" readonly>
+                            
+                            <!-- Dropdown Content -->
+                            <div class="dropdown-content">
+                                <div class="data-table-container">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Customer Code
+                                                    <input type="text" class="filter-input" placeholder="Customer Code" data-column="0">
+                                                </th>
+                                                <th>
+                                                    Customer Name
+                                                    <input type="text" class="filter-input" placeholder="Customer Name" data-column="1">
+                                                </th>
+                                                <th>
+                                                    Support Email
+                                                    <input type="text" class="filter-input" placeholder="Support Email" data-column="2">
+                                                </th>
+                                                <th>
+                                                    Domain
+                                                    <input type="text" class="filter-input" placeholder="Domain" data-column="3">
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Table rows populated by API / JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Pagination -->
+                                <div class="pagination">
+                                    <div class="pagination-info text-muted">
+                                        Showing <span id="start-record" class="fw-bold">0</span> to <span id="end-record" class="fw-bold">0</span> of
+                                        <span id="total-records" class="fw-bold">0</span> customers
+                                    </div>
+                                    <div class="pagination-controls">
+                                        <button type="button" class="pagination-btn" id="first-page" title="First Page">&laquo;</button>
+                                        <button type="button" class="pagination-btn" id="prev-page" title="Previous Page">&lsaquo;</button>
+                                        <button type="button" class="pagination-btn" id="next-page" title="Next Page">&rsaquo;</button>
+                                        <button type="button" class="pagination-btn" id="last-page" title="Last Page">&raquo;</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <small id="customerHelperText" class="form-text text-muted d-block mt-1">
+                            <i class="ti ti-info-circle me-1"></i>Click to pick a mapped customer from the coordinator table.
+                        </small>
+                    </div>
+
+                    <!-- Customer Name (Readonly Display) -->
+                    <div class="col-12 col-md-6">
+                        <label for="CustomerName" class="form-label fw-semibold">
+                            {{Translate 'Customer Name'}} <span class="required">*</span>
+                        </label>
+                        <input type="text" class="form-control bg-light readOnly" id="CustomerName" name="CustomerName" placeholder="Auto-fills upon selection" readonly>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Actions Bar -->
+            <div class="d-flex justify-content-end align-items-center pt-2 border-top gap-2">
+                <button type="button" class="btn btn-light border px-4" id="btnClear">
+                    <i class="ti ti-eraser me-1"></i>{{Translate 'Clear'}}
+                </button>
+                <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm" id="btnConfirmCustomer">
+                    <i class="ti ti-check me-1"></i>{{Translate 'Confirm Selection'}}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        $(document).ready(function () {
+            // =========================================================================================
+            // API CONFIGURATION & CREDENTIALS RETRIEVAL FROM LOCALSTORAGE
+            // =========================================================================================
+            const Apps4xApiUrl = "https://portal.mawarid.com.sa/apps4x-api/";
+            
+            // Retrieve values from localStorage (standard Mawarid template pattern)
+            const token = localStorage.getItem("eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9") || "";
+            const userId = localStorage.getItem("UserId") || ""; 
+            const companyId = localStorage.getItem("CompanyId") || "LGE0000001";
+            const appId = "APP0000001";
+            
+            // Register mock Handlebars Translate helper if Handlebars is present
+            if (typeof Handlebars !== 'undefined') {
+                Handlebars.registerHelper('Translate', function (value) {
+                    return value || "";
+                });
+            }
+
+            function handlebarCompile(templateSource) {
+                if (typeof Handlebars !== 'undefined') {
+                    return Handlebars.compile(templateSource)({});
+                }
+                return templateSource.replace(/\{\{Translate '([^']+)'\}\}/g, '$1');
+            }
+
+            // Loader utilities
+            function showLoader(btnId) {
+                const $loader = $('<span class="loader"></span>');
+                const $btn = $(`#${btnId}`);
+                $btn.find('.loader').remove();
+                $btn.prop('disabled', true).append($loader);
+            }
+
+            function hideLoader(btnId) {
+                const $btn = $(`#${btnId}`);
+                $btn.find('.loader').remove();
+                $btn.prop('disabled', false);
+            }
+
+            // State Variables
+            let activeCoordinatorList = [];
+            let tableData = [];
+            let filteredData = [];
+            let currentPage = 1;
+            const recordsPerPage = 5;
+
+            // =========================================================================================
+            // CORE API FETCH FUNCTION (Using UserID from localStorage to filter CoordinatorAssignment)
+            // =========================================================================================
+            function loadCoordinatorCustomersFromApi(callback) {
+                showLoader('btnConfirmCustomer');
+
+                if (!userId) {
+                    console.warn("UserId not found in localStorage. Unable to fetch coordinator customers.");
+                    hideLoader('btnConfirmCustomer');
+                    if (callback) callback();
+                    return;
+                }
+                
+                // Construct API URL with UserID filter from localStorage
+                const apiUrl = `${Apps4xApiUrl}api/v1/data/${companyId}?collectionId=ECN0000004&entityid=ETN0000004&processStageId=-2&schemaVersion=1&$page=1&$size=100&$filter:UserID=in:%27${userId}%27`;
+                
+                fetch(apiUrl, {
+                    method: "GET",
+                    headers: {
+                        "accept": "application/json, text/plain, */*",
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token,
+                        "User-Id": userId,
+                        "appid": appId,
+                        "CompanyId": companyId
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    hideLoader('btnConfirmCustomer');
+                    const returnedList = data.Data || data.Return || data;
+                    if (Array.isArray(returnedList)) {
+                        activeCoordinatorList = returnedList;
+                    } else {
+                        console.warn("Unexpected API structure received:", data);
+                        activeCoordinatorList = [];
+                    }
+                    if (callback) callback();
+                })
+                .catch(error => {
+                    hideLoader('btnConfirmCustomer');
+                    console.error("Error fetching coordinator customers from API:", error);
+                    activeCoordinatorList = [];
+                    if (callback) callback();
+                });
+            }
+
+            // Initialize Form by loading data from API
+            loadCoordinatorCustomersFromApi(() => {
+                initializeCustomerSelection();
+            });
+
+            // Determines active customer context and executes validation rules
+            function initializeCustomerSelection() {
+                const currentCustomer = window.currentCustomerCode || new URLSearchParams(window.location.search).get('customer') || null;
+                executeCoordinatorRules(currentCustomer, activeCoordinatorList);
+            }
+
+            // Core Validation Logic for Customer Selection & Dropdown Behavior
+            function executeCoordinatorRules(customer, coordinatorList) {
+                // Clear inputs
+                $('#CustomerId').val('');
+                $('#CustomerName').val('');
+                $('.dropdown-content').removeClass('active');
+                $('#mappingAlertBanner').addClass('d-none');
+                $('#CustomerId').removeClass('readOnly').prop('disabled', false);
+                $('#btnConfirmCustomer').prop('disabled', false).removeClass('btn-secondary').addClass('btn-primary');
+
+                tableData = [...coordinatorList];
+                filteredData = [...tableData];
+                currentPage = 1;
+                initializeTable();
+
+                // Step 1: Customer is null
+                if (!customer || customer.trim() === '') {
+                    if (coordinatorList.length === 0) {
+                        blockAction("Coordinator customer list is empty. You must map or add customers before proceeding.");
+                    } else {
+                        $('#customerHelperText').html('<i class="ti ti-hand-click me-1"></i>Please pick a customer from the coordinator dropdown table.');
+                    }
+                } 
+                // Step 2: Customer is not null
+                else {
+                    if (coordinatorList.length === 0) {
+                        blockAction("Customer code (" + customer + ") is found, but coordinator customer list is empty. Please map the customer first.");
+                    } else {
+                        const matchedCustomer = coordinatorList.find(c => {
+                            const code = c.CustomerCode_Code || c.CustomerCode || "";
+                            return code.toLowerCase() === customer.trim().toLowerCase();
+                        });
+                        
+                        if (matchedCustomer) {
+                            const matchedCode = matchedCustomer.CustomerCode_Code || matchedCustomer.CustomerCode;
+                            $('#CustomerId').val(matchedCode).addClass('readOnly');
+                            $('#CustomerName').val(matchedCustomer.CustomerCode_Name || "");
+                            $('#customerHelperText').html('<i class="ti ti-check text-success me-1"></i>Customer auto-matched with coordinator list (' + matchedCode + ').');
+                        } else {
+                            $('#customerHelperText').html('<i class="ti ti-info-circle text-warning me-1"></i>Customer code (' + customer + ') not matched in coordinator list. Please select a valid coordinator customer below.');
+                        }
+                    }
+                }
+            }
+
+            // Helper to lock form action and show banner with redirect button
+            function blockAction(errorMessage) {
+                $('#mappingAlertText').text(handlebarCompile(errorMessage));
+                $('#mappingAlertBanner').removeClass('d-none');
+                $('#CustomerId').addClass('readOnly').prop('disabled', true);
+                $('#btnConfirmCustomer').prop('disabled', true).removeClass('btn-primary').addClass('btn-secondary');
+                $('#customerHelperText').html('<i class="ti ti-lock text-danger me-1"></i>Customer selection disabled until mapping is configured.');
+
+                Swal.fire({
+                    title: handlebarCompile("Action Blocked"),
+                    text: handlebarCompile(errorMessage),
+                    icon: "warning",
+                    confirmButtonText: handlebarCompile("OK")
+                });
+            }
+
+            // ================= Dropdown Table & Pagination Logic =================
+            function initializeTable() {
+                renderTable();
+                updatePagination();
+            }
+
+            function renderTable() {
+                const tbody = $('.data-table tbody');
+                tbody.empty();
+
+                if (filteredData.length === 0) {
+                    tbody.append('<tr><td colspan="4" class="text-center py-3 text-muted">No coordinator customers available or matching criteria.</td></tr>');
+                    $('#start-record').text('0');
+                    $('#end-record').text('0');
+                    $('#total-records').text('0');
+                    return;
+                }
+
+                const startIndex = (currentPage - 1) * recordsPerPage;
+                const endIndex = Math.min(startIndex + recordsPerPage, filteredData.length);
+
+                for (let i = startIndex; i < endIndex; i++) {
+                    const row = filteredData[i];
+                    const code = row.CustomerCode_Code || row.CustomerCode || "N/A";
+                    const name = row.CustomerCode_Name || "N/A";
+                    const email = row.CustomerCode_SupportEmail || "N/A";
+                    const domain = row.CustomerCode_SupportDomain || "N/A";
+
+                    const tr = $('<tr>');
+                    tr.append($('<td>').addClass('fw-bold text-primary').text(code));
+                    tr.append($('<td>').text(name));
+                    tr.append($('<td>').text(email));
+                    tr.append($('<td>').text(domain));
+
+                    if ($('#CustomerId').val() === code) {
+                        tr.addClass('selected');
+                    }
+
+                    tr.click(function () {
+                        $('.data-table tbody tr').removeClass('selected');
+                        $(this).addClass('selected');
+                        $('#CustomerId').val(code);
+                        $('#CustomerName').val(name);
+                        $('.dropdown-content').removeClass('active');
+                    });
+
+                    tbody.append(tr);
+                }
+
+                $('#start-record').text(filteredData.length > 0 ? startIndex + 1 : 0);
+                $('#end-record').text(endIndex);
+                $('#total-records').text(filteredData.length);
+            }
+
+            function updatePagination() {
+                const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+                $('.pagination-controls .page-num-btn').remove();
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = $('<button>')
+                        .attr('type', 'button')
+                        .addClass('pagination-btn page-num-btn')
+                        .text(i)
+                        .click(function () {
+                            currentPage = i;
+                            renderTable();
+                            updatePagination();
+                        });
+                    if (i === currentPage) btn.addClass('active');
+                    $('#next-page').before(btn);
+                }
+
+                $('#first-page').prop('disabled', currentPage === 1 || totalPages === 0);
+                $('#prev-page').prop('disabled', currentPage === 1 || totalPages === 0);
+                $('#next-page').prop('disabled', currentPage === totalPages || totalPages === 0);
+                $('#last-page').prop('disabled', currentPage === totalPages || totalPages === 0);
+            }
+
+            // Pagination navigation events
+            $('#first-page').click(function () { if (currentPage > 1) { currentPage = 1; renderTable(); updatePagination(); } });
+            $('#prev-page').click(function () { if (currentPage > 1) { currentPage--; renderTable(); updatePagination(); } });
+            $('#next-page').click(function () { const max = Math.ceil(filteredData.length / recordsPerPage); if (currentPage < max) { currentPage++; renderTable(); updatePagination(); } });
+            $('#last-page').click(function () { const max = Math.ceil(filteredData.length / recordsPerPage); if (currentPage < max) { currentPage = max; renderTable(); updatePagination(); } });
+
+            // Column filtering events
+            $('.filter-input').on('input', function (e) {
+                e.stopPropagation();
+                filteredData = tableData.filter(item => {
+                    let match = true;
+                    $('.filter-input').each(function () {
+                        const filterVal = $(this).val().toLowerCase().trim();
+                        const idx = parseInt($(this).data('column'));
+                        if (filterVal) {
+                            let targetText = "";
+                            if (idx === 0) targetText = (item.CustomerCode_Code || item.CustomerCode || "").toLowerCase();
+                            else if (idx === 1) targetText = (item.CustomerCode_Name || "").toLowerCase();
+                            else if (idx === 2) targetText = (item.CustomerCode_SupportEmail || "").toLowerCase();
+                            else if (idx === 3) targetText = (item.CustomerCode_SupportDomain || "").toLowerCase();
+
+                            if (!targetText.includes(filterVal)) match = false;
+                        }
+                    });
+                    return match;
+                });
+
+                currentPage = 1;
+                renderTable();
+                updatePagination();
+            });
+
+            // Toggle dropdown table visibility
+            $('#CustomerId').click(function (e) {
+                e.stopPropagation();
+                if (!$(this).hasClass('readOnly') && !$(this).prop('disabled')) {
+                    $('.dropdown-content').toggleClass('active');
+                }
+            });
+
+            // Close dropdown if clicked outside
+            $(document).click(function (e) {
+                if (!$(e.target).closest('.custom-dropdown').length) {
+                    $('.dropdown-content').removeClass('active');
+                }
+            });
+
+            // Stop click propagation inside dropdown
+            $('.dropdown-content').click(function (e) {
+                e.stopPropagation();
+            });
+
+            // Clear Button Handler
+            $('#btnClear').click(function () {
+                initializeCustomerSelection();
+            });
+
+            // Confirm Selection Submit Handler
+            $('#btnConfirmCustomer').click(function () {
+                if ($(this).prop('disabled')) {
+                    return;
+                }
+
+                const custId = $('#CustomerId').val();
+                const custName = $('#CustomerName').val();
+
+                if (!custId) {
+                    Swal.fire(handlebarCompile("Warning"), handlebarCompile("Please select a Customer Code / Id from the dropdown."), "warning");
+                    return;
+                }
+
+                Swal.fire({
+                    title: handlebarCompile("Customer Confirmed!"),
+                    text: handlebarCompile(`Customer "${custName}" (${custId}) has been selected successfully.`),
+                    icon: "success",
+                    confirmButtonText: handlebarCompile("OK")
+                });
+            });
+        });
+    </script>
+</body>
+</html>
