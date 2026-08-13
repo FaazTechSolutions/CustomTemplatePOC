@@ -105,8 +105,22 @@ $(document).ready(function () {
 
     // Determines active customer context and executes validation rules
     function initializeCustomerSelection() {
-        // Retrieve current customer code if passed via window context or URL parameter
-        const currentCustomer = window.currentCustomerCode || new URLSearchParams(window.location.search).get('customer') || null;
+        let currentCustomer = null;
+        
+        try {
+            // Get customer code from parent component data
+            if (typeof _this !== 'undefined' && _this && _this.ParentData && _this.ParentData.CustomerCode) {
+                currentCustomer = _this.ParentData.CustomerCode;
+            }
+        } catch (e) {
+            console.log("ParentData not available", e);
+        }
+        
+        // Fallback to URL parameter for testing
+        if (!currentCustomer) {
+            currentCustomer = new URLSearchParams(window.location.search).get('customer') || null;
+        }
+
         executeCoordinatorRules(currentCustomer, activeCoordinatorList);
     }
 
