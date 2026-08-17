@@ -6,20 +6,18 @@
 }
 
 body {
-    background-color: #f0f2f5;
+    background-color: transparent;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding: 20px;
+    padding: 15px;
     color: #333;
 }
 
 .form-container {
-    max-width: 880px;
+    width: 100%;
     margin: 0 auto;
     background: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-    padding: 30px;
-    border-top: 5px solid var(--primary-color);
+    padding: 20px;
 }
 
 .badge-title {
@@ -33,6 +31,8 @@ body {
     font-size: 14px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
 }
 
 .required {
@@ -73,7 +73,7 @@ body {
 .dropdown-input {
     width: 100%;
     padding: 10px 14px;
-    border: 1px solid var(--border-color);
+    border: 2px solid var(--border-color);
     border-radius: 6px;
     background-color: #fff;
     cursor: pointer;
@@ -83,36 +83,40 @@ body {
     background-repeat: no-repeat;
     background-position: right 1rem center;
     background-size: 12px;
+    font-weight: 600;
 }
 
-.dropdown-input:focus {
+.dropdown-input:hover {
+    border-color: #babbbc;
+}
+
+.dropdown-input:focus, .dropdown-input.active {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.15);
 }
 
+/* 
+  BETTER LOGIC: Inline Panel instead of absolute floating dropdown.
+  This completely eliminates the popup clipping issue because the container 
+  expands naturally and allows the popup to scroll.
+*/
 .dropdown-content {
-    position: absolute;
-    top: calc(100% + 5px);
-    left: 0;
-    right: -100px;
-    min-width: 650px;
+    width: 100%;
+    margin-top: 15px;
     background-color: white;
-    border: 1px solid #cbd5e1;
+    border: 2px solid var(--border-color);
     border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    max-height: 440px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
     overflow: hidden;
     display: none;
-    z-index: 1050;
     flex-direction: column;
+    animation: expandDown 0.3s ease-out;
 }
 
-@media (max-width: 768px) {
-    .dropdown-content {
-        min-width: 100%;
-        right: 0;
-    }
+@keyframes expandDown {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .dropdown-content.active {
@@ -121,32 +125,39 @@ body {
 
 .data-table-container {
     overflow-y: auto;
-    max-height: 290px;
+    max-height: 350px; /* Allow more height since it's inline */
+    overflow-x: auto;
 }
 
 .data-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     font-size: 13px;
+    min-width: 600px;
 }
 
 .data-table th {
     background-color: #f8fafc;
     position: sticky;
     top: 0;
-    padding: 12px 10px;
-    border-bottom: 2px solid #e2e8f0;
+    padding: 12px 14px;
+    border-bottom: 2px solid var(--border-color);
     text-align: left;
-    font-weight: 600;
-    color: #475569;
+    font-weight: 700;
+    color: var(--primary-color);
     z-index: 10;
 }
 
 .data-table td {
-    padding: 10px 12px;
-    border-bottom: 1px solid #f1f5f9;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--bg-light);
     color: #334155;
     vertical-align: middle;
+}
+
+.data-table tbody tr {
+    transition: background-color 0.2s;
 }
 
 .data-table tbody tr:hover {
@@ -155,13 +166,17 @@ body {
 }
 
 .data-table tbody tr.selected {
-    background-color: #e2e8f0;
+    background-color: rgba(30, 58, 138, 0.08);
     font-weight: 600;
+    border-left: 3px solid var(--primary-color);
+}
+.data-table tbody tr.selected td:first-child {
+    box-shadow: inset 3px 0 0 var(--primary-color);
 }
 
 .filter-input {
     width: 100%;
-    margin-top: 6px;
+    margin-top: 8px;
     padding: 6px 8px;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
@@ -171,17 +186,18 @@ body {
 
 .filter-input:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: var(--primary-color);
     background-color: #fff;
+    box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.1);
 }
 
 .pagination {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 15px;
+    padding: 12px 15px;
     background-color: #f8fafc;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--border-color);
     font-size: 13px;
     margin-bottom: 0;
 }
@@ -192,12 +208,14 @@ body {
 }
 
 .pagination-btn {
-    padding: 4px 10px;
+    padding: 4px 12px;
     border: 1px solid #cbd5e1;
     background-color: white;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
     transition: all 0.2s;
 }
 
@@ -207,9 +225,9 @@ body {
 }
 
 .pagination-btn.active {
-    background-color: #3b82f6;
+    background-color: var(--primary-color);
     color: white;
-    border-color: #3b82f6;
+    border-color: var(--primary-color);
 }
 
 .pagination-btn:disabled {
@@ -231,16 +249,16 @@ body {
 
 .redirect-btn {
     white-space: nowrap;
-    background-color: #f59e0b;
-    border-color: #d97706;
+    background-color: var(--accent-color);
+    border-color: #e5a730;
     color: #fff !important;
     font-weight: 600;
-    box-shadow: 0 2px 4px rgba(245, 158, 11, 0.25);
+    box-shadow: 0 2px 4px rgba(253, 189, 63, 0.25);
     transition: all 0.2s;
 }
 
 .redirect-btn:hover {
-    background-color: #d97706;
+    background-color: #e5a730;
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(245, 158, 11, 0.35);
+    box-shadow: 0 4px 8px rgba(253, 189, 63, 0.35);
 }

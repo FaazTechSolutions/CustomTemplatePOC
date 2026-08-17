@@ -56,51 +56,6 @@
                         </label>
                         <div class="custom-dropdown">
                             <input type="text" class="form-control dropdown-input fw-semibold" id="CustomerId" name="CustomerId" placeholder="Select Customer Code" readonly>
-                            
-                            <!-- Dropdown Content -->
-                            <div class="dropdown-content">
-                                <div class="data-table-container">
-                                    <table class="data-table">
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    Customer Code
-                                                    <input type="text" class="filter-input" placeholder="Customer Code" data-column="0">
-                                                </th>
-                                                <th>
-                                                    Customer Name
-                                                    <input type="text" class="filter-input" placeholder="Customer Name" data-column="1">
-                                                </th>
-                                                <th>
-                                                    Support Email
-                                                    <input type="text" class="filter-input" placeholder="Support Email" data-column="2">
-                                                </th>
-                                                <th>
-                                                    Domain
-                                                    <input type="text" class="filter-input" placeholder="Domain" data-column="3">
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Table rows populated by API / JavaScript -->
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <!-- Pagination -->
-                                <div class="pagination">
-                                    <div class="pagination-info text-muted">
-                                        Showing <span id="start-record" class="fw-bold">0</span> to <span id="end-record" class="fw-bold">0</span> of
-                                        <span id="total-records" class="fw-bold">0</span> customers
-                                    </div>
-                                    <div class="pagination-controls">
-                                        <button type="button" class="pagination-btn" id="first-page" title="First Page">&laquo;</button>
-                                        <button type="button" class="pagination-btn" id="prev-page" title="Previous Page">&lsaquo;</button>
-                                        <button type="button" class="pagination-btn" id="next-page" title="Next Page">&rsaquo;</button>
-                                        <button type="button" class="pagination-btn" id="last-page" title="Last Page">&raquo;</button>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                         <small id="customerHelperText" class="form-text text-muted d-block mt-1">
                             <i class="ti ti-info-circle me-1"></i>Click to pick a mapped customer from the coordinator table.
@@ -113,6 +68,51 @@
                             {{Translate 'Customer Name'}} <span class="required">*</span>
                         </label>
                         <input type="text" class="form-control bg-light readOnly" id="CustomerName" name="CustomerName" placeholder="Auto-fills upon selection" readonly>
+                    </div>
+                </div>
+
+                <!-- Inline Expandable Panel (Replaces dropdown) -->
+                <div class="dropdown-content">
+                    <div class="data-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Customer Code
+                                        <input type="text" class="filter-input" placeholder="Customer Code" data-column="0">
+                                    </th>
+                                    <th>
+                                        Customer Name
+                                        <input type="text" class="filter-input" placeholder="Customer Name" data-column="1">
+                                    </th>
+                                    <th>
+                                        Support Email
+                                        <input type="text" class="filter-input" placeholder="Support Email" data-column="2">
+                                    </th>
+                                    <th>
+                                        Domain
+                                        <input type="text" class="filter-input" placeholder="Domain" data-column="3">
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Table rows populated by API / JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination">
+                        <div class="pagination-info text-muted">
+                            Showing <span id="start-record" class="fw-bold">0</span> to <span id="end-record" class="fw-bold">0</span> of
+                            <span id="total-records" class="fw-bold">0</span> customers
+                        </div>
+                        <div class="pagination-controls">
+                            <button type="button" class="pagination-btn" id="first-page" title="First Page">&laquo;</button>
+                            <button type="button" class="pagination-btn" id="prev-page" title="Previous Page">&lsaquo;</button>
+                            <button type="button" class="pagination-btn" id="next-page" title="Next Page">&rsaquo;</button>
+                            <button type="button" class="pagination-btn" id="last-page" title="Last Page">&raquo;</button>
+                        </div>
                     </div>
                 </div>
             </fieldset>
