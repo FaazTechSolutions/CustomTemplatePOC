@@ -412,11 +412,28 @@
     }
     .result-table td {
       padding: 8px 12px; border-bottom: 1px solid var(--border);
-      color: var(--text2); vertical-align: top; word-break: break-word; max-width: 280px;
+      color: var(--text2); vertical-align: top; 
+      max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .result-table tr:last-child td { border-bottom: none; }
     .result-table tbody tr:hover { background: rgba(88,166,255,0.04); }
     .cell-null { color: var(--muted); font-style: italic; }
+
+    /* Pagination */
+    .pagination-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 14px; border-top: 1px solid var(--border);
+      background: var(--surface2); font-size: 11px; color: var(--muted);
+      flex-shrink: 0;
+    }
+    .pagination-controls { display: flex; gap: 6px; align-items: center; }
+    .page-btn {
+      background: var(--surface3); border: 1px solid var(--border);
+      color: var(--text); border-radius: var(--radius-sm);
+      padding: 4px 10px; font-size: 11px; cursor: pointer;
+    }
+    .page-btn:hover:not(:disabled) { background: var(--surface); border-color: var(--accent); }
+    .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
     /* Search bar */
     .search-wrap {
@@ -442,16 +459,40 @@
     }
     .resize-handle:hover { background: var(--accent); }
 
+    /* Mobile Sidebar Toggle */
+    .mobile-menu-btn {
+      display: none; background: transparent; border: none; color: var(--text);
+      font-size: 22px; cursor: pointer; padding: 4px; border-radius: var(--radius-sm);
+      transition: background 0.2s;
+    }
+    .mobile-menu-btn:hover { background: var(--surface2); }
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .sidebar-overlay.active { display: block; opacity: 1; }
+
     @media (max-width: 720px) {
-      .sidebar { display: none; }
+      .mobile-menu-btn { display: block; }
+      .sidebar { 
+        position: fixed; left: -100%; top: 0; bottom: 0; z-index: 1000;
+        transition: left 0.3s ease; box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+      }
+      .sidebar.mobile-open { left: 0; }
       .resize-handle { display: none; }
+      .app-header { padding: 10px 14px; gap: 10px; }
+      .header-icon { width: 32px; height: 32px; font-size: 16px; }
+      .header-text h1 { font-size: 14px; }
+      .header-text p { display: none; } /* Hide subtitle on small screens */
     }
   </style>
 </head>
 <body>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
 
   <!-- Header -->
   <header class="app-header">
+    <button class="mobile-menu-btn" onclick="toggleMobileSidebar()">☰</button>
     <div class="header-icon">🗄️</div>
     <div class="header-text">
       <h1>SQL Query Executor</h1>
@@ -776,6 +817,12 @@
     }
 
     async function selectObject(name, type, el) {
+      // Auto-close sidebar on mobile
+      if (window.innerWidth <= 720) {
+        document.getElementById('sidebar').classList.remove('mobile-open');
+        document.getElementById('sidebarOverlay').classList.remove('active');
+      }
+
       // Highlight active
       document.querySelectorAll('.obj-item.active').forEach(i => i.classList.remove('active'));
       el.classList.add('active');
@@ -849,6 +896,11 @@
         const hasVisible = [...grp.querySelectorAll('.obj-item')].some(i => i.style.display !== 'none');
         if (q && hasVisible) grp.classList.add('open');
       });
+    }
+
+    function toggleMobileSidebar() {
+      document.getElementById('sidebar').classList.toggle('mobile-open');
+      document.getElementById('sidebarOverlay').classList.toggle('active');
     }
 
     // ── Execute query ────────────────────────────────────────────────────────
@@ -1008,6 +1060,10 @@
       countEl.textContent = matches ? `${matches} match${matches > 1 ? 'es' : ''}` : 'No matches';
     }
 
+    let currentPage = 1;
+    const pageSize = 25;
+    let filteredTableRows = [];
+
     // ── Table view ────────────────────────────────────────────────────────────
     function renderTable(data) {
       currentView = 'table';
@@ -1016,50 +1072,124 @@
       document.getElementById('btnToggleExpand').style.display = 'none';
       const wrap = document.getElementById('viewerWrap');
       wrap.innerHTML = '';
+      
       const rows = extractTableRows(data);
       if (!rows.length) {
         wrap.innerHTML = `<div class="state-box"><div class="state-icon">📭</div><div class="state-title">Empty result set</div></div>`;
         return;
       }
-      const cols = [...new Set(rows.flatMap(r => Object.keys(r || {})))];
+      
+      filteredTableRows = rows;
+      currentPage = 1;
+      
       const sb = document.createElement('div');
       sb.className = 'search-wrap';
       sb.innerHTML = `<input class="search-input" id="tableSearch" placeholder="🔍  Search rows…" oninput="filterTable()" /><span class="search-count" id="tableCount">${rows.length} rows</span>`;
       wrap.appendChild(sb);
-      const tw = document.createElement('div'); tw.className = 'table-wrap';
-      const table = document.createElement('table'); table.className = 'result-table';
+      
+      const tw = document.createElement('div'); 
+      tw.className = 'table-wrap';
+      
+      const table = document.createElement('table'); 
+      table.className = 'result-table';
+      
+      const cols = [...new Set(rows.flatMap(r => Object.keys(r || {})))];
       const thead = document.createElement('thead');
       thead.innerHTML = `<tr>${cols.map(c => `<th>${escHtml(c)}</th>`).join('')}</tr>`;
       table.appendChild(thead);
-      const tbody = document.createElement('tbody'); tbody.id = 'resultTbody';
-      rows.forEach(row => {
+      
+      const tbody = document.createElement('tbody'); 
+      tbody.id = 'resultTbody';
+      table.appendChild(tbody);
+      
+      tw.appendChild(table);
+      wrap.appendChild(tw);
+      
+      const footer = document.createElement('div');
+      footer.className = 'pagination-footer';
+      footer.id = 'paginationFooter';
+      wrap.appendChild(footer);
+      
+      renderTablePage(cols);
+    }
+
+    function renderTablePage(cols) {
+      const tbody = document.getElementById('resultTbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      
+      const totalRows = filteredTableRows.length;
+      const totalPages = Math.ceil(totalRows / pageSize) || 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+      
+      const startIndex = (currentPage - 1) * pageSize;
+      const endIndex = Math.min(startIndex + pageSize, totalRows);
+      
+      const pageRows = filteredTableRows.slice(startIndex, endIndex);
+      
+      pageRows.forEach(row => {
         const tr = document.createElement('tr');
-        tr.dataset.raw = JSON.stringify(row).toLowerCase();
         cols.forEach(c => {
           const td = document.createElement('td');
           const v = row?.[c];
-          if (v === null || v === undefined) td.innerHTML = `<span class="cell-null">null</span>`;
-          else if (typeof v === 'object') td.innerHTML = `<code style="font-size:11px;color:var(--muted)">${escHtml(JSON.stringify(v))}</code>`;
-          else td.textContent = String(v);
+          if (v === null || v === undefined) {
+            td.innerHTML = `<span class="cell-null">null</span>`;
+          } else if (typeof v === 'object') {
+            const str = JSON.stringify(v);
+            td.innerHTML = `<code style="font-size:11px;color:var(--muted)">${escHtml(str)}</code>`;
+            td.title = str; // Tooltip on hover
+          } else {
+            const str = String(v);
+            td.textContent = str;
+            td.title = str; // Tooltip on hover
+          }
           tr.appendChild(td);
         });
         tbody.appendChild(tr);
       });
-      table.appendChild(tbody);
-      tw.appendChild(table);
-      wrap.appendChild(tw);
+      
+      // Update Footer
+      const footer = document.getElementById('paginationFooter');
+      if (footer) {
+        footer.innerHTML = `
+          <div>Showing ${totalRows === 0 ? 0 : startIndex + 1}-${endIndex} of ${totalRows} rows</div>
+          <div class="pagination-controls">
+            <button class="page-btn" onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''}>◀ Prev</button>
+            <span>Page ${currentPage} of ${totalPages}</span>
+            <button class="page-btn" onclick="changePage(1)" ${currentPage === totalPages ? 'disabled' : ''}>Next ▶</button>
+          </div>
+        `;
+      }
+    }
+
+    function changePage(delta) {
+      currentPage += delta;
+      const rows = extractTableRows(currentData);
+      const cols = [...new Set(rows.flatMap(r => Object.keys(r || {})))];
+      renderTablePage(cols);
     }
 
     function filterTable() {
       const q = document.getElementById('tableSearch').value.toLowerCase();
-      const rows = document.querySelectorAll('#resultTbody tr');
-      let shown = 0;
-      rows.forEach(r => {
-        const match = !q || r.dataset.raw.includes(q);
-        r.style.display = match ? '' : 'none';
-        if (match) shown++;
-      });
-      document.getElementById('tableCount').textContent = `${shown} / ${rows.length} rows`;
+      const rows = extractTableRows(currentData);
+      
+      if (!q) {
+        filteredTableRows = rows;
+      } else {
+        filteredTableRows = rows.filter(row => {
+          // Fast lower-case search on values
+          return Object.values(row || {}).some(v => 
+            v !== null && v !== undefined && String(v).toLowerCase().includes(q)
+          );
+        });
+      }
+      
+      currentPage = 1;
+      document.getElementById('tableCount').textContent = `${filteredTableRows.length} / ${rows.length} rows`;
+      
+      const cols = [...new Set(rows.flatMap(r => Object.keys(r || {})))];
+      renderTablePage(cols);
     }
 
     function switchView(v) {
