@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SQL Query Executor – Mawarid Connector</title>
+  <meta name="description" content="Execute SQL queries against the Mawarid connector API with a live JSON and table viewer." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css?v=2" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════════
+       HEADER
+       ══════════════════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="header-icon">🗄️</div>
+    <div class="header-text">
+      <h1>SQL Query Executor</h1>
+      <p>Mawarid Connector · CON0000001 · LGE0000001</p>
+    </div>
+    <div class="header-badge" id="tokenStatus">
+      <span class="dot" id="statusDot" style="background:var(--warning)"></span>
+      <span id="statusText">Checking token…</span>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════
+       APP BODY
+       ══════════════════════════════════════════════════════ -->
+  <div class="app-body">
+
+    <!-- ── Sidebar: Database Objects ── -->
+    <aside class="sidebar" id="sidebar">
+
+      <div class="sidebar-header">
+        <span class="sidebar-title">Database Objects</span>
+        <button class="sidebar-refresh" title="Reload all objects" onclick="loadAllObjects()">↻</button>
+      </div>
+
+      <div class="sidebar-search">
+        <input id="sidebarSearch" placeholder="🔍 Filter objects…" oninput="filterSidebar()" />
+      </div>
+
+      <div class="sidebar-body" id="sidebarBody">
+
+        <!-- Tables -->
+        <div class="obj-group open" id="grpTables">
+          <div class="obj-group-header" onclick="toggleGroup('grpTables')">
+            <span class="obj-group-icon">📋</span>
+            <span class="obj-group-label">Tables</span>
+            <span class="obj-group-count" id="cntTables">—</span>
+            <span class="obj-group-caret">›</span>
+          </div>
+          <div class="obj-group-body" id="listTables">
+            <div class="obj-status"><span class="obj-spinner"></span> Loading…</div>
+          </div>
+        </div>
+
+        <!-- Views -->
+        <div class="obj-group" id="grpViews">
+          <div class="obj-group-header" onclick="toggleGroup('grpViews')">
+            <span class="obj-group-icon">👁️</span>
+            <span class="obj-group-label">Views</span>
+            <span class="obj-group-count" id="cntViews">—</span>
+            <span class="obj-group-caret">›</span>
+          </div>
+          <div class="obj-group-body" id="listViews">
+            <div class="obj-status"><span class="obj-spinner"></span> Loading…</div>
+          </div>
+        </div>
+
+        <!-- Stored Procedures -->
+        <div class="obj-group" id="grpSPs">
+          <div class="obj-group-header" onclick="toggleGroup('grpSPs')">
+            <span class="obj-group-icon">⚙️</span>
+            <span class="obj-group-label">Stored Procedures</span>
+            <span class="obj-group-count" id="cntSPs">—</span>
+            <span class="obj-group-caret">›</span>
+          </div>
+          <div class="obj-group-body" id="listSPs">
+            <div class="obj-status"><span class="obj-spinner"></span> Loading…</div>
+          </div>
+        </div>
+
+      </div><!-- /sidebar-body -->
+    </aside>
+
+    <!-- Drag-to-resize handle -->
+    <div class="resize-handle" id="resizeHandle"></div>
+
+    <!-- ── Right content area ── -->
+    <div class="content-area">
+
+      <!-- Query Panel -->
+      <div class="query-panel">
+        <div class="panel-label">
+          SQL Query
+          <small style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0">(Ctrl + Enter to run)</small>
+        </div>
+
+        <div class="query-row">
+          <textarea
+            id="queryInput"
+            class="query-box"
+            spellcheck="false"
+            placeholder="Enter SQL query… or click a table / view / SP on the left"
+          >Select * from Users Where EMployeeId is null</textarea>
+
+          <button class="run-btn" id="runBtn" onclick="executeQuery()">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M5 3.5l8 4.5-8 4.5V3.5z"/>
+            </svg>
+            Run Query
+          </button>
+        </div>
+
+        <div class="token-bar">
+          <span id="tokenBadge" class="token-pill bad">⚠ No token found</span>
+          <span style="font-size:11px;color:var(--muted)">
+            Reads from <code style="color:var(--accent);font-size:10px">localStorage["eyjJwhtbt…"]</code>
+          </span>
+          <div style="margin-left:auto;display:flex;gap:6px">
+            <button class="action-btn" id="btnEnterToken" onclick="openTokenDrawer()">🔑 Enter Token</button>
+            <button class="action-btn" onclick="checkToken()">↻ Refresh</button>
+          </div>
+        </div>
+      </div><!-- /query-panel -->
+
+      <!-- Token Drawer -->
+      <div class="token-drawer" id="tokenDrawer">
+        <div class="token-drawer-inner">
+          <div class="token-drawer-header">
+            <div class="token-drawer-title">🔑 Enter Bearer Token manually</div>
+            <div class="token-drawer-desc">Saved to localStorage for this session</div>
+            <button class="action-btn" style="height:24px;font-size:11px;margin-left:8px" onclick="closeTokenDrawer()">✕ Close</button>
+          </div>
+          <div class="token-input-row">
+            <input
+              type="password"
+              id="manualTokenInput"
+              class="token-text-input"
+              placeholder="Paste your Bearer token here (eyJhbGciOi…)"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <button class="save-token-btn" onclick="saveManualToken()">Save &amp; Use</button>
+            <button class="clear-token-btn" onclick="clearToken()">Clear</button>
+          </div>
+        </div>
+      </div><!-- /token-drawer -->
+
+      <!-- Results Panel -->
+      <div class="results-panel">
+
+        <div class="results-toolbar" id="resultsToolbar" style="display:none">
+          <div class="results-meta" id="resultsMeta"></div>
+          <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap">
+            <div class="view-toggle">
+              <button id="btnTree"  class="active" onclick="switchView('tree')">⎇ JSON Tree</button>
+              <button id="btnTable"             onclick="switchView('table')">⊞ Table</button>
+            </div>
+            <button class="action-btn" id="btnToggleExpand" onclick="toggleExpandAll()">⊟ Collapse All</button>
+            <button class="action-btn" onclick="copyJson()">⎘ Copy JSON</button>
+            <button class="action-btn" onclick="downloadJson()">↓ Download</button>
+          </div>
+        </div>
+
+        <div class="viewer-wrap" id="viewerWrap">
+          <div class="state-box">
+            <div class="state-icon">⚡</div>
+            <div class="state-title">Ready to Execute</div>
+            <div class="state-desc">
+              Select a table, view, or stored procedure from the sidebar,
+              or type a custom SQL query and click <strong>Run Query</strong>.
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /results-panel -->
+
+    </div><!-- /content-area -->
+  </div><!-- /app-body -->
+
+  <!-- Script (loaded last so DOM is ready) -->
+  <script src="app.js?v=2"></script>
+</body>
+</html>
