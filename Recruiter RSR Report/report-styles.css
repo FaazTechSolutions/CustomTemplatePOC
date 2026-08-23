@@ -1,0 +1,401 @@
+/* Recruiter RSR Report Custom Template Styles (Scoped & Namespaced) */
+.rsr-rpt-container {
+  --rsr-sand: #F5F3EE;
+  --rsr-ink: #1A1917;
+  --rsr-ink2: #4A4845;
+  --rsr-ink3: #888780;
+  --rsr-gold: #BA7517;
+  --rsr-gold-bg: #FAEEDA;
+  --rsr-gold-lt: #FAC775;
+  --rsr-teal: #0F6E56;
+  --rsr-teal-bg: #E1F5EE;
+  --rsr-teal-lt: #9FE1CB;
+  --rsr-red: #A32D2D;
+  --rsr-red-bg: #FCEBEB;
+  --rsr-blue: #185FA5;
+  --rsr-blue-bg: #E6F1FB;
+  --rsr-purple: #534AB7;
+  --rsr-purple-bg: #EEEDFE;
+  --rsr-green: #3B6D11;
+  --rsr-green-bg: #EAF3DE;
+  --rsr-coral: #993C1D;
+  --rsr-coral-bg: #FAECE7;
+  --rsr-border: rgba(26, 25, 23, 0.12);
+  --rsr-border2: rgba(26, 25, 23, 0.22);
+  --rsr-r: 8px;
+  --rsr-r2: 12px;
+
+  font-family: Georgia, 'Times New Roman', serif;
+  background-color: #fff;
+  color: var(--rsr-ink);
+  border: 1px solid var(--rsr-border);
+  border-radius: var(--rsr-r2);
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  max-width: 1400px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.rsr-rpt-container *,
+.rsr-rpt-container *::before,
+.rsr-rpt-container *::after {
+  box-sizing: border-box;
+}
+
+.rsr-rpt-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--rsr-border);
+  padding-bottom: 12px;
+}
+
+.rsr-rpt-page-title {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--rsr-ink);
+}
+
+.rsr-rpt-page-subtitle {
+  font-size: 13px;
+  color: var(--rsr-ink3);
+  margin-top: 4px;
+}
+
+.rsr-rpt-btn {
+  font-family: Georgia, serif;
+  font-size: 13px;
+  padding: 8px 18px;
+  border-radius: var(--rsr-r);
+  border: 0.5px solid var(--rsr-border2);
+  background: #fff;
+  color: var(--rsr-ink);
+  cursor: pointer;
+  transition: all 0.14s;
+}
+
+.rsr-rpt-btn:hover {
+  background: var(--rsr-sand);
+}
+
+.rsr-rpt-btn.rsr-rpt-btn-gold {
+  background: var(--rsr-gold);
+  color: #fff;
+  border-color: transparent;
+}
+
+.rsr-rpt-btn.rsr-rpt-btn-gold:hover {
+  background: var(--rsr-coral);
+}
+
+.rsr-rpt-btn.rsr-rpt-btn-sm {
+  font-size: 11px;
+  padding: 4px 10px;
+}
+
+/* Tabs */
+.rsr-rpt-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 0.5px solid var(--rsr-border);
+  margin-bottom: 18px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.rsr-rpt-tab {
+  font-family: Georgia, serif;
+  font-size: 13px;
+  padding: 10px 18px;
+  cursor: pointer;
+  color: var(--rsr-ink3);
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  transition: all 0.14s;
+  white-space: nowrap;
+}
+
+.rsr-rpt-tab.rsr-rpt-active {
+  color: var(--rsr-gold);
+  border-bottom-color: var(--rsr-gold);
+  font-weight: 500;
+}
+
+.rsr-rpt-tab:hover:not(.rsr-rpt-active) {
+  color: var(--rsr-ink);
+}
+
+/* Actions & Multi-select Filters */
+.rsr-rpt-actions-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.rsr-rpt-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rsr-rpt-filter-group label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--rsr-ink3);
+  letter-spacing: 0.04em;
+}
+
+.rsr-rpt-msf {
+  position: relative;
+}
+
+.rsr-rpt-msf-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  max-width: 280px;
+  min-width: 220px;
+  padding: 4px 10px;
+  border: 0.5px solid var(--rsr-border2);
+  border-radius: var(--rsr-r);
+  background: #fff;
+  cursor: pointer;
+  flex-wrap: wrap;
+}
+
+.rsr-rpt-msf-box:hover {
+  border-color: var(--rsr-ink3);
+}
+
+.rsr-rpt-msf-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex: 1;
+  font-size: 12px;
+  color: var(--rsr-ink3);
+}
+
+.rsr-rpt-msf-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--rsr-gold-bg);
+  color: var(--rsr-gold);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.rsr-rpt-msf-chip span.x {
+  cursor: pointer;
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+.rsr-rpt-msf-caret {
+  font-size: 10px;
+  color: var(--rsr-ink3);
+  margin-left: auto;
+}
+
+.rsr-rpt-msf-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 250px;
+  max-height: 250px;
+  overflow-y: auto;
+  background: #fff;
+  border: 0.5px solid var(--rsr-border2);
+  border-radius: var(--rsr-r);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  z-index: 50;
+  padding: 6px;
+}
+
+.rsr-rpt-msf-panel.open {
+  display: block;
+}
+
+.rsr-rpt-msf-opt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  font-size: 12px;
+  color: var(--rsr-ink);
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.rsr-rpt-msf-opt:hover {
+  background: var(--rsr-sand);
+}
+
+.rsr-rpt-msf-empty {
+  padding: 10px;
+  font-size: 12px;
+  color: var(--rsr-ink3);
+  text-align: center;
+}
+
+.rsr-rpt-check {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--rsr-gold);
+}
+
+/* Legend */
+.rsr-rpt-legend {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  font-size: 11px;
+  color: var(--rsr-ink3);
+  flex-wrap: wrap;
+}
+
+.rsr-rpt-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rsr-rpt-legend-box {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+/* Tables */
+.rsr-rpt-table-wrap {
+  background: #fff;
+  border: 0.5px solid var(--rsr-border);
+  border-radius: var(--rsr-r2);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.rsr-rpt-container table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.rsr-rpt-container th {
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 11px;
+  color: var(--rsr-ink3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 0.5px solid var(--rsr-border);
+  background: var(--rsr-sand);
+}
+
+.rsr-rpt-container td {
+  padding: 8px 12px;
+  border-bottom: 0.5px solid var(--rsr-border);
+  color: var(--rsr-ink2);
+  vertical-align: middle;
+}
+
+.rsr-rpt-container tr:last-child td {
+  border-bottom: none;
+}
+
+.rsr-rpt-container tr:hover td {
+  background: rgba(245, 243, 238, 0.6);
+}
+
+.rsr-rpt-hdr {
+  background: var(--rsr-sand);
+  color: var(--rsr-ink3);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 6px 14px;
+  font-weight: 600;
+}
+
+.rsr-rpt-input {
+  width: 64px;
+  font-family: Georgia, serif;
+  font-size: 12px;
+  text-align: center;
+  border: 0.5px dashed var(--rsr-gold);
+  border-radius: 4px;
+  padding: 4px 6px;
+  background: var(--rsr-gold-bg);
+  color: var(--rsr-gold);
+}
+
+.rsr-rpt-input:focus {
+  outline: 2px solid var(--rsr-gold);
+}
+
+/* Reference No Truncation */
+.rsr-rpt-ref-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  max-width: 160px;
+  margin: 0 auto;
+}
+
+.rsr-rpt-ref-truncated {
+  display: inline-block;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: help;
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--rsr-ink);
+  font-weight: 500;
+}
+
+.rsr-rpt-ref-badge {
+  font-family: Georgia, serif;
+  font-size: 10px;
+  background: var(--rsr-blue-bg);
+  color: var(--rsr-blue);
+  padding: 1px 5px;
+  border-radius: 8px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: help;
+}
+
+/* Status Chips */
+.rsr-rpt-chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.rsr-rpt-chip.rsr-rpt-chip-green { background: var(--rsr-green-bg); color: var(--rsr-green); }
+.rsr-rpt-chip.rsr-rpt-chip-teal { background: var(--rsr-teal-bg); color: var(--rsr-teal); }
+.rsr-rpt-chip.rsr-rpt-chip-gold { background: var(--rsr-gold-bg); color: var(--rsr-gold); }
+.rsr-rpt-chip.rsr-rpt-chip-red { background: var(--rsr-red-bg); color: var(--rsr-red); }
+.rsr-rpt-chip.rsr-rpt-chip-blue { background: var(--rsr-blue-bg); color: var(--rsr-blue); }
+.rsr-rpt-chip.rsr-rpt-chip-purple { background: var(--rsr-purple-bg); color: var(--rsr-purple); }
+.rsr-rpt-chip.rsr-rpt-chip-gray { background: #F1EFE8; color: var(--rsr-ink3); }

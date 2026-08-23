@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recruiter — RSR Report Template</title>
+  <link rel="stylesheet" href="./report-styles.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<div class="rsr-rpt-container">
+  <!-- Header -->
+  <div class="rsr-rpt-page-header">
+    <div>
+      <div class="rsr-rpt-page-title">Recruitment project summary &mdash; RSR view</div>
+      <div class="rsr-rpt-page-subtitle">Generated entirely from the Main Project / Sub Project setup &mdash; grouped by Gender, Nationality, Profession and Customer, each sub-project shown for its own setup period</div>
+    </div>
+  </div>
+
+  <!-- Project Type Tabs -->
+  <div class="rsr-rpt-tabs">
+    <button class="rsr-rpt-tab rsr-rpt-active" data-type="Mawarid Agencies" onclick="window.rsrSwitchType('Mawarid Agencies', this)">Mawarid Agencies</button>
+    <button class="rsr-rpt-tab" data-type="Medical Agencies" onclick="window.rsrSwitchType('Medical Agencies', this)">Medical Agencies</button>
+    <button class="rsr-rpt-tab" data-type="Mawarid Medical" onclick="window.rsrSwitchType('Mawarid Medical', this)">Mawarid Medical</button>
+    <button class="rsr-rpt-tab" data-type="Mawarid Business" onclick="window.rsrSwitchType('Mawarid Business', this)">Mawarid Business</button>
+    <button class="rsr-rpt-tab" data-type="Small Projects" onclick="window.rsrSwitchType('Small Projects', this)">Small Projects</button>
+    <button class="rsr-rpt-tab" data-type="Client Agencies" onclick="window.rsrSwitchType('Client Agencies', this)">Client Agencies</button>
+  </div>
+
+  <!-- Filter Bar (Agent filter alone visible; Main Project & Customer hidden) -->
+  <div class="rsr-rpt-actions-row">
+    <!-- Main Project Filter (Hidden via style="display:none") -->
+    <div class="rsr-rpt-filter-group hidden-filter" id="rsrProjectFilterGroup" style="display:none">
+      <label>MAIN PROJECT</label>
+      <div class="rsr-rpt-msf" id="rsrProjectMsf">
+        <div class="rsr-rpt-msf-box" onclick="window.rsrTogglePanel('rsrProjectPanel', event)">
+          <div class="rsr-rpt-msf-chips" id="rsrProjectChips"><span style="color:var(--rsr-ink3)">All main projects</span></div>
+          <span class="rsr-rpt-msf-caret">&#9662;</span>
+        </div>
+        <div class="rsr-rpt-msf-panel" id="rsrProjectPanel"></div>
+      </div>
+    </div>
+
+    <!-- Customer Filter (Hidden via style="display:none") -->
+    <div class="rsr-rpt-filter-group hidden-filter" id="rsrCustomerFilterGroup" style="display:none">
+      <label>CUSTOMER</label>
+      <div class="rsr-rpt-msf" id="rsrCustomerMsf">
+        <div class="rsr-rpt-msf-box" onclick="window.rsrTogglePanel('rsrCustomerPanel', event)">
+          <div class="rsr-rpt-msf-chips" id="rsrCustomerChips"><span style="color:var(--rsr-ink3)">All customers</span></div>
+          <span class="rsr-rpt-msf-caret">&#9662;</span>
+        </div>
+        <div class="rsr-rpt-msf-panel" id="rsrCustomerPanel"></div>
+      </div>
+    </div>
+
+    <!-- Agency / Owner Filter (Agent Filter Alone Visible) -->
+    <div class="rsr-rpt-filter-group" id="rsrAgencyFilterGroup">
+      <label>AGENCY / OWNER (AGENT)</label>
+      <div class="rsr-rpt-msf" id="rsrAgencyMsf">
+        <div class="rsr-rpt-msf-box" onclick="window.rsrTogglePanel('rsrAgencyPanel', event)">
+          <div class="rsr-rpt-msf-chips" id="rsrAgencyChips"><span style="color:var(--rsr-ink3)">All agencies</span></div>
+          <span class="rsr-rpt-msf-caret">&#9662;</span>
+        </div>
+        <div class="rsr-rpt-msf-panel" id="rsrAgencyPanel"></div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <button class="rsr-rpt-btn rsr-rpt-btn-gold rsr-rpt-btn-sm" style="height:36px" onclick="window.rsrSearch()">Search</button>
+    <button class="rsr-rpt-btn rsr-rpt-btn-sm" style="height:36px" onclick="window.rsrClear()">&#10005; Clear</button>
+  </div>
+
+  <div id="rsrCascadeHint" style="font-size:12px;color:var(--rsr-gold);margin:-6px 0 12px;display:none"></div>
+
+  <!-- Legend -->
+  <div class="rsr-rpt-legend">
+    <div class="rsr-rpt-legend-item">
+      <span class="rsr-rpt-legend-box" style="border:1px solid var(--rsr-border2);background:#fff"></span>
+      <span>Calculated &mdash; read only</span>
+    </div>
+    <div class="rsr-rpt-legend-item">
+      <span class="rsr-rpt-legend-box" style="border:1px dashed var(--rsr-gold);background:var(--rsr-gold-bg)"></span>
+      <span>Manual input &mdash; editable</span>
+    </div>
+    <div class="rsr-rpt-legend-item">
+      <span class="rsr-rpt-legend-box" style="background:var(--rsr-red-bg);border:0.5px solid var(--rsr-red)"></span>
+      <span>Backed out / medically unfit</span>
+    </div>
+    <div class="rsr-rpt-legend-item">
+      <span class="rsr-rpt-legend-box" style="background:var(--rsr-teal-bg);border:0.5px solid var(--rsr-teal)"></span>
+      <span>Arrived this month</span>
+    </div>
+    <div class="rsr-rpt-legend-item">
+      <span class="rsr-rpt-legend-box" style="background:#0F6E56"></span>
+      <span>Arrived (overall)</span>
+    </div>
+  </div>
+
+  <!-- Table Container -->
+  <div id="rsrGroups"></div>
+</div>
+
+<script src="./report-script.js"></script>
+</body>
+</html>
