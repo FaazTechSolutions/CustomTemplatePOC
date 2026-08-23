@@ -43,6 +43,8 @@
       overflow: hidden;
     }
 
+    
+
     /* ── Header ── */
     .app-header {
       background: linear-gradient(135deg, #0d1117 0%, #161b22 40%, #0d1b2a 100%);
@@ -82,6 +84,33 @@
     }
     .dot { width: 6px; height: 6px; border-radius: 50%; animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logout-btn {
+  background: rgba(248, 81, 73, 0.1);
+  color: var(--danger);
+  border: 1px solid rgba(248, 81, 73, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.logout-btn:hover {
+  background: rgba(248, 81, 73, 0.2);
+  transform: translateY(-1px);
+}
+.logout-btn:active {
+  transform: translateY(0);
+}
 
     /* ── App body: sidebar + content ── */
     .app-body {
@@ -478,6 +507,205 @@
         position: fixed; left: -100%; top: 0; bottom: 0; z-index: 1000;
         transition: left 0.3s ease; box-shadow: 2px 0 10px rgba(0,0,0,0.5);
       }
+    }
+    
+    /* ── Token Drawer ── */
+    .token-drawer {
+      background: var(--surface2);
+      border-bottom: 2px solid var(--warning);
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), padding 0.35s;
+      padding: 0 20px;
+      flex-shrink: 0;
+    }
+    .token-drawer.open { max-height: 160px; padding: 14px 20px; }
+    .token-drawer-inner { display: flex; flex-direction: column; gap: 10px; }
+    .token-drawer-header { display: flex; align-items: center; gap: 8px; }
+    .token-drawer-title { font-size: 12px; font-weight: 600; color: var(--warning); flex: 1; }
+    .token-drawer-desc { font-size: 11px; color: var(--muted); }
+    .token-input-row { display: flex; gap: 7px; align-items: center; }
+    .token-text-input {
+      flex: 1;
+      background: var(--surface3);
+      border: 1px solid var(--warning);
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .token-text-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    .token-text-input::placeholder { color: var(--muted); font-family: 'Inter', sans-serif; font-size: 11px; }
+    .save-token-btn {
+      background: linear-gradient(135deg, #b45309, var(--warning));
+      color: #fff; border: none; border-radius: var(--radius-sm);
+      padding: 0 16px; height: 38px;
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+      transition: opacity 0.2s, transform 0.1s;
+      box-shadow: 0 4px 12px rgba(210,153,34,0.25);
+    }
+    .save-token-btn:hover { opacity: 0.88; }
+    .save-token-btn:active { transform: scale(0.97); }
+    .clear-token-btn {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); border-radius: var(--radius-sm);
+      padding: 0 12px; height: 38px; font-size: 12px; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .clear-token-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* ── Results panel ── */
+    .results-panel {
+      flex: 1;
+      padding: 14px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+      min-height: 0;
+    }
+    .results-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex-shrink: 0; }
+    .results-meta { display: flex; align-items: center; gap: 8px; flex: 1; flex-wrap: wrap; }
+    .badge { font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 20px; }
+    .badge-blue  { background: rgba(88,166,255,0.15); border:1px solid rgba(88,166,255,0.3); color:var(--accent); }
+    .badge-green { background: rgba(63,185,80,0.12); border:1px solid rgba(63,185,80,0.3); color:var(--success); }
+    .exec-time { font-size: 12px; color: var(--muted); }
+    .view-toggle { display: flex; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+    .view-toggle button {
+      background: transparent; border: none; color: var(--muted);
+      padding: 5px 12px; font-size: 12px; font-weight: 500; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .view-toggle button.active { background: var(--surface3); color: var(--accent); }
+    .view-toggle button:hover:not(.active) { background: var(--surface2); color: var(--text2); }
+
+    /* Viewer */
+    .viewer-wrap {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: auto;
+      min-height: 0;
+    }
+    .viewer-wrap::-webkit-scrollbar { width: 6px; height: 6px; }
+    .viewer-wrap::-webkit-scrollbar-track { background: transparent; }
+    .viewer-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .state-box { 
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 100%; min-height: 200px; gap: 12px; color: var(--muted);
+    }
+    .state-icon { font-size: 38px; opacity: 0.45; }
+    .state-title { font-size: 14px; font-weight: 600; color: var(--text2); }
+    .state-desc  { font-size: 12px; color: var(--muted); text-align: center; max-width: 380px; line-height: 1.8; }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    /* JSON Tree */
+    .json-tree { padding: 14px 18px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.75; }
+    .jn { display: block; }
+    .jn-toggle { cursor: pointer; user-select: none; display: inline-flex; align-items: center; }
+    .jn-toggle::before {
+      content: '▾'; display: inline-block; width: 13px;
+      color: var(--muted); transition: transform 0.15s; font-size: 9px; margin-right: 2px;
+    }
+    .jn-toggle.collapsed::before { transform: rotate(-90deg); }
+    .jn-children { margin-left: 18px; border-left: 1px solid var(--border); padding-left: 10px; }
+    .jn-children.hidden { display: none; }
+    .jk    { color: var(--json-key); }
+    .js    { color: var(--json-str); }
+    .jnum  { color: var(--json-num); }
+    .jb    { color: var(--json-bool); }
+    .jnull { color: var(--json-null); font-style: italic; }
+    .jbracket { color: var(--muted); }
+    .jcount { font-size: 10px; color: var(--muted); margin-left: 5px; background:var(--surface3); padding: 1px 5px; border-radius: 8px; }
+
+    /* Table */
+    .table-wrap { overflow: auto; }
+    .result-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .result-table thead { position: sticky; top: 0; z-index: 1; }
+    .result-table th {
+      background: var(--surface3); color: var(--muted);
+      font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 9px 12px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap;
+    }
+    .result-table td {
+      padding: 8px 12px; border-bottom: 1px solid var(--border);
+      color: var(--text2); vertical-align: top; 
+      max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tbody tr:hover { background: rgba(88,166,255,0.04); }
+    .cell-null { color: var(--muted); font-style: italic; }
+
+    /* Pagination */
+    .pagination-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 14px; border-top: 1px solid var(--border);
+      background: var(--surface2); font-size: 11px; color: var(--muted);
+      flex-shrink: 0;
+    }
+    .pagination-controls { display: flex; gap: 6px; align-items: center; }
+    .page-btn {
+      background: var(--surface3); border: 1px solid var(--border);
+      color: var(--text); border-radius: var(--radius-sm);
+      padding: 4px 10px; font-size: 11px; cursor: pointer;
+    }
+    .page-btn:hover:not(:disabled) { background: var(--surface); border-color: var(--accent); }
+    .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Search bar */
+    .search-wrap {
+      padding: 8px 14px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 7px;
+      background: var(--surface2); flex-shrink: 0;
+    }
+    .search-input {
+      flex: 1;
+      background: var(--surface3); border: 1px solid var(--border);
+      color: var(--text); border-radius: var(--radius-sm);
+      padding: 5px 10px; font-size: 12px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--accent); }
+    .search-count { font-size: 11px; color: var(--muted); white-space: nowrap; }
+
+    /* Resize handle between sidebar and content */
+    .resize-handle {
+      width: 4px; background: var(--border); cursor: col-resize;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .resize-handle:hover { background: var(--accent); }
+
+    /* Mobile Sidebar Toggle */
+    .mobile-menu-btn {
+      display: none; background: transparent; border: none; color: var(--text);
+      font-size: 22px; cursor: pointer; padding: 4px; border-radius: var(--radius-sm);
+      transition: background 0.2s;
+    }
+    .mobile-menu-btn:hover { background: var(--surface2); }
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .sidebar-overlay.active { display: block; opacity: 1; }
+
+    @media (max-width: 720px) {
+      .mobile-menu-btn { display: block; }
+      .sidebar { 
+        position: fixed; left: -100%; top: 0; bottom: 0; z-index: 1000;
+        transition: left 0.3s ease; box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+      }
       .sidebar.mobile-open { left: 0; }
       .resize-handle { display: none; }
       .app-header { padding: 10px 14px; gap: 10px; }
@@ -485,9 +713,641 @@
       .header-text h1 { font-size: 14px; }
       .header-text p { display: none; } /* Hide subtitle on small screens */
     }
+
+/* ══════════════════════════════════════════════════════════
+   LOGIN OVERLAY — Premium Split-Screen Design
+   ══════════════════════════════════════════════════════════ */
+.login-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bg);
+  overflow: hidden;
+  animation: loginFadeIn 0.5s ease;
+}
+
+@keyframes loginFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Animated background orbs ── */
+.login-bg-orbs {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+  animation: orbFloat 20s ease-in-out infinite;
+}
+
+.orb-1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #58a6ff, #1f6feb);
+  top: -10%;
+  left: -5%;
+  animation-delay: 0s;
+}
+
+.orb-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #a371f7, #8957e5);
+  bottom: -8%;
+  right: -3%;
+  animation-delay: -7s;
+  animation-duration: 25s;
+}
+
+.orb-3 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, #3fb950, #238636);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-delay: -14s;
+  animation-duration: 30s;
+  opacity: 0.18;
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25%      { transform: translate(40px, -30px) scale(1.08); }
+  50%      { transform: translate(-20px, 40px) scale(0.95); }
+  75%      { transform: translate(30px, 20px) scale(1.05); }
+}
+
+/* ── Split layout ── */
+.login-split {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+/* ── Left: Branding ── */
+.login-brand {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-brand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+    rgba(88, 166, 255, 0.06) 0%,
+    rgba(163, 113, 247, 0.04) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.login-brand-content {
+  max-width: 420px;
+  animation: loginSlideRight 0.7s ease;
+}
+
+@keyframes loginSlideRight {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.login-brand-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(88,166,255,0.15), rgba(163,113,247,0.1));
+  border: 1px solid rgba(88,166,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  margin-bottom: 28px;
+  animation: loginIconPulse 3s ease-in-out infinite;
+}
+
+@keyframes loginIconPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(88,166,255,0); }
+  50%      { box-shadow: 0 0 0 12px rgba(88,166,255,0.06); }
+}
+
+.login-brand-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+.login-brand-desc {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+/* Features list */
+.login-features {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  animation: loginFeatureIn 0.6s ease both;
+}
+
+.login-feature:nth-child(1) { animation-delay: 0.3s; }
+.login-feature:nth-child(2) { animation-delay: 0.45s; }
+.login-feature:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes loginFeatureIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.login-feature-icon {
+  font-size: 22px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.login-feature div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.login-feature strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.login-feature span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ── Right: Form side ── */
+.login-form-side {
+  flex: 0 0 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  position: relative;
+}
+
+.login-form-side::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10%;
+  bottom: 10%;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--border-light) 30%,
+    var(--border-light) 70%,
+    transparent
+  );
+}
+
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  animation: loginSlideUp 0.6s ease 0.2s both;
+}
+
+@keyframes loginSlideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.login-card-header {
+  margin-bottom: 32px;
+}
+
+.login-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+
+.login-subtitle {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ── Form fields ── */
+.login-field {
+  margin-bottom: 22px;
+}
+
+.login-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.login-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-input-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.login-input-wrap:focus-within .login-input-icon {
+  color: var(--accent);
+}
+
+.login-field input {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px 0 44px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.login-field input:focus {
+  border-color: var(--accent);
+  background: var(--surface3);
+  box-shadow: 0 0 0 4px var(--accent-glow), 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.login-field input::placeholder {
+  color: #555d68;
+  font-size: 13px;
+}
+
+/* Password eye toggle */
+.login-eye-btn {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.login-eye-btn:hover {
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+}
+
+/* ── Error box ── */
+.login-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(248, 81, 73, 0.1);
+  border: 1px solid rgba(248, 81, 73, 0.25);
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  animation: loginShake 0.4s ease;
+}
+
+.login-error svg {
+  flex-shrink: 0;
+}
+
+@keyframes loginShake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-6px); }
+  40%      { transform: translateX(6px); }
+  60%      { transform: translateX(-4px); }
+  80%      { transform: translateX(4px); }
+}
+
+/* ── Submit button ── */
+.login-submit-btn {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #1f6feb, #58a6ff);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-submit-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(255,255,255,0.12), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.login-submit-btn:hover::before {
+  transform: translateX(100%);
+}
+
+.login-submit-btn:hover {
+  box-shadow: 0 6px 24px rgba(31,111,235,0.4), 0 2px 8px rgba(88,166,255,0.2);
+  transform: translateY(-1px);
+}
+
+.login-submit-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.login-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.login-submit-btn:disabled::before {
+  display: none;
+}
+
+.login-submit-btn svg {
+  transition: transform 0.3s ease;
+}
+
+.login-submit-btn:hover svg {
+  transform: translateX(4px);
+}
+
+/* Spinner */
+.login-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid rgba(255,255,255,0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: loginSpin 0.6s linear infinite;
+}
+
+@keyframes loginSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Overlay hide transition ── */
+.login-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+/* ── Responsive: Collapse to single column ── */
+@media (max-width: 900px) {
+  .login-split {
+    flex-direction: column;
+  }
+
+  .login-brand {
+    flex: 0;
+    padding: 32px 24px 20px;
+  }
+
+  .login-brand-content {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .login-brand-icon {
+    margin: 0 auto 16px;
+  }
+
+  .login-brand-title {
+    font-size: 24px;
+  }
+
+  .login-brand-desc {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  .login-features {
+    display: none;
+  }
+
+  .login-form-side {
+    flex: 1;
+    padding: 20px 24px;
+  }
+
+  .login-form-side::before {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-form-side {
+    padding: 16px;
+  }
+
+  .login-card {
+    max-width: 100%;
+  }
+
+  .login-submit-btn {
+    height: 46px;
+    font-size: 14px;
+  }
+}
   </style>
 </head>
 <body>
+      <!-- ══════════════════════════════════════════════════════
+       LOGIN OVERLAY ══════════════════════════════════════════════════════ -->
+  <div class="login-overlay" id="loginOverlay" style="display: none;">
+
+    <!-- Animated background orbs -->
+    <div class="login-bg-orbs">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+
+    <div class="login-split">
+
+      <!-- ── Left: Branding Panel ── -->
+      <div class="login-brand">
+        <div class="login-brand-content">
+          <div class="login-brand-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3"/>
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+              <path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/>
+            </svg>
+          </div>
+          <h1 class="login-brand-title">SQL Query Executor</h1>
+          <p class="login-brand-desc">Execute, analyze, and explore your database with a powerful real-time query interface.</p>
+
+          <div class="login-features">
+            <div class="login-feature">
+              <span class="login-feature-icon">⚡</span>
+              <div>
+                <strong>Lightning Fast</strong>
+                <span>Execute queries in milliseconds</span>
+              </div>
+            </div>
+            <div class="login-feature">
+              <span class="login-feature-icon">📊</span>
+              <div>
+                <strong>Live Results</strong>
+                <span>JSON tree & table views</span>
+              </div>
+            </div>
+            <div class="login-feature">
+              <span class="login-feature-icon">🔒</span>
+              <div>
+                <strong>Secure Access</strong>
+                <span>Token-based authentication</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Right: Login Form ── -->
+      <div class="login-form-side">
+        <div class="login-card">
+          <div class="login-card-header">
+            <h2 class="login-title">Welcome back</h2>
+            <p class="login-subtitle">Enter your credentials to continue</p>
+          </div>
+
+          <form id="loginForm" onsubmit="handleLogin(event)" autocomplete="off">
+            <div class="login-field">
+              <label for="loginUserId">User ID</label>
+              <div class="login-input-wrap">
+                <span class="login-input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </span>
+                <input type="text" id="loginUserId" placeholder="Enter your User ID" required autocomplete="username" />
+              </div>
+            </div>
+
+            <div class="login-field">
+              <label for="loginPassword">Password</label>
+              <div class="login-input-wrap">
+                <span class="login-input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                </span>
+                <input type="password" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password" />
+                <button type="button" class="login-eye-btn" onclick="togglePasswordVisibility()" title="Show/Hide password">
+                  <svg id="eyeIconShow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <svg id="eyeIconHide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="login-error" id="loginError" style="display:none">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+              </svg>
+              <span id="loginErrorText"></span>
+            </div>
+
+            <button type="submit" class="login-submit-btn" id="loginSubmitBtn">
+              <span id="loginBtnText">Sign In</span>
+              <span id="loginSpinner" class="login-spinner" style="display:none"></span>
+              <svg id="loginArrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       MAIN APP (hidden until login)
+       ══════════════════════════════════════════════════════ -->
+  <div id="mainApp" style="display:none;flex-direction:column;height:100vh">
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
 
   <!-- Header -->
@@ -501,6 +1361,16 @@
     <div class="header-badge" id="tokenStatus">
       <span class="dot" id="statusDot" style="background:var(--warning)"></span>
       <span id="statusText">Checking token…</span>
+    </div>
+    <div class="header-actions">
+      <button class="logout-btn" onclick="handleLogout()" title="Logout">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        Logout
+      </button>
     </div>
   </header>
 
@@ -632,6 +1502,7 @@
 
     </div><!-- /content-area -->
   </div><!-- /app-body -->
+  </div><!-- /mainApp -->
 
   <script>
     // ── Config ───────────────────────────────────────────────────────────────
@@ -683,6 +1554,8 @@
         enterBtn.style.color = 'var(--success)';
         closeTokenDrawer();
         loadAllObjects();
+        document.getElementById('mainApp').style.display = 'flex';
+        document.getElementById('loginOverlay').style.display = 'none';
       } else {
         badge.className = 'token-pill bad';
         badge.textContent = '⚠ No token';
@@ -693,7 +1566,9 @@
         enterBtn.textContent = '🔑 Enter Token';
         enterBtn.style.borderColor = '';
         enterBtn.style.color = '';
-        openTokenDrawer();
+        document.getElementById('mainApp').style.display = 'none';
+        document.getElementById('loginOverlay').style.display = 'flex';
+        document.getElementById('loginOverlay').classList.remove('hidden');
       }
     }
 
@@ -1254,6 +2129,147 @@
       }
     }
 
+    // ══════════════════════════════════════════════════════════
+//  LOGIN
+// ══════════════════════════════════════════════════════════
+const LOGIN_API = 'https://portal.mawarid.com.sa/apps4x-api/api/v1/auth/login';
+
+async function handleLogin(e) {
+  e.preventDefault();
+
+  const userId   = document.getElementById('loginUserId').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errorEl  = document.getElementById('loginError');
+  const btnText  = document.getElementById('loginBtnText');
+  const spinner  = document.getElementById('loginSpinner');
+  const submitBtn = document.getElementById('loginSubmitBtn');
+
+  // Reset error
+  errorEl.style.display = 'none';
+
+  if (!userId || !password) {
+    const errorTextEl = document.getElementById('loginErrorText');
+    if (errorTextEl) errorTextEl.textContent = 'Please enter both User ID and Password.';
+    errorEl.style.display = 'flex';
+    return;
+  }
+
+  // Show loading state
+  const loginArrow = document.getElementById('loginArrow');
+  btnText.textContent = 'Signing in…';
+  spinner.style.display = 'inline-block';
+  if (loginArrow) loginArrow.style.display = 'none';
+  submitBtn.disabled = true;
+
+  try {
+    const res = await fetch(LOGIN_API, {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json, text/plain, */*',
+        'accept-language': 'en-US,en;q=0.9',
+        'appid': 'APP0000001',
+        'companyid': COMPANY_ID,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        UserId: userId,
+        Password: password,
+        CompanyId: COMPANY_ID,
+      }),
+    });
+
+    const data = await res.json();
+
+    // Check API-level status (Status: false means invalid credentials etc.)
+    if (!res.ok || data.Status === false) {
+      throw new Error(data.Message || data.message || `Login failed (HTTP ${res.status})`);
+    }
+
+    // Extract token from response — actual shape: data.authData.authToken
+    const token = (data.authData && data.authData.authToken)
+               || data.Token || data.token || data.AccessToken || data.access_token
+               || (data.Data && (data.Data.Token || data.Data.token))
+               || (data.Result && (data.Result.Token || data.Result.token));
+
+    if (!token) {
+      throw new Error('Login succeeded but no token was returned.');
+    }
+
+    // Store token and switch to main app
+    const cleanToken = token.replace(/^Bearer\s+/i, '');
+    localStorage.setItem(TOKEN_KEY, cleanToken);
+    showMainApp();
+
+  } catch (err) {
+    const errorTextEl = document.getElementById('loginErrorText');
+    if (errorTextEl) errorTextEl.textContent = err.message || 'Login failed. Please try again.';
+    errorEl.style.display = 'flex';
+  } finally {
+    btnText.textContent = 'Sign In';
+    spinner.style.display = 'none';
+    const loginArrow = document.getElementById('loginArrow');
+    if (loginArrow) loginArrow.style.display = '';
+    submitBtn.disabled = false;
+  }
+}
+
+function togglePasswordVisibility() {
+  const input    = document.getElementById('loginPassword');
+  const showIcon = document.getElementById('eyeIconShow');
+  const hideIcon = document.getElementById('eyeIconHide');
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (showIcon) showIcon.style.display = 'none';
+    if (hideIcon) hideIcon.style.display = 'block';
+  } else {
+    input.type = 'password';
+    if (showIcon) showIcon.style.display = 'block';
+    if (hideIcon) hideIcon.style.display = 'none';
+  }
+}
+
+function showMainApp(instant = false) {
+  const overlay = document.getElementById('loginOverlay');
+  const mainApp = document.getElementById('mainApp');
+
+  if (instant) {
+    overlay.style.display = 'none';
+    overlay.style.transition = 'none'; // disable animation entirely
+  } else {
+    // Fade out login
+    overlay.classList.add('hidden');
+    setTimeout(() => {
+      overlay.style.display = 'none';
+    }, 400);
+  }
+
+  // Show main app
+  mainApp.style.display = 'flex';
+
+  // Initialize the token check and load objects
+  checkToken();
+}
+
+function handleLogout() {
+  // Clear token
+  localStorage.removeItem(TOKEN_KEY);
+  
+  // Reset UI
+  document.getElementById('loginUserId').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginError').style.display = 'none';
+  
+  // Show login overlay
+  const overlay = document.getElementById('loginOverlay');
+  const mainApp = document.getElementById('mainApp');
+  
+  mainApp.style.display = 'none';
+  overlay.style.display = 'flex';
+  overlay.classList.remove('hidden');
+}
+
+
+
     // ── Sidebar resize ────────────────────────────────────────────────────────
     (function() {
       const handle  = document.getElementById('resizeHandle');
@@ -1333,7 +2349,12 @@
       });
 
       // Run app init after editor is ready
-      checkToken();
+      const existingToken = getToken();
+      if (existingToken) {
+        showMainApp(true);
+      } else {
+        checkToken();
+      }
     }
   </script>
   
@@ -1345,7 +2366,9 @@
   <script>
     require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
     require(['vs/editor/editor.main'], function() {
-      initApp();
+      document.fonts.load('13px "JetBrains Mono"').then(() => {
+        initApp();
+      });
     });
   </script>
 </body>

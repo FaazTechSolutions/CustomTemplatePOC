@@ -140,6 +140,145 @@ function clearToken() {
 }
 
 // ══════════════════════════════════════════════════════════
+//  LOGIN
+// ══════════════════════════════════════════════════════════
+const LOGIN_API = 'https://portal.mawarid.com.sa/apps4x-api/api/v1/auth/login';
+
+async function handleLogin(e) {
+  e.preventDefault();
+
+  const userId   = document.getElementById('loginUserId').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errorEl  = document.getElementById('loginError');
+  const btnText  = document.getElementById('loginBtnText');
+  const spinner  = document.getElementById('loginSpinner');
+  const submitBtn = document.getElementById('loginSubmitBtn');
+
+  // Reset error
+  errorEl.style.display = 'none';
+
+  if (!userId || !password) {
+    const errorTextEl = document.getElementById('loginErrorText');
+    if (errorTextEl) errorTextEl.textContent = 'Please enter both User ID and Password.';
+    errorEl.style.display = 'flex';
+    return;
+  }
+
+  // Show loading state
+  const loginArrow = document.getElementById('loginArrow');
+  btnText.textContent = 'Signing in…';
+  spinner.style.display = 'inline-block';
+  if (loginArrow) loginArrow.style.display = 'none';
+  submitBtn.disabled = true;
+
+  try {
+    const res = await fetch(LOGIN_API, {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json, text/plain, */*',
+        'accept-language': 'en-US,en;q=0.9',
+        'appid': 'APP0000001',
+        'companyid': CFG.COMPANY_ID,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        UserId: userId,
+        Password: password,
+        CompanyId: CFG.COMPANY_ID,
+      }),
+    });
+
+    const data = await res.json();
+
+    // Check API-level status (Status: false means invalid credentials etc.)
+    if (!res.ok || data.Status === false) {
+      throw new Error(data.Message || data.message || `Login failed (HTTP ${res.status})`);
+    }
+
+    // Extract token from response — actual shape: data.authData.authToken
+    const token = (data.authData && data.authData.authToken)
+               || data.Token || data.token || data.AccessToken || data.access_token
+               || (data.Data && (data.Data.Token || data.Data.token))
+               || (data.Result && (data.Result.Token || data.Result.token));
+
+    if (!token) {
+      throw new Error('Login succeeded but no token was returned.');
+    }
+
+    // Store token and switch to main app
+    const cleanToken = token.replace(/^Bearer\s+/i, '');
+    localStorage.setItem(CFG.TOKEN_KEY, cleanToken);
+    showMainApp();
+
+  } catch (err) {
+    const errorTextEl = document.getElementById('loginErrorText');
+    if (errorTextEl) errorTextEl.textContent = err.message || 'Login failed. Please try again.';
+    errorEl.style.display = 'flex';
+  } finally {
+    btnText.textContent = 'Sign In';
+    spinner.style.display = 'none';
+    const loginArrow = document.getElementById('loginArrow');
+    if (loginArrow) loginArrow.style.display = '';
+    submitBtn.disabled = false;
+  }
+}
+
+function togglePasswordVisibility() {
+  const input    = document.getElementById('loginPassword');
+  const showIcon = document.getElementById('eyeIconShow');
+  const hideIcon = document.getElementById('eyeIconHide');
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (showIcon) showIcon.style.display = 'none';
+    if (hideIcon) hideIcon.style.display = 'block';
+  } else {
+    input.type = 'password';
+    if (showIcon) showIcon.style.display = 'block';
+    if (hideIcon) hideIcon.style.display = 'none';
+  }
+}
+
+function showMainApp(instant = false) {
+  const overlay = document.getElementById('loginOverlay');
+  const mainApp = document.getElementById('mainApp');
+
+  if (instant) {
+    overlay.style.display = 'none';
+    overlay.style.transition = 'none'; // disable animation entirely
+  } else {
+    // Fade out login
+    overlay.classList.add('hidden');
+    setTimeout(() => {
+      overlay.style.display = 'none';
+    }, 400);
+  }
+
+  // Show main app
+  mainApp.style.display = 'flex';
+
+  // Initialize the token check and load objects
+  checkToken();
+}
+
+function handleLogout() {
+  // Clear token
+  localStorage.removeItem(CFG.TOKEN_KEY);
+  
+  // Reset UI
+  document.getElementById('loginUserId').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginError').style.display = 'none';
+  
+  // Show login overlay
+  const overlay = document.getElementById('loginOverlay');
+  const mainApp = document.getElementById('mainApp');
+  
+  mainApp.style.display = 'none';
+  overlay.style.display = 'flex';
+  overlay.classList.remove('hidden');
+}
+
+// ══════════════════════════════════════════════════════════
 //  SIDEBAR  –  Database Object Explorer
 // ══════════════════════════════════════════════════════════
 
@@ -630,4 +769,11 @@ document.addEventListener('keydown', e => {
 // ══════════════════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════════════════
-checkToken();
+(function initApp() {
+  const existingToken = getToken();
+  if (existingToken) {
+    // Token already in localStorage — skip login, show app directly (instant hide)
+    showMainApp(true);
+  }
+  // Otherwise the login overlay stays visible
+})();
