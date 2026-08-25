@@ -677,11 +677,7 @@ var _this = this;
         "<br>" +
         '<span style="font-weight:400;color:var(--rsr-ink3);font-size:10px">' +
         (item.MainProjectCode || "") +
-        ' | <a href="' +
-        getHiringProjectUrl(hpCode) +
-        '" style="color:var(--rsr-teal);text-decoration:none" target="_blank">' +
-        hpCode +
-        "</a></span></th>";
+        "</span></th>";
     });
     html += "</tr></thead><tbody>";
 
@@ -736,13 +732,10 @@ var _this = this;
     var hpRows = {};
     filteredItems.forEach(function (item, idx) {
       var hp = item.HiringProject || item.Customer || "-";
-      var hpUrl = getHiringProjectUrl(hp);
       hpRows[idx] =
-        '<a href="' +
-        hpUrl +
-        '" style="color:var(--rsr-teal);font-weight:500;text-decoration:none" target="_blank">' +
+        '<span style="color:var(--rsr-teal);font-weight:500;">' +
         hp +
-        "</a>";
+        "</span>";
     });
     hpRows.total = "-";
     addRow("Hiring Project", hpRows);

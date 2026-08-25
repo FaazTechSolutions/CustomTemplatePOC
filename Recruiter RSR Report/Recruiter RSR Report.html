@@ -56,7 +56,7 @@
     </div>
 
     <!-- Agency / Owner Filter (Agent Filter Alone Visible) -->
-    <div class="rsr-rpt-filter-group" id="rsrAgencyFilterGroup">
+    <div class="rsr-rpt-filter-group hidden-filter" id="rsrAgencyFilterGroup" style="display:none">
       <label>AGENCY / OWNER (AGENT)</label>
       <div class="rsr-rpt-msf" id="rsrAgencyMsf">
         <div class="rsr-rpt-msf-box" onclick="window.rsrTogglePanel('rsrAgencyPanel', event)">
@@ -68,9 +68,9 @@
     </div>
 
     <!-- Actions -->
-    <button class="rsr-rpt-btn rsr-rpt-btn-gold rsr-rpt-btn-sm" style="height:36px" onclick="window.rsrSearch()">Search</button>
-    <button class="rsr-rpt-btn rsr-rpt-btn-sm" style="height:36px" onclick="window.rsrClear()">&#10005; Clear</button>
-    <button class="rsr-rpt-btn rsr-rpt-btn-sm" style="height:36px" onclick="window.rsrExportExcel()">Export</button>
+    <button class="rsr-rpt-btn rsr-rpt-btn-gold rsr-rpt-btn-sm" style="display:none;height:36px" onclick="window.rsrSearch()">Search</button>
+    <button class="rsr-rpt-btn rsr-rpt-btn-sm" style="display:none;height:36px" onclick="window.rsrClear()">&#10005; Clear</button>
+    <button class="rsr-rpt-btn rsr-rpt-btn-sm" style="height:36px;margin-left:auto" onclick="window.rsrExportExcel()">Export</button>
   </div>
 
   <div id="rsrCascadeHint" style="font-size:12px;color:var(--rsr-gold);margin:-6px 0 12px;display:none"></div>
