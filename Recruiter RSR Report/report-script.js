@@ -174,21 +174,43 @@ var _this = this;
       item.ProjectStatus ||
       item.Status ||
       (item.MainProjectIsActive ? "Active" : "Inactive");
-    var chipClass = "rsr-rpt-chip rsr-rpt-chip-green";
-    if (
-      statusStr === "Active" ||
-      statusStr === "In Progress" ||
-      statusStr === "Open"
-    ) {
-      chipClass = "rsr-rpt-chip rsr-rpt-chip-green";
-    } else if (statusStr === "Hold" || statusStr === "Pending") {
-      chipClass = "rsr-rpt-chip rsr-rpt-chip-gold";
-    } else if (statusStr === "Completed" || statusStr === "Finished") {
-      chipClass = "rsr-rpt-chip rsr-rpt-chip-teal";
-    } else if (statusStr === "Inactive" || statusStr === "Cancelled") {
-      chipClass = "rsr-rpt-chip rsr-rpt-chip-gray";
-    }
-    return '<span class="' + chipClass + '">' + statusStr + "</span>";
+
+    var options = [
+      { text: "Not started", value: "Not started" },
+      { text: "In Progress", value: "In Progress" },
+      { text: "Hold", value: "Hold" },
+      { text: "Cancelled", value: "Cancelled" },
+      { text: "completed", value: "completed" },
+    ];
+
+    var optionsHtml = options
+      .map(function (opt) {
+        var selected =
+          opt.value.toLowerCase() === (statusStr || "").toLowerCase()
+            ? "selected"
+            : "";
+        return (
+          '<option value="' +
+          opt.value +
+          '" ' +
+          selected +
+          ">" +
+          opt.text +
+          "</option>"
+        );
+      })
+      .join("");
+
+    var safeItem = encodeURIComponent(JSON.stringify(item));
+    var initialClass = window.rsrGetChipClass ? window.rsrGetChipClass(statusStr) : "rsr-rpt-chip rsr-rpt-chip-gray";
+
+    return (
+      '<select class="' + initialClass + '" style="cursor:pointer; appearance:none; -webkit-appearance:none; border:none; outline:none; text-align:center; padding-right:12px;" onchange="this.className=window.rsrGetChipClass(this.value); window.rsrUpdateProjectStatus(this, \'' +
+      safeItem +
+      "')\">" +
+      optionsHtml +
+      "</select>"
+    );
   }
 
   /* ──────────────────────────────────────────────────────────────
@@ -1052,28 +1074,32 @@ var _this = this;
   function rsrExportExcel() {
     var $table = $("#rsrGroups table");
     if (!$table.length) {
-      alert("No data to export.");
+      if (typeof Swal !== 'undefined') {
+        Swal.fire('Warning', 'No data to export.', 'warning');
+      } else {
+        alert("No data to export.");
+      }
       return;
     }
-    
+
     var $clone = $table.clone();
-    
+
     // Replace inputs with their current values
     var inputValues = [];
-    $table.find("input").each(function() {
+    $table.find("input").each(function () {
       inputValues.push($(this).val());
     });
-    
-    $clone.find("input").each(function(index) {
+
+    $clone.find("input").each(function (index) {
       $(this).replaceWith("<span>" + inputValues[index] + "</span>");
     });
-    
+
     // Move inline styles from tr to td so Excel doesn't extend background to infinity
-    $clone.find("tr").each(function() {
+    $clone.find("tr").each(function () {
       var $tr = $(this);
       var trStyle = $tr.attr("style");
       if (trStyle) {
-        $tr.children("td, th").each(function() {
+        $tr.children("td, th").each(function () {
           var currentStyle = $(this).attr("style") || "";
           $(this).attr("style", trStyle + ";" + currentStyle);
         });
@@ -1082,30 +1108,31 @@ var _this = this;
     });
 
     var html = $clone[0].outerHTML;
-    
+
     // Replace CSS variables with Hex values so Excel can interpret them
-    html = html.replace(/var\(--rsr-sand\)/g, '#F5F3EE')
-               .replace(/var\(--rsr-ink\)/g, '#1A1917')
-               .replace(/var\(--rsr-ink2\)/g, '#4A4845')
-               .replace(/var\(--rsr-ink3\)/g, '#888780')
-               .replace(/var\(--rsr-gold\)/g, '#BA7517')
-               .replace(/var\(--rsr-gold-bg\)/g, '#FAEEDA')
-               .replace(/var\(--rsr-gold-lt\)/g, '#FAC775')
-               .replace(/var\(--rsr-teal\)/g, '#0F6E56')
-               .replace(/var\(--rsr-teal-bg\)/g, '#E1F5EE')
-               .replace(/var\(--rsr-teal-lt\)/g, '#9FE1CB')
-               .replace(/var\(--rsr-red\)/g, '#A32D2D')
-               .replace(/var\(--rsr-red-bg\)/g, '#FCEBEB')
-               .replace(/var\(--rsr-blue\)/g, '#185FA5')
-               .replace(/var\(--rsr-blue-bg\)/g, '#E6F1FB')
-               .replace(/var\(--rsr-purple\)/g, '#534AB7')
-               .replace(/var\(--rsr-purple-bg\)/g, '#EEEDFE')
-               .replace(/var\(--rsr-green\)/g, '#3B6D11')
-               .replace(/var\(--rsr-green-bg\)/g, '#EAF3DE')
-               .replace(/var\(--rsr-coral\)/g, '#993C1D')
-               .replace(/var\(--rsr-coral-bg\)/g, '#FAECE7')
-               .replace(/var\(--rsr-border\)/g, '#E3E3E3')
-               .replace(/var\(--rsr-border2\)/g, '#C9C9C9');
+    html = html
+      .replace(/var\(--rsr-sand\)/g, "#F5F3EE")
+      .replace(/var\(--rsr-ink\)/g, "#1A1917")
+      .replace(/var\(--rsr-ink2\)/g, "#4A4845")
+      .replace(/var\(--rsr-ink3\)/g, "#888780")
+      .replace(/var\(--rsr-gold\)/g, "#BA7517")
+      .replace(/var\(--rsr-gold-bg\)/g, "#FAEEDA")
+      .replace(/var\(--rsr-gold-lt\)/g, "#FAC775")
+      .replace(/var\(--rsr-teal\)/g, "#0F6E56")
+      .replace(/var\(--rsr-teal-bg\)/g, "#E1F5EE")
+      .replace(/var\(--rsr-teal-lt\)/g, "#9FE1CB")
+      .replace(/var\(--rsr-red\)/g, "#A32D2D")
+      .replace(/var\(--rsr-red-bg\)/g, "#FCEBEB")
+      .replace(/var\(--rsr-blue\)/g, "#185FA5")
+      .replace(/var\(--rsr-blue-bg\)/g, "#E6F1FB")
+      .replace(/var\(--rsr-purple\)/g, "#534AB7")
+      .replace(/var\(--rsr-purple-bg\)/g, "#EEEDFE")
+      .replace(/var\(--rsr-green\)/g, "#3B6D11")
+      .replace(/var\(--rsr-green-bg\)/g, "#EAF3DE")
+      .replace(/var\(--rsr-coral\)/g, "#993C1D")
+      .replace(/var\(--rsr-coral-bg\)/g, "#FAECE7")
+      .replace(/var\(--rsr-border\)/g, "#E3E3E3")
+      .replace(/var\(--rsr-border2\)/g, "#C9C9C9");
 
     var style = `<style>
       table { border-collapse: collapse; font-family: Georgia, 'Times New Roman', serif; font-size: 13px; }
@@ -1121,19 +1148,86 @@ var _this = this;
       a { color: #0F6E56; text-decoration: none; }
     </style>`;
 
-    var fullHtml = '<html><head><meta charset="utf-8">' + style + '</head><body>' + html + '</body></html>';
+    var fullHtml =
+      '<html><head><meta charset="utf-8">' +
+      style +
+      "</head><body>" +
+      html +
+      "</body></html>";
 
-    var blob = new Blob(['\ufeff', fullHtml], {
-        type: 'application/vnd.ms-excel'
+    var blob = new Blob(["\ufeff", fullHtml], {
+      type: "application/vnd.ms-excel",
     });
     var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
+    var a = document.createElement("a");
     a.href = url;
-    a.download = 'RSR_Report_' + new Date().toISOString().slice(0,10) + '.xls';
+    a.download = "RSR_Report_" + new Date().toISOString().slice(0, 10) + ".xls";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
   }
+
+  /* ──────────────────────────────────────────────────────────────
+     8.5 UPDATE PROJECT STATUS
+     ────────────────────────────────────────────────────────────── */
+  window.rsrUpdateProjectStatus = async function (selectEl, encodedItemStr) {
+    try {
+      var item = JSON.parse(decodeURIComponent(encodedItemStr));
+      var newStatus = selectEl.value;
+
+      var entityData = {
+        ProjectStatus: newStatus,
+        RecId: item.SubProjectRecId || item.RecId || 0,
+        EntityId: item.EntityId || "63680ea038694357a38df574177e01cd",
+      };
+
+      var token = getAuthToken();
+      var companyId = "LGE0000001";
+      var url =
+        "https://portal.mawarid.com.sa/apps4x-api/api/v1/data/" +
+        companyId +
+        "/update";
+
+      var formData = new FormData();
+      formData.append("EntityData", JSON.stringify(entityData));
+
+      var originalColor = selectEl.style.color;
+      selectEl.disabled = true;
+      selectEl.style.color = "gray";
+
+      var response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          authorization: token,
+          companyid: companyId,
+          appid: "bf053c91ba5c42b48c9f96d0a8450e79",
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Update failed with status " + response.status);
+      }
+
+      if (typeof Swal !== 'undefined') {
+        Swal.fire('Success', 'ProjectStatus updated successfully to ' + newStatus, 'success');
+      } else {
+        console.log("ProjectStatus updated successfully to", newStatus);
+      }
+    } catch (e) {
+      console.error(e);
+      if (typeof Swal !== 'undefined') {
+        Swal.fire('Error', 'Error updating ProjectStatus: ' + e.message, 'error');
+      } else {
+        alert("Error updating ProjectStatus: " + e.message);
+      }
+    } finally {
+      if (selectEl) {
+        selectEl.disabled = false;
+        selectEl.style.color = originalColor;
+      }
+    }
+  };
 
   /* ──────────────────────────────────────────────────────────────
      9. GLOBAL EXPOSURE
@@ -1148,6 +1242,26 @@ var _this = this;
   window.rsrClear = rsrClear;
   window.rsrRecalcSingleTable = rsrRecalcSingleTable;
   window.rsrExportExcel = rsrExportExcel;
+  
+  window.rsrGetChipClass = function(statusStr) {
+    statusStr = statusStr || "";
+    var lower = statusStr.toLowerCase();
+    if (
+      lower === "active" ||
+      lower === "in progress" ||
+      lower === "open"
+    ) {
+      return "rsr-rpt-chip rsr-rpt-chip-green";
+    } else if (lower === "hold" || lower === "pending") {
+      return "rsr-rpt-chip rsr-rpt-chip-gold";
+    } else if (lower === "completed" || lower === "finished") {
+      return "rsr-rpt-chip rsr-rpt-chip-teal";
+    } else {
+      return "rsr-rpt-chip rsr-rpt-chip-gray";
+    }
+  };
+  
+  // rsrUpdateProjectStatus is already attached to window in its definition
 
   $(function () {
     rsrInit();
