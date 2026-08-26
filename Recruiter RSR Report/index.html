@@ -99,6 +99,40 @@
 
   <!-- Table Container -->
   <div id="rsrGroups"></div>
+
+  <!-- Read-Only Agent Detail Modal (Inside .rsr-rpt-container to inherit CSS variables & table styles) -->
+  <div class="rsr-rpt-modal-bg" id="rsrAgentModalBg" onclick="window.closeAgentDetailModal(event)">
+    <div class="rsr-rpt-modal" onclick="event.stopPropagation()">
+      <div class="rsr-rpt-modal-header">
+        <div>
+          <div class="rsr-rpt-modal-title" id="rsrModalTitle">Agent Breakdown Details</div>
+          <div class="rsr-rpt-modal-subtitle" id="rsrModalSubtitle">Read-only agent candidate status breakdown for matching Recruiting IDs</div>
+        </div>
+        <button class="rsr-rpt-modal-close" onclick="window.closeAgentDetailModal()">&times;</button>
+      </div>
+      <div class="rsr-rpt-modal-body">
+        <!-- Modal Filter Bar (Agent ID / Name Multi-Select Filter) -->
+        <div class="rsr-rpt-actions-row" style="margin-bottom:16px">
+          <div class="rsr-rpt-filter-group" id="rsrModalAgentFilterGroup">
+            <label>FILTER BY AGENT ID / NAME</label>
+            <div class="rsr-rpt-msf" id="rsrModalAgentMsf">
+              <div class="rsr-rpt-msf-box" onclick="window.rsrTogglePanel('rsrModalAgentPanel', event)">
+                <div class="rsr-rpt-msf-chips" id="rsrModalAgentChips"><span style="color:var(--rsr-ink3)">All assigned agents</span></div>
+                <span class="rsr-rpt-msf-caret">&#9662;</span>
+              </div>
+              <div class="rsr-rpt-msf-panel" id="rsrModalAgentPanel"></div>
+            </div>
+          </div>
+          <button class="rsr-rpt-btn rsr-rpt-btn-gold rsr-rpt-btn-sm" style="height:36px" onclick="window.rsrRenderModalTable()">Search</button>
+          <button class="rsr-rpt-btn rsr-rpt-btn-sm" style="height:36px" onclick="window.rsrClearModalFilters()">&#10005; Clear</button>
+        </div>
+
+        <!-- Read-Only Agent Detail Table Wrap -->
+        <div id="rsrModalAgentTableWrap"></div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script src="./report-script.js"></script>
