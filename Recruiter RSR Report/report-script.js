@@ -1167,6 +1167,35 @@ var _this = this;
     try {
       var item = JSON.parse(decodeURIComponent(encodedItemStr));
       var newStatus = selectEl.value;
+      var oldStatus = item.ProjectStatus || item.Status || (item.MainProjectIsActive ? "Active" : "Inactive");
+
+      if (typeof Swal !== 'undefined') {
+        var result = await Swal.fire({
+          title: 'Confirm Update',
+          text: 'Are you sure you want to update the Project Status to "' + newStatus + '"?',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#0F6E56',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, update it!'
+        });
+
+        if (!result.isConfirmed) {
+          selectEl.value = oldStatus;
+          if (window.rsrGetChipClass) {
+            selectEl.className = window.rsrGetChipClass(oldStatus);
+          }
+          return;
+        }
+      } else {
+        if (!confirm('Are you sure you want to update the Project Status to "' + newStatus + '"?')) {
+          selectEl.value = oldStatus;
+          if (window.rsrGetChipClass) {
+            selectEl.className = window.rsrGetChipClass(oldStatus);
+          }
+          return;
+        }
+      }
 
       var entityData = {
         ProjectStatus: newStatus,
