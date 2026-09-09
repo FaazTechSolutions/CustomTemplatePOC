@@ -1,0 +1,825 @@
+.mail-monitor-wrapper {
+    /* Color Palette */
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --primary-dark: #4f46e5;
+    --primary-bg: #eef2ff;
+    --secondary: #64748b;
+    --success: #22c55e;
+    --success-dark: #16a34a;
+    --success-bg: #f0fdf4;
+    --warning: #f59e0b;
+    --warning-dark: #d97706;
+    --warning-bg: #fffbeb;
+    --danger: #ef4444;
+    --danger-dark: #dc2626;
+    --danger-bg: #fef2f2;
+    --info: #3b82f6;
+    --info-bg: #eff6ff;
+
+    /* Backgrounds */
+    --bg-main: #f1f5f9;
+    --bg-card: #ffffff;
+    --bg-hover: #f8fafc;
+    --bg-table-stripe: #fafbfc;
+
+    /* Text */
+    --text-main: #1e293b;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+
+    /* Borders & Shadows */
+    --border-color: #e2e8f0;
+    --border-light: #f1f5f9;
+    --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.5;
+    font-size: 13px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.mail-monitor-wrapper * { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Utilities */
+.mail-monitor-wrapper .text-success { color: var(--success-dark); }
+.mail-monitor-wrapper .text-warning { color: var(--warning-dark); }
+.mail-monitor-wrapper .text-danger { color: var(--danger-dark); }
+.mail-monitor-wrapper .text-primary { color: var(--primary); }
+.mail-monitor-wrapper .font-semibold { font-weight: 600; }
+.mail-monitor-wrapper .p-0 { padding: 0 !important; }
+
+.mail-monitor-wrapper .dashboard-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e8ecf4 100%);
+}
+
+.mail-monitor-wrapper .main-content {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 1.25rem 1.75rem;
+}
+
+/* ==================== HEADER ==================== */
+.mail-monitor-wrapper .top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.mail-monitor-wrapper .header-title h1 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -0.3px;
+}
+
+.mail-monitor-wrapper .header-title .subtitle {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    margin-top: 2px;
+    font-weight: 400;
+}
+
+.mail-monitor-wrapper .date-badge {
+    background: linear-gradient(135deg, var(--primary-bg), #dbeafe);
+    padding: 0.4rem 0.85rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    font-size: 0.75rem;
+}
+
+/* ==================== PREMIUM KPI GRID ==================== */
+.mail-monitor-wrapper .premium-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 1.75rem;
+}
+
+.mail-monitor-wrapper .kpi-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    padding: 1.25rem;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    z-index: 1;
+}
+
+.mail-monitor-wrapper .glow-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px rgba(0,0,0,0.1), 0 4px 10px -4px rgba(0,0,0,0.06);
+    border-color: transparent;
+}
+
+.mail-monitor-wrapper .glow-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    z-index: 2;
+    opacity: 0.9;
+}
+
+/* Gradient Top Borders */
+.mail-monitor-wrapper .glow-card.info::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+.mail-monitor-wrapper .glow-card.success::before { background: linear-gradient(90deg, #10b981, #34d399); }
+.mail-monitor-wrapper .glow-card.warning::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.mail-monitor-wrapper .glow-card.danger::before { background: linear-gradient(90deg, #ef4444, #f87171); }
+.mail-monitor-wrapper .glow-card.primary::before { background: linear-gradient(90deg, #6366f1, #818cf8); }
+.mail-monitor-wrapper .glow-card.pink::before { background: linear-gradient(90deg, #ec4899, #f472b6); }
+.mail-monitor-wrapper .glow-card.purple::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+.mail-monitor-wrapper .glow-card.cyan::before { background: linear-gradient(90deg, #06b6d4, #22d3ee); }
+
+/* Glow Background on hover */
+.mail-monitor-wrapper .glow-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(255,255,255,0.7), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: -1;
+}
+
+.mail-monitor-wrapper .glow-card:hover::after {
+    opacity: 1;
+}
+
+.mail-monitor-wrapper .kpi-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+}
+
+.mail-monitor-wrapper .kpi-subtitle {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.mail-monitor-wrapper .kpi-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    line-height: 1.2;
+}
+
+.mail-monitor-wrapper .kpi-icon-wrapper {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+/* Icon Colors */
+.mail-monitor-wrapper .info .kpi-icon-wrapper { background: #eff6ff; color: #3b82f6; }
+.mail-monitor-wrapper .success .kpi-icon-wrapper { background: #f0fdf4; color: #10b981; }
+.mail-monitor-wrapper .warning .kpi-icon-wrapper { background: #fffbeb; color: #f59e0b; }
+.mail-monitor-wrapper .danger .kpi-icon-wrapper { background: #fef2f2; color: #ef4444; }
+.mail-monitor-wrapper .primary .kpi-icon-wrapper { background: #eef2ff; color: #6366f1; }
+.mail-monitor-wrapper .pink .kpi-icon-wrapper { background: #fdf2f8; color: #ec4899; }
+.mail-monitor-wrapper .purple .kpi-icon-wrapper { background: #f5f3ff; color: #8b5cf6; }
+.mail-monitor-wrapper .cyan .kpi-icon-wrapper { background: #ecfeff; color: #06b6d4; }
+
+.mail-monitor-wrapper .kpi-card-body {
+    margin-bottom: 0.75rem;
+}
+
+.mail-monitor-wrapper .kpi-count {
+    font-size: 2.15rem;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -1px;
+    line-height: 1;
+}
+
+.mail-monitor-wrapper .kpi-card-footer p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.mail-monitor-wrapper .badge-mini {
+    background-color: #f1f5f9;
+    color: #475569;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Consolas', 'Fira Code', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    border: 1px solid #e2e8f0;
+}
+
+/* ==================== DASHBOARD GRID ==================== */
+.mail-monitor-wrapper .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+    margin-bottom: 1.25rem;
+}
+
+.mail-monitor-wrapper .card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.mail-monitor-wrapper .chart-card {
+    margin-bottom: 1.25rem !important;
+}
+
+.mail-monitor-wrapper .card-header {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-card);
+}
+
+.mail-monitor-wrapper .card-header h3 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: -0.1px;
+}
+
+.mail-monitor-wrapper .card-body {
+    padding: 0.85rem 1rem;
+    overflow-x: auto;
+}
+
+/* ==================== PROGRESS BARS ==================== */
+.mail-monitor-wrapper .progress-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.mail-monitor-wrapper .progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    font-weight: 500;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.mail-monitor-wrapper .progress-bar-bg {
+    width: 100%;
+    height: 7px;
+    background-color: var(--border-light);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.mail-monitor-wrapper .progress-bar {
+    height: 100%;
+    border-radius: 20px;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mail-monitor-wrapper .success-bg { background: linear-gradient(90deg, var(--success-dark), var(--success)); }
+.mail-monitor-wrapper .warning-bg { background: linear-gradient(90deg, var(--warning-dark), var(--warning)); }
+.mail-monitor-wrapper .danger-bg { background: linear-gradient(90deg, var(--danger-dark), var(--danger)); }
+
+/* ==================== ERROR LIST (CARDS) ==================== */
+.mail-monitor-wrapper .error-list {
+    list-style: none;
+    display: flex;
+    overflow-x: auto;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    background: var(--bg-hover);
+}
+
+/* Custom Scrollbar for Error List */
+.mail-monitor-wrapper .error-list::-webkit-scrollbar {
+    height: 4px;
+}
+.mail-monitor-wrapper .error-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+.mail-monitor-wrapper .error-list::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 4px;
+}
+.mail-monitor-wrapper .error-list::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+}
+
+.mail-monitor-wrapper .error-list-item {
+    flex: 0 0 280px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    transition: var(--transition);
+    box-shadow: var(--shadow-xs);
+}
+
+.mail-monitor-wrapper .error-list-item:hover {
+    border-color: rgba(239, 68, 68, 0.4);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.08);
+    transform: translateY(-2px);
+}
+
+.mail-monitor-wrapper .error-list-item.empty-state {
+    flex: 1 1 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 3rem;
+    background: transparent;
+    border: 2px dashed var(--border-color);
+    box-shadow: none;
+}
+
+.mail-monitor-wrapper .error-list-item.empty-state:hover {
+    transform: none;
+    border-color: var(--border-color);
+}
+
+.mail-monitor-wrapper .empty-icon {
+    font-size: 2.5rem;
+    color: var(--success);
+    opacity: 0.8;
+}
+
+.mail-monitor-wrapper .user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.mail-monitor-wrapper .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: #fef2f2;
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.mail-monitor-wrapper .user-email {
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mail-monitor-wrapper .error-count-badge {
+    background: #fef2f2;
+    color: #ef4444;
+    padding: 0.4rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    white-space: nowrap;
+}
+
+/* ==================== TABLE ==================== */
+.mail-monitor-wrapper .flex-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mail-monitor-wrapper .search-box {
+    position: relative;
+    width: 220px;
+}
+
+.mail-monitor-wrapper .search-box i {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 0.7rem;
+}
+
+.mail-monitor-wrapper .search-box input {
+    width: 100%;
+    padding: 0.45rem 0.75rem 0.45rem 2rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+    font-family: inherit;
+    outline: none;
+    transition: var(--transition);
+    background: var(--bg-hover);
+    color: var(--text-main);
+}
+
+.mail-monitor-wrapper .search-box input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+    background: var(--bg-card);
+}
+
+.mail-monitor-wrapper .table-responsive { 
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 500px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+/* Custom Scrollbar for Table */
+.mail-monitor-wrapper .table-responsive::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+.mail-monitor-wrapper .table-responsive::-webkit-scrollbar-track {
+    background: transparent;
+}
+.mail-monitor-wrapper .table-responsive::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 4px;
+}
+.mail-monitor-wrapper .table-responsive::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+}
+
+.mail-monitor-wrapper .data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.mail-monitor-wrapper .data-table th,
+.mail-monitor-wrapper .data-table td {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    vertical-align: middle;
+}
+
+.mail-monitor-wrapper .data-table th {
+    background-color: #f8fafc;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-size: 0.68rem;
+    letter-spacing: 0.8px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    white-space: nowrap;
+    box-shadow: 0 1px 0 0 var(--border-color); /* better than border for sticky th */
+    border-bottom: none;
+}
+
+.mail-monitor-wrapper .data-table tbody tr {
+    transition: var(--transition);
+}
+
+.mail-monitor-wrapper .data-table tbody tr:nth-child(even) {
+    background-color: var(--bg-table-stripe);
+}
+
+.mail-monitor-wrapper .data-table tbody tr:hover {
+    background-color: var(--primary-bg);
+}
+
+.mail-monitor-wrapper .data-table td strong {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+/* Status Badges */
+.mail-monitor-wrapper .status-badge {
+    padding: 0.2rem 0.55rem;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    white-space: nowrap;
+}
+
+.mail-monitor-wrapper .status-success {
+    background-color: var(--success-bg);
+    color: var(--success-dark);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.mail-monitor-wrapper .status-error {
+    background-color: var(--danger-bg);
+    color: var(--danger-dark);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Action Buttons */
+.mail-monitor-wrapper .action-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.mail-monitor-wrapper .action-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    transition: var(--transition);
+}
+
+.mail-monitor-wrapper .action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.mail-monitor-wrapper .action-btn-view:hover {
+    background: var(--primary-bg);
+    color: var(--primary);
+    border-color: rgba(99, 102, 241, 0.25);
+}
+
+.mail-monitor-wrapper .action-btn-error:hover {
+    background: var(--danger-bg);
+    color: var(--danger);
+    border-color: rgba(239, 68, 68, 0.25);
+}
+
+.mail-monitor-wrapper .text-center { text-align: center; }
+
+.mail-monitor-wrapper .company-id {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    background: var(--bg-hover);
+    padding: 0.1rem 0.4rem;
+    border-radius: var(--radius-sm);
+    font-family: 'Consolas', monospace;
+}
+
+.mail-monitor-wrapper .error-count-inline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--danger-bg);
+    color: var(--danger-dark);
+    font-weight: 700;
+    font-size: 0.72rem;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 5px;
+    border-radius: 20px;
+    border: 1px solid rgba(239, 68, 68, 0.15);
+}
+
+.mail-monitor-wrapper .text-primary { color: var(--primary); }
+
+/* ==================== MODALS ==================== */
+.mail-monitor-wrapper .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.mail-monitor-wrapper .modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.mail-monitor-wrapper .badge-error-count {
+    background: var(--danger);
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-weight: 700;
+}
+
+/* ==================== ERROR LOG PRE BLOCK ==================== */
+#unifiedModalErrorText {
+    background-color: #1e293b;
+    color: #f8fafc;
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #0f172a;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+#unifiedModalErrorText::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+#unifiedModalErrorText::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+#unifiedModalErrorText::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+#unifiedModalErrorText::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Modal sizing */
+.mail-monitor-wrapper .modal-content {
+    background: white;
+    width: 90%;
+    max-width: 600px;
+    border-radius: var(--radius-xl);
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    animation: modalPopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mail-monitor-wrapper .modal-xl {
+    max-width: 1000px;
+}
+
+.mail-monitor-wrapper .modal-overlay.show .modal-content {
+    transform: translateY(0) scale(1);
+}
+
+.mail-monitor-wrapper .modal-header {
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-hover);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.mail-monitor-wrapper .modal-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-main);
+}
+
+.mail-monitor-wrapper .close-modal {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+}
+
+.mail-monitor-wrapper .close-modal:hover {
+    background: var(--danger-bg);
+    color: var(--danger);
+}
+
+.mail-monitor-wrapper .modal-body {
+    padding: 1rem 1.25rem;
+    overflow-y: auto;
+}
+
+.mail-monitor-wrapper .user-context {
+    margin-bottom: 0.75rem;
+    padding: 0.55rem 0.85rem;
+    background: var(--primary-bg);
+    border-radius: var(--radius-md);
+    font-size: 0.78rem;
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    color: var(--text-secondary);
+}
+
+.mail-monitor-wrapper .error-log-container {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border-radius: var(--radius-md);
+    padding: 0.85rem;
+    overflow-x: auto;
+}
+
+.mail-monitor-wrapper .error-log-container pre {
+    color: #e2e8f0;
+    font-family: 'Consolas', 'Fira Code', monospace;
+    font-size: 0.72rem;
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+/* Details Table in Modal */
+.mail-monitor-wrapper .details-table-container {
+    margin-top: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-card);
+    overflow: hidden;
+}
+
+.mail-monitor-wrapper .details-table th {
+    background-color: var(--bg-hover);
+    white-space: nowrap;
+}
+
+.mail-monitor-wrapper .details-table td {
+    white-space: nowrap;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .mail-monitor-wrapper .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    .mail-monitor-wrapper .top-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    .mail-monitor-wrapper .main-content {
+        padding: 1rem;
+    }
+}
