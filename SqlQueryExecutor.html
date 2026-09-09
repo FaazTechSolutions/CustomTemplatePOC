@@ -235,6 +235,43 @@
     }
     .obj-item-icon { font-size: 11px; flex-shrink: 0; opacity: 0.65; }
     .obj-item.active { background: rgba(88,166,255,0.12); color: var(--accent); border-left-color: var(--accent); }
+    .obj-item-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .obj-actions { display: none; gap: 4px; }
+    .obj-item:hover .obj-actions { display: flex; }
+    .obj-action-btn { 
+      background: var(--surface3); border: 1px solid var(--border); border-radius: 4px;
+      color: var(--text); padding: 2px 5px; font-size: 10px; cursor: pointer;
+    }
+    .obj-action-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+    
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000;
+      align-items: center; justify-content: center; backdrop-filter: blur(2px);
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius);
+      width: 400px; max-width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .modal-header {
+      padding: 14px 20px; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--surface);
+    }
+    .modal-title { font-weight: 600; font-size: 14px; }
+    .modal-close { background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 16px; }
+    .modal-close:hover { color: var(--text); }
+    .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 12px; max-height: 60vh; overflow-y: auto; }
+    .param-group { display: flex; flex-direction: column; gap: 4px; }
+    .param-group label { font-size: 11px; color: var(--text2); font-family: 'JetBrains Mono', monospace; }
+    .param-group input { 
+      background: var(--surface3); border: 1px solid var(--border); border-radius: var(--radius-sm);
+      color: var(--text); padding: 8px 10px; font-family: 'JetBrains Mono', monospace; font-size: 12px; outline: none;
+    }
+    .param-group input:focus { border-color: var(--accent); }
+    .modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; background: var(--surface); }
 
     /* ── Right content area ── */
     .content-area {
@@ -257,6 +294,67 @@
       display: flex; align-items: center; gap: 8px;
     }
     .panel-label::after { content:''; flex:1; height:1px; background:var(--border); }
+    
+    .editor-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 4px;
+      overflow-x: auto;
+    }
+    .editor-tab {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .editor-tab:hover {
+      background: var(--surface3);
+      color: var(--text);
+    }
+    .editor-tab.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .editor-tab-close {
+      opacity: 0.6;
+      font-size: 14px;
+      line-height: 1;
+      border-radius: 50%;
+      padding: 0 2px;
+    }
+    .editor-tab-close:hover {
+      opacity: 1;
+      background: rgba(0,0,0,0.2);
+    }
+    .add-tab-btn {
+      background: transparent;
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      font-size: 14px;
+      border-radius: var(--radius-sm);
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .add-tab-btn:hover {
+      background: var(--surface2);
+      color: var(--text);
+    }
     .query-row { display: flex; gap: 8px; align-items: flex-start; }
     .query-box {
       flex: 1;
@@ -1351,27 +1449,65 @@
   <div id="mainApp" style="display:none;flex-direction:column;height:100vh">
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
 
+  <!-- SP Parameter Modal -->
+  <div class="modal-overlay" id="paramModalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="paramModalTitle">Execute Stored Procedure</div>
+        <button class="modal-close" onclick="closeParamModal()">×</button>
+      </div>
+      <div class="modal-body" id="paramModalBody">
+        <!-- Params generated here -->
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn" onclick="closeParamModal()">Cancel</button>
+        <button class="run-btn" style="height:32px;font-size:12px;padding:0 14px;" onclick="submitParamModal()">Run SP</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Header -->
   <header class="app-header">
     <button class="mobile-menu-btn" onclick="toggleMobileSidebar()">☰</button>
     <div class="header-icon">🗄️</div>
     <div class="header-text">
       <h1>SQL Query Executor</h1>
-      <p>Mawarid Connector · CON0000001 · LGE0000001</p>
+      <p style="display:flex;align-items:center;gap:4px;">
+        Mawarid Connector · 
+        <select id="conIdSelect" style="background:transparent;border:none;border-bottom:1px solid var(--accent);color:var(--text);font-size:11px;max-width:120px;outline:none;font-family:'JetBrains Mono',monospace;cursor:pointer" onchange="updateConnectorId()">
+          <option value="CON0000001" style="background:var(--surface2)">CON0000001</option>
+        </select>
+        · LGE0000001
+      </p>
     </div>
-    <div class="header-badge" id="tokenStatus">
-      <span class="dot" id="statusDot" style="background:var(--warning)"></span>
-      <span id="statusText">Checking token…</span>
-    </div>
-    <div class="header-actions">
-      <button class="logout-btn" onclick="handleLogout()" title="Logout">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-          <polyline points="16 17 21 12 16 7"></polyline>
-          <line x1="21" y1="12" x2="9" y2="12"></line>
-        </svg>
-        Logout
+    
+    <div style="margin-left:auto;display:flex;align-items:center;gap:12px;">
+      <div class="header-badge" id="tokenStatus">
+        <span class="dot" id="statusDot" style="background:var(--warning)"></span>
+        <span id="statusText">Checking token…</span>
+      </div>
+
+      <button class="run-btn" id="runBtn" onclick="executeQuery()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M5 3.5l8 4.5-8 4.5V3.5z"/></svg>
+        Execute
       </button>
+      
+      <button class="action-btn" id="cancelBtn" onclick="cancelQuery()" style="height:40px;padding:0 18px;display:none;color:var(--danger);border-color:var(--danger);">
+        <span style="font-size:14px;">🛑</span> Cancel
+      </button>
+
+      <div style="width:1px;height:24px;background:var(--border);margin:0 6px;"></div>
+
+      <div class="header-actions">
+        <button class="logout-btn" onclick="handleLogout()" title="Logout">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          Logout
+        </button>
+      </div>
     </div>
   </header>
 
@@ -1438,13 +1574,11 @@
 
       <!-- Query Panel -->
       <div class="query-panel">
-        <div class="panel-label">SQL Query <small style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0">(Ctrl + Enter to run)</small></div>
+        <div class="editor-tabs" id="editorTabsBar">
+          <!-- Tabs rendered here via JS -->
+        </div>
         <div class="query-row">
           <div id="editorContainer" class="query-box" style="padding:0; overflow:hidden;"></div>
-          <button class="run-btn" id="runBtn" onclick="executeQuery()">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M5 3.5l8 4.5-8 4.5V3.5z"/></svg>
-            Run Query
-          </button>
         </div>
         <div class="token-bar">
           <span id="tokenBadge" class="token-pill bad">⚠ No token found</span>
@@ -1509,7 +1643,7 @@
     // ── Config ───────────────────────────────────────────────────────────────
     const BASE_URL   = 'https://portal.mawarid.com.sa/apps4x-api/api/v1';
     const COMPANY_ID = 'LGE0000001';
-    const CON_ID     = 'CON0000001';
+    let CON_ID       = 'CON0000001';
     const USER_ID    = 's.azam@mawarid.com.sa';
     const APP_ID     = 'Studio';
     const TOKEN_KEY  = 'eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9';
@@ -1519,6 +1653,16 @@
     let allExpanded = true;
     let sqlEditor   = null;
     let mawaridSchemaCache = JSON.parse(localStorage.getItem('mawarid_schema_cache')) || { table: [], view: [], sp: [] };
+
+    function updateConnectorId() {
+      const el = document.getElementById('conIdSelect');
+      if (el) {
+        CON_ID = el.value.trim();
+        mawaridSchemaCache = { table: [], view: [], sp: [], columns: {} };
+        localStorage.removeItem('mawarid_schema_cache');
+        loadAllObjects();
+      }
+    }
 
     // ── Shared fetch headers ─────────────────────────────────────────────────
     function buildHeaders(token) {
@@ -1557,6 +1701,7 @@
         enterBtn.style.borderColor = 'rgba(63,185,80,0.4)';
         enterBtn.style.color = 'var(--success)';
         closeTokenDrawer();
+        loadConnectors();
         loadAllObjects();
         document.getElementById('mainApp').style.display = 'flex';
         document.getElementById('loginOverlay').style.display = 'none';
@@ -1603,6 +1748,57 @@
     }
 
     // ── Sidebar: load objects ─────────────────────────────────────────────────
+    async function loadConnectors() {
+      const token = getToken();
+      if (!token) return;
+      const url = `${BASE_URL}/metaobject/${COMPANY_ID}?objectTypes=Apps&objectTypes=Connector&%24filter%3AType=eq%3AConnector`;
+      try {
+        const resp = await fetch(url, { headers: buildHeaders(token) });
+        if (resp.status === 401) return; 
+        if (!resp.ok) return;
+        const json = await resp.json();
+        let dataArr = [];
+        if (json && Array.isArray(json.Data)) dataArr = json.Data;
+        else if (json && json.Result && Array.isArray(json.Result.Data)) dataArr = json.Result.Data;
+        
+        const sqlConnectors = [];
+        dataArr.forEach(item => {
+          try {
+            const parsed = typeof item.Data === 'string' ? JSON.parse(item.Data) : item.Data;
+            if (parsed && parsed.ConnectorType === 'SQL') {
+              const id = parsed.ConnectorId || item.ObjectId || parsed.Name || item.ObjectName;
+              const name = parsed.ConnectorName || parsed.Name || item.ObjectName || id;
+              if (id) sqlConnectors.push({ id, name });
+            }
+          } catch(e) {}
+        });
+
+        const selectEl = document.getElementById('conIdSelect');
+        if (selectEl && sqlConnectors.length > 0) {
+          const currentVal = CON_ID;
+          selectEl.innerHTML = '';
+          let foundCurrent = false;
+          sqlConnectors.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.id;
+            opt.textContent = `${c.name} (${c.id})`;
+            opt.style.background = 'var(--surface2)';
+            selectEl.appendChild(opt);
+            if (c.id === currentVal) foundCurrent = true;
+          });
+          if (!foundCurrent) {
+            const opt = document.createElement('option');
+            opt.value = currentVal;
+            opt.textContent = currentVal;
+            opt.style.background = 'var(--surface2)';
+            selectEl.appendChild(opt);
+          }
+          selectEl.value = currentVal;
+        }
+      } catch (err) {
+        console.warn('Failed to load connectors', err);
+      }
+    }
     async function loadAllObjects() {
       const token = getToken();
       if (!token) return;
@@ -1610,6 +1806,7 @@
         loadObjectGroup('tableobject', null, 'listTables', 'cntTables', 'table'),
         loadObjectGroup('viewobject',  null, 'listViews',  'cntViews',  'view'),
         loadObjectGroup('sysobjects',  'object_Type=P', 'listSPs', 'cntSPs', 'sp'),
+        loadColumns()
       ]);
     }
 
@@ -1623,6 +1820,7 @@
       const url = `${BASE_URL}/${COMPANY_ID}/connector/${CON_ID}/sql/${endpoint}${qs ? '?' + qs : ''}`;
       try {
         const resp = await fetch(url, { headers: buildHeaders(token) });
+        if (resp.status === 401) { handleLogout(); return; }
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const json = await resp.json();
 
@@ -1666,7 +1864,16 @@
           div.className = 'obj-item';
           div.dataset.name = name.toLowerCase();
           div.dataset.type = type;
-          div.innerHTML = `<span class="obj-item-icon">${type === 'table' ? '▤' : type === 'view' ? '◉' : '▶'}</span> ${escHtml(name)}`;
+          const icon = type === 'table' ? '▤' : type === 'view' ? '◉' : '▶';
+          let actionsHTML = '';
+          if (type === 'view' || type === 'sp') {
+            actionsHTML = `
+              <div class="obj-actions">
+                <button class="obj-action-btn" title="View Schema" onclick="event.stopPropagation(); viewSchema('${escHtml(name)}', '${type}')">ℹ</button>
+                <button class="obj-action-btn" title="Execute" onclick="event.stopPropagation(); executeItem('${escHtml(name)}', '${type}')">▶</button>
+              </div>`;
+          }
+          div.innerHTML = `<span class="obj-item-icon">${icon}</span> <div class="obj-item-name">${escHtml(name)}</div> ${actionsHTML}`;
           div.title = `Click to query ${name}`;
           div.onclick = () => selectObject(name, type, div);
           listEl.appendChild(div);
@@ -1683,7 +1890,16 @@
             div.className = 'obj-item';
             div.dataset.name = name.toLowerCase();
             div.dataset.type = type;
-            div.innerHTML = `<span class="obj-item-icon">${type === 'table' ? '▤' : type === 'view' ? '◉' : '▶'}</span> ${escHtml(name)} <span style="font-size:9px;color:var(--warning)">(cached)</span>`;
+            const icon = type === 'table' ? '▤' : type === 'view' ? '◉' : '▶';
+            let actionsHTML = '';
+            if (type === 'view' || type === 'sp') {
+              actionsHTML = `
+                <div class="obj-actions">
+                  <button class="obj-action-btn" title="View Schema" onclick="event.stopPropagation(); viewSchema('${escHtml(name)}', '${type}')">ℹ</button>
+                  <button class="obj-action-btn" title="Execute" onclick="event.stopPropagation(); executeItem('${escHtml(name)}', '${type}')">▶</button>
+                </div>`;
+            }
+            div.innerHTML = `<span class="obj-item-icon">${icon}</span> <div class="obj-item-name">${escHtml(name)} <span style="font-size:9px;color:var(--warning)">(cached)</span></div> ${actionsHTML}`;
             div.title = `Click to query ${name}`;
             div.onclick = () => selectObject(name, type, div);
             listEl.appendChild(div);
@@ -1692,6 +1908,42 @@
           listEl.innerHTML = `<div class="obj-status" style="color:var(--danger)">⚠ ${escHtml(err.message)}</div>`;
           countEl.textContent = '!';
         }
+      }
+    }
+
+    async function loadColumns() {
+      const token = getToken();
+      if (!token) return;
+      
+      const query = `SELECT TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS`;
+      const url = `${BASE_URL}/${COMPANY_ID}/connector/${CON_ID}/sql/executebyquery?query=${encodeURIComponent(query)}`;
+      
+      try {
+        const resp = await fetch(url, { method: 'POST', headers: { ...buildHeaders(token), 'content-length': '0' } });
+        if (resp.status === 401) { handleLogout(); return; }
+        if (resp.ok) {
+          const json = await resp.json();
+          let rows = [];
+          if (json && Array.isArray(json.Data)) rows = json.Data;
+          else if (json && json.Result && Array.isArray(json.Result.Data)) rows = json.Result.Data;
+          else if (Array.isArray(json)) rows = json;
+          else if (json && Array.isArray(json.data)) rows = json.data;
+          
+          const colMap = {};
+          rows.forEach(r => {
+            const t = r.TABLE_NAME || r.table_name || Object.values(r)[0];
+            const c = r.COLUMN_NAME || r.column_name || Object.values(r)[1];
+            if (t && c) {
+              if (!colMap[t]) colMap[t] = [];
+              colMap[t].push(c);
+            }
+          });
+          
+          mawaridSchemaCache.columns = colMap;
+          localStorage.setItem('mawarid_schema_cache', JSON.stringify(mawaridSchemaCache));
+        }
+      } catch (e) {
+        console.warn('Failed to load columns', e);
       }
     }
 
@@ -1782,10 +2034,136 @@
       document.getElementById('sidebarOverlay').classList.toggle('active');
     }
 
-    // ── Execute query ────────────────────────────────────────────────────────
-    async function executeQuery() {
+    // ── Inline Actions & Modal ────────────────────────────────────────────────
+    function viewSchema(name, type) {
+      if (window.innerWidth <= 720) toggleMobileSidebar();
       let query = '';
-      if (sqlEditor) {
+      if (type === 'view') {
+        query = `SELECT OBJECT_DEFINITION(OBJECT_ID('${name.replace(/'/g, "''")}')) AS [Definition]`;
+      } else if (type === 'sp') {
+        query = `SELECT PARAMETER_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.PARAMETERS WHERE SPECIFIC_NAME = '${name.replace(/'/g, "''")}' ORDER BY ORDINAL_POSITION`;
+      }
+      if (query) {
+        if (sqlEditor) sqlEditor.setValue(query);
+        executeQuery(query);
+      }
+    }
+
+    async function executeItem(name, type) {
+      if (window.innerWidth <= 720) toggleMobileSidebar();
+      if (type === 'view') {
+        const query = `SELECT TOP 100 * FROM [${name}]`;
+        if (sqlEditor) sqlEditor.setValue(query);
+        executeQuery(query);
+      } else if (type === 'sp') {
+        const token = getToken();
+        if (!token) { openTokenDrawer(); return; }
+        
+        showLoading();
+        const query = `SELECT PARAMETER_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.PARAMETERS WHERE SPECIFIC_NAME = '${name.replace(/'/g, "''")}' ORDER BY ORDINAL_POSITION`;
+        const url = `${BASE_URL}/${COMPANY_ID}/connector/${CON_ID}/sql/executebyquery?query=${encodeURIComponent(query)}`;
+        
+        try {
+          const resp = await fetch(url, { method: 'POST', headers: { ...buildHeaders(token), 'content-length': '0' } });
+          if (resp.status === 401) { handleLogout(); return; }
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+          const json = await resp.json();
+          let rows = [];
+          if (json && Array.isArray(json.Data)) rows = json.Data;
+          else if (json && json.Result && Array.isArray(json.Result.Data)) rows = json.Result.Data;
+          else if (Array.isArray(json)) rows = json;
+          else if (json && Array.isArray(json.data)) rows = json.data;
+          
+          const params = rows.map(r => {
+            const pName = r.PARAMETER_NAME || r.parameter_name || Object.values(r)[0];
+            const pType = r.DATA_TYPE || r.data_type || Object.values(r)[1] || 'unknown';
+            return { name: pName, type: pType };
+          }).filter(p => p.name && typeof p.name === 'string');
+
+          if (params.length === 0) {
+            const execQuery = `EXEC [${name}]`;
+            if (sqlEditor) sqlEditor.setValue(execQuery);
+            executeQuery(execQuery);
+          } else {
+            openParamModal(name, params);
+          }
+        } catch (e) {
+          showError('Failed to fetch SP parameters', e.message);
+        }
+      }
+    }
+
+    let currentSpName = '';
+    let currentSpParams = [];
+
+    function openParamModal(spName, params) {
+      currentSpName = spName;
+      currentSpParams = params;
+      
+      document.getElementById('paramModalTitle').textContent = `Execute: ${spName}`;
+      
+      let html = '';
+      params.forEach((p, i) => {
+        const cleanName = p.name.startsWith('@') ? p.name : '@' + p.name;
+        html += `
+          <div class="param-group">
+            <label>${cleanName} <span style="opacity:0.6">(${p.type})</span></label>
+            <input type="text" id="spParamInput_${i}" placeholder="Enter value..." />
+          </div>
+        `;
+      });
+      document.getElementById('paramModalBody').innerHTML = html;
+      document.getElementById('paramModalOverlay').classList.add('active');
+      
+      // Auto-focus first input
+      setTimeout(() => {
+        const first = document.getElementById('spParamInput_0');
+        if (first) first.focus();
+      }, 50);
+    }
+
+    function closeParamModal() {
+      document.getElementById('paramModalOverlay').classList.remove('active');
+      document.getElementById('viewerWrap').innerHTML = `<div class="state-box"><div class="state-icon">⚡</div><div class="state-title">Ready</div></div>`;
+      document.getElementById('resultsToolbar').style.display = 'flex';
+    }
+
+    function submitParamModal() {
+      let sql = `EXEC [${currentSpName}]`;
+      const paramStrings = currentSpParams.map((p, i) => {
+        const el = document.getElementById(`spParamInput_${i}`);
+        const cleanName = p.name.startsWith('@') ? p.name : '@' + p.name;
+        const val = el ? el.value.replace(/'/g, "''") : '';
+        return `${cleanName} = '${val}'`;
+      });
+      
+      if (paramStrings.length > 0) {
+        sql += `\n    ` + paramStrings.join(',\n    ');
+      }
+      
+      closeParamModal();
+      if (sqlEditor) sqlEditor.setValue(sql);
+      executeQuery(sql);
+    }
+
+    // ── Execute query ────────────────────────────────────────────────────────
+    let currentAbortController = null;
+
+    function cancelQuery() {
+      if (currentAbortController) {
+        currentAbortController.abort();
+        currentAbortController = null;
+      }
+      const btn = document.getElementById('runBtn');
+      const cancelBtn = document.getElementById('cancelBtn');
+      if (btn) { btn.style.display = 'flex'; btn.disabled = false; }
+      if (cancelBtn) cancelBtn.style.display = 'none';
+      document.getElementById('viewerWrap').innerHTML = `<div class="state-box"><div class="state-icon">🛑</div><div class="state-title">Query Cancelled</div></div>`;
+    }
+
+    async function executeQuery(overrideQuery) {
+      let query = overrideQuery || '';
+      if (!query && sqlEditor) {
         const selection = sqlEditor.getSelection();
         query = sqlEditor.getModel().getValueInRange(selection).trim();
         if (!query) query = sqlEditor.getValue().trim();
@@ -1800,16 +2178,26 @@
         return;
       }
 
+      if (currentAbortController) currentAbortController.abort();
+      currentAbortController = new AbortController();
+
       const btn = document.getElementById('runBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Running…';
+      const cancelBtn = document.getElementById('cancelBtn');
+      if (btn) btn.style.display = 'none';
+      if (cancelBtn) cancelBtn.style.display = 'flex';
+      
       showLoading();
 
       const url = `${BASE_URL}/${COMPANY_ID}/connector/${CON_ID}/sql/executebyquery?query=${encodeURIComponent(query)}`;
       const t0  = performance.now();
       try {
-        const resp = await fetch(url, { method: 'POST', headers: { ...buildHeaders(token), 'content-length': '0' } });
+        const resp = await fetch(url, { 
+          method: 'POST', 
+          headers: { ...buildHeaders(token), 'content-length': '0' },
+          signal: currentAbortController.signal
+        });
         const elapsed = Math.round(performance.now() - t0);
+        if (resp.status === 401) { handleLogout(); return; }
         if (!resp.ok) {
           let msg = `HTTP ${resp.status} – ${resp.statusText}`;
           try { const j = await resp.json(); msg = j.message || j.error || msg; } catch {}
@@ -1820,11 +2208,17 @@
         currentData = json;
         renderResults(json, elapsed, resp.status);
       } catch (err) {
+        if (err.name === 'AbortError') return; // Handled by cancelQuery
         showError('Network / CORS Error',
           `<strong>${escHtml(err.message)}</strong><br><br>This page must be served from <code>https://portal.mawarid.com.sa</code>.`);
       } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M5 3.5l8 4.5-8 4.5V3.5z"/></svg> Run Query';
+        currentAbortController = null;
+        if (btn) {
+          btn.style.display = 'flex';
+          btn.disabled = false;
+          btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M5 3.5l8 4.5-8 4.5V3.5z"/></svg> Execute';
+        }
+        if (cancelBtn) cancelBtn.style.display = 'none';
       }
     }
 
@@ -2302,6 +2696,72 @@ function handleLogout() {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') executeQuery();
     });
 
+    let editorTabs = [];
+    let activeTabId = null;
+    let tabCounter = 0;
+
+    function renderTabs() {
+      const container = document.getElementById('editorTabsBar');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      editorTabs.forEach(tab => {
+        const el = document.createElement('div');
+        el.className = `editor-tab ${tab.id === activeTabId ? 'active' : ''}`;
+        el.innerHTML = `
+          <span>${tab.name}</span>
+          <span class="editor-tab-close" onclick="closeTab(${tab.id}, event)">×</span>
+        `;
+        el.onclick = () => switchTab(tab.id);
+        container.appendChild(el);
+      });
+
+      const addBtn = document.createElement('button');
+      addBtn.className = 'add-tab-btn';
+      addBtn.innerHTML = '+';
+      addBtn.title = 'New Query Tab';
+      addBtn.onclick = () => addTab();
+      container.appendChild(addBtn);
+    }
+
+    function addTab(initialValue = '') {
+      tabCounter++;
+      const id = tabCounter;
+      const name = `Query ${id}`;
+      // Need monaco to be ready, which it is when this is called from UI or initApp
+      const model = monaco.editor.createModel(initialValue, 'sql');
+      editorTabs.push({ id, name, model });
+      switchTab(id);
+    }
+
+    function switchTab(id) {
+      activeTabId = id;
+      const tab = editorTabs.find(t => t.id === id);
+      if (tab && sqlEditor) {
+        sqlEditor.setModel(tab.model);
+      }
+      renderTabs();
+    }
+
+    function closeTab(id, e) {
+      e.stopPropagation();
+      if (editorTabs.length <= 1) return; // Prevent closing the last tab
+      
+      const tabIndex = editorTabs.findIndex(t => t.id === id);
+      const tab = editorTabs[tabIndex];
+      if (tab) {
+        tab.model.dispose(); // free memory
+        editorTabs.splice(tabIndex, 1);
+      }
+      
+      if (activeTabId === id) {
+        const nextTab = editorTabs[tabIndex - 1] || editorTabs[0];
+        switchTab(nextTab.id);
+      } else {
+        renderTabs();
+      }
+    }
+
     // ── Init Monaco Editor & App ───────────────────────────────────────────────
     function initApp() {
       // Register Monaco SQL IntelliSense Provider
@@ -2339,14 +2799,36 @@ function handleLogout() {
             });
           });
 
+          // Smart Column Suggestions
+          const editorText = model.getValue();
+          const lowerText = editorText.toLowerCase();
+          
+          // Find tables that are currently typed in the editor
+          const tablesInEditor = Object.keys(mawaridSchemaCache.columns || {}).filter(t => 
+            lowerText.includes(t.toLowerCase())
+          );
+          
+          const suggestedCols = new Set();
+          tablesInEditor.forEach(t => {
+            (mawaridSchemaCache.columns[t] || []).forEach(c => suggestedCols.add(c));
+          });
+
+          // Suggest all columns from detected tables
+          suggestedCols.forEach(col => {
+            suggestions.push({
+              label: col,
+              kind: monaco.languages.CompletionItemKind.Field,
+              insertText: `[${col}]`,
+              detail: 'Column'
+            });
+          });
+
           return { suggestions: suggestions };
         }
       });
 
       // Create Editor Instance
       sqlEditor = monaco.editor.create(document.getElementById('editorContainer'), {
-        value: 'Select * from Users Where EMployeeId is null',
-        language: 'sql',
         theme: 'vs-dark',
         minimap: { enabled: false },
         automaticLayout: true,
@@ -2356,6 +2838,9 @@ function handleLogout() {
         padding: { top: 12, bottom: 12 },
         wordWrap: 'on'
       });
+      
+      // Setup initial tab
+      addTab('Select * from Users Where EMployeeId is null');
 
       // Run app init after editor is ready
       const existingToken = getToken();
