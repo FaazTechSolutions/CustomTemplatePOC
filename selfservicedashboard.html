@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
   <style>
     .ss-main-dashboard {
       max-width: 1200px;
@@ -395,6 +400,199 @@
         /* Adjust count size */
       }
     }
+
+    /* User Profile Modal Styles */
+    #userProfileModal .modal-popup-content {
+      width: 620px;
+      max-width: 95vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 24px 30px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    .user-form-card {
+      max-width: 580px;
+      padding: 10px 0 0 0;
+      margin: 0 auto;
+    }
+
+    /* Attachment / Profile Upload Area */
+    .user-form-card .profile-upload-wrapper {
+      margin-bottom: 25px;
+    }
+
+    .user-form-card .profile-upload-box {
+      width: 105px;
+      height: 105px;
+      border: 2.5px solid #8e9bb0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      background-color: #fff;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .user-form-card .profile-upload-box:hover {
+      border-color: #4a6cf7;
+      background-color: #f4f7ff;
+    }
+
+    .user-form-card .profile-upload-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .user-form-card .upload-icon-svg {
+      width: 68px;
+      height: 68px;
+      color: #1a2533;
+    }
+
+    /* Form Row Layout */
+    .user-form-card .form-field-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .user-form-card .form-field-label {
+      width: 160px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #555555;
+      padding-right: 10px;
+      text-align: left;
+    }
+
+    .user-form-card .required-star {
+      color: #e53935;
+      margin-left: 2px;
+    }
+
+    .user-form-card .form-field-input-wrap {
+      flex: 1;
+    }
+
+    .user-form-card .form-control-custom {
+      width: 100%;
+      padding: 8px 14px;
+      font-size: 14px;
+      color: #495057;
+      border: 1px solid #c9d2de;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .user-form-card .form-control-custom::placeholder {
+      color: #adb5bd;
+      font-weight: 400;
+    }
+
+    .user-form-card .form-control-custom:focus {
+      border-color: #ffaa00;
+      box-shadow: 0 0 0 3px rgba(255, 170, 0, 0.15);
+    }
+
+    .user-form-card .form-control-custom.is-invalid {
+      border-color: #d93025 !important;
+      box-shadow: 0 0 0 3px rgba(217, 48, 37, 0.15) !important;
+    }
+
+    .user-form-card .invalid-feedback-custom {
+      color: #d93025;
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    /* Action Buttons */
+    .user-form-card .form-actions-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .user-form-card .btn-custom-submit {
+      background-color: #ffffff;
+      color: #ffaa00;
+      border: 1.5px solid #ffaa00;
+      border-radius: 6px;
+      padding: 6px 22px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 90px;
+    }
+
+    .user-form-card .btn-custom-submit:hover {
+      background-color: #fff9ed;
+      color: #e69900;
+      border-color: #e69900;
+    }
+
+    .user-form-card .btn-custom-close {
+      background-color: #ffffff;
+      color: #d93025;
+      border: 1.5px solid #d93025;
+      border-radius: 6px;
+      padding: 6px 22px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 80px;
+    }
+
+    .user-form-card .btn-custom-close:hover {
+      background-color: #fdf2f2;
+      color: #b3261e;
+      border-color: #b3261e;
+    }
+
+    /* Loader Spinner */
+    .user-form-card .btn-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #ffaa00;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-left: 8px;
+      display: inline-block;
+    }
+
+    .user-form-card .hidden-in-edit {
+      display: none !important;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    .swal2-container{
+      z-index: 3000 !important;
+    }
   </style>
 </head>
 
@@ -402,12 +600,13 @@
   <div class="ss-main-dashboard">
     <span class="p-2 alert alert-warning text-center d-none" id="info-leave">
       <i class="tabler ti ti-info-circle-filled text-dark" style="font-size: 14px;"></i>
-      {{Translate 'Please Edit the Profile and update the Employee Id / Mobile Number,after updating the details please
-      logout and login'}}
+     <span>Please edit your profile and update your Employee ID and/or Mobile Number. After updating the details, please log out and log back in to ensure the changes are applied successfully.</span>
+	 <br>
+	  <span>يرجى تعديل الملف الشخصي وتحديث رقم الموظف و/أو رقم الهاتف المحمول. بعد تحديث البيانات، يرجى تسجيل الخروج ثم تسجيل الدخول مرة أخرى لضمان تطبيق التغييرات بنجاح.</span>
     </span>
     <span class="p-2 alert alert-warning text-center d-none" id="info-logout">
       <i class="tabler ti ti-info-circle-filled text-dark" style="font-size: 14px;"></i>
-      {{Translate 'please logout and login the application'}}
+      {{Translate 'Please log out of the application and log back in.|يرجى تسجيل الخروج من التطبيق ثم تسجيل الدخول مرة أخرى.'}}
     </span>
     <div class="top-section row">
 
@@ -581,14 +780,20 @@
                   /* direction: rtl; */
                 }
 
-                table {
+                 table.details-table,
+                  table.salary-table,
+                  table.summary-table {
                   width: 100%;
                   border-collapse: collapse;
                   margin-bottom: 20px;
                 }
 
-                th,
-                td {
+                 .details-table th,
+                 .salary-table th,
+                 .summary-table th,
+                 .details-table td,
+                 .salary-table td,
+                 .summary-table td {
                   border: 1px solid #000;
                   padding: 8px 12px;
                   text-align: center;
@@ -1193,6 +1398,121 @@
                   </div>
                 </div>
               </div>
+
+              <!-- User Profile Modal -->
+              <div id="userProfileModal" class="modal-popup-overlay">
+                <div class="modal-popup-content">
+                  <div class="modal-popup-header d-flex justify-content-between align-items-center" style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                    <h2 style="margin: 0; font-size: 1.2rem; color: #333;">{{Translate 'Edit Profile'}}</h2>
+                    <button type="button" class="btn-close-profile-modal" id="btnCloseProfileModalX" style="background:none; border:none; font-size:24px; line-height:1; cursor:pointer; color:#888;">&times;</button>
+                  </div>
+                  <div class="user-form-card">
+                    <form id="userCreateForm">
+                      <input type="hidden" id="isEdit" value="No">
+                      <input type="hidden" id="RecId" value="">
+                      <!-- Profile / Attachment Upload Box -->
+                      <div class="profile-upload-wrapper">
+                        <div class="profile-upload-box" id="profileUploadBox"
+                          title="Click to upload profile picture">
+                          <div id="placeholderContent" class="text-center">
+                            <svg class="upload-icon-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <!-- Rounded Outer Frame -->
+                              <rect x="8" y="8" width="48" height="48" rx="8" stroke="#1f2937" stroke-width="3.5"
+                                fill="none" />
+                              <!-- Mountain / Landscape lines -->
+                              <path d="M12 48L24 34L32 42L44 26L52 38V48H12Z" stroke="#1f2937" stroke-width="3"
+                                stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                              <!-- Sun circle -->
+                              <circle cx="23" cy="23" r="4" stroke="#1f2937" stroke-width="3" fill="none" />
+                              <!-- Upload Arrow in top right -->
+                              <path d="M45 22V10M45 10L39 16M45 10L51 16" stroke="#1f2937" stroke-width="3.5"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                          </div>
+                          <img id="profilePreviewImg" src="" alt="Profile Preview" style="display: none;" />
+                        </div>
+                        <input type="file" id="ProfileFileInput" accept="image/*" style="display: none;">
+                      </div>
+
+                      <!-- Employee Id -->
+                      <div class="form-field-row">
+                        <label for="EmployeeId" class="form-field-label">{{Translate 'Employee Id'}}<span class="required-star">*</span></label>
+                        <div class="form-field-input-wrap">
+                          <input type="text" id="EmployeeId" name="EmployeeId" class="form-control-custom"
+                            placeholder="{{Translate 'Employee Id'}}" minlength="6" maxlength="15" required>
+                          <div id="employeeIdError" class="invalid-feedback-custom"></div>
+                        </div>
+                      </div>
+
+                      <!-- Name -->
+                      <div class="form-field-row">
+                        <label for="Name" class="form-field-label">{{Translate 'Name'}}<span class="required-star">*</span></label>
+                        <div class="form-field-input-wrap">
+                          <input type="text" id="Name" name="Name" class="form-control-custom" placeholder="{{Translate 'Name'}}" required>
+                        </div>
+                      </div>
+
+                      <!-- User Id -->
+                      <div class="form-field-row" id="userIdRow">
+                        <label for="UserId" class="form-field-label">{{Translate 'User Id'}}<span class="required-star">*</span></label>
+                        <div class="form-field-input-wrap">
+                          <input type="text" id="UserId" name="UserId" class="form-control-custom" placeholder="{{Translate 'User Id'}}"
+                            minlength="5" maxlength="50" required>
+                          <div id="userIdError" class="invalid-feedback-custom"></div>
+                        </div>
+                      </div>
+
+                      <!-- Email -->
+                      <div class="form-field-row">
+                        <label for="Email" class="form-field-label">{{Translate 'Email'}}</label>
+                        <div class="form-field-input-wrap">
+                          <input type="email" id="Email" name="Email" class="form-control-custom" placeholder="{{Translate 'Email'}}">
+                          <div id="emailError" class="invalid-feedback-custom"></div>
+                        </div>
+                      </div>
+
+                      <!-- Mobile Number -->
+                      <div class="form-field-row">
+                        <label for="MobileNumber" class="form-field-label">{{Translate 'Mobile Number'}}<span
+                            class="required-star">*</span></label>
+                        <div class="form-field-input-wrap">
+                          <input type="text" id="MobileNumber" name="MobileNumber" class="form-control-custom"
+                            placeholder="{{Translate 'Mobile Number'}}" minlength="8" maxlength="15" required>
+                          <div id="mobileNumberError" class="invalid-feedback-custom"></div>
+                        </div>
+                      </div>
+
+                      <!-- Password -->
+                      <div class="form-field-row" id="passwordRow">
+                        <label for="Password" class="form-field-label">{{Translate 'Password'}}<span class="required-star">*</span></label>
+                        <div class="form-field-input-wrap">
+                          <input type="password" id="Password" name="Password" class="form-control-custom"
+                            placeholder="{{Translate 'Password'}}" required>
+                        </div>
+                      </div>
+
+                      <!-- Confirm Password -->
+                      <div class="form-field-row" id="confirmPasswordRow">
+                        <label for="confirmPassword" class="form-field-label">{{Translate 'Confirm Password'}}<span
+                            class="required-star">*</span></label>
+                        <div class="form-field-input-wrap">
+                          <input type="password" id="confirmPassword" name="confirmPassword" class="form-control-custom"
+                            placeholder="{{Translate 'Confirm Password'}}" required>
+                        </div>
+                      </div>
+
+                      <!-- Buttons -->
+                      <div class="form-actions-row">
+                        <button type="button" class="btn-custom-submit" id="btnSubmit">
+                          <span id="btnSubmitText">{{Translate 'Submit'}}</span>
+                          <span id="submitSpinner" class="btn-spinner" style="display: none;"></span>
+                        </button>
+                        <button type="button" class="btn-custom-close" id="btnCloseForm">{{Translate 'Close'}}</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1370,8 +1690,9 @@
   </div>
 
 
+
   <script>
-    var _this = this;
+      var _this = this;
     console.log(_this);
     const script3 = document.createElement('script');
     script3.src = 'https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js';
@@ -1479,11 +1800,11 @@
     // });
 
 
-    $(document).on('click', '#updateProfile', function (e) {
-      debugger
-      let _row = _this.currentPageData;
-      _this.editData(_row[0]);
-    });
+    // $(document).on('click', '#updateProfile', function (e) {
+    //   debugger
+    //   let _row = _this.currentPageData;
+    //   _this.editData(_row[0]);
+    // });
 
 
     function loadDashboard() {
@@ -1526,6 +1847,9 @@
       if (_this.currentPageData && _this.currentPageData[0] && !_this.currentPageData[0].EmployeeId) {
         const $info = $('#info-leave');
         $info.removeClass('d-none');
+        openUserProfileModal();
+		// let _row = _this.currentPageData;
+    //   _this.editData(_row[0]);
       }
     }
     function info() {
@@ -1809,6 +2133,748 @@
           console.error("Error fetching data:", error);
         });
     }
+
+    // ---------User Profile-------------Configuration for User Profile API
+    const script1 = document.createElement('script');
+        script1.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11'; // URL of the script
+        script1.type = 'text/javascript';
+        script1.onload = function () {
+            // You can now use jQuery or whatever the script provides
+            console.log('script loaded sucessfully');
+        };
+        document.head.appendChild(script1);
+    const Apps4xApiUrl = 'https://portal.mawarid.com.sa/apps4x-api/';
+    const UserEntityId = 'Users';
+    const UserTableCollectionId = 'ECN0000055';
+    const appId = 'e6516de3ae824fd18d745fe9ac836cda';
+
+    let companyId = 'LGE0000001';
+    let profileUserId = 'a.hyder';
+    let token = 'eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiI5OTQzMjIxMzIxIiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSIsImV4cCI6MTc4OTEyMDI2MSwiaXNzIjoiYXBwczR4LmNvbSIsImF1ZCI6ImFwcHM0eC5jb20ifQ.RyIYYBs_HMO5gGFFB9gRTK7KteGTPnwm7sAL5siVC0A';
+
+    if (window.location.hostname === "portal.mawarid.com.sa") {
+      token = localStorage.getItem("eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9");
+      profileUserId = localStorage.getItem('UserId') || 'SelfService';
+      companyId = localStorage.getItem('CompanyId') || 'LGE0000001';
+    } else if (window.location.hostname === "localhost" || window.location.hostname === "") {
+      token = 'eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiI5OTQzMjIxMzIxIiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSIsImV4cCI6MTc4OTEyMDI2MSwiaXNzIjoiYXBwczR4LmNvbSIsImF1ZCI6ImFwcHM0eC5jb20ifQ.RyIYYBs_HMO5gGFFB9gRTK7KteGTPnwm7sAL5siVC0A';
+      profileUserId = "a.hyder";
+      companyId = "LGE0000001";
+    }
+
+    let selectedFile = null;
+    let employeeCheckTimeout = null;
+
+    function translate(value) {
+      if (typeof Handlebars !== 'undefined' && Handlebars.helpers && Handlebars.helpers.Translate) {
+        return Handlebars.helpers.Translate(value);
+      }
+      let _ret = value;
+      if (!value) _ret = "";
+      let Lang = localStorage.getItem("CurrentLanguage");
+      if (!Lang || !(window.location.hostname === "portal.mawarid.com.sa")) return _ret;
+      if (typeof _this === "undefined" || !_this.globalService || !_this.globalService.systemLabels) return _ret;
+      try {
+        if (value.substring(0, 3) == "LBL") {
+          let _label = _this.globalService.systemLabels.filter(x => x.LabelId == value)[0];
+          if (_label) {
+            if (_label[Lang]) return _label[Lang];
+            if (_label.DefaultValue) return _label.DefaultValue;
+          }
+        } else {
+          let _value = value.toLowerCase().trim();
+          let _label = _this.globalService.systemLabels.filter(x => x.DefaultValue && x.DefaultValue.toLowerCase().trim() == _value)[0];
+          if (_label && _label[Lang]) return _label[Lang];
+        }
+      } catch (e) { }
+      return _ret;
+    }
+
+    function getUserProfileData() {
+      if (typeof _this !== "undefined") {
+        if (_this.currentPageData && _this.currentPageData[0]) {
+          return _this.currentPageData[0];
+        }
+        // if (_this.ParentData) {
+        //   return _this.ParentData;
+        // }
+        // if (_this.data && _this.data[0]) {
+        //   return _this.data[0];
+        // }
+      }
+      return null;
+    }
+
+    function applyEditModeUI(isEdit) {
+      if (isEdit) {
+        $('#userIdRow, #passwordRow, #confirmPasswordRow').hide().addClass('hidden-in-edit');
+        $('#UserId, #Password, #confirmPassword').prop('required', false);
+      } else {
+        $('#userIdRow, #passwordRow, #confirmPasswordRow').removeClass('hidden-in-edit').show();
+        $('#UserId, #Password, #confirmPassword').prop('required', true);
+      }
+    }
+
+    function setFormValue(response) {
+      if (!response) return;
+
+      $("#isEdit").val('Yes');
+      $('#btnSubmitText').text(translate('Update'));
+      applyEditModeUI(true);
+
+      if (response.RecId) {
+        $("#RecId").val(response.RecId);
+      }
+      if (response.EmployeeId) {
+        $("#EmployeeId").val(response.EmployeeId);
+      }
+      if (response.Name) {
+        $("#Name").val(response.Name);
+      }
+      if (response.UserId) {
+        $("#UserId").val(response.UserId);
+      }
+      if (response.Email) {
+        $("#Email").val(response.Email);
+      }
+      if (response.MobileNumber) {
+        $("#MobileNumber").val(response.MobileNumber);
+      }
+      if (response.Password) {
+        $("#Password").val(response.Password);
+        $("#confirmPassword").val(response.Password);
+      }
+      if (response.Profile || response.Profile_Path) {
+        const profilePath = response.Profile || response.Profile_Path;
+        let profileSrc = profilePath;
+        if (!profilePath.startsWith('http')) {
+          const baseUrl = (typeof _this !== "undefined" && _this.System && _this.System.ServerUrl)
+            ? _this.System.ServerUrl
+            : Apps4xApiUrl;
+          profileSrc = `${baseUrl.replace(/\/+$/, '')}/${profilePath.replace(/^\/+/, '')}`;
+        }
+        $('#placeholderContent').hide();
+        $('#profilePreviewImg').attr('src', profileSrc).show();
+      } else {
+        const existingImg = $('.sidebar-profile .profile-pic').attr('src');
+        if (existingImg && !existingImg.includes('flaticon')) {
+          $('#placeholderContent').hide();
+          $('#profilePreviewImg').attr('src', existingImg).show();
+        } else {
+          $('#profilePreviewImg').attr('src', '').hide();
+          $('#placeholderContent').show();
+        }
+      }
+    }
+
+    function handleFileSelect(event) {
+      const files = (event && event.target && event.target.files)
+        ? event.target.files
+        : (event && event.originalEvent && event.originalEvent.target && event.originalEvent.target.files)
+          ? event.originalEvent.target.files
+          : $('#ProfileFileInput')[0]?.files;
+      const file = files && files[0];
+      if (file) {
+        selectedFile = file;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          $('#placeholderContent').hide();
+          $('#profilePreviewImg').attr('src', e.target.result).show();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function setLoading(isLoading) {
+      if (isLoading) {
+        $('#btnSubmit').prop('disabled', true);
+        $('#submitSpinner').show();
+      } else {
+        $('#btnSubmit').prop('disabled', false);
+        $('#submitSpinner').hide();
+      }
+    }
+
+    function resetForm() {
+      clearTimeout(employeeCheckTimeout);
+      selectedFile = null;
+      $('#ProfileFileInput').val('');
+      $('#UserId').removeClass('is-invalid');
+      $('#userIdError').text('').hide();
+      $('#Email').removeClass('is-invalid');
+      $('#emailError').text('').hide();
+      $('#MobileNumber').removeClass('is-invalid');
+      $('#mobileNumberError').text('').hide();
+      $('#EmployeeId').removeClass('is-invalid');
+      $('#employeeIdError').text('').hide();
+
+      const activeUserData = getUserProfileData();
+      if ($("#isEdit").val() === "Yes" && activeUserData && (activeUserData.RecId || activeUserData.EmployeeId)) {
+        applyEditModeUI(true);
+        setFormValue(activeUserData);
+      } else {
+        document.getElementById('userCreateForm').reset();
+        applyEditModeUI(false);
+        $('#btnSubmitText').text(translate('Submit'));
+        $('#profilePreviewImg').attr('src', '').hide();
+        $('#placeholderContent').show();
+        $('#RecId').val('');
+      }
+    }
+
+    function validateUserId(userIdVal) {
+      if (!userIdVal) {
+        $('#UserId').removeClass('is-invalid');
+        $('#userIdError').text('').hide();
+        return { isValid: false, reason: 'empty' };
+      }
+
+      if (userIdVal.length < 5) {
+        $('#UserId').addClass('is-invalid');
+        $('#userIdError').text('User Id should be minimum 5 characters.').show();
+        return { isValid: false, reason: 'min_length' };
+      }
+
+      if (userIdVal.length > 50) {
+        $('#UserId').addClass('is-invalid');
+        $('#userIdError').text('User Id cannot exceed 50 characters.').show();
+        return { isValid: false, reason: 'max_length' };
+      }
+
+      $('#UserId').removeClass('is-invalid');
+      $('#userIdError').text('').hide();
+      return { isValid: true };
+    }
+
+    function validateEmail(emailVal) {
+      if (!emailVal) {
+        $('#Email').removeClass('is-invalid');
+        $('#emailError').text('').hide();
+        return { isValid: true };
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(emailVal)) {
+        $('#Email').addClass('is-invalid');
+        $('#emailError').text('Please enter a valid email address.').show();
+        return { isValid: false };
+      }
+
+      $('#Email').removeClass('is-invalid');
+      $('#emailError').text('').hide();
+      return { isValid: true };
+    }
+
+    function validateMobileNumber(mobileVal) {
+      if (!mobileVal) {
+        $('#MobileNumber').removeClass('is-invalid');
+        $('#mobileNumberError').text('').hide();
+        return { isValid: false, reason: 'empty' };
+      }
+
+      if (mobileVal.length < 8) {
+        $('#MobileNumber').addClass('is-invalid');
+        $('#mobileNumberError').text('Mobile number should be minimum 8 characters.').show();
+        return { isValid: false, reason: 'min_length' };
+      }
+
+      if (mobileVal.length > 15) {
+        $('#MobileNumber').addClass('is-invalid');
+        $('#mobileNumberError').text('Mobile number cannot exceed 15 characters.').show();
+        return { isValid: false, reason: 'max_length' };
+      }
+
+      $('#MobileNumber').removeClass('is-invalid');
+      $('#mobileNumberError').text('').hide();
+      return { isValid: true };
+    }
+
+    async function getEmployeeDetailsByEmployeeId(empId) {
+      if (!empId) return { success: false, data: [] };
+
+      const apiUrl = `${bcpURL}/api/v1/erp/getEmployeeDetailsByEmployeeIdOrName?_employeeIdOrName=${encodeURIComponent(empId)}&_Company=MWD&user-id=SelfService`;
+
+      const response = await fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          "accept": "*/*",
+          "content-type": "application/json"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch ERP employee details: HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      const list = (data && Array.isArray(data.RetListValue)) ? data.RetListValue : [];
+      return {
+        success: data && data.Success === true,
+        data: list
+      };
+    }
+
+    async function checkDuplicateEmployee(employeeId, excludeUserId) {
+      if (!employeeId) return { isDuplicate: false, users: [] };
+
+      let checkApiUrl = `${Apps4xApiUrl}api/v1/data/${companyId}?collectionId=${UserTableCollectionId}&entityid=${UserEntityId}&$filter:EmployeeId=eq:${encodeURIComponent(employeeId)}`;
+      if (excludeUserId) {
+        checkApiUrl += `&$filter:UserId=ne:${encodeURIComponent(excludeUserId)}`;
+      }
+
+      const response = await fetch(checkApiUrl, {
+        method: "GET",
+        headers: {
+          "accept": "application/json",
+          "appid": appId,
+          "authorization": "Bearer " + token,
+          "companyid": companyId,
+          "user-id": profileUserId
+        }
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(errText || `Failed to check duplicate employee: HTTP ${response.status}`);
+      }
+
+      const result = await response.json();
+      const list = (result && Array.isArray(result.Data)) ? result.Data : [];
+      return {
+        isDuplicate: list.length > 0,
+        users: list
+      };
+    }
+
+    async function validateAndFetchEmployee(empId) {
+      const activeUserData = getUserProfileData();
+      const currentUserId = $('#UserId').val().trim() || (activeUserData ? activeUserData.UserId : '');
+
+      if (!empId) {
+        $('#Name').val('');
+        $('#EmployeeId').removeClass('is-invalid');
+        $('#employeeIdError').text('').hide();
+        return { isValid: false, reason: 'empty' };
+      }
+
+      if (empId.length < 6) {
+        $('#Name').val('');
+        $('#EmployeeId').addClass('is-invalid');
+        $('#employeeIdError').text('Employee ID should be minimum 6 characters.').show();
+        return { isValid: false, reason: 'min_length' };
+      }
+
+      if (empId.length > 15) {
+        $('#Name').val('');
+        $('#EmployeeId').addClass('is-invalid');
+        $('#employeeIdError').text('Employee ID cannot exceed 15 characters.').show();
+        return { isValid: false, reason: 'max_length' };
+      }
+
+      try {
+        const erpRes = await getEmployeeDetailsByEmployeeId(empId);
+        if (!erpRes.data || erpRes.data.length === 0) {
+          $('#Name').val('');
+          $('#EmployeeId').addClass('is-invalid');
+          $('#employeeIdError').text('Employee not found in ERP records.').show();
+          return { isValid: false, reason: 'not_found' };
+        }
+
+        const emp = erpRes.data[0];
+        if (emp && emp.employeeName) {
+          $('#Name').val(emp.employeeName);
+        } else {
+          $('#Name').val('');
+        }
+
+        const dupRes = await checkDuplicateEmployee(empId, currentUserId);
+        if (dupRes.isDuplicate) {
+          $('#EmployeeId').addClass('is-invalid');
+          $('#employeeIdError').text(`Employee ID is already registered try a Different Employee Id`).show();
+          return { isValid: false, reason: 'duplicate' };
+        }
+
+        $('#EmployeeId').removeClass('is-invalid');
+        $('#employeeIdError').text('').hide();
+        return { isValid: true, employee: emp };
+      } catch (err) {
+        console.error("Employee validation error:", err);
+        $('#Name').val('');
+        $('#EmployeeId').addClass('is-invalid');
+        $('#employeeIdError').text('Failed to validate Employee ID. Please try again.').show();
+        return { isValid: false, reason: 'error', error: err };
+      }
+    }
+
+    async function submitUserProfile() {
+      const isEditMode = $("#isEdit").val() === "Yes";
+      const name = $('#Name').val().trim();
+      const userIdVal = $('#UserId').val().trim();
+      const email = $('#Email').val().trim();
+      const mobileNumber = $('#MobileNumber').val().trim();
+      const employeeId = $('#EmployeeId').val().trim();
+      const password = $('#Password').val();
+      const confirmPassword = $('#confirmPassword').val();
+
+      if (!isEditMode) {
+        if (password !== confirmPassword) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Password Mismatch',
+            text: 'Password and Confirm Password do not match.',
+            customClass: {
+                popup: 'my-swal-user-profile-popup'
+            }
+          });
+          return;
+        }
+      }
+
+      if (!isEditMode) {
+        const userIdValidation = validateUserId(userIdVal);
+        if (!userIdValidation.isValid) {
+          $('#UserId').focus();
+          const msg = userIdValidation.reason === 'max_length'
+            ? 'User Id cannot exceed 50 characters.'
+            : 'User Id should be minimum 5 characters.';
+          Swal.fire({
+            icon: 'warning',
+            title: 'Invalid User Id',
+            text: msg,
+            customClass: {
+                popup: 'my-swal-user-profile-popup'
+            }
+          });
+          return;
+        }
+      }
+
+      const emailValidation = validateEmail(email);
+      if (!emailValidation.isValid) {
+        $('#Email').focus();
+        Swal.fire({
+          icon: 'warning',
+          title: 'Invalid Email',
+          text: 'Please enter a valid email address.',
+          customClass: {
+                popup: 'my-swal-user-profile-popup'
+            }
+        });
+        return;
+      }
+
+      const mobileValidation = validateMobileNumber(mobileNumber);
+      if (!mobileValidation.isValid) {
+        $('#MobileNumber').focus();
+        const msg = mobileValidation.reason === 'max_length'
+          ? 'Mobile number cannot exceed 15 characters.'
+          : 'Mobile number should be minimum 8 characters.';
+        Swal.fire({
+          icon: 'warning',
+          title: 'Invalid Mobile Number',
+          text: msg,
+          customClass: {
+                popup: 'my-swal-user-profile-popup'
+            }
+        });
+        return;
+      }
+
+      if (employeeId.length < 6 || employeeId.length > 15) {
+        $('#EmployeeId').addClass('is-invalid');
+        const msg = employeeId.length < 6
+          ? 'Employee ID should be minimum 6 characters.'
+          : 'Employee ID cannot exceed 15 characters.';
+        $('#employeeIdError').text(msg).show();
+        $('#EmployeeId').focus();
+        Swal.fire({
+          icon: 'warning',
+          title: 'Invalid Employee ID',
+          text: msg,
+          customClass: {
+                popup: 'my-swal-user-profile-popup'
+            }
+        });
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const validation = await validateAndFetchEmployee(employeeId);
+        if (!validation.isValid) {
+          setLoading(false);
+          $('#EmployeeId').focus();
+
+          let errorMsg = 'Please provide a valid Employee ID.';
+          if (validation.reason === 'min_length') {
+            errorMsg = 'Employee ID should be minimum 6 characters.';
+          } else if (validation.reason === 'max_length') {
+            errorMsg = 'Employee ID cannot exceed 15 characters.';
+          } else if (validation.reason === 'not_found') {
+            errorMsg = 'Employee not found in ERP records. Submission not allowed.';
+          } else if (validation.reason === 'duplicate') {
+            errorMsg = 'Employee ID is already registered try a Different Employee Id';
+          }
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Validation Failed',
+            text: errorMsg,
+            customClass: {
+                popup: 'my-swal-user-profile-popup'
+            }
+          });
+          return;
+        }
+      } catch (valErr) {
+        setLoading(false);
+        console.error("Validation error:", valErr);
+        Swal.fire({
+          icon: 'error',
+          title: 'Validation Error',
+          text: 'Failed to verify Employee ID. ' + (valErr.message || ''),
+          customClass: {
+                popup: 'my-swal-user-profile-popup'
+          }
+        });
+        return;
+      }
+
+      const activeUserData = getUserProfileData();
+      const currentUserIdVal = userIdVal || (isEditMode && activeUserData ? activeUserData.UserId : "");
+
+      const payload = {
+        "Name": name,
+        "UserId": currentUserIdVal,
+        "Email": email || null,
+        "MobileNumber": mobileNumber,
+        "EmployeeId": employeeId,
+        "AppId": appId,
+        "EntityId": UserEntityId,
+      };
+
+      if (!isEditMode) {
+        payload["Password"] = password;
+      } else if (password || (activeUserData && activeUserData.Password)) {
+        payload["Password"] = password || (activeUserData ? activeUserData.Password : "");
+      }
+
+      if (isEditMode) {
+        const recIdVal = $('#RecId').val() || (activeUserData && activeUserData.RecId);
+        if (recIdVal) {
+          payload["RecId"] = Number(recIdVal);
+        }
+        if (activeUserData && activeUserData.Id) {
+          payload["Id"] = activeUserData.Id;
+        }
+      }
+
+      if (selectedFile) {
+        payload["Profile"] = selectedFile.name;
+      } else if (isEditMode && activeUserData && activeUserData.Profile) {
+        payload["Profile"] = activeUserData.Profile;
+      }
+
+      try {
+        let apiUrl = "";
+        let methodType = "POST";
+
+        if (isEditMode) {
+          apiUrl = selectedFile
+            ? `${Apps4xApiUrl}api/v1/data/${companyId}/update?FieldName=Profile`
+            : `${Apps4xApiUrl}api/v1/data/${companyId}/update`;
+          methodType = "PUT";
+        } else {
+          apiUrl = selectedFile
+            ? `${Apps4xApiUrl}api/v1/data/${companyId}/Create?FieldName=Profile`
+            : `${Apps4xApiUrl}api/v1/data/${companyId}/create`;
+          methodType = "POST";
+        }
+
+        const formData = new FormData();
+        formData.append("EntityData", JSON.stringify(payload));
+
+        if (selectedFile) {
+          formData.append("Files", selectedFile, selectedFile.name);
+        }
+
+        const response = await fetch(apiUrl, {
+          method: methodType,
+          headers: {
+            "Authorization": "Bearer " + token,
+            "User-Id": profileUserId,
+            "appid": appId,
+            "CompanyId": companyId
+          },
+          body: formData
+        });
+
+        if (!response.ok) {
+          const text = await response.text();
+          throw new Error(text || response.statusText);
+        }
+
+        const data = await response.json();
+        setLoading(false);
+
+        if (typeof data === "string" && data.toLowerCase().includes("error")) {
+          Swal.fire({
+          icon: 'error',
+          title: data,
+          text: "error",
+          customClass: {
+                popup: 'my-swal-user-profile-popup'
+          }
+        });
+          return;
+        }
+
+        const successMsg = isEditMode
+          ? "User profile updated successfully Please Login Again!"
+          : "User profile created successfully Please Login Again!";
+
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: successMsg,
+          customClass: {
+                popup: 'my-swal-user-profile-popup'
+          }
+        }).then(() => {
+          closeUserProfileModal();
+          localStorage.clear('userInfo');
+          window.location.reload();
+        });
+      } catch (error) {
+        setLoading(false);
+        console.error("API Error:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Submission Error",
+          text: error.message || "Failed to submit request.",
+          customClass: {
+                popup: 'my-swal-user-profile-popup'
+          }
+        });
+      }
+    }
+
+    function openUserProfileModal() {
+      let activeUserData = getUserProfileData();
+      // if (!activeUserData) {
+      //   activeUserData = {
+      //     EmployeeId: currentEmployeeId || "1098483",
+      //     Name: $(".sidebar-profile h2").text().trim() || "Hyder Ali A",
+      //     UserId: profileUserId || "a.hyder",
+      //     Email: "hyder@faaztechsolutions.com",
+      //     MobileNumber: "9943221321",
+      //     RecId: 1
+      //   };
+      // }
+      $("#isEdit").val('Yes');
+      $('#btnSubmitText').text(translate('Update'));
+      applyEditModeUI(true);
+      setFormValue(activeUserData);
+      $('#userProfileModal').css('display', 'flex');
+    }
+
+    function closeUserProfileModal() {
+      $('#userProfileModal').css('display', 'none');
+      resetForm();
+      
+    }
+
+    // Modal Events
+    $(document).on('click', '#updateProfile, #updateProfile1', function (e) {
+      e.preventDefault();
+      openUserProfileModal();
+    });
+
+    $(document).on('click', '#btnCloseForm, #btnCloseProfileModalX', function (e) {
+      e.preventDefault();
+      closeUserProfileModal();
+    });
+
+    $(document).on('click', '#userProfileModal', function (e) {
+      if (e.target === this) {
+        closeUserProfileModal();
+      }
+    });
+
+    $(document).on('click', '#profileUploadBox', function () {
+      $('#ProfileFileInput').trigger('click');
+    });
+
+    $(document).on('change', '#ProfileFileInput', function (e) {
+      handleFileSelect(e);
+    });
+
+    $(document).on('click', '#btnSubmit', function (e) {
+      e.preventDefault();
+      submitUserProfile();
+    });
+
+    $(document).on('input change', '#UserId', function () {
+      const val = $(this).val().trim();
+      if (val) {
+        validateUserId(val);
+      } else {
+        $('#UserId').removeClass('is-invalid');
+        $('#userIdError').text('').hide();
+      }
+    });
+
+    $(document).on('input change', '#Email', function () {
+      const val = $(this).val().trim();
+      validateEmail(val);
+    });
+
+    $(document).on('input change', '#MobileNumber', function () {
+      const val = $(this).val().trim();
+      if (val) {
+        validateMobileNumber(val);
+      } else {
+        $('#MobileNumber').removeClass('is-invalid');
+        $('#mobileNumberError').text('').hide();
+      }
+    });
+
+    $(document).on('input', '#EmployeeId', function () {
+      const empId = $(this).val().trim();
+      clearTimeout(employeeCheckTimeout);
+
+      if (!empId) {
+        $('#Name').val('');
+        $('#EmployeeId').removeClass('is-invalid');
+        $('#employeeIdError').text('').hide();
+        return;
+      }
+
+      if (empId.length < 6) {
+        $('#Name').val('');
+        $('#EmployeeId').addClass('is-invalid');
+        $('#employeeIdError').text('Employee ID should be minimum 6 characters.').show();
+        return;
+      }
+
+      if (empId.length > 15) {
+        $('#Name').val('');
+        $('#EmployeeId').addClass('is-invalid');
+        $('#employeeIdError').text('Employee ID cannot exceed 15 characters.').show();
+        return;
+      }
+
+      employeeCheckTimeout = setTimeout(() => {
+        validateAndFetchEmployee(empId);
+      }, 400);
+    });
+
+    $(document).on('change', '#EmployeeId', function () {
+      clearTimeout(employeeCheckTimeout);
+      const empId = $(this).val().trim();
+      validateAndFetchEmployee(empId);
+    });
   </script>
 </body>
 
