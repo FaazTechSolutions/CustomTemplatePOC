@@ -17,6 +17,114 @@ let IS_EDIT_MODE = portalResponseData ? true : false;
 let EDIT_CANDIDATE_ID = portalRecordId || null;
 const IMAGE_BASE_URL = "https://portal.mawarid.com.sa/apps4x-api"; // Base URL for attachments
 
+function setupLazyDropdownForElement(select, placeholder, fetchCallback) {
+  if (!select) return;
+  
+  if (select.dataset.lazyInit) return;
+  select.dataset.lazyInit = "true";
+  
+  select.innerHTML = `<option value="">${placeholder}</option>`;
+  initSearchableDropdown(select);
+  
+  // Set a function on the element itself that the global click handler can find
+  select._lazyFetchCallback = fetchCallback;
+  select._lazyPlaceholder = placeholder;
+}
+
+// Global lazy dropdown click handler
+document.addEventListener("click", (e) => {
+  const trigger = e.target.closest(".sd-trigger");
+  if (!trigger) return;
+  
+  const wrapper = trigger.closest(".sd-wrapper");
+  if (!wrapper) return;
+  
+  const select = wrapper.querySelector("select");
+  if (select && select._lazyFetchCallback && !select._hasLazyFetched) {
+    // Prevent the searchable dropdown from opening it normally
+    e.preventDefault();
+    e.stopPropagation();
+    
+    select._hasLazyFetched = true;
+    trigger.querySelector(".sd-value").innerHTML = `<span class="sd-loader"></span> Loading...`;
+    
+    select._lazyFetchCallback()
+      .then(() => {
+        const newWrapper = select.closest(".sd-wrapper");
+        if (newWrapper) {
+          newWrapper.classList.add("sd-open");
+          const searchInput = newWrapper.querySelector(".sd-search");
+          if (searchInput) setTimeout(() => searchInput.focus(), 30);
+          setTimeout(() => {
+            const activeItem = newWrapper.querySelector(".sd-active");
+            if (activeItem) activeItem.scrollIntoView({ block: "center" });
+          }, 50);
+        }
+      })
+      .catch((err) => {
+        console.error("Lazy dropdown error:", err);
+        select._hasLazyFetched = false;
+        const currentWrapper = select.closest(".sd-wrapper");
+        if (currentWrapper) {
+          const valEl = currentWrapper.querySelector(".sd-value");
+          if (valEl) valEl.textContent = select._lazyPlaceholder;
+        }
+      });
+  }
+}, true);
+
+function setupLazyDropdown(id, placeholder, fetchCallback) {
+  const select = document.getElementById(id);
+  setupLazyDropdownForElement(select, placeholder, fetchCallback);
+}
+
+// ─── Fetch Nationality once & populate Nationality + cache for dynamic Country ───
+const nationalityUrl =
+  "https://portal.mawarid.com.sa/apps4x-api/graph-api/api/v1/Integration/GetApplicationAvailableNationality";
+const nationalityMapping = {
+  value: "countryregionId",
+  text: "englishName",
+  labels: [
+    { key: "countryregionId", label: "Code" },
+    { key: "englishName", label: "English" },
+    { key: "arabicName", label: "Arabic" },
+  ],
+};
+
+let countryDataPromise = null;
+function fetchCountryData() {
+  if (window.cachedCountryData) {
+    return Promise.resolve(window.cachedCountryData);
+  }
+  if (!countryDataPromise) {
+    countryDataPromise = fetchAndPopulateMultiple(
+      nationalityUrl,
+      [], // Do not automatically populate by ID
+      nationalityMapping
+    ).then((items) => {
+      window.cachedCountryData = items;
+      window.cachedCountryMapping = nationalityMapping;
+      const expTemplate = document.getElementById("experienceTemplate");
+      if (expTemplate) {
+        const countrySelect =
+          expTemplate.content.querySelector(".dynamic-country");
+        if (countrySelect)
+          populateNativeSelect(
+            countrySelect,
+            items,
+            nationalityMapping,
+            "Country",
+          );
+      }
+      return items;
+    }).catch(err => {
+      countryDataPromise = null;
+      throw err;
+    });
+  }
+  return countryDataPromise;
+}
+
 function initApp() {
   // ─── Auto-calculate Age from DOB ───
   const dobInput = document.getElementById("DateofBirth");
@@ -88,97 +196,28 @@ function initApp() {
     };
   }
 
-  // ─── Lazy Fetch Helper ───
-  function setupLazyDropdown(id, placeholder, fetchCallback) {
-    const select = document.getElementById(id);
-    if (!select) return;
 
-    select.innerHTML = `<option value="">${placeholder}</option>`;
-    initSearchableDropdown(select);
 
-    let hasFetched = false;
-    select.parentElement.addEventListener(
-      "click",
-      (e) => {
-        const trigger = e.target.closest(".sd-trigger");
-        if (trigger && !hasFetched) {
-          e.stopPropagation(); // Prevent normal open
-          hasFetched = true;
-          trigger.querySelector(".sd-value").innerHTML =
-            `<span class="sd-loader"></span> Loading...`;
 
-          fetchCallback()
-            .then(() => {
-              const newSelect = document.getElementById(id);
-              if (newSelect) {
-                const newWrapper = newSelect.parentElement;
-                if (newWrapper && newWrapper.classList.contains("sd-wrapper")) {
-                  newWrapper.classList.add("sd-open");
-                  const searchInput = newWrapper.querySelector(".sd-search");
-                  if (searchInput) setTimeout(() => searchInput.focus(), 30);
-
-                  // Scroll the active item into view now that the list is populated
-                  setTimeout(() => {
-                    const activeItem = newWrapper.querySelector(".sd-active");
-                    if (activeItem) {
-                      activeItem.scrollIntoView({ block: "center" });
-                    }
-                  }, 50);
-                }
-              }
-            })
-            .catch((err) => {
-              console.error("Lazy dropdown error:", err);
-              const newSelect = document.getElementById(id);
-              if (newSelect && newSelect.parentElement) {
-                const valEl =
-                  newSelect.parentElement.querySelector(".sd-value");
-                if (valEl) valEl.textContent = placeholder;
-              } else {
-                trigger.querySelector(".sd-value").textContent = placeholder;
-              }
-              hasFetched = false;
-            });
-        }
-      },
-      true,
-    );
-  }
-
-  // ─── Fetch Nationality once & populate Nationality + cache for dynamic Country ───
-  const nationalityUrl =
-    "https://portal.mawarid.com.sa/apps4x-api/graph-api/api/v1/Integration/GetApplicationAvailableNationality";
-  const nationalityMapping = {
-    value: "countryregionId",
-    text: "englishName",
-    labels: [
-      { key: "countryregionId", label: "Code" },
-      { key: "englishName", label: "English" },
-      { key: "arabicName", label: "Arabic" },
-    ],
-  };
 
   setupLazyDropdown("Nationality", "Select Nationality", () => {
-    return fetchAndPopulateMultiple(
-      nationalityUrl,
-      ["Nationality"],
-      nationalityMapping,
-    ).then((items) => {
-      window.cachedCountryData = items;
-      window.cachedCountryMapping = nationalityMapping;
-      const expTemplate = document.getElementById("experienceTemplate");
-      if (expTemplate) {
-        const countrySelect =
-          expTemplate.content.querySelector(".dynamic-country");
-        if (countrySelect)
-          populateNativeSelect(
-            countrySelect,
-            items,
-            nationalityMapping,
-            "Country",
-          );
+    return fetchCountryData().then((items) => {
+      const natSelect = document.getElementById("Nationality");
+      if (natSelect) {
+        populateNativeSelect(natSelect, items, nationalityMapping, "Nationality");
+        reinitSearchableDropdown(natSelect);
       }
       document.querySelectorAll(".dynamic-country").forEach((select) => {
+        populateNativeSelect(select, items, nationalityMapping, "Country");
+        reinitSearchableDropdown(select);
+      });
+    });
+  });
+
+  // Setup lazy fetch for initial country dropdowns
+  document.querySelectorAll(".dynamic-country").forEach((select) => {
+    setupLazyDropdownForElement(select, "Select Country", () => {
+      return fetchCountryData().then((items) => {
         populateNativeSelect(select, items, nationalityMapping, "Country");
         reinitSearchableDropdown(select);
       });
@@ -231,6 +270,43 @@ function initApp() {
   // Initialize dynamic sections instantly (does not wait for API)
   initDynamicSections();
 
+  // ─── Setup Change Listeners for Description Fields ───
+  function setupDescriptionFields(selectId, desId, desArId) {
+    const select = document.getElementById(selectId);
+    if (select) {
+      select.addEventListener("change", function () {
+        const selectedOption = this.options[this.selectedIndex];
+
+        // If there's an option selected and it has the labels loaded from the API
+        if (selectedOption && selectedOption.dataset.labels) {
+          try {
+            const labels = JSON.parse(selectedOption.dataset.labels);
+            const enLabel =
+              labels.find((l) => l.label === "English")?.value || "";
+            const arLabel =
+              labels.find((l) => l.label === "Arabic")?.value || "";
+            const desInput = document.getElementById(desId);
+            const desArInput = document.getElementById(desArId);
+            if (desInput) desInput.value = enLabel;
+            if (desArInput) desArInput.value = arLabel;
+          } catch (e) {}
+        }
+        // If the user actively clears the dropdown (selects the empty placeholder)
+        else if (selectedOption && selectedOption.value === "") {
+          const desInput = document.getElementById(desId);
+          const desArInput = document.getElementById(desArId);
+          if (desInput) desInput.value = "";
+          if (desArInput) desArInput.value = "";
+        }
+        // If the option has a value but no labels (e.g. edit mode before API fetch), DO NOTHING.
+        // This preserves the initial hydrated descriptions.
+      });
+    }
+  }
+
+  setupDescriptionFields("Nationality", "Nationality_Des", "Nationality_DesAr");
+  setupDescriptionFields("Profession", "Profession_Des", "Profession_DesAr");
+
   // ─── Form Submission Handler ───
   const cvForm = document.getElementById("cvForm");
   if (cvForm) {
@@ -240,10 +316,14 @@ function initApp() {
       const submitBtn = cvForm.querySelector('button[type="submit"]');
       const originalBtnContent = submitBtn ? submitBtn.innerHTML : "";
       if (submitBtn) {
-        console.log("Form submit intercepted! Changing button state to loading...");
+        console.log(
+          "Form submit intercepted! Changing button state to loading...",
+        );
         submitBtn.disabled = true;
         // Use completely inline CSS to ensure it shows up regardless of style.css
-        submitBtn.innerHTML = '<span style="display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:sd-spin 1s linear infinite; margin-right:8px; vertical-align:middle;"></span>' + (IS_EDIT_MODE ? "Updating..." : "Saving...");
+        submitBtn.innerHTML =
+          '<span style="display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:sd-spin 1s linear infinite; margin-right:8px; vertical-align:middle;"></span>' +
+          (IS_EDIT_MODE ? "Updating..." : "Saving...");
       }
 
       // Extract standard fields
@@ -269,6 +349,10 @@ function initApp() {
         comments: "Available to start immediately",
         status: "Waiting for approval",
         confirmationStatus: "Pending",
+        nationality_Des: formData.get("Nationality_Des") || "",
+        nationality_DesAr: formData.get("Nationality_DesAr") || "",
+        profession_Des: formData.get("Profession_Des") || "",
+        profession_DesAr: formData.get("Profession_DesAr") || "",
         additionalFields: {},
       };
 
@@ -431,6 +515,27 @@ function setupDynamicList(btnId, containerId, templateId) {
     // Initialize any searchable dropdowns in the clone
     const selects = clone.querySelectorAll("select");
     selects.forEach((select) => {
+      if (select.classList.contains("dynamic-country")) {
+        // Only set up lazy fetch if the data hasn't already been cached
+        if (window.cachedCountryData) {
+          populateNativeSelect(select, window.cachedCountryData, window.cachedCountryMapping, "Country");
+        } else {
+          setupLazyDropdownForElement(select, "Select Country", () => {
+            return fetchCountryData().then((items) => {
+              populateNativeSelect(select, items, window.cachedCountryMapping || {
+                value: "countryregionId",
+                text: "englishName",
+                labels: [
+                  { key: "countryregionId", label: "Code" },
+                  { key: "englishName", label: "English" },
+                  { key: "arabicName", label: "Arabic" },
+                ],
+              }, "Country");
+              reinitSearchableDropdown(select);
+            });
+          });
+        }
+      }
       // Need to append first before initSearchableDropdown so it can insert wrapper adjacent to it
       setTimeout(() => {
         initSearchableDropdown(select);
@@ -982,6 +1087,41 @@ if (document.readyState === "loading") {
 // ─── Edit Mode Helper ───
 function hydrateFormData(data) {
   if (!data) return;
+
+  // Hydrate Description Fields from existing data
+  const additionalFields = data.additionalFields || data.AdditionalFields || {};
+  if (document.getElementById("Nationality_Des")) {
+    document.getElementById("Nationality_Des").value =
+      data.Nationality_Des ||
+      data.nationality_Des ||
+      additionalFields.Nationality_Des ||
+      additionalFields.nationality_Des ||
+      "";
+  }
+  if (document.getElementById("Nationality_DesAr")) {
+    document.getElementById("Nationality_DesAr").value =
+      data.Nationality_DesAr ||
+      data.nationality_DesAr ||
+      additionalFields.Nationality_DesAr ||
+      additionalFields.nationality_DesAr ||
+      "";
+  }
+  if (document.getElementById("Profession_Des")) {
+    document.getElementById("Profession_Des").value =
+      data.Profession_Des ||
+      data.profession_Des ||
+      additionalFields.Profession_Des ||
+      additionalFields.profession_Des ||
+      "";
+  }
+  if (document.getElementById("Profession_DesAr")) {
+    document.getElementById("Profession_DesAr").value =
+      data.Profession_DesAr ||
+      data.profession_DesAr ||
+      additionalFields.Profession_DesAr ||
+      additionalFields.profession_DesAr ||
+      "";
+  }
 
   // 1. Map Basic Fields
   const basicFields = [

@@ -1,10 +1,10 @@
 // --- Dashboard Data ---
 // In a real environment, you would fetch this from an API endpoint.
-let _this = this;
-let dashboardData = _this.currentPageData;
+var _this = this;
+var dashboardData = _this ? _this.currentPageData : null;
 
 // Colors mapping matching the CSS variables
-const statusColors = {
+var statusColors = {
   New: "#00d2fc",
   InProgress: "#f5a623",
   Scheduled: "#8e44ad",
@@ -17,9 +17,12 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function initDashboard() {
+  if (typeof _this !== "undefined" && _this && _this.currentPageData) {
+    dashboardData = _this.currentPageData;
+  }
   if (!dashboardData) return;
 
-  // 1. Guard check: If the dashboard container isn't in the DOM, 
+  // 1. Guard check: If the dashboard container isn't in the DOM,
   // the user might have navigated to another component. Exit early.
   const allTicketsContainer = document.getElementById("all-tickets-metrics");
   if (!allTicketsContainer) {
@@ -29,15 +32,23 @@ function initDashboard() {
   // 2. Prevent infinite loops without using JSON.stringify (which can freeze the UI if data is huge)
   let dataFingerprint = "empty";
   try {
-    const allTotal = dashboardData.AllTickets ? dashboardData.AllTickets.TotalCount : 0;
-    const myTotal = dashboardData.MyAssignedTicket ? dashboardData.MyAssignedTicket.TotalCount : 0;
-    dataFingerprint = `${allTotal}_${myTotal}`;
+    const allTotal = dashboardData.AllTickets
+      ? dashboardData.AllTickets.TotalCount
+      : 0;
+    const myTotal = dashboardData.MyAssignedTicket
+      ? dashboardData.MyAssignedTicket.TotalCount
+      : 0;
+    const teamTotal = dashboardData.MyTeamTickets
+      ? dashboardData.MyTeamTickets.length
+      : 0;
+    dataFingerprint = `${allTotal}_${myTotal}_${teamTotal}`;
   } catch (e) {
     // ignore
   }
 
-  const isPopulated = allTicketsContainer.innerHTML.trim().length > 0;
-  
+  // Check children.length so HTML comments (<!-- JS Populated Cards -->) do not trigger false positives
+  const isPopulated = allTicketsContainer.children.length > 0;
+
   if (window._lastDashboardDataString === dataFingerprint && isPopulated) {
     return;
   }
@@ -47,15 +58,17 @@ function initDashboard() {
   if (dashboardData.AllTickets) {
     populateMetrics("all-tickets-metrics", dashboardData.AllTickets);
     const allBadge = document.getElementById("all-total-badge");
-    if (allBadge) allBadge.textContent =
-      dashboardData.AllTickets.TotalCount.toLocaleString() + " Tickets";
+    if (allBadge)
+      allBadge.textContent =
+        dashboardData.AllTickets.TotalCount.toLocaleString() + " Tickets";
   }
-  
+
   if (dashboardData.MyAssignedTicket) {
     populateMetrics("my-tickets-metrics", dashboardData.MyAssignedTicket);
     const myBadge = document.getElementById("my-total-badge");
-    if (myBadge) myBadge.textContent =
-      dashboardData.MyAssignedTicket.TotalCount.toLocaleString() + " Tickets";
+    if (myBadge)
+      myBadge.textContent =
+        dashboardData.MyAssignedTicket.TotalCount.toLocaleString() + " Tickets";
   }
 
   // 4. Render Charts
@@ -67,10 +80,14 @@ function initDashboard() {
   }
 
   // 5. Populate Tables directly from the JSON
+  if (dashboardData.MyTeamTickets) {
+    populateMyTeamTicketsCards(dashboardData.MyTeamTickets);
+  }
+
   if (dashboardData.RequestbyCoordinatorWithCustomer) {
     populateCoordCustTable(dashboardData.RequestbyCoordinatorWithCustomer);
   }
-  
+
   if (dashboardData.RequestbyCoordinator) {
     populateCoordTable(dashboardData.RequestbyCoordinator);
     renderCoordinatorGroupChart(
@@ -100,7 +117,7 @@ function populateMetrics(containerId, data) {
         </div>
     `;
   });
-  
+
   container.innerHTML = html;
 }
 
@@ -117,16 +134,16 @@ function renderChart(canvasId, chartData) {
 
   const canvas = document.getElementById(canvasId);
   if (!canvas) return; // Guard in case canvas isn't in DOM
-  
+
   // CRITICAL FIX: Force the parent container to have a fixed height.
-  // This mathematically prevents Chart.js Pie Charts from causing infinite 
+  // This mathematically prevents Chart.js Pie Charts from causing infinite
   // ResizeObserver loops when the modal opens and the layout shifts!
   if (canvas.parentElement) {
     canvas.parentElement.style.position = "relative";
     canvas.parentElement.style.height = "300px";
     canvas.parentElement.style.minHeight = "300px";
     canvas.parentElement.style.width = "100%";
-    
+
     // Manually set canvas size to prevent tiny charts when responsive is false
     const parentWidth = canvas.parentElement.clientWidth || 400;
     canvas.style.width = parentWidth + "px";
@@ -134,7 +151,7 @@ function renderChart(canvasId, chartData) {
     canvas.width = parentWidth;
     canvas.height = 300;
   }
-  
+
   const ctx = canvas.getContext("2d");
 
   // Filter out TotalCount if it's there to keep chart focused on categories
@@ -187,7 +204,7 @@ function renderCoordinatorGroupChart(canvasId, data) {
 
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
-  
+
   if (canvas.parentElement) {
     canvas.parentElement.style.position = "relative";
     canvas.parentElement.style.height = "350px";
@@ -201,7 +218,7 @@ function renderCoordinatorGroupChart(canvasId, data) {
     canvas.width = parentWidth;
     canvas.height = 350;
   }
-  
+
   const ctx = canvas.getContext("2d");
 
   // Sort coordinators by total count descending and take top 10 for better readability
@@ -323,24 +340,25 @@ function populateCoordCustTable(requests) {
   const sorted = [...requests].sort((a, b) => b.TotalCount - a.TotalCount);
 
   // Use string array mapping for massively improved DOM performance
-  const rowsHtml = sorted.map((req) => {
-    // Use profile image if available, else initials
-    let avatarHtml = "";
-    if (req.Profile_Path) {
-      const baseUrl = "https://portal.mawarid.com.sa/apps4x-api";
-      const imgUrl = baseUrl + req.Profile_Path.replace(/\\\\/g, "/");
-      avatarHtml = `<img src="${imgUrl}" alt="${req.Name}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid #eaedf1;">`;
-    } else {
-      const initials = (req.Name || "U N")
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .substring(0, 2)
-        .toUpperCase();
-      avatarHtml = `<div class="coordinator-avatar">${initials}</div>`;
-    }
+  const rowsHtml = sorted
+    .map((req) => {
+      // Use profile image if available, else initials
+      let avatarHtml = "";
+      if (req.Profile_Path) {
+        const baseUrl = "https://portal.mawarid.com.sa/apps4x-api";
+        const imgUrl = baseUrl + req.Profile_Path.replace(/\\\\/g, "/");
+        avatarHtml = `<img src="${imgUrl}" alt="${req.Name}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid #eaedf1;">`;
+      } else {
+        const initials = (req.Name || "U N")
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .substring(0, 2)
+          .toUpperCase();
+        avatarHtml = `<div class="coordinator-avatar">${initials}</div>`;
+      }
 
-    return `
+      return `
         <tr>
             <td>
                 <div class="coordinator-name">
@@ -361,7 +379,8 @@ function populateCoordCustTable(requests) {
             <td style="font-weight: 700;">${req.TotalCount}</td>
         </tr>
     `;
-  }).join("");
+    })
+    .join("");
 
   tbody.innerHTML = rowsHtml;
 }
@@ -374,24 +393,25 @@ function populateCoordTable(requests) {
   const sorted = [...requests].sort((a, b) => b.TotalCount - a.TotalCount);
 
   // Use string array mapping for massively improved DOM performance
-  const rowsHtml = sorted.map((req) => {
-    // Use profile image if available, else initials
-    let avatarHtml = "";
-    if (req.Profile_Path) {
-      const baseUrl = "https://portal.mawarid.com.sa/apps4x-api";
-      const imgUrl = baseUrl + req.Profile_Path.replace(/\\\\/g, "/");
-      avatarHtml = `<img src="${imgUrl}" alt="${req.Name}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid #eaedf1;">`;
-    } else {
-      const initials = (req.Name || "U N")
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .substring(0, 2)
-        .toUpperCase();
-      avatarHtml = `<div class="coordinator-avatar">${initials}</div>`;
-    }
+  const rowsHtml = sorted
+    .map((req) => {
+      // Use profile image if available, else initials
+      let avatarHtml = "";
+      if (req.Profile_Path) {
+        const baseUrl = "https://portal.mawarid.com.sa/apps4x-api";
+        const imgUrl = baseUrl + req.Profile_Path.replace(/\\\\/g, "/");
+        avatarHtml = `<img src="${imgUrl}" alt="${req.Name}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid #eaedf1;">`;
+      } else {
+        const initials = (req.Name || "U N")
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .substring(0, 2)
+          .toUpperCase();
+        avatarHtml = `<div class="coordinator-avatar">${initials}</div>`;
+      }
 
-    return `
+      return `
         <tr>
             <td>
                 <div class="coordinator-name">
@@ -410,9 +430,46 @@ function populateCoordTable(requests) {
             <td style="font-weight: 700;">${req.TotalCount}</td>
         </tr>
     `;
-  }).join("");
+    })
+    .join("");
 
   tbody.innerHTML = rowsHtml;
+}
+
+function populateMyTeamTicketsCards(requests) {
+  const container = document.getElementById("my-team-tickets-container");
+  if (!container) return;
+
+  const html = requests
+    .map((req) => {
+      const statusKey = req.Status.toLowerCase();
+      const borderColor = statusColors[req.Status] || "var(--primary-color)";
+
+      return `
+      <div class="team-ticket-card" style="border-top-color: ${borderColor}">
+        <div class="team-ticket-header">
+          <h4>${req.Status}</h4>
+          <span class="status-pill pill-${statusKey}">${req.Status}</span>
+        </div>
+        <div class="team-ticket-total">
+          ${req.Total} <span style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Total</span>
+        </div>
+        <div class="team-ticket-breakdown">
+          <div class="team-ticket-stat unassigned">
+            <span>Unassigned</span>
+            <strong>${req.Unassigned}</strong>
+          </div>
+          <div class="team-ticket-stat assigned">
+            <span>Assigned</span>
+            <strong>${req.Assigned}</strong>
+          </div>
+        </div>
+      </div>
+    `;
+    })
+    .join("");
+
+  container.innerHTML = html;
 }
 
 function initSearch(inputId, tbodyId) {

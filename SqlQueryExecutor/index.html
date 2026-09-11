@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SQL Query Executor – Mawarid Connector</title>
+  <meta name="description" content="Execute SQL queries against the Mawarid connector API with a live JSON and table viewer." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css?v=2" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════════
+       LOGIN OVERLAY
+       ══════════════════════════════════════════════════════ -->
+  <div class="login-overlay" id="loginOverlay">
+
+    <!-- Animated background orbs -->
+    <div class="login-bg-orbs">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+
+    <div class="login-split">
+
+      <!-- ── Left: Branding Panel ── -->
+      <div class="login-brand">
+        <div class="login-brand-content">
+          <div class="login-brand-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3"/>
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+              <path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/>
+            </svg>
+          </div>
+          <h1 class="login-brand-title">SQL Query Executor</h1>
+          <p class="login-brand-desc">Execute, analyze, and explore your database with a powerful real-time query interface.</p>
+
+          <div class="login-features">
+            <div class="login-feature">
+              <span class="login-feature-icon">⚡</span>
+              <div>
+                <strong>Lightning Fast</strong>
+                <span>Execute queries in milliseconds</span>
+              </div>
+            </div>
+            <div class="login-feature">
+              <span class="login-feature-icon">📊</span>
+              <div>
+                <strong>Live Results</strong>
+                <span>JSON tree & table views</span>
+              </div>
+            </div>
+            <div class="login-feature">
+              <span class="login-feature-icon">🔒</span>
+              <div>
+                <strong>Secure Access</strong>
+                <span>Token-based authentication</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Right: Login Form ── -->
+      <div class="login-form-side">
+        <div class="login-card">
+          <div class="login-card-header">
+            <h2 class="login-title">Welcome back</h2>
+            <p class="login-subtitle">Enter your credentials to continue</p>
+          </div>
+
+          <form id="loginForm" onsubmit="handleLogin(event)" autocomplete="off">
+            <div class="login-field">
+              <label for="loginUserId">User ID</label>
+              <div class="login-input-wrap">
+                <span class="login-input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </span>
+                <input type="text" id="loginUserId" placeholder="Enter your User ID" required autocomplete="username" />
+              </div>
+            </div>
+
+            <div class="login-field">
+              <label for="loginPassword">Password</label>
+              <div class="login-input-wrap">
+                <span class="login-input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                </span>
+                <input type="password" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password" />
+                <button type="button" class="login-eye-btn" onclick="togglePasswordVisibility()" title="Show/Hide password">
+                  <svg id="eyeIconShow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <svg id="eyeIconHide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="login-error" id="loginError" style="display:none">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+              </svg>
+              <span id="loginErrorText"></span>
+            </div>
+
+            <button type="submit" class="login-submit-btn" id="loginSubmitBtn">
+              <span id="loginBtnText">Sign In</span>
+              <span id="loginSpinner" class="login-spinner" style="display:none"></span>
+              <svg id="loginArrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       MAIN APP (hidden until login)
+       ══════════════════════════════════════════════════════ -->
+  <div id="mainApp" style="display:none;flex-direction:column;height:100vh">
+
+  <!-- ══════════════════════════════════════════════════════
+       HEADER
+       ══════════════════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="header-icon">🗄️</div>
+    <div class="header-text">
+      <h1>SQL Query Executor</h1>
+      <p>Mawarid Connector · CON0000001 · LGE0000001</p>
+    </div>
+    <div class="header-badge" id="tokenStatus">
+      <span class="dot" id="statusDot" style="background:var(--warning)"></span>
+      <span id="statusText">Checking token…</span>
+    </div>
+    <div class="header-actions">
+      <button class="logout-btn" onclick="handleLogout()" title="Logout">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        Logout
+      </button>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════
+       APP BODY
+       ══════════════════════════════════════════════════════ -->
+  <div class="app-body">
+
+    <!-- ── Sidebar: Database Objects ── -->
+    <aside class="sidebar" id="sidebar">
+
+      <div class="sidebar-header">
+        <span class="sidebar-title">Database Objects</span>
+        <button class="sidebar-refresh" title="Reload all objects" onclick="loadAllObjects()">↻</button>
+      </div>
+
+      <div class="sidebar-search">
+        <input id="sidebarSearch" placeholder="🔍 Filter objects…" oninput="filterSidebar()" />
+      </div>
+
+      <div class="sidebar-body" id="sidebarBody">
+
+        <!-- Tables -->
+        <div class="obj-group open" id="grpTables">
+          <div class="obj-group-header" onclick="toggleGroup('grpTables')">
+            <span class="obj-group-icon">📋</span>
+            <span class="obj-group-label">Tables</span>
+            <span class="obj-group-count" id="cntTables">—</span>
+            <span class="obj-group-caret">›</span>
+          </div>
+          <div class="obj-group-body" id="listTables">
+            <div class="obj-status"><span class="obj-spinner"></span> Loading…</div>
+          </div>
+        </div>
+
+        <!-- Views -->
+        <div class="obj-group" id="grpViews">
+          <div class="obj-group-header" onclick="toggleGroup('grpViews')">
+            <span class="obj-group-icon">👁️</span>
+            <span class="obj-group-label">Views</span>
+            <span class="obj-group-count" id="cntViews">—</span>
+            <span class="obj-group-caret">›</span>
+          </div>
+          <div class="obj-group-body" id="listViews">
+            <div class="obj-status"><span class="obj-spinner"></span> Loading…</div>
+          </div>
+        </div>
+
+        <!-- Stored Procedures -->
+        <div class="obj-group" id="grpSPs">
+          <div class="obj-group-header" onclick="toggleGroup('grpSPs')">
+            <span class="obj-group-icon">⚙️</span>
+            <span class="obj-group-label">Stored Procedures</span>
+            <span class="obj-group-count" id="cntSPs">—</span>
+            <span class="obj-group-caret">›</span>
+          </div>
+          <div class="obj-group-body" id="listSPs">
+            <div class="obj-status"><span class="obj-spinner"></span> Loading…</div>
+          </div>
+        </div>
+
+      </div><!-- /sidebar-body -->
+    </aside>
+
+    <!-- Drag-to-resize handle -->
+    <div class="resize-handle" id="resizeHandle"></div>
+
+    <!-- ── Right content area ── -->
+    <div class="content-area">
+
+      <!-- Query Panel -->
+      <div class="query-panel">
+        <div class="panel-label">
+          SQL Query
+          <small style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0">(Ctrl + Enter to run)</small>
+        </div>
+
+        <div class="query-row">
+          <textarea
+            id="queryInput"
+            class="query-box"
+            spellcheck="false"
+            placeholder="Enter SQL query… or click a table / view / SP on the left"
+          >Select * from Users Where EMployeeId is null</textarea>
+
+          <button class="run-btn" id="runBtn" onclick="executeQuery()">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M5 3.5l8 4.5-8 4.5V3.5z"/>
+            </svg>
+            Run Query
+          </button>
+        </div>
+
+        <div class="token-bar">
+          <span id="tokenBadge" class="token-pill bad">⚠ No token found</span>
+          <span style="font-size:11px;color:var(--muted)">
+            Reads from <code style="color:var(--accent);font-size:10px">localStorage["eyjJwhtbt…"]</code>
+          </span>
+          <div style="margin-left:auto;display:flex;gap:6px">
+            <button class="action-btn" id="btnEnterToken" onclick="openTokenDrawer()">🔑 Enter Token</button>
+            <button class="action-btn" onclick="checkToken()">↻ Refresh</button>
+          </div>
+        </div>
+      </div><!-- /query-panel -->
+
+      <!-- Token Drawer -->
+      <div class="token-drawer" id="tokenDrawer">
+        <div class="token-drawer-inner">
+          <div class="token-drawer-header">
+            <div class="token-drawer-title">🔑 Enter Bearer Token manually</div>
+            <div class="token-drawer-desc">Saved to localStorage for this session</div>
+            <button class="action-btn" style="height:24px;font-size:11px;margin-left:8px" onclick="closeTokenDrawer()">✕ Close</button>
+          </div>
+          <div class="token-input-row">
+            <input
+              type="password"
+              id="manualTokenInput"
+              class="token-text-input"
+              placeholder="Paste your Bearer token here (eyJhbGciOi…)"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <button class="save-token-btn" onclick="saveManualToken()">Save &amp; Use</button>
+            <button class="clear-token-btn" onclick="clearToken()">Clear</button>
+          </div>
+        </div>
+      </div><!-- /token-drawer -->
+
+      <!-- Results Panel -->
+      <div class="results-panel">
+
+        <div class="results-toolbar" id="resultsToolbar" style="display:none">
+          <div class="results-meta" id="resultsMeta"></div>
+          <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap">
+            <div class="view-toggle">
+              <button id="btnTree"  class="active" onclick="switchView('tree')">⎇ JSON Tree</button>
+              <button id="btnTable"             onclick="switchView('table')">⊞ Table</button>
+            </div>
+            <button class="action-btn" id="btnToggleExpand" onclick="toggleExpandAll()">⊟ Collapse All</button>
+            <button class="action-btn" onclick="copyJson()">⎘ Copy JSON</button>
+            <button class="action-btn" onclick="downloadJson()">↓ Download</button>
+          </div>
+        </div>
+
+        <div class="viewer-wrap" id="viewerWrap">
+          <div class="state-box">
+            <div class="state-icon">⚡</div>
+            <div class="state-title">Ready to Execute</div>
+            <div class="state-desc">
+              Select a table, view, or stored procedure from the sidebar,
+              or type a custom SQL query and click <strong>Run Query</strong>.
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /results-panel -->
+
+    </div><!-- /content-area -->
+  </div><!-- /app-body -->
+  </div><!-- /mainApp -->
+
+  <!-- Script (loaded last so DOM is ready) -->
+  <script src="app.js?v=2"></script>
+</body>
+</html>

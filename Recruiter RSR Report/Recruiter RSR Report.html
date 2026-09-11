@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recruiter — RSR Report Template</title>
+  <link rel="stylesheet" href="./report-styles.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="rsr-rpt-container">
+  <!-- Header -->
+  <div class="rsr-rpt-page-header">
+    <div class="rsr-rpt-page-title">Recruitment project summary &mdash; RSR view</div>
+    <button class="rsr-rpt-btn rsr-rpt-btn-sm" style="height:24px;padding:2px 10px;font-size:11px" onclick="window.rsrExportExcel()">Export</button>
+  </div>
+
+  <!-- Project Type Tabs -->
+  <div class="rsr-rpt-tabs">
+    <button class="rsr-rpt-tab rsr-rpt-active" data-type="Mawarid Agencies" onclick="window.rsrSwitchType('Mawarid Agencies', this)">Mawarid Agencies</button>
+    <button class="rsr-rpt-tab" data-type="Medical Agencies" onclick="window.rsrSwitchType('Medical Agencies', this)">Medical Agencies</button>
+    <button class="rsr-rpt-tab" data-type="Mawarid Medical" onclick="window.rsrSwitchType('Mawarid Medical', this)">Mawarid Medical</button>
+    <button class="rsr-rpt-tab" data-type="Mawarid Business" onclick="window.rsrSwitchType('Mawarid Business', this)">Mawarid Business</button>
+    <button class="rsr-rpt-tab" data-type="Small Projects" onclick="window.rsrSwitchType('Small Projects', this)">Small Projects</button>
+    <button class="rsr-rpt-tab" data-type="Client Agencies" onclick="window.rsrSwitchType('Client Agencies', this)">Client Agencies</button>
+  </div>
+
+  <!-- Filter Bar (Hidden when all filters are hidden) -->
+  <div class="rsr-rpt-actions-row" style="display:none">
+    <!-- Main Project Filter (Hidden via style="display:none") -->
+    <div class="rsr-rpt-filter-group hidden-filter" id="rsrProjectFilterGroup" style="display:none">
+      <label>MAIN PROJECT</label>
+      <div class="rsr-rpt-msf" id="rsrProjectMsf">
+        <div class="rsr-rpt-msf-box" onclick="window.rsrTogglePanel('rsrProjectPanel', event)">
+          <div class="rsr-rpt-msf-chips" id="rsrProjectChips"><span style="color:var(--rsr-ink3)">All main projects</span></div>
+          <span class="rsr-rpt-msf-caret">&#9662;</span>
+        </div>
+        <div class="rsr-rpt-msf-panel" id="rsrProjectPanel"></div>
+      </div>
+    </div>
+
+    <!-- Customer Filter (Hidden via style="display:none") -->
+    <div class="rsr-rpt-filter-group hidden-filter" id="rsrCustomerFilterGroup" style="display:none">
+      <label>CUSTOMER</label>
+      <div class="rsr-rpt-msf" id="rsrCustomerMsf">
+        <div class="rsr-rpt-msf-box" onclick="window.rsrTogglePanel('rsrCustomerPanel', event)">
+          <div class="rsr-rpt-msf-chips" id="rsrCustomerChips"><span style="color:var(--rsr-ink3)">All customers</span></div>
+          <span class="rsr-rpt-msf-caret">&#9662;</span>
+        </div>
+        <div class="rsr-rpt-msf-panel" id="rsrCustomerPanel"></div>
+      </div>
+    </div>
+
+    <!-- Agency / Owner Filter (Agent Filter Alone Visible) -->
+    <div class="rsr-rpt-filter-group hidden-filter" id="rsrAgencyFilterGroup" style="display:none">
+      <label>AGENCY / OWNER (AGENT)</label>
+      <div class="rsr-rpt-msf" id="rsrAgencyMsf">
+        <div class="rsr-rpt-msf-box" onclick="window.rsrTogglePanel('rsrAgencyPanel', event)">
+          <div class="rsr-rpt-msf-chips" id="rsrAgencyChips"><span style="color:var(--rsr-ink3)">All agencies</span></div>
+          <span class="rsr-rpt-msf-caret">&#9662;</span>
+        </div>
+        <div class="rsr-rpt-msf-panel" id="rsrAgencyPanel"></div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <button class="rsr-rpt-btn rsr-rpt-btn-gold rsr-rpt-btn-sm" style="display:none;height:36px" onclick="window.rsrSearch()">Search</button>
+    <button class="rsr-rpt-btn rsr-rpt-btn-sm" style="display:none;height:36px" onclick="window.rsrClear()">&#10005; Clear</button>
+  </div>
+
+
+
+  <!-- Table Container -->
+  <div id="rsrGroups"></div>
+
+  <!-- Read-Only Agent Detail Modal (Inside .rsr-rpt-container to inherit CSS variables & table styles) -->
+  <div class="rsr-rpt-modal-bg" id="rsrAgentModalBg" onclick="window.closeAgentDetailModal(event)">
+    <div class="rsr-rpt-modal">
+      <div class="rsr-rpt-modal-header">
+        <div>
+          <div class="rsr-rpt-modal-title" id="rsrModalTitle">Agent Breakdown Details</div>
+          <div class="rsr-rpt-modal-subtitle" id="rsrModalSubtitle">Read-only agent candidate status breakdown for matching Recruiting IDs</div>
+        </div>
+        <div class="rsr-rpt-modal-actions">
+          <button class="rsr-rpt-btn rsr-rpt-btn-sm" onclick="window.rsrExportAgentDetailExcel()">Export</button>
+          <button class="rsr-rpt-modal-close" onclick="window.closeAgentDetailModal()">&times;</button>
+        </div>
+      </div>
+      <div class="rsr-rpt-modal-body">
+        <!-- Modal Filter Bar (Compact Agent ID / Name Multi-Select Filter) -->
+        <div class="rsr-rpt-actions-row rsr-rpt-modal-filter-bar">
+          <div class="rsr-rpt-filter-group" id="rsrModalAgentFilterGroup">
+            <label>FILTER BY AGENT ID / NAME</label>
+            <div class="rsr-rpt-msf" id="rsrModalAgentMsf">
+              <div class="rsr-rpt-msf-box" onclick="window.rsrTogglePanel('rsrModalAgentPanel', event)">
+                <div class="rsr-rpt-msf-chips" id="rsrModalAgentChips"><span style="color:var(--rsr-ink3)">All assigned agents</span></div>
+                <span class="rsr-rpt-msf-caret">&#9662;</span>
+              </div>
+              <div class="rsr-rpt-msf-panel" id="rsrModalAgentPanel"></div>
+            </div>
+          </div>
+          <button class="rsr-rpt-btn rsr-rpt-btn-gold rsr-rpt-btn-sm" onclick="window.rsrRenderModalTable()">Search</button>
+          <button class="rsr-rpt-btn rsr-rpt-btn-sm" onclick="window.rsrClearModalFilters()">&#10005; Clear</button>
+        </div>
+
+        <!-- Read-Only Agent Detail Table Wrap -->
+        <div id="rsrModalAgentTableWrap"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="./report-script.js"></script>
+</body>
+</html>

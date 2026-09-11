@@ -1,0 +1,2869 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SQL Query Executor – Mawarid Connector</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1c2333;
+      --surface3: #21262d;
+      --border: #30363d;
+      --border-light: #3d444d;
+      --accent: #58a6ff;
+      --accent-glow: rgba(88,166,255,0.18);
+      --success: #3fb950;
+      --warning: #d29922;
+      --danger: #f85149;
+      --muted: #8b949e;
+      --text: #e6edf3;
+      --text2: #c9d1d9;
+      --json-key: #79c0ff;
+      --json-str: #a5d6ff;
+      --json-num: #f8c555;
+      --json-bool: #ff7b72;
+      --json-null: #8b949e;
+      --sidebar-w: 260px;
+      --radius: 10px;
+      --radius-sm: 6px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    
+
+    /* ── Header ── */
+    .app-header {
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 40%, #0d1b2a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .app-header::before {
+      content: '';
+      position: absolute; top: -40px; left: -40px;
+      width: 220px; height: 220px;
+      background: radial-gradient(circle, rgba(88,166,255,0.10) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .header-icon {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, #1f6feb, #58a6ff);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 0 16px rgba(88,166,255,0.35);
+      flex-shrink: 0;
+    }
+    .header-text h1 { font-size: 16px; font-weight: 700; }
+    .header-text p  { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .header-badge {
+      margin-left: auto;
+      font-size: 11px; font-weight: 600;
+      padding: 3px 10px; border-radius: 20px;
+      display: flex; align-items: center; gap: 5px;
+      transition: all 0.3s;
+    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logout-btn {
+  background: rgba(248, 81, 73, 0.1);
+  color: var(--danger);
+  border: 1px solid rgba(248, 81, 73, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.logout-btn:hover {
+  background: rgba(248, 81, 73, 0.2);
+  transform: translateY(-1px);
+}
+.logout-btn:active {
+  transform: translateY(0);
+}
+
+    /* ── App body: sidebar + content ── */
+    .app-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .sidebar-header {
+      padding: 10px 12px 8px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .sidebar-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--muted); flex: 1;
+    }
+    .sidebar-refresh {
+      background: transparent; border: none;
+      color: var(--muted); cursor: pointer; font-size: 14px;
+      padding: 2px 4px; border-radius: 4px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .sidebar-refresh:hover { color: var(--accent); background: var(--surface3); }
+    .sidebar-search {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .sidebar-search input {
+      width: 100%;
+      background: var(--surface3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      padding: 5px 10px;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .sidebar-search input:focus { border-color: var(--accent); }
+    .sidebar-body { flex: 1; overflow-y: auto; overflow-x: hidden; }
+    .sidebar-body::-webkit-scrollbar { width: 4px; }
+    .sidebar-body::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* Object group accordion */
+    .obj-group { border-bottom: 1px solid var(--border); }
+    .obj-group-header {
+      display: flex; align-items: center; gap: 7px;
+      padding: 8px 12px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 12px; font-weight: 600;
+      color: var(--text2);
+      transition: background 0.15s;
+    }
+    .obj-group-header:hover { background: var(--surface2); }
+    .obj-group-icon { font-size: 14px; flex-shrink: 0; }
+    .obj-group-label { flex: 1; }
+    .obj-group-count {
+      font-size: 10px; font-weight: 600;
+      background: var(--surface3);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+    .obj-group-caret {
+      font-size: 10px; color: var(--muted);
+      transition: transform 0.2s;
+    }
+    .obj-group.open .obj-group-caret { transform: rotate(90deg); }
+    .obj-group-body { display: none; }
+    .obj-group.open .obj-group-body { display: block; }
+
+    /* Object loading/error */
+    .obj-status {
+      padding: 8px 14px;
+      font-size: 11px; color: var(--muted);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .obj-spinner {
+      width: 10px; height: 10px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Object items */
+    .obj-item {
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 14px 5px 22px;
+      font-size: 12px;
+      color: var(--text2);
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s;
+      border-left: 2px solid transparent;
+      font-family: 'JetBrains Mono', monospace;
+      word-break: break-all;
+    }
+    .obj-item:hover {
+      background: rgba(88,166,255,0.08);
+      color: var(--accent);
+      border-left-color: var(--accent);
+    }
+    .obj-item-icon { font-size: 11px; flex-shrink: 0; opacity: 0.65; }
+    .obj-item.active { background: rgba(88,166,255,0.12); color: var(--accent); border-left-color: var(--accent); }
+    .obj-item-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .obj-actions { display: none; gap: 4px; }
+    .obj-item:hover .obj-actions { display: flex; }
+    .obj-action-btn { 
+      background: var(--surface3); border: 1px solid var(--border); border-radius: 4px;
+      color: var(--text); padding: 2px 5px; font-size: 10px; cursor: pointer;
+    }
+    .obj-action-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+    
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000;
+      align-items: center; justify-content: center; backdrop-filter: blur(2px);
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius);
+      width: 400px; max-width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .modal-header {
+      padding: 14px 20px; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--surface);
+    }
+    .modal-title { font-weight: 600; font-size: 14px; }
+    .modal-close { background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 16px; }
+    .modal-close:hover { color: var(--text); }
+    .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 12px; max-height: 60vh; overflow-y: auto; }
+    .param-group { display: flex; flex-direction: column; gap: 4px; }
+    .param-group label { font-size: 11px; color: var(--text2); font-family: 'JetBrains Mono', monospace; }
+    .param-group input { 
+      background: var(--surface3); border: 1px solid var(--border); border-radius: var(--radius-sm);
+      color: var(--text); padding: 8px 10px; font-family: 'JetBrains Mono', monospace; font-size: 12px; outline: none;
+    }
+    .param-group input:focus { border-color: var(--accent); }
+    .modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; background: var(--surface); }
+
+    /* ── Right content area ── */
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Query Panel ── */
+    .query-panel {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      flex-shrink: 0;
+    }
+    .panel-label {
+      font-size: 10px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--muted); margin-bottom: 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .panel-label::after { content:''; flex:1; height:1px; background:var(--border); }
+    
+    .editor-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 4px;
+      overflow-x: auto;
+    }
+    .editor-tab {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .editor-tab:hover {
+      background: var(--surface3);
+      color: var(--text);
+    }
+    .editor-tab.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .editor-tab-close {
+      opacity: 0.6;
+      font-size: 14px;
+      line-height: 1;
+      border-radius: 50%;
+      padding: 0 2px;
+    }
+    .editor-tab-close:hover {
+      opacity: 1;
+      background: rgba(0,0,0,0.2);
+    }
+    .add-tab-btn {
+      background: transparent;
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      font-size: 14px;
+      border-radius: var(--radius-sm);
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .add-tab-btn:hover {
+      background: var(--surface2);
+      color: var(--text);
+    }
+    .query-row { display: flex; gap: 8px; align-items: flex-start; }
+    .query-box {
+      flex: 1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      background: var(--surface3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      resize: vertical;
+      height: 180px;
+      min-height: 80px;
+      max-height: 60vh;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      line-height: 1.6;
+    }
+    .query-box:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    .run-btn {
+      background: linear-gradient(135deg, #1f6feb, #58a6ff);
+      color: #fff; border: none; border-radius: var(--radius-sm);
+      padding: 0 18px; height: 40px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; gap: 7px;
+      transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 4px 14px rgba(88,166,255,0.25);
+      white-space: nowrap;
+    }
+    .run-btn:hover { opacity: 0.9; box-shadow: 0 4px 20px rgba(88,166,255,0.4); }
+    .run-btn:active { transform: scale(0.97); }
+    .run-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* token bar */
+    .token-bar {
+      margin-top: 8px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--muted);
+    }
+    .token-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 2px 9px; border-radius: 20px;
+      font-size: 11px; font-weight: 500;
+    }
+    .token-pill.ok  { background: rgba(63,185,80,0.12); border:1px solid rgba(63,185,80,0.3); color:var(--success); }
+    .token-pill.bad { background: rgba(248,81,73,0.12); border:1px solid rgba(248,81,73,0.3); color:var(--danger); }
+    .action-btn {
+      background: var(--surface3); border: 1px solid var(--border); color: var(--muted);
+      padding: 5px 10px; border-radius: var(--radius-sm); font-size: 11px; font-weight: 500;
+      cursor: pointer; display: flex; align-items: center; gap: 5px;
+      transition: all 0.15s;
+    }
+    .action-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--border-light); }
+
+    /* ── Token Drawer ── */
+    .token-drawer {
+      background: var(--surface2);
+      border-bottom: 2px solid var(--warning);
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), padding 0.35s;
+      padding: 0 20px;
+      flex-shrink: 0;
+    }
+    .token-drawer.open { max-height: 160px; padding: 14px 20px; }
+    .token-drawer-inner { display: flex; flex-direction: column; gap: 10px; }
+    .token-drawer-header { display: flex; align-items: center; gap: 8px; }
+    .token-drawer-title { font-size: 12px; font-weight: 600; color: var(--warning); flex: 1; }
+    .token-drawer-desc { font-size: 11px; color: var(--muted); }
+    .token-input-row { display: flex; gap: 7px; align-items: center; }
+    .token-text-input {
+      flex: 1;
+      background: var(--surface3);
+      border: 1px solid var(--warning);
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .token-text-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    .token-text-input::placeholder { color: var(--muted); font-family: 'Inter', sans-serif; font-size: 11px; }
+    .save-token-btn {
+      background: linear-gradient(135deg, #b45309, var(--warning));
+      color: #fff; border: none; border-radius: var(--radius-sm);
+      padding: 0 16px; height: 38px;
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+      transition: opacity 0.2s, transform 0.1s;
+      box-shadow: 0 4px 12px rgba(210,153,34,0.25);
+    }
+    .save-token-btn:hover { opacity: 0.88; }
+    .save-token-btn:active { transform: scale(0.97); }
+    .clear-token-btn {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); border-radius: var(--radius-sm);
+      padding: 0 12px; height: 38px; font-size: 12px; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .clear-token-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* ── Results panel ── */
+    .results-panel {
+      flex: 1;
+      padding: 14px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+      min-height: 0;
+    }
+    .results-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex-shrink: 0; }
+    .results-meta { display: flex; align-items: center; gap: 8px; flex: 1; flex-wrap: wrap; }
+    .badge { font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 20px; }
+    .badge-blue  { background: rgba(88,166,255,0.15); border:1px solid rgba(88,166,255,0.3); color:var(--accent); }
+    .badge-green { background: rgba(63,185,80,0.12); border:1px solid rgba(63,185,80,0.3); color:var(--success); }
+    .exec-time { font-size: 12px; color: var(--muted); }
+    .view-toggle { display: flex; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+    .view-toggle button {
+      background: transparent; border: none; color: var(--muted);
+      padding: 5px 12px; font-size: 12px; font-weight: 500; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .view-toggle button.active { background: var(--surface3); color: var(--accent); }
+    .view-toggle button:hover:not(.active) { background: var(--surface2); color: var(--text2); }
+
+    /* Viewer */
+    .viewer-wrap {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: auto;
+      min-height: 0;
+    }
+    .viewer-wrap::-webkit-scrollbar { width: 6px; height: 6px; }
+    .viewer-wrap::-webkit-scrollbar-track { background: transparent; }
+    .viewer-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .state-box { 
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 100%; min-height: 200px; gap: 12px; color: var(--muted);
+    }
+    .state-icon { font-size: 38px; opacity: 0.45; }
+    .state-title { font-size: 14px; font-weight: 600; color: var(--text2); }
+    .state-desc  { font-size: 12px; color: var(--muted); text-align: center; max-width: 380px; line-height: 1.8; }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    /* JSON Tree */
+    .json-tree { padding: 14px 18px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.75; }
+    .jn { display: block; }
+    .jn-toggle { cursor: pointer; user-select: none; display: inline-flex; align-items: center; }
+    .jn-toggle::before {
+      content: '▾'; display: inline-block; width: 13px;
+      color: var(--muted); transition: transform 0.15s; font-size: 9px; margin-right: 2px;
+    }
+    .jn-toggle.collapsed::before { transform: rotate(-90deg); }
+    .jn-children { margin-left: 18px; border-left: 1px solid var(--border); padding-left: 10px; }
+    .jn-children.hidden { display: none; }
+    .jk    { color: var(--json-key); }
+    .js    { color: var(--json-str); }
+    .jnum  { color: var(--json-num); }
+    .jb    { color: var(--json-bool); }
+    .jnull { color: var(--json-null); font-style: italic; }
+    .jbracket { color: var(--muted); }
+    .jcount { font-size: 10px; color: var(--muted); margin-left: 5px; background:var(--surface3); padding: 1px 5px; border-radius: 8px; }
+
+    /* Table */
+    .table-wrap { overflow: auto; }
+    .result-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .result-table thead { position: sticky; top: 0; z-index: 1; }
+    .result-table th {
+      background: var(--surface3); color: var(--muted);
+      font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 9px 12px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap;
+    }
+    .result-table td {
+      padding: 8px 12px; border-bottom: 1px solid var(--border);
+      color: var(--text2); vertical-align: top; 
+      max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tbody tr:hover { background: rgba(88,166,255,0.04); }
+    .cell-null { color: var(--muted); font-style: italic; }
+
+    /* Pagination */
+    .pagination-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 14px; border-top: 1px solid var(--border);
+      background: var(--surface2); font-size: 11px; color: var(--muted);
+      flex-shrink: 0;
+    }
+    .pagination-controls { display: flex; gap: 6px; align-items: center; }
+    .page-btn {
+      background: var(--surface3); border: 1px solid var(--border);
+      color: var(--text); border-radius: var(--radius-sm);
+      padding: 4px 10px; font-size: 11px; cursor: pointer;
+    }
+    .page-btn:hover:not(:disabled) { background: var(--surface); border-color: var(--accent); }
+    .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Search bar */
+    .search-wrap {
+      padding: 8px 14px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 7px;
+      background: var(--surface2); flex-shrink: 0;
+    }
+    .search-input {
+      flex: 1;
+      background: var(--surface3); border: 1px solid var(--border);
+      color: var(--text); border-radius: var(--radius-sm);
+      padding: 5px 10px; font-size: 12px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--accent); }
+    .search-count { font-size: 11px; color: var(--muted); white-space: nowrap; }
+
+    /* Resize handle between sidebar and content */
+    .resize-handle {
+      width: 4px; background: var(--border); cursor: col-resize;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .resize-handle:hover { background: var(--accent); }
+
+    /* Mobile Sidebar Toggle */
+    .mobile-menu-btn {
+      display: none; background: transparent; border: none; color: var(--text);
+      font-size: 22px; cursor: pointer; padding: 4px; border-radius: var(--radius-sm);
+      transition: background 0.2s;
+    }
+    .mobile-menu-btn:hover { background: var(--surface2); }
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .sidebar-overlay.active { display: block; opacity: 1; }
+
+    @media (max-width: 720px) {
+      .mobile-menu-btn { display: block; }
+      .sidebar { 
+        position: fixed; left: -100%; top: 0; bottom: 0; z-index: 1000;
+        transition: left 0.3s ease; box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+      }
+    }
+    
+    /* ── Token Drawer ── */
+    .token-drawer {
+      background: var(--surface2);
+      border-bottom: 2px solid var(--warning);
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), padding 0.35s;
+      padding: 0 20px;
+      flex-shrink: 0;
+    }
+    .token-drawer.open { max-height: 160px; padding: 14px 20px; }
+    .token-drawer-inner { display: flex; flex-direction: column; gap: 10px; }
+    .token-drawer-header { display: flex; align-items: center; gap: 8px; }
+    .token-drawer-title { font-size: 12px; font-weight: 600; color: var(--warning); flex: 1; }
+    .token-drawer-desc { font-size: 11px; color: var(--muted); }
+    .token-input-row { display: flex; gap: 7px; align-items: center; }
+    .token-text-input {
+      flex: 1;
+      background: var(--surface3);
+      border: 1px solid var(--warning);
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .token-text-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    .token-text-input::placeholder { color: var(--muted); font-family: 'Inter', sans-serif; font-size: 11px; }
+    .save-token-btn {
+      background: linear-gradient(135deg, #b45309, var(--warning));
+      color: #fff; border: none; border-radius: var(--radius-sm);
+      padding: 0 16px; height: 38px;
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+      transition: opacity 0.2s, transform 0.1s;
+      box-shadow: 0 4px 12px rgba(210,153,34,0.25);
+    }
+    .save-token-btn:hover { opacity: 0.88; }
+    .save-token-btn:active { transform: scale(0.97); }
+    .clear-token-btn {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); border-radius: var(--radius-sm);
+      padding: 0 12px; height: 38px; font-size: 12px; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .clear-token-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* ── Results panel ── */
+    .results-panel {
+      flex: 1;
+      padding: 14px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+      min-height: 0;
+    }
+    .results-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex-shrink: 0; }
+    .results-meta { display: flex; align-items: center; gap: 8px; flex: 1; flex-wrap: wrap; }
+    .badge { font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 20px; }
+    .badge-blue  { background: rgba(88,166,255,0.15); border:1px solid rgba(88,166,255,0.3); color:var(--accent); }
+    .badge-green { background: rgba(63,185,80,0.12); border:1px solid rgba(63,185,80,0.3); color:var(--success); }
+    .exec-time { font-size: 12px; color: var(--muted); }
+    .view-toggle { display: flex; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+    .view-toggle button {
+      background: transparent; border: none; color: var(--muted);
+      padding: 5px 12px; font-size: 12px; font-weight: 500; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .view-toggle button.active { background: var(--surface3); color: var(--accent); }
+    .view-toggle button:hover:not(.active) { background: var(--surface2); color: var(--text2); }
+
+    /* Viewer */
+    .viewer-wrap {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: auto;
+      min-height: 0;
+    }
+    .viewer-wrap::-webkit-scrollbar { width: 6px; height: 6px; }
+    .viewer-wrap::-webkit-scrollbar-track { background: transparent; }
+    .viewer-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .state-box { 
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 100%; min-height: 200px; gap: 12px; color: var(--muted);
+    }
+    .state-icon { font-size: 38px; opacity: 0.45; }
+    .state-title { font-size: 14px; font-weight: 600; color: var(--text2); }
+    .state-desc  { font-size: 12px; color: var(--muted); text-align: center; max-width: 380px; line-height: 1.8; }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    /* JSON Tree */
+    .json-tree { padding: 14px 18px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.75; }
+    .jn { display: block; }
+    .jn-toggle { cursor: pointer; user-select: none; display: inline-flex; align-items: center; }
+    .jn-toggle::before {
+      content: '▾'; display: inline-block; width: 13px;
+      color: var(--muted); transition: transform 0.15s; font-size: 9px; margin-right: 2px;
+    }
+    .jn-toggle.collapsed::before { transform: rotate(-90deg); }
+    .jn-children { margin-left: 18px; border-left: 1px solid var(--border); padding-left: 10px; }
+    .jn-children.hidden { display: none; }
+    .jk    { color: var(--json-key); }
+    .js    { color: var(--json-str); }
+    .jnum  { color: var(--json-num); }
+    .jb    { color: var(--json-bool); }
+    .jnull { color: var(--json-null); font-style: italic; }
+    .jbracket { color: var(--muted); }
+    .jcount { font-size: 10px; color: var(--muted); margin-left: 5px; background:var(--surface3); padding: 1px 5px; border-radius: 8px; }
+
+    /* Table */
+    .table-wrap { overflow: auto; }
+    .result-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .result-table thead { position: sticky; top: 0; z-index: 1; }
+    .result-table th {
+      background: var(--surface3); color: var(--muted);
+      font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 9px 12px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap;
+    }
+    .result-table td {
+      padding: 8px 12px; border-bottom: 1px solid var(--border);
+      color: var(--text2); vertical-align: top; 
+      max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tbody tr:hover { background: rgba(88,166,255,0.04); }
+    .cell-null { color: var(--muted); font-style: italic; }
+
+    /* Pagination */
+    .pagination-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 14px; border-top: 1px solid var(--border);
+      background: var(--surface2); font-size: 11px; color: var(--muted);
+      flex-shrink: 0;
+    }
+    .pagination-controls { display: flex; gap: 6px; align-items: center; }
+    .page-btn {
+      background: var(--surface3); border: 1px solid var(--border);
+      color: var(--text); border-radius: var(--radius-sm);
+      padding: 4px 10px; font-size: 11px; cursor: pointer;
+    }
+    .page-btn:hover:not(:disabled) { background: var(--surface); border-color: var(--accent); }
+    .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Search bar */
+    .search-wrap {
+      padding: 8px 14px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 7px;
+      background: var(--surface2); flex-shrink: 0;
+    }
+    .search-input {
+      flex: 1;
+      background: var(--surface3); border: 1px solid var(--border);
+      color: var(--text); border-radius: var(--radius-sm);
+      padding: 5px 10px; font-size: 12px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--accent); }
+    .search-count { font-size: 11px; color: var(--muted); white-space: nowrap; }
+
+    /* Resize handle between sidebar and content */
+    .resize-handle {
+      width: 4px; background: var(--border); cursor: col-resize;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .resize-handle:hover { background: var(--accent); }
+
+    /* Mobile Sidebar Toggle */
+    .mobile-menu-btn {
+      display: none; background: transparent; border: none; color: var(--text);
+      font-size: 22px; cursor: pointer; padding: 4px; border-radius: var(--radius-sm);
+      transition: background 0.2s;
+    }
+    .mobile-menu-btn:hover { background: var(--surface2); }
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .sidebar-overlay.active { display: block; opacity: 1; }
+
+    @media (max-width: 720px) {
+      .mobile-menu-btn { display: block; }
+      .sidebar { 
+        position: fixed; left: -100%; top: 0; bottom: 0; z-index: 1000;
+        transition: left 0.3s ease; box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+      }
+      .sidebar.mobile-open { left: 0; }
+      .resize-handle { display: none; }
+      .app-header { padding: 10px 14px; gap: 10px; }
+      .header-icon { width: 32px; height: 32px; font-size: 16px; }
+      .header-text h1 { font-size: 14px; }
+      .header-text p { display: none; } /* Hide subtitle on small screens */
+    }
+
+/* ══════════════════════════════════════════════════════════
+   LOGIN OVERLAY — Premium Split-Screen Design
+   ══════════════════════════════════════════════════════════ */
+.login-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bg);
+  overflow: hidden;
+  animation: loginFadeIn 0.5s ease;
+}
+
+@keyframes loginFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Animated background orbs ── */
+.login-bg-orbs {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+  animation: orbFloat 20s ease-in-out infinite;
+}
+
+.orb-1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #58a6ff, #1f6feb);
+  top: -10%;
+  left: -5%;
+  animation-delay: 0s;
+}
+
+.orb-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #a371f7, #8957e5);
+  bottom: -8%;
+  right: -3%;
+  animation-delay: -7s;
+  animation-duration: 25s;
+}
+
+.orb-3 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, #3fb950, #238636);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-delay: -14s;
+  animation-duration: 30s;
+  opacity: 0.18;
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25%      { transform: translate(40px, -30px) scale(1.08); }
+  50%      { transform: translate(-20px, 40px) scale(0.95); }
+  75%      { transform: translate(30px, 20px) scale(1.05); }
+}
+
+/* ── Split layout ── */
+.login-split {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+/* ── Left: Branding ── */
+.login-brand {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-brand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+    rgba(88, 166, 255, 0.06) 0%,
+    rgba(163, 113, 247, 0.04) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.login-brand-content {
+  max-width: 420px;
+  animation: loginSlideRight 0.7s ease;
+}
+
+@keyframes loginSlideRight {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.login-brand-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(88,166,255,0.15), rgba(163,113,247,0.1));
+  border: 1px solid rgba(88,166,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  margin-bottom: 28px;
+  animation: loginIconPulse 3s ease-in-out infinite;
+}
+
+@keyframes loginIconPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(88,166,255,0); }
+  50%      { box-shadow: 0 0 0 12px rgba(88,166,255,0.06); }
+}
+
+.login-brand-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+.login-brand-desc {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+/* Features list */
+.login-features {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  animation: loginFeatureIn 0.6s ease both;
+}
+
+.login-feature:nth-child(1) { animation-delay: 0.3s; }
+.login-feature:nth-child(2) { animation-delay: 0.45s; }
+.login-feature:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes loginFeatureIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.login-feature-icon {
+  font-size: 22px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.login-feature div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.login-feature strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.login-feature span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ── Right: Form side ── */
+.login-form-side {
+  flex: 0 0 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  position: relative;
+}
+
+.login-form-side::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10%;
+  bottom: 10%;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--border-light) 30%,
+    var(--border-light) 70%,
+    transparent
+  );
+}
+
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  animation: loginSlideUp 0.6s ease 0.2s both;
+}
+
+@keyframes loginSlideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.login-card-header {
+  margin-bottom: 32px;
+}
+
+.login-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+
+.login-subtitle {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ── Form fields ── */
+.login-field {
+  margin-bottom: 22px;
+}
+
+.login-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.login-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-input-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.login-input-wrap:focus-within .login-input-icon {
+  color: var(--accent);
+}
+
+.login-field input {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px 0 44px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.login-field input:focus {
+  border-color: var(--accent);
+  background: var(--surface3);
+  box-shadow: 0 0 0 4px var(--accent-glow), 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.login-field input::placeholder {
+  color: #555d68;
+  font-size: 13px;
+}
+
+/* Password eye toggle */
+.login-eye-btn {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.login-eye-btn:hover {
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+}
+
+/* ── Error box ── */
+.login-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(248, 81, 73, 0.1);
+  border: 1px solid rgba(248, 81, 73, 0.25);
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  animation: loginShake 0.4s ease;
+}
+
+.login-error svg {
+  flex-shrink: 0;
+}
+
+@keyframes loginShake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-6px); }
+  40%      { transform: translateX(6px); }
+  60%      { transform: translateX(-4px); }
+  80%      { transform: translateX(4px); }
+}
+
+/* ── Submit button ── */
+.login-submit-btn {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #1f6feb, #58a6ff);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-submit-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(255,255,255,0.12), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.login-submit-btn:hover::before {
+  transform: translateX(100%);
+}
+
+.login-submit-btn:hover {
+  box-shadow: 0 6px 24px rgba(31,111,235,0.4), 0 2px 8px rgba(88,166,255,0.2);
+  transform: translateY(-1px);
+}
+
+.login-submit-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.login-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.login-submit-btn:disabled::before {
+  display: none;
+}
+
+.login-submit-btn svg {
+  transition: transform 0.3s ease;
+}
+
+.login-submit-btn:hover svg {
+  transform: translateX(4px);
+}
+
+/* Spinner */
+.login-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid rgba(255,255,255,0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: loginSpin 0.6s linear infinite;
+}
+
+@keyframes loginSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Overlay hide transition ── */
+.login-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+/* ── Responsive: Collapse to single column ── */
+@media (max-width: 900px) {
+  .login-split {
+    flex-direction: column;
+  }
+
+  .login-brand {
+    flex: 0;
+    padding: 32px 24px 20px;
+  }
+
+  .login-brand-content {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .login-brand-icon {
+    margin: 0 auto 16px;
+  }
+
+  .login-brand-title {
+    font-size: 24px;
+  }
+
+  .login-brand-desc {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  .login-features {
+    display: none;
+  }
+
+  .login-form-side {
+    flex: 1;
+    padding: 20px 24px;
+  }
+
+  .login-form-side::before {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-form-side {
+    padding: 16px;
+  }
+
+  .login-card {
+    max-width: 100%;
+  }
+
+  .login-submit-btn {
+    height: 46px;
+    font-size: 14px;
+  }
+}
+  </style>
+</head>
+<body>
+      <!-- ══════════════════════════════════════════════════════
+       LOGIN OVERLAY ══════════════════════════════════════════════════════ -->
+  <div class="login-overlay" id="loginOverlay" style="display: none;">
+
+    <!-- Animated background orbs -->
+    <div class="login-bg-orbs">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+
+    <div class="login-split">
+
+      <!-- ── Left: Branding Panel ── -->
+      <div class="login-brand">
+        <div class="login-brand-content">
+          <div class="login-brand-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3"/>
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+              <path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/>
+            </svg>
+          </div>
+          <h1 class="login-brand-title">SQL Query Executor</h1>
+          <p class="login-brand-desc">Execute, analyze, and explore your database with a powerful real-time query interface.</p>
+
+          <div class="login-features">
+            <div class="login-feature">
+              <span class="login-feature-icon">⚡</span>
+              <div>
+                <strong>Lightning Fast</strong>
+                <span>Execute queries in milliseconds</span>
+              </div>
+            </div>
+            <div class="login-feature">
+              <span class="login-feature-icon">📊</span>
+              <div>
+                <strong>Live Results</strong>
+                <span>JSON tree & table views</span>
+              </div>
+            </div>
+            <div class="login-feature">
+              <span class="login-feature-icon">🔒</span>
+              <div>
+                <strong>Secure Access</strong>
+                <span>Token-based authentication</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Right: Login Form ── -->
+      <div class="login-form-side">
+        <div class="login-card">
+          <div class="login-card-header">
+            <h2 class="login-title">Welcome back</h2>
+            <p class="login-subtitle">Enter your credentials to continue</p>
+          </div>
+
+          <form id="loginForm" onsubmit="handleLogin(event)" autocomplete="off">
+            <div class="login-field">
+              <label for="loginUserId">User ID</label>
+              <div class="login-input-wrap">
+                <span class="login-input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </span>
+                <input type="text" id="loginUserId" placeholder="Enter your User ID" required autocomplete="username" />
+              </div>
+            </div>
+
+            <div class="login-field">
+              <label for="loginPassword">Password</label>
+              <div class="login-input-wrap">
+                <span class="login-input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                </span>
+                <input type="password" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password" />
+                <button type="button" class="login-eye-btn" onclick="togglePasswordVisibility()" title="Show/Hide password">
+                  <svg id="eyeIconShow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <svg id="eyeIconHide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="login-error" id="loginError" style="display:none">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+              </svg>
+              <span id="loginErrorText"></span>
+            </div>
+
+            <button type="submit" class="login-submit-btn" id="loginSubmitBtn">
+              <span id="loginBtnText">Sign In</span>
+              <span id="loginSpinner" class="login-spinner" style="display:none"></span>
+              <svg id="loginArrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       MAIN APP (hidden until login)
+       ══════════════════════════════════════════════════════ -->
+  <div id="mainApp" style="display:none;flex-direction:column;height:100vh">
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
+
+  <!-- SP Parameter Modal -->
+  <div class="modal-overlay" id="paramModalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="paramModalTitle">Execute Stored Procedure</div>
+        <button class="modal-close" onclick="closeParamModal()">×</button>
+      </div>
+      <div class="modal-body" id="paramModalBody">
+        <!-- Params generated here -->
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn" onclick="closeParamModal()">Cancel</button>
+        <button class="run-btn" style="height:32px;font-size:12px;padding:0 14px;" onclick="submitParamModal()">Run SP</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <button class="mobile-menu-btn" onclick="toggleMobileSidebar()">☰</button>
+    <div class="header-icon">🗄️</div>
+    <div class="header-text">
+      <h1>SQL Query Executor</h1>
+      <p style="display:flex;align-items:center;gap:4px;">
+        Mawarid Connector · 
+        <select id="conIdSelect" style="background:transparent;border:none;border-bottom:1px solid var(--accent);color:var(--text);font-size:11px;max-width:120px;outline:none;font-family:'JetBrains Mono',monospace;cursor:pointer" onchange="updateConnectorId()">
+          <option value="CON0000001" style="background:var(--surface2)">CON0000001</option>
+        </select>
+        · LGE0000001
+      </p>
+    </div>
+    
+    <div style="margin-left:auto;display:flex;align-items:center;gap:12px;">
+      <div class="header-badge" id="tokenStatus">
+        <span class="dot" id="statusDot" style="background:var(--warning)"></span>
+        <span id="statusText">Checking token…</span>
+      </div>
+
+      <button class="run-btn" id="runBtn" onclick="executeQuery()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M5 3.5l8 4.5-8 4.5V3.5z"/></svg>
+        Execute
+      </button>
+      
+      <button class="action-btn" id="cancelBtn" onclick="cancelQuery()" style="height:40px;padding:0 18px;display:none;color:var(--danger);border-color:var(--danger);">
+        <span style="font-size:14px;">🛑</span> Cancel
+      </button>
+
+      <div style="width:1px;height:24px;background:var(--border);margin:0 6px;"></div>
+
+      <div class="header-actions">
+        <button class="logout-btn" onclick="handleLogout()" title="Logout">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-body">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">Database Objects</span>
+        <button class="sidebar-refresh" title="Reload all objects" onclick="loadAllObjects()">↻</button>
+      </div>
+      <div class="sidebar-search">
+        <input id="sidebarSearch" placeholder="🔍 Filter objects…" oninput="filterSidebar()" />
+      </div>
+      <div class="sidebar-body" id="sidebarBody">
+
+        <!-- Tables -->
+        <div class="obj-group" id="grpTables">
+          <div class="obj-group-header" onclick="toggleGroup('grpTables')">
+            <span class="obj-group-icon">📋</span>
+            <span class="obj-group-label">Tables</span>
+            <span class="obj-group-count" id="cntTables">—</span>
+            <span class="obj-group-caret">›</span>
+          </div>
+          <div class="obj-group-body" id="listTables">
+            <div class="obj-status"><span class="obj-spinner"></span> Loading…</div>
+          </div>
+        </div>
+
+        <!-- Views -->
+        <div class="obj-group" id="grpViews">
+          <div class="obj-group-header" onclick="toggleGroup('grpViews')">
+            <span class="obj-group-icon">👁️</span>
+            <span class="obj-group-label">Views</span>
+            <span class="obj-group-count" id="cntViews">—</span>
+            <span class="obj-group-caret">›</span>
+          </div>
+          <div class="obj-group-body" id="listViews">
+            <div class="obj-status"><span class="obj-spinner"></span> Loading…</div>
+          </div>
+        </div>
+
+        <!-- Stored Procedures -->
+        <div class="obj-group" id="grpSPs">
+          <div class="obj-group-header" onclick="toggleGroup('grpSPs')">
+            <span class="obj-group-icon">⚙️</span>
+            <span class="obj-group-label">Stored Procedures</span>
+            <span class="obj-group-count" id="cntSPs">—</span>
+            <span class="obj-group-caret">›</span>
+          </div>
+          <div class="obj-group-body" id="listSPs">
+            <div class="obj-status"><span class="obj-spinner"></span> Loading…</div>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- Resize handle -->
+    <div class="resize-handle" id="resizeHandle"></div>
+
+    <!-- ── Right content ── -->
+    <div class="content-area">
+
+      <!-- Query Panel -->
+      <div class="query-panel">
+        <div class="editor-tabs" id="editorTabsBar">
+          <!-- Tabs rendered here via JS -->
+        </div>
+        <div class="query-row">
+          <div id="editorContainer" class="query-box" style="padding:0; overflow:hidden;"></div>
+        </div>
+        <div class="token-bar">
+          <span id="tokenBadge" class="token-pill bad">⚠ No token found</span>
+          <span style="font-size:11px;color:var(--muted)">
+            Reads from <code style="color:var(--accent);font-size:10px">localStorage["eyjJwhtbt…"]</code>
+          </span>
+          <div style="margin-left:auto;display:flex;gap:6px">
+            <button class="action-btn" id="btnEnterToken" onclick="openTokenDrawer()">🔑 Enter Token</button>
+            <button class="action-btn" onclick="checkToken()">↻ Refresh</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Token Drawer -->
+      <div class="token-drawer" id="tokenDrawer">
+        <div class="token-drawer-inner">
+          <div class="token-drawer-header">
+            <div class="token-drawer-title">🔑 Enter Bearer Token manually</div>
+            <div class="token-drawer-desc">Saved to localStorage for this session</div>
+            <button class="action-btn" style="height:24px;font-size:11px;margin-left:8px" onclick="closeTokenDrawer()">✕ Close</button>
+          </div>
+          <div class="token-input-row">
+            <input type="password" id="manualTokenInput" class="token-text-input"
+              placeholder="Paste your Bearer token here (eyJhbGciOi…)"
+              autocomplete="off" spellcheck="false" />
+            <button class="save-token-btn" onclick="saveManualToken()">Save &amp; Use</button>
+            <button class="clear-token-btn" onclick="clearToken()">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Panel -->
+      <div class="results-panel">
+        <div class="results-toolbar" id="resultsToolbar" style="display:none">
+          <div class="results-meta" id="resultsMeta"></div>
+          <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap">
+            <div class="view-toggle">
+              <button id="btnTree" class="active" onclick="switchView('tree')">⎇ JSON Tree</button>
+              <button id="btnTable" onclick="switchView('table')">⊞ Table</button>
+            </div>
+            <button class="action-btn" id="btnToggleExpand" onclick="toggleExpandAll()">⊟ Collapse All</button>
+            <button class="action-btn" onclick="copyJson()">⎘ Copy JSON</button>
+            <button class="action-btn" onclick="downloadJson()">↓ Download JSON</button>
+            <button class="action-btn" onclick="downloadExcel()" style="color:var(--success); border-color:rgba(63,185,80,0.4)">📊 Export Excel</button>
+          </div>
+        </div>
+
+        <div class="viewer-wrap" id="viewerWrap">
+          <div class="state-box">
+            <div class="state-icon">⚡</div>
+            <div class="state-title">Ready to Execute</div>
+            <div class="state-desc">Select a table, view or stored procedure from the sidebar, or type a custom SQL query and click <strong>Run Query</strong>.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content-area -->
+  </div><!-- /app-body -->
+  </div><!-- /mainApp -->
+
+  <script>
+    // ── Config ───────────────────────────────────────────────────────────────
+    const BASE_URL   = 'https://portal.mawarid.com.sa/apps4x-api/api/v1';
+    const COMPANY_ID = 'LGE0000001';
+    let CON_ID       = 'CON0000001';
+    const USER_ID    = 's.azam@mawarid.com.sa';
+    const APP_ID     = 'Studio';
+    const TOKEN_KEY  = 'eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9';
+
+    let currentData = null;
+    let currentView = 'tree';
+    let allExpanded = true;
+    let sqlEditor   = null;
+    let mawaridSchemaCache = JSON.parse(localStorage.getItem('mawarid_schema_cache')) || { table: [], view: [], sp: [] };
+
+    function updateConnectorId() {
+      const el = document.getElementById('conIdSelect');
+      if (el) {
+        CON_ID = el.value.trim();
+        mawaridSchemaCache = { table: [], view: [], sp: [], columns: {} };
+        localStorage.removeItem('mawarid_schema_cache');
+        loadAllObjects();
+      }
+    }
+
+    // ── Shared fetch headers ─────────────────────────────────────────────────
+    function buildHeaders(token) {
+      return {
+        'accept': 'application/json, text/plain, */*',
+        'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
+        'appid': APP_ID,
+        'authorization': `Bearer ${token}`,
+        'companyid': COMPANY_ID,
+        'user-id': USER_ID,
+        'x-client-page': `/Studio/${CON_ID}`,
+      };
+    }
+
+    // ── Token ────────────────────────────────────────────────────────────────
+    function getToken() { 
+      const defaultToken = 'eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJTeXN0ZW0iLCJOYW1lIjoiU3lzdGVtIiwiRW1haWwiOiJzeXN0ZW1AbWFpbC5jb20iLCJNb2JpbGVOdW1iZXIiOiIwOTg3NjU0MzIxIiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSxMR0UwMDAwMDAyIiwiZXhwIjozMzE1Mzk0NjE2LCJpc3MiOiJhcHBzNHguY29tIiwiYXVkIjoiYXBwczR4LmNvbSJ9.YkzrYJ-93k4oNjNSbYWlEum8eh_IAdodZ5vGUIGvVMQ';
+      return localStorage.getItem(TOKEN_KEY) || defaultToken; 
+    }
+
+    function checkToken() {
+      const tok = getToken();
+      const badge    = document.getElementById('tokenBadge');
+      const dot      = document.getElementById('statusDot');
+      const text     = document.getElementById('statusText');
+      const status   = document.getElementById('tokenStatus');
+      const enterBtn = document.getElementById('btnEnterToken');
+      if (tok) {
+        badge.className = 'token-pill ok';
+        badge.textContent = '✓ Token loaded';
+        dot.style.background = 'var(--success)';
+        dot.style.animation = 'pulse 2s infinite';
+        text.textContent = 'Connected';
+        status.style.cssText = 'background:rgba(63,185,80,0.15);border:1px solid rgba(63,185,80,0.35);color:var(--success);margin-left:auto;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;display:flex;align-items:center;gap:5px;transition:all 0.3s';
+        enterBtn.textContent = '🔑 Change Token';
+        enterBtn.style.borderColor = 'rgba(63,185,80,0.4)';
+        enterBtn.style.color = 'var(--success)';
+        closeTokenDrawer();
+        loadConnectors();
+        loadAllObjects();
+        document.getElementById('mainApp').style.display = 'flex';
+        document.getElementById('loginOverlay').style.display = 'none';
+      } else {
+        badge.className = 'token-pill bad';
+        badge.textContent = '⚠ No token';
+        dot.style.background = 'var(--danger)';
+        dot.style.animation = 'none';
+        text.textContent = 'No token';
+        status.style.cssText = 'background:rgba(248,81,73,0.12);border:1px solid rgba(248,81,73,0.3);color:var(--danger);margin-left:auto;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;display:flex;align-items:center;gap:5px;transition:all 0.3s';
+        enterBtn.textContent = '🔑 Enter Token';
+        enterBtn.style.borderColor = '';
+        enterBtn.style.color = '';
+        document.getElementById('mainApp').style.display = 'none';
+        document.getElementById('loginOverlay').style.display = 'flex';
+        document.getElementById('loginOverlay').classList.remove('hidden');
+      }
+    }
+
+    function openTokenDrawer() {
+      document.getElementById('tokenDrawer').classList.add('open');
+      setTimeout(() => document.getElementById('manualTokenInput').focus(), 350);
+    }
+    function closeTokenDrawer() {
+      document.getElementById('tokenDrawer').classList.remove('open');
+    }
+    function saveManualToken() {
+      const val = document.getElementById('manualTokenInput').value.trim();
+      if (!val) {
+        document.getElementById('manualTokenInput').style.borderColor = 'var(--danger)';
+        document.getElementById('manualTokenInput').placeholder = '⚠ Please paste a token first';
+        return;
+      }
+      const clean = val.replace(/^Bearer\s+/i, '');
+      localStorage.setItem(TOKEN_KEY, clean);
+      document.getElementById('manualTokenInput').value = '';
+      document.getElementById('manualTokenInput').style.borderColor = '';
+      checkToken();
+    }
+    function clearToken() {
+      localStorage.removeItem(TOKEN_KEY);
+      document.getElementById('manualTokenInput').value = '';
+      checkToken();
+    }
+
+    // ── Sidebar: load objects ─────────────────────────────────────────────────
+    async function loadConnectors() {
+      const token = getToken();
+      if (!token) return;
+      const url = `${BASE_URL}/metaobject/${COMPANY_ID}?objectTypes=Apps&objectTypes=Connector&%24filter%3AType=eq%3AConnector`;
+      try {
+        const resp = await fetch(url, { headers: buildHeaders(token) });
+        if (resp.status === 401) return; 
+        if (!resp.ok) return;
+        const json = await resp.json();
+        let dataArr = [];
+        if (json && Array.isArray(json.Data)) dataArr = json.Data;
+        else if (json && json.Result && Array.isArray(json.Result.Data)) dataArr = json.Result.Data;
+        
+        const sqlConnectors = [];
+        dataArr.forEach(item => {
+          try {
+            const parsed = typeof item.Data === 'string' ? JSON.parse(item.Data) : item.Data;
+            if (parsed && parsed.ConnectorType === 'SQL') {
+              const id = parsed.ConnectorId || item.ObjectId || parsed.Name || item.ObjectName;
+              const name = parsed.ConnectorName || parsed.Name || item.ObjectName || id;
+              if (id) sqlConnectors.push({ id, name });
+            }
+          } catch(e) {}
+        });
+
+        const selectEl = document.getElementById('conIdSelect');
+        if (selectEl && sqlConnectors.length > 0) {
+          const currentVal = CON_ID;
+          selectEl.innerHTML = '';
+          let foundCurrent = false;
+          sqlConnectors.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.id;
+            opt.textContent = `${c.name} (${c.id})`;
+            opt.style.background = 'var(--surface2)';
+            selectEl.appendChild(opt);
+            if (c.id === currentVal) foundCurrent = true;
+          });
+          if (!foundCurrent) {
+            const opt = document.createElement('option');
+            opt.value = currentVal;
+            opt.textContent = currentVal;
+            opt.style.background = 'var(--surface2)';
+            selectEl.appendChild(opt);
+          }
+          selectEl.value = currentVal;
+        }
+      } catch (err) {
+        console.warn('Failed to load connectors', err);
+      }
+    }
+    async function loadAllObjects() {
+      const token = getToken();
+      if (!token) return;
+      await Promise.all([
+        loadObjectGroup('tableobject', null, 'listTables', 'cntTables', 'table'),
+        loadObjectGroup('viewobject',  null, 'listViews',  'cntViews',  'view'),
+        loadObjectGroup('sysobjects',  'object_Type=P', 'listSPs', 'cntSPs', 'sp'),
+        loadColumns()
+      ]);
+    }
+
+    async function loadObjectGroup(endpoint, qs, listId, countId, type) {
+      const token = getToken();
+      const listEl  = document.getElementById(listId);
+      const countEl = document.getElementById(countId);
+      listEl.innerHTML = '<div class="obj-status"><span class="obj-spinner"></span> Loading…</div>';
+      countEl.textContent = '…';
+
+      const url = `${BASE_URL}/${COMPANY_ID}/connector/${CON_ID}/sql/${endpoint}${qs ? '?' + qs : ''}`;
+      try {
+        const resp = await fetch(url, { headers: buildHeaders(token) });
+        if (resp.status === 401) { handleLogout(); return; }
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const json = await resp.json();
+
+        // Resolve the name list – handle json.Data (primary), json.Result.Data, or plain array
+        let items = [];
+        if (json && Array.isArray(json.Data)) {
+          items = json.Data;
+        } else if (json && json.Result && Array.isArray(json.Result.Data)) {
+          items = json.Result.Data;
+        } else if (Array.isArray(json)) {
+          items = json;
+        } else if (json && Array.isArray(json.data)) {
+          items = json.data;
+        }
+
+        // Extract name – try common keys, prioritizing ObjectName
+        const nameKeys = ['ObjectName', 'object_name', 'name', 'Name', 'TABLE_NAME', 'VIEW_NAME', 'ROUTINE_NAME', 'SPECIFIC_NAME'];
+        const getName = obj => {
+          for (const k of nameKeys) if (obj[k] && typeof obj[k] === 'string' && obj[k].trim()) return obj[k].trim();
+          // fallback: first string value
+          const vals = Object.values(obj);
+          const s = vals.find(v => typeof v === 'string' && v.trim());
+          return s ? s.trim() : JSON.stringify(obj);
+        };
+
+        const names = items.map(getName).filter(Boolean).sort();
+        countEl.textContent = names.length;
+
+        // Update cache
+        mawaridSchemaCache[type] = names;
+        localStorage.setItem('mawarid_schema_cache', JSON.stringify(mawaridSchemaCache));
+
+        if (!names.length) {
+          listEl.innerHTML = '<div class="obj-status" style="color:var(--muted)">No items found</div>';
+          return;
+        }
+
+        listEl.innerHTML = '';
+        names.forEach(name => {
+          const div = document.createElement('div');
+          div.className = 'obj-item';
+          div.dataset.name = name.toLowerCase();
+          div.dataset.type = type;
+          const icon = type === 'table' ? '▤' : type === 'view' ? '◉' : '▶';
+          let actionsHTML = '';
+          if (type === 'view' || type === 'sp') {
+            actionsHTML = `
+              <div class="obj-actions">
+                <button class="obj-action-btn" title="View Schema" onclick="event.stopPropagation(); viewSchema('${escHtml(name)}', '${type}')">ℹ</button>
+                <button class="obj-action-btn" title="Execute" onclick="event.stopPropagation(); executeItem('${escHtml(name)}', '${type}')">▶</button>
+              </div>`;
+          }
+          div.innerHTML = `<span class="obj-item-icon">${icon}</span> <div class="obj-item-name">${escHtml(name)}</div> ${actionsHTML}`;
+          div.title = `Click to query ${name}`;
+          div.onclick = () => selectObject(name, type, div);
+          listEl.appendChild(div);
+        });
+
+      } catch (err) {
+        // Fallback to cache if available
+        if (mawaridSchemaCache[type] && mawaridSchemaCache[type].length > 0) {
+          const names = mawaridSchemaCache[type];
+          countEl.textContent = names.length + ' (cached)';
+          listEl.innerHTML = '';
+          names.forEach(name => {
+            const div = document.createElement('div');
+            div.className = 'obj-item';
+            div.dataset.name = name.toLowerCase();
+            div.dataset.type = type;
+            const icon = type === 'table' ? '▤' : type === 'view' ? '◉' : '▶';
+            let actionsHTML = '';
+            if (type === 'view' || type === 'sp') {
+              actionsHTML = `
+                <div class="obj-actions">
+                  <button class="obj-action-btn" title="View Schema" onclick="event.stopPropagation(); viewSchema('${escHtml(name)}', '${type}')">ℹ</button>
+                  <button class="obj-action-btn" title="Execute" onclick="event.stopPropagation(); executeItem('${escHtml(name)}', '${type}')">▶</button>
+                </div>`;
+            }
+            div.innerHTML = `<span class="obj-item-icon">${icon}</span> <div class="obj-item-name">${escHtml(name)} <span style="font-size:9px;color:var(--warning)">(cached)</span></div> ${actionsHTML}`;
+            div.title = `Click to query ${name}`;
+            div.onclick = () => selectObject(name, type, div);
+            listEl.appendChild(div);
+          });
+        } else {
+          listEl.innerHTML = `<div class="obj-status" style="color:var(--danger)">⚠ ${escHtml(err.message)}</div>`;
+          countEl.textContent = '!';
+        }
+      }
+    }
+
+    async function loadColumns() {
+      const token = getToken();
+      if (!token) return;
+      
+      const query = `SELECT TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS`;
+      const url = `${BASE_URL}/${COMPANY_ID}/connector/${CON_ID}/sql/executebyquery?query=${encodeURIComponent(query)}`;
+      
+      try {
+        const resp = await fetch(url, { method: 'POST', headers: { ...buildHeaders(token), 'content-length': '0' } });
+        if (resp.status === 401) { handleLogout(); return; }
+        if (resp.ok) {
+          const json = await resp.json();
+          let rows = [];
+          if (json && Array.isArray(json.Data)) rows = json.Data;
+          else if (json && json.Result && Array.isArray(json.Result.Data)) rows = json.Result.Data;
+          else if (Array.isArray(json)) rows = json;
+          else if (json && Array.isArray(json.data)) rows = json.data;
+          
+          const colMap = {};
+          rows.forEach(r => {
+            const t = r.TABLE_NAME || r.table_name || Object.values(r)[0];
+            const c = r.COLUMN_NAME || r.column_name || Object.values(r)[1];
+            if (t && c) {
+              if (!colMap[t]) colMap[t] = [];
+              colMap[t].push(c);
+            }
+          });
+          
+          mawaridSchemaCache.columns = colMap;
+          localStorage.setItem('mawarid_schema_cache', JSON.stringify(mawaridSchemaCache));
+        }
+      } catch (e) {
+        console.warn('Failed to load columns', e);
+      }
+    }
+
+    async function selectObject(name, type, el) {
+      // Auto-close sidebar on mobile
+      if (window.innerWidth <= 720) {
+        document.getElementById('sidebar').classList.remove('mobile-open');
+        document.getElementById('sidebarOverlay').classList.remove('active');
+      }
+
+      // Highlight active
+      document.querySelectorAll('.obj-item.active').forEach(i => i.classList.remove('active'));
+      el.classList.add('active');
+
+      if (type === 'sp') {
+        const token = getToken();
+        if (sqlEditor) sqlEditor.setValue(`-- Fetching parameters for [${name}]...`);
+        let sql = `EXEC [${name}]`;
+        
+        if (token) {
+          // Use INFORMATION_SCHEMA to get SP parameters (standard SQL Server)
+          const query = `SELECT PARAMETER_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.PARAMETERS WHERE SPECIFIC_NAME = '${name.replace(/'/g, "''")}' ORDER BY ORDINAL_POSITION`;
+          const url = `${BASE_URL}/${COMPANY_ID}/connector/${CON_ID}/sql/executebyquery?query=${encodeURIComponent(query)}`;
+          
+          try {
+            const resp = await fetch(url, { method: 'POST', headers: { ...buildHeaders(token), 'content-length': '0' } });
+            if (resp.ok) {
+              const json = await resp.json();
+              let rows = [];
+              if (json && Array.isArray(json.Data)) rows = json.Data;
+              else if (json && json.Result && Array.isArray(json.Result.Data)) rows = json.Result.Data;
+              else if (Array.isArray(json)) rows = json;
+              else if (json && Array.isArray(json.data)) rows = json.data;
+              
+              if (rows.length > 0) {
+                const params = rows.map(r => {
+                  const pName = r.PARAMETER_NAME || r.parameter_name || r.name || Object.values(r)[0];
+                  const pType = r.DATA_TYPE || r.data_type || r.type || Object.values(r)[1] || 'unknown';
+                  return { name: pName, type: pType };
+                }).filter(p => p.name && typeof p.name === 'string');
+
+                if (params.length > 0) {
+                  // Ensure parameter name starts with @
+                  const paramStrings = params.map(p => `${p.name.startsWith('@') ? '' : '@'}${p.name} = '' /* ${p.type} */`);
+                  sql += `\n    ` + paramStrings.join(',\n    ');
+                }
+              }
+            }
+          } catch (e) {
+            console.warn('Failed to fetch SP parameters', e);
+          }
+        }
+        
+        if (sqlEditor) {
+          sqlEditor.setValue(sql);
+          sqlEditor.focus();
+        }
+      } else {
+        // Table or View
+        const sql = `SELECT TOP 100 * FROM [${name}]`;
+        if (sqlEditor) {
+          sqlEditor.setValue(sql);
+          sqlEditor.focus();
+        }
+      }
+    }
+
+    function toggleGroup(id) {
+      document.getElementById(id).classList.toggle('open');
+    }
+
+    function filterSidebar() {
+      const q = document.getElementById('sidebarSearch').value.toLowerCase().trim();
+      document.querySelectorAll('.obj-item').forEach(item => {
+        const match = !q || item.dataset.name.includes(q);
+        item.style.display = match ? '' : 'none';
+      });
+      // open groups that have visible items
+      ['grpTables','grpViews','grpSPs'].forEach(gid => {
+        const grp = document.getElementById(gid);
+        const hasVisible = [...grp.querySelectorAll('.obj-item')].some(i => i.style.display !== 'none');
+        if (q && hasVisible) grp.classList.add('open');
+      });
+    }
+
+    function toggleMobileSidebar() {
+      document.getElementById('sidebar').classList.toggle('mobile-open');
+      document.getElementById('sidebarOverlay').classList.toggle('active');
+    }
+
+    // ── Inline Actions & Modal ────────────────────────────────────────────────
+    function viewSchema(name, type) {
+      if (window.innerWidth <= 720) toggleMobileSidebar();
+      let query = '';
+      if (type === 'view') {
+        query = `SELECT OBJECT_DEFINITION(OBJECT_ID('${name.replace(/'/g, "''")}')) AS [Definition]`;
+      } else if (type === 'sp') {
+        query = `SELECT PARAMETER_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.PARAMETERS WHERE SPECIFIC_NAME = '${name.replace(/'/g, "''")}' ORDER BY ORDINAL_POSITION`;
+      }
+      if (query) {
+        if (sqlEditor) sqlEditor.setValue(query);
+        executeQuery(query);
+      }
+    }
+
+    async function executeItem(name, type) {
+      if (window.innerWidth <= 720) toggleMobileSidebar();
+      if (type === 'view') {
+        const query = `SELECT TOP 100 * FROM [${name}]`;
+        if (sqlEditor) sqlEditor.setValue(query);
+        executeQuery(query);
+      } else if (type === 'sp') {
+        const token = getToken();
+        if (!token) { openTokenDrawer(); return; }
+        
+        showLoading();
+        const query = `SELECT PARAMETER_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.PARAMETERS WHERE SPECIFIC_NAME = '${name.replace(/'/g, "''")}' ORDER BY ORDINAL_POSITION`;
+        const url = `${BASE_URL}/${COMPANY_ID}/connector/${CON_ID}/sql/executebyquery?query=${encodeURIComponent(query)}`;
+        
+        try {
+          const resp = await fetch(url, { method: 'POST', headers: { ...buildHeaders(token), 'content-length': '0' } });
+          if (resp.status === 401) { handleLogout(); return; }
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+          const json = await resp.json();
+          let rows = [];
+          if (json && Array.isArray(json.Data)) rows = json.Data;
+          else if (json && json.Result && Array.isArray(json.Result.Data)) rows = json.Result.Data;
+          else if (Array.isArray(json)) rows = json;
+          else if (json && Array.isArray(json.data)) rows = json.data;
+          
+          const params = rows.map(r => {
+            const pName = r.PARAMETER_NAME || r.parameter_name || Object.values(r)[0];
+            const pType = r.DATA_TYPE || r.data_type || Object.values(r)[1] || 'unknown';
+            return { name: pName, type: pType };
+          }).filter(p => p.name && typeof p.name === 'string');
+
+          if (params.length === 0) {
+            const execQuery = `EXEC [${name}]`;
+            if (sqlEditor) sqlEditor.setValue(execQuery);
+            executeQuery(execQuery);
+          } else {
+            openParamModal(name, params);
+          }
+        } catch (e) {
+          showError('Failed to fetch SP parameters', e.message);
+        }
+      }
+    }
+
+    let currentSpName = '';
+    let currentSpParams = [];
+
+    function openParamModal(spName, params) {
+      currentSpName = spName;
+      currentSpParams = params;
+      
+      document.getElementById('paramModalTitle').textContent = `Execute: ${spName}`;
+      
+      let html = '';
+      params.forEach((p, i) => {
+        const cleanName = p.name.startsWith('@') ? p.name : '@' + p.name;
+        html += `
+          <div class="param-group">
+            <label>${cleanName} <span style="opacity:0.6">(${p.type})</span></label>
+            <input type="text" id="spParamInput_${i}" placeholder="Enter value..." />
+          </div>
+        `;
+      });
+      document.getElementById('paramModalBody').innerHTML = html;
+      document.getElementById('paramModalOverlay').classList.add('active');
+      
+      // Auto-focus first input
+      setTimeout(() => {
+        const first = document.getElementById('spParamInput_0');
+        if (first) first.focus();
+      }, 50);
+    }
+
+    function closeParamModal() {
+      document.getElementById('paramModalOverlay').classList.remove('active');
+      document.getElementById('viewerWrap').innerHTML = `<div class="state-box"><div class="state-icon">⚡</div><div class="state-title">Ready</div></div>`;
+      document.getElementById('resultsToolbar').style.display = 'flex';
+    }
+
+    function submitParamModal() {
+      let sql = `EXEC [${currentSpName}]`;
+      const paramStrings = currentSpParams.map((p, i) => {
+        const el = document.getElementById(`spParamInput_${i}`);
+        const cleanName = p.name.startsWith('@') ? p.name : '@' + p.name;
+        const val = el ? el.value.replace(/'/g, "''") : '';
+        return `${cleanName} = '${val}'`;
+      });
+      
+      if (paramStrings.length > 0) {
+        sql += `\n    ` + paramStrings.join(',\n    ');
+      }
+      
+      closeParamModal();
+      if (sqlEditor) sqlEditor.setValue(sql);
+      executeQuery(sql);
+    }
+
+    // ── Execute query ────────────────────────────────────────────────────────
+    let currentAbortController = null;
+
+    function cancelQuery() {
+      if (currentAbortController) {
+        currentAbortController.abort();
+        currentAbortController = null;
+      }
+      const btn = document.getElementById('runBtn');
+      const cancelBtn = document.getElementById('cancelBtn');
+      if (btn) { btn.style.display = 'flex'; btn.disabled = false; }
+      if (cancelBtn) cancelBtn.style.display = 'none';
+      document.getElementById('viewerWrap').innerHTML = `<div class="state-box"><div class="state-icon">🛑</div><div class="state-title">Query Cancelled</div></div>`;
+    }
+
+    async function executeQuery(overrideQuery) {
+      let query = overrideQuery || '';
+      if (!query && sqlEditor) {
+        const selection = sqlEditor.getSelection();
+        query = sqlEditor.getModel().getValueInRange(selection).trim();
+        if (!query) query = sqlEditor.getValue().trim();
+      }
+      if (!query) { showError('Please enter a SQL query.', ''); return; }
+
+      const token = getToken();
+      if (!token) {
+        openTokenDrawer();
+        showError('Bearer token required',
+          'No token found. Use the <strong>🔑 Enter Token</strong> panel above to paste your token, then run again.');
+        return;
+      }
+
+      if (currentAbortController) currentAbortController.abort();
+      currentAbortController = new AbortController();
+
+      const btn = document.getElementById('runBtn');
+      const cancelBtn = document.getElementById('cancelBtn');
+      if (btn) btn.style.display = 'none';
+      if (cancelBtn) cancelBtn.style.display = 'flex';
+      
+      showLoading();
+
+      const url = `${BASE_URL}/${COMPANY_ID}/connector/${CON_ID}/sql/executebyquery?query=${encodeURIComponent(query)}`;
+      const t0  = performance.now();
+      try {
+        const resp = await fetch(url, { 
+          method: 'POST', 
+          headers: { ...buildHeaders(token), 'content-length': '0' },
+          signal: currentAbortController.signal
+        });
+        const elapsed = Math.round(performance.now() - t0);
+        if (resp.status === 401) { handleLogout(); return; }
+        if (!resp.ok) {
+          let msg = `HTTP ${resp.status} – ${resp.statusText}`;
+          try { const j = await resp.json(); msg = j.message || j.error || msg; } catch {}
+          showError(`Request failed (${resp.status})`, msg);
+          return;
+        }
+        const json = await resp.json();
+        currentData = json;
+        renderResults(json, elapsed, resp.status);
+      } catch (err) {
+        if (err.name === 'AbortError') return; // Handled by cancelQuery
+        showError('Network / CORS Error',
+          `<strong>${escHtml(err.message)}</strong><br><br>This page must be served from <code>https://portal.mawarid.com.sa</code>.`);
+      } finally {
+        currentAbortController = null;
+        if (btn) {
+          btn.style.display = 'flex';
+          btn.disabled = false;
+          btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M5 3.5l8 4.5-8 4.5V3.5z"/></svg> Execute';
+        }
+        if (cancelBtn) cancelBtn.style.display = 'none';
+      }
+    }
+
+    // ── Render results ────────────────────────────────────────────────────────
+    function extractTableRows(data) {
+      if (data && data.Result && Array.isArray(data.Result.Data)) return data.Result.Data;
+      if (Array.isArray(data)) return data;
+      if (data && Array.isArray(data.data)) return data.data;
+      return [data];
+    }
+
+    function renderResults(data, elapsed, status) {
+      const toolbar = document.getElementById('resultsToolbar');
+      const meta    = document.getElementById('resultsMeta');
+      toolbar.style.display = 'flex';
+      const rows     = extractTableRows(data);
+      const rowCount = rows.length;
+      meta.innerHTML = `
+        <span class="badge badge-green">✓ ${status} OK</span>
+        <span class="badge badge-blue">${rowCount.toLocaleString()} row${rowCount !== 1 ? 's' : ''}</span>
+        <span class="exec-time">${elapsed} ms</span>
+      `;
+      allExpanded = true;
+      document.getElementById('btnToggleExpand').textContent = '⊟ Collapse All';
+      document.getElementById('btnToggleExpand').style.display = (currentView === 'tree') ? '' : 'none';
+      if (currentView === 'tree') renderTree(data);
+      else renderTable(data);
+    }
+
+    // ── JSON Tree ─────────────────────────────────────────────────────────────
+    function renderTree(data) {
+      currentView = 'tree';
+      document.getElementById('btnTree').classList.add('active');
+      document.getElementById('btnTable').classList.remove('active');
+      document.getElementById('btnToggleExpand').style.display = '';
+      const wrap = document.getElementById('viewerWrap');
+      wrap.innerHTML = '';
+      const sb = document.createElement('div');
+      sb.className = 'search-wrap';
+      sb.innerHTML = `<input class="search-input" id="treeSearch" placeholder="🔍  Filter keys / values…" oninput="filterTree()" /><span class="search-count" id="treeCount"></span>`;
+      wrap.appendChild(sb);
+      const container = document.createElement('div');
+      container.className = 'json-tree';
+      container.id = 'jsonTreeContainer';
+      container.appendChild(buildNode(data, null));
+      wrap.appendChild(container);
+    }
+
+    function buildNode(val, key) {
+      const frag = document.createDocumentFragment();
+      const keyHtml = key !== null ? `<span class="jk">"${escHtml(String(key))}"</span><span class="jbracket">: </span>` : '';
+      if (val === null) {
+        const s = document.createElement('span'); s.className = 'jn';
+        s.innerHTML = keyHtml + '<span class="jnull">null</span>';
+        frag.appendChild(s); return frag;
+      }
+      if (typeof val === 'string') {
+        const s = document.createElement('span'); s.className = 'jn';
+        s.innerHTML = keyHtml + `<span class="js">"${escHtml(val)}"</span>`;
+        frag.appendChild(s); return frag;
+      }
+      if (typeof val === 'number') {
+        const s = document.createElement('span'); s.className = 'jn';
+        s.innerHTML = keyHtml + `<span class="jnum">${val}</span>`;
+        frag.appendChild(s); return frag;
+      }
+      if (typeof val === 'boolean') {
+        const s = document.createElement('span'); s.className = 'jn';
+        s.innerHTML = keyHtml + `<span class="jb">${val}</span>`;
+        frag.appendChild(s); return frag;
+      }
+      if (Array.isArray(val)) {
+        return buildCollapsible(val, key, keyHtml, '[', ']', val.length + ' items', (el, i) => buildNode(el, i));
+      }
+      if (val && typeof val === 'object') {
+        const keys = Object.keys(val);
+        return buildCollapsible(keys, key, keyHtml, '{', '}', keys.length + ' keys', (k) => buildNode(val[k], k));
+      }
+      const s = document.createElement('span'); s.className = 'jn';
+      s.innerHTML = keyHtml + escHtml(String(val));
+      frag.appendChild(s); return frag;
+    }
+
+    function buildCollapsible(items, key, keyHtml, open, close, countText, buildChild) {
+      const frag = document.createDocumentFragment();
+      const wrapper = document.createElement('div');
+      const toggle = document.createElement('span');
+      toggle.className = 'jn-toggle';
+      toggle.innerHTML = keyHtml + `<span class="jbracket">${open}</span><span class="jcount">${countText}</span>`;
+      const children = document.createElement('div');
+      children.className = 'jn-children';
+      items.forEach((item, i) => children.appendChild(buildChild(item, i)));
+      const closing = document.createElement('span');
+      closing.className = 'jn';
+      closing.innerHTML = `<span class="jbracket">${close}</span>`;
+      toggle.onclick = () => { const c = toggle.classList.toggle('collapsed'); children.classList.toggle('hidden', c); };
+      wrapper.appendChild(toggle);
+      wrapper.appendChild(children);
+      wrapper.appendChild(closing);
+      frag.appendChild(wrapper);
+      return frag;
+    }
+
+    function toggleExpandAll() {
+      allExpanded = !allExpanded;
+      document.querySelectorAll('.jn-toggle').forEach(t => t.classList.toggle('collapsed', !allExpanded));
+      document.querySelectorAll('.jn-children').forEach(c => c.classList.toggle('hidden', !allExpanded));
+      document.getElementById('btnToggleExpand').textContent = allExpanded ? '⊟ Collapse All' : '⊞ Expand All';
+    }
+
+    function filterTree() {
+      const q = document.getElementById('treeSearch').value.toLowerCase();
+      const countEl = document.getElementById('treeCount');
+      if (!q) { countEl.textContent = ''; return; }
+      const json = JSON.stringify(currentData, null, 2).toLowerCase();
+      const matches = (json.match(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
+      countEl.textContent = matches ? `${matches} match${matches > 1 ? 'es' : ''}` : 'No matches';
+    }
+
+    let currentPage = 1;
+    const pageSize = 25;
+    let filteredTableRows = [];
+
+    // ── Table view ────────────────────────────────────────────────────────────
+    function renderTable(data) {
+      currentView = 'table';
+      document.getElementById('btnTable').classList.add('active');
+      document.getElementById('btnTree').classList.remove('active');
+      document.getElementById('btnToggleExpand').style.display = 'none';
+      const wrap = document.getElementById('viewerWrap');
+      wrap.innerHTML = '';
+      
+      const rows = extractTableRows(data);
+      if (!rows.length) {
+        wrap.innerHTML = `<div class="state-box"><div class="state-icon">📭</div><div class="state-title">Empty result set</div></div>`;
+        return;
+      }
+      
+      filteredTableRows = rows;
+      currentPage = 1;
+      
+      const sb = document.createElement('div');
+      sb.className = 'search-wrap';
+      sb.innerHTML = `<input class="search-input" id="tableSearch" placeholder="🔍  Search rows…" oninput="filterTable()" /><span class="search-count" id="tableCount">${rows.length} rows</span>`;
+      wrap.appendChild(sb);
+      
+      const tw = document.createElement('div'); 
+      tw.className = 'table-wrap';
+      
+      const table = document.createElement('table'); 
+      table.className = 'result-table';
+      
+      const cols = [...new Set(rows.flatMap(r => Object.keys(r || {})))];
+      const thead = document.createElement('thead');
+      thead.innerHTML = `<tr>${cols.map(c => `<th>${escHtml(c)}</th>`).join('')}</tr>`;
+      table.appendChild(thead);
+      
+      const tbody = document.createElement('tbody'); 
+      tbody.id = 'resultTbody';
+      table.appendChild(tbody);
+      
+      tw.appendChild(table);
+      wrap.appendChild(tw);
+      
+      const footer = document.createElement('div');
+      footer.className = 'pagination-footer';
+      footer.id = 'paginationFooter';
+      wrap.appendChild(footer);
+      
+      renderTablePage(cols);
+    }
+
+    function renderTablePage(cols) {
+      const tbody = document.getElementById('resultTbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      
+      const totalRows = filteredTableRows.length;
+      const totalPages = Math.ceil(totalRows / pageSize) || 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+      
+      const startIndex = (currentPage - 1) * pageSize;
+      const endIndex = Math.min(startIndex + pageSize, totalRows);
+      
+      const pageRows = filteredTableRows.slice(startIndex, endIndex);
+      
+      pageRows.forEach(row => {
+        const tr = document.createElement('tr');
+        cols.forEach(c => {
+          const td = document.createElement('td');
+          const v = row?.[c];
+          if (v === null || v === undefined) {
+            td.innerHTML = `<span class="cell-null">null</span>`;
+          } else if (typeof v === 'object') {
+            const str = JSON.stringify(v);
+            td.innerHTML = `<code style="font-size:11px;color:var(--muted)">${escHtml(str)}</code>`;
+            td.title = str; // Tooltip on hover
+          } else {
+            const str = String(v);
+            td.textContent = str;
+            td.title = str; // Tooltip on hover
+          }
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      
+      // Update Footer
+      const footer = document.getElementById('paginationFooter');
+      if (footer) {
+        footer.innerHTML = `
+          <div>Showing ${totalRows === 0 ? 0 : startIndex + 1}-${endIndex} of ${totalRows} rows</div>
+          <div class="pagination-controls">
+            <button class="page-btn" onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''}>◀ Prev</button>
+            <span>Page ${currentPage} of ${totalPages}</span>
+            <button class="page-btn" onclick="changePage(1)" ${currentPage === totalPages ? 'disabled' : ''}>Next ▶</button>
+          </div>
+        `;
+      }
+    }
+
+    function changePage(delta) {
+      currentPage += delta;
+      const rows = extractTableRows(currentData);
+      const cols = [...new Set(rows.flatMap(r => Object.keys(r || {})))];
+      renderTablePage(cols);
+    }
+
+    function filterTable() {
+      const q = document.getElementById('tableSearch').value.toLowerCase();
+      const rows = extractTableRows(currentData);
+      
+      if (!q) {
+        filteredTableRows = rows;
+      } else {
+        filteredTableRows = rows.filter(row => {
+          // Fast lower-case search on values
+          return Object.values(row || {}).some(v => 
+            v !== null && v !== undefined && String(v).toLowerCase().includes(q)
+          );
+        });
+      }
+      
+      currentPage = 1;
+      document.getElementById('tableCount').textContent = `${filteredTableRows.length} / ${rows.length} rows`;
+      
+      const cols = [...new Set(rows.flatMap(r => Object.keys(r || {})))];
+      renderTablePage(cols);
+    }
+
+    function switchView(v) {
+      if (!currentData) return;
+      if (v === 'tree') renderTree(currentData);
+      else renderTable(currentData);
+    }
+
+    // ── States ────────────────────────────────────────────────────────────────
+    function showLoading() {
+      document.getElementById('resultsToolbar').style.display = 'none';
+      document.getElementById('viewerWrap').innerHTML = `
+        <div class="state-box">
+          <div class="spinner"></div>
+          <div class="state-title">Executing query…</div>
+          <div class="state-desc">Connecting to Mawarid API</div>
+        </div>`;
+    }
+    function showError(title, detail) {
+      document.getElementById('resultsToolbar').style.display = 'none';
+      document.getElementById('viewerWrap').innerHTML = `
+        <div class="state-box">
+          <div class="state-icon">⚠️</div>
+          <div class="state-title" style="color:var(--danger)">${title}</div>
+          <div class="state-desc">${detail}</div>
+        </div>`;
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+    function escHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function copyJson() {
+      if (!currentData) return;
+      navigator.clipboard.writeText(JSON.stringify(currentData, null, 2))
+        .then(() => { const b = document.querySelector('[onclick="copyJson()"]'); const o = b.textContent; b.textContent = '✓ Copied!'; setTimeout(() => b.textContent = o, 1500); })
+        .catch(() => alert('Clipboard access denied'));
+    }
+    function downloadJson() {
+      if (!currentData) return;
+      const blob = new Blob([JSON.stringify(currentData, null, 2)], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `query-result-${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+    function downloadExcel() {
+      if (!currentData || typeof XLSX === 'undefined') return;
+      const rows = extractTableRows(currentData);
+      if (!rows || rows.length === 0) {
+        alert('No rows to export');
+        return;
+      }
+      try {
+        const ws = XLSX.utils.json_to_sheet(rows);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Results");
+        XLSX.writeFile(wb, `query-results-${Date.now()}.xlsx`);
+      } catch (err) {
+        alert('Failed to generate Excel file: ' + err.message);
+      }
+    }
+
+    // ══════════════════════════════════════════════════════════
+//  LOGIN
+// ══════════════════════════════════════════════════════════
+const LOGIN_API = 'https://portal.mawarid.com.sa/apps4x-api/api/v1/auth/login';
+
+async function handleLogin(e) {
+  e.preventDefault();
+
+  const userId   = document.getElementById('loginUserId').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errorEl  = document.getElementById('loginError');
+  const btnText  = document.getElementById('loginBtnText');
+  const spinner  = document.getElementById('loginSpinner');
+  const submitBtn = document.getElementById('loginSubmitBtn');
+
+  // Reset error
+  errorEl.style.display = 'none';
+
+  if (!userId || !password) {
+    const errorTextEl = document.getElementById('loginErrorText');
+    if (errorTextEl) errorTextEl.textContent = 'Please enter both User ID and Password.';
+    errorEl.style.display = 'flex';
+    return;
+  }
+
+  // Show loading state
+  const loginArrow = document.getElementById('loginArrow');
+  btnText.textContent = 'Signing in…';
+  spinner.style.display = 'inline-block';
+  if (loginArrow) loginArrow.style.display = 'none';
+  submitBtn.disabled = true;
+
+  try {
+    const res = await fetch(LOGIN_API, {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json, text/plain, */*',
+        'accept-language': 'en-US,en;q=0.9',
+        'appid': 'APP0000001',
+        'companyid': COMPANY_ID,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        UserId: userId,
+        Password: password,
+        CompanyId: COMPANY_ID,
+      }),
+    });
+
+    const data = await res.json();
+
+    // Check API-level status (Status: false means invalid credentials etc.)
+    if (!res.ok || data.Status === false) {
+      throw new Error(data.Message || data.message || `Login failed (HTTP ${res.status})`);
+    }
+
+    // Extract token from response — actual shape: data.authData.authToken
+    const token = (data.authData && data.authData.authToken)
+               || data.Token || data.token || data.AccessToken || data.access_token
+               || (data.Data && (data.Data.Token || data.Data.token))
+               || (data.Result && (data.Result.Token || data.Result.token));
+
+    if (!token) {
+      throw new Error('Login succeeded but no token was returned.');
+    }
+
+    // Store token and switch to main app
+    const cleanToken = token.replace(/^Bearer\s+/i, '');
+    localStorage.setItem(TOKEN_KEY, cleanToken);
+    showMainApp();
+
+  } catch (err) {
+    const errorTextEl = document.getElementById('loginErrorText');
+    if (errorTextEl) errorTextEl.textContent = err.message || 'Login failed. Please try again.';
+    errorEl.style.display = 'flex';
+  } finally {
+    btnText.textContent = 'Sign In';
+    spinner.style.display = 'none';
+    const loginArrow = document.getElementById('loginArrow');
+    if (loginArrow) loginArrow.style.display = '';
+    submitBtn.disabled = false;
+  }
+}
+
+function togglePasswordVisibility() {
+  const input    = document.getElementById('loginPassword');
+  const showIcon = document.getElementById('eyeIconShow');
+  const hideIcon = document.getElementById('eyeIconHide');
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (showIcon) showIcon.style.display = 'none';
+    if (hideIcon) hideIcon.style.display = 'block';
+  } else {
+    input.type = 'password';
+    if (showIcon) showIcon.style.display = 'block';
+    if (hideIcon) hideIcon.style.display = 'none';
+  }
+}
+
+function showMainApp(instant = false) {
+  const overlay = document.getElementById('loginOverlay');
+  const mainApp = document.getElementById('mainApp');
+
+  if (instant) {
+    overlay.style.display = 'none';
+    overlay.style.transition = 'none'; // disable animation entirely
+  } else {
+    // Fade out login
+    overlay.classList.add('hidden');
+    setTimeout(() => {
+      overlay.style.display = 'none';
+    }, 400);
+  }
+
+  // Show main app
+  mainApp.style.display = 'flex';
+
+  // Initialize the token check and load objects
+  checkToken();
+}
+
+function handleLogout() {
+  // Clear token
+  localStorage.removeItem(TOKEN_KEY);
+  
+  // Reset UI
+  document.getElementById('loginUserId').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginError').style.display = 'none';
+  
+  // Show login overlay
+  const overlay = document.getElementById('loginOverlay');
+  const mainApp = document.getElementById('mainApp');
+  
+  mainApp.style.display = 'none';
+  overlay.style.display = 'flex';
+  overlay.classList.remove('hidden');
+}
+
+
+
+    // ── Sidebar resize ────────────────────────────────────────────────────────
+    (function() {
+      const handle  = document.getElementById('resizeHandle');
+      const sidebar = document.getElementById('sidebar');
+      let dragging = false, startX, startW;
+      handle.addEventListener('pointerdown', e => {
+        dragging = true; startX = e.clientX; startW = sidebar.offsetWidth;
+        handle.setPointerCapture(e.pointerId);
+      });
+      handle.addEventListener('pointermove', e => {
+        if (!dragging) return;
+        const w = Math.max(160, Math.min(420, startW + e.clientX - startX));
+        sidebar.style.width = w + 'px';
+        sidebar.style.minWidth = w + 'px';
+      });
+      handle.addEventListener('pointerup', () => { dragging = false; });
+    })();
+
+    // Ctrl/Cmd + Enter → run
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') executeQuery();
+    });
+
+    let editorTabs = [];
+    let activeTabId = null;
+    let tabCounter = 0;
+
+    function renderTabs() {
+      const container = document.getElementById('editorTabsBar');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      editorTabs.forEach(tab => {
+        const el = document.createElement('div');
+        el.className = `editor-tab ${tab.id === activeTabId ? 'active' : ''}`;
+        el.innerHTML = `
+          <span>${tab.name}</span>
+          <span class="editor-tab-close" onclick="closeTab(${tab.id}, event)">×</span>
+        `;
+        el.onclick = () => switchTab(tab.id);
+        container.appendChild(el);
+      });
+
+      const addBtn = document.createElement('button');
+      addBtn.className = 'add-tab-btn';
+      addBtn.innerHTML = '+';
+      addBtn.title = 'New Query Tab';
+      addBtn.onclick = () => addTab();
+      container.appendChild(addBtn);
+    }
+
+    function addTab(initialValue = '') {
+      tabCounter++;
+      const id = tabCounter;
+      const name = `Query ${id}`;
+      // Need monaco to be ready, which it is when this is called from UI or initApp
+      const model = monaco.editor.createModel(initialValue, 'sql');
+      editorTabs.push({ id, name, model });
+      switchTab(id);
+    }
+
+    function switchTab(id) {
+      activeTabId = id;
+      const tab = editorTabs.find(t => t.id === id);
+      if (tab && sqlEditor) {
+        sqlEditor.setModel(tab.model);
+      }
+      renderTabs();
+    }
+
+    function closeTab(id, e) {
+      e.stopPropagation();
+      if (editorTabs.length <= 1) return; // Prevent closing the last tab
+      
+      const tabIndex = editorTabs.findIndex(t => t.id === id);
+      const tab = editorTabs[tabIndex];
+      if (tab) {
+        tab.model.dispose(); // free memory
+        editorTabs.splice(tabIndex, 1);
+      }
+      
+      if (activeTabId === id) {
+        const nextTab = editorTabs[tabIndex - 1] || editorTabs[0];
+        switchTab(nextTab.id);
+      } else {
+        renderTabs();
+      }
+    }
+
+    // ── Init Monaco Editor & App ───────────────────────────────────────────────
+    function initApp() {
+      // Register Monaco SQL IntelliSense Provider
+      monaco.languages.registerCompletionItemProvider('sql', {
+        provideCompletionItems: function(model, position) {
+          const suggestions = [];
+          
+          // Add cached tables
+          (mawaridSchemaCache.table || []).forEach(name => {
+            suggestions.push({
+              label: name,
+              kind: monaco.languages.CompletionItemKind.Class,
+              insertText: `[${name}]`,
+              detail: 'Table'
+            });
+          });
+
+          // Add cached views
+          (mawaridSchemaCache.view || []).forEach(name => {
+            suggestions.push({
+              label: name,
+              kind: monaco.languages.CompletionItemKind.Interface,
+              insertText: `[${name}]`,
+              detail: 'View'
+            });
+          });
+
+          // Add cached SPs
+          (mawaridSchemaCache.sp || []).forEach(name => {
+            suggestions.push({
+              label: name,
+              kind: monaco.languages.CompletionItemKind.Function,
+              insertText: `[${name}]`,
+              detail: 'Stored Procedure'
+            });
+          });
+
+          // Smart Column Suggestions
+          const editorText = model.getValue();
+          const lowerText = editorText.toLowerCase();
+          
+          // Find tables that are currently typed in the editor
+          const tablesInEditor = Object.keys(mawaridSchemaCache.columns || {}).filter(t => 
+            lowerText.includes(t.toLowerCase())
+          );
+          
+          const suggestedCols = new Set();
+          tablesInEditor.forEach(t => {
+            (mawaridSchemaCache.columns[t] || []).forEach(c => suggestedCols.add(c));
+          });
+
+          // Suggest all columns from detected tables
+          suggestedCols.forEach(col => {
+            suggestions.push({
+              label: col,
+              kind: monaco.languages.CompletionItemKind.Field,
+              insertText: `[${col}]`,
+              detail: 'Column'
+            });
+          });
+
+          return { suggestions: suggestions };
+        }
+      });
+
+      // Create Editor Instance
+      sqlEditor = monaco.editor.create(document.getElementById('editorContainer'), {
+        theme: 'vs-dark',
+        minimap: { enabled: false },
+        automaticLayout: true,
+        scrollBeyondLastLine: false,
+        fontSize: 13,
+        fontFamily: "'JetBrains Mono', monospace",
+        padding: { top: 12, bottom: 12 },
+        wordWrap: 'on'
+      });
+      
+      // Setup initial tab
+      addTab('Select * from Users Where EMployeeId is null');
+
+      // Run app init after editor is ready
+      const existingToken = getToken();
+      if (existingToken) {
+        showMainApp(true);
+      } else {
+        checkToken();
+      }
+    }
+  </script>
+  
+  <!-- Load SheetJS for Excel Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <!-- Load Monaco Editor CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+  <script>
+    require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
+    require(['vs/editor/editor.main'], function() {
+      document.fonts.load('13px "JetBrains Mono"').then(() => {
+        initApp();
+      });
+    });
+  </script>
+</body>
+</html>

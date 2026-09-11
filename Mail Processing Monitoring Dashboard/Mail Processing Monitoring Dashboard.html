@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mail Processing Monitoring</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <link rel="stylesheet" href="dashboard-style.css">
+</head>
+<body>
+    <div class="mail-monitor-wrapper">
+        <div class="dashboard-container">
+            <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-title">
+                    <h1>Mail Processing Monitoring Dashboard</h1>
+                    <p class="subtitle" id="dashboardSubtitle">Real-time O365 Delta Sync & Helpdesk Ticket Tracking for <span class="badge-mini" style="font-size:0.75rem;">...</span> Users</p>
+                </div>
+                <div class="header-actions" style="display: flex; gap: 0.75rem; align-items: center;">
+                    <button id="refreshDashboardBtn" style="background: white; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.4rem 0.75rem; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; box-shadow: var(--shadow-sm);" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='white'">
+                        <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                    </button>
+                    <div class="date-badge" id="currentDateBadge">
+                        <i class="fa-regular fa-calendar"></i>
+                        <span>Loading...</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Premium Summary Cards -->
+            <section class="premium-kpi-grid">
+                <!-- Row 1: Core Pipeline -->
+                <div class="kpi-card glow-card info">
+                    <div class="kpi-card-header">
+                        <div class="kpi-title-box">
+                            <span class="kpi-subtitle">Volume</span>
+                            <h3 class="kpi-title">Total Inbound Mails</h3>
+                        </div>
+                        <div class="kpi-icon-wrapper"><i class="fa fa-download"></i></div>
+                    </div>
+                    <div class="kpi-card-body">
+                        <h2 class="kpi-count" id="statTotalReceived">0</h2>
+                    </div>
+                    <div class="kpi-card-footer">
+                        <p>Total emails fetched from O365 today</p>
+                    </div>
+                </div>
+
+                <div class="kpi-card glow-card success">
+                    <div class="kpi-card-header">
+                        <div class="kpi-title-box">
+                            <span class="kpi-subtitle">Success</span>
+                            <h3 class="kpi-title">Total Processed</h3>
+                        </div>
+                        <div class="kpi-icon-wrapper"><i class="fa fa-check-double"></i></div>
+                    </div>
+                    <div class="kpi-card-body">
+                        <h2 class="kpi-count" id="statProcessed">0</h2>
+                    </div>
+                    <div class="kpi-card-footer">
+                        <p>Combined processed emails from pipeline</p>
+                    </div>
+                </div>
+
+                <div class="kpi-card glow-card warning">
+                    <div class="kpi-card-header">
+                        <div class="kpi-title-box">
+                            <span class="kpi-subtitle">Pending</span>
+                            <h3 class="kpi-title">Unprocessed</h3>
+                        </div>
+                        <div class="kpi-icon-wrapper"><i class="fa fa-hourglass-half"></i></div>
+                    </div>
+                    <div class="kpi-card-body">
+                        <h2 class="kpi-count" id="statUnprocessed">0</h2>
+                    </div>
+                    <div class="kpi-card-footer">
+                        <p>Mails currently in queue waiting to process</p>
+                    </div>
+                </div>
+
+                <div class="kpi-card glow-card danger">
+                    <div class="kpi-card-header">
+                        <div class="kpi-title-box">
+                            <span class="kpi-subtitle">Issues</span>
+                            <h3 class="kpi-title">Errors</h3>
+                        </div>
+                        <div class="kpi-icon-wrapper"><i class="fa fa-exclamation-triangle"></i></div>
+                    </div>
+                    <div class="kpi-card-body">
+                        <h2 class="kpi-count" id="statErrors">0</h2>
+                    </div>
+                    <div class="kpi-card-footer">
+                        <p>Mails with missing <span class="badge-mini">CustomerCode</span> or parsing errors</p>
+                    </div>
+                </div>
+
+                <!-- Row 2: Insights & Details -->
+                <div class="kpi-card glow-card primary">
+                    <div class="kpi-card-header">
+                        <div class="kpi-title-box">
+                            <span class="kpi-subtitle">System</span>
+                            <h3 class="kpi-title">Active Users</h3>
+                        </div>
+                        <div class="kpi-icon-wrapper"><i class="fa fa-users"></i></div>
+                    </div>
+                    <div class="kpi-card-body">
+                        <h2 class="kpi-count" id="statTotalUsers">0</h2>
+                    </div>
+                    <div class="kpi-card-footer">
+                        <p>Total monitored mailboxes active</p>
+                    </div>
+                </div>
+
+                <div class="kpi-card glow-card pink">
+                    <div class="kpi-card-header">
+                        <div class="kpi-title-box">
+                            <span class="kpi-subtitle">Helpdesk</span>
+                            <h3 class="kpi-title">New Tickets Created</h3>
+                        </div>
+                        <div class="kpi-icon-wrapper"><i class="fa fa-bullseye"></i></div>
+                    </div>
+                    <div class="kpi-card-body">
+                        <h2 class="kpi-count" id="statNewTickets">0</h2>
+                    </div>
+                    <div class="kpi-card-footer">
+                        <p>Matches Helpdesk Created <span class="badge-mini">CHDTickets</span></p>
+                    </div>
+                </div>
+
+                <div class="kpi-card glow-card purple">
+                    <div class="kpi-card-header">
+                        <div class="kpi-title-box">
+                            <span class="kpi-subtitle">Redundancy</span>
+                            <h3 class="kpi-title">Duplicates</h3>
+                        </div>
+                        <div class="kpi-icon-wrapper"><i class="fa fa-copy"></i></div>
+                    </div>
+                    <div class="kpi-card-body">
+                        <h2 class="kpi-count" id="statDuplicates">0</h2>
+                    </div>
+                    <div class="kpi-card-footer">
+                        <p>Separate count of duplicate thread emails</p>
+                    </div>
+                </div>
+
+                <div class="kpi-card glow-card cyan">
+                    <div class="kpi-card-header">
+                        <div class="kpi-title-box">
+                            <span class="kpi-subtitle">Updates</span>
+                            <h3 class="kpi-title">Replies / Comments</h3>
+                        </div>
+                        <div class="kpi-icon-wrapper"><i class="fa fa-reply"></i></div>
+                    </div>
+                    <div class="kpi-card-body">
+                        <h2 class="kpi-count" id="statReplies">0</h2>
+                    </div>
+                    <div class="kpi-card-footer">
+                        <p>Inbound reply emails added to older tickets</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- High Errors Section -->
+            <div class="card chart-card" style="margin-bottom: 1.5rem !important;">
+                <div class="card-header">
+                    <h3>High-Error Accounts</h3>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="error-list" id="highErrorList">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Table Section -->
+            <div class="card table-card">
+                <div class="card-header flex-header">
+                    <h3>Detailed Processing Logs</h3>
+                    <div class="table-actions">
+                        <div class="search-box">
+                            <i class="fa fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="Search user...">
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Received</th>
+                                <th>New Tkts</th>
+                                <th>Replies</th>
+                                <th>Duplic.</th>
+                                <th>Processed</th>
+                                <th>Unproc.</th>
+                                <th>Errors</th>
+                                <th>Status</th>
+                                <th>Last Sync</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Unified Details Modal -->
+    <div class="modal-overlay" id="unifiedDetailsModal" onclick="if(event.target.id === 'unifiedDetailsModal') window.closeUnifiedDetailsModal()">
+        <div class="modal-content modal-xl">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <h3 class="modal-title" style="margin: 0;">
+                        <i class="fa fa-user-circle text-primary"></i> 
+                        <span id="unifiedModalUserId">User Account</span>
+                    </h3>
+                </div>
+                <button class="close-modal" id="closeUnifiedModalBtn" onclick="window.closeUnifiedDetailsModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 1.25rem;">
+                <!-- Error Section -->
+                <div id="unifiedErrorSection" style="display: none; margin-bottom: 1.5rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: var(--danger-dark); font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa fa-circle-exclamation"></i> Error Logs 
+                        <span class="badge-error-count" id="unifiedErrorCount">0</span>
+                    </h4>
+                    <div class="error-log-container" style="margin: 0;">
+                        <pre id="unifiedModalErrorText" style="max-height: 120px; overflow-y: auto;"></pre>
+                    </div>
+                </div>
+                
+                <!-- Mails Section -->
+                <div>
+                    <h4 style="margin: 0 0 0.75rem 0; color: var(--text-main); font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa fa-envelope-open-text text-primary"></i> Mail Records
+                    </h4>
+                    <div id="unifiedModalTableContainer" class="details-table-container" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden;">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script src="dashboard-script.js"></script>
+</body>
+</html>

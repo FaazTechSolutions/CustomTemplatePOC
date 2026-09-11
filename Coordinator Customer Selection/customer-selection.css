@@ -1,0 +1,264 @@
+:root {
+    --primary-color: #1e3a8a;
+    --accent-color: #fdbd3f;
+    --border-color: #dee2e6;
+    --bg-light: #f8f9fa;
+}
+
+body {
+    background-color: transparent;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 15px;
+    color: #333;
+}
+
+.form-container {
+    width: 100%;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.badge-title {
+    background: #fff;
+    position: absolute;
+    top: -12px;
+    left: 15px;
+    padding: 0 10px;
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.required {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.readOnly {
+    opacity: 0.65 !important;
+    pointer-events: none !important;
+    background-color: #e9ecef !important;
+}
+
+/* Loader Spinner */
+.loader {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #fdbd3f;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 8px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Custom Dropdown Styles */
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.dropdown-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    background-color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 12px;
+    font-weight: 600;
+}
+
+.dropdown-input:hover {
+    border-color: #babbbc;
+}
+
+.dropdown-input:focus, .dropdown-input.active {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.15);
+}
+
+/* 
+  BETTER LOGIC: Inline Panel instead of absolute floating dropdown.
+  This completely eliminates the popup clipping issue because the container 
+  expands naturally and allows the popup to scroll.
+*/
+.dropdown-content {
+    width: 100%;
+    margin-top: 15px;
+    background-color: white;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+    animation: expandDown 0.3s ease-out;
+}
+
+@keyframes expandDown {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-content.active {
+    display: flex;
+}
+
+.data-table-container {
+    overflow-y: auto;
+    max-height: 350px; /* Allow more height since it's inline */
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13px;
+    min-width: 600px;
+}
+
+.data-table th {
+    background-color: #f8fafc;
+    position: sticky;
+    top: 0;
+    padding: 12px 14px;
+    border-bottom: 2px solid var(--border-color);
+    text-align: left;
+    font-weight: 700;
+    color: var(--primary-color);
+    z-index: 10;
+}
+
+.data-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--bg-light);
+    color: #334155;
+    vertical-align: middle;
+}
+
+.data-table tbody tr {
+    transition: background-color 0.2s;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f1f5f9;
+    cursor: pointer;
+}
+
+.data-table tbody tr.selected {
+    background-color: rgba(30, 58, 138, 0.08);
+    font-weight: 600;
+    border-left: 3px solid var(--primary-color);
+}
+.data-table tbody tr.selected td:first-child {
+    box-shadow: inset 3px 0 0 var(--primary-color);
+}
+
+.filter-input {
+    width: 100%;
+    margin-top: 8px;
+    padding: 6px 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.filter-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: #fff;
+    box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.1);
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: #f8fafc;
+    border-top: 1px solid var(--border-color);
+    font-size: 13px;
+    margin-bottom: 0;
+}
+
+.pagination-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.pagination-btn {
+    padding: 4px 12px;
+    border: 1px solid #cbd5e1;
+    background-color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    transition: all 0.2s;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background-color: #f1f5f9;
+    border-color: #94a3b8;
+}
+
+.pagination-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Banner styles */
+.mapping-banner {
+    border-left: 5px solid #dc3545;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #fff8f8;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.1);
+}
+
+.redirect-btn {
+    white-space: nowrap;
+    background-color: var(--accent-color);
+    border-color: #e5a730;
+    color: #fff !important;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(253, 189, 63, 0.25);
+    transition: all 0.2s;
+}
+
+.redirect-btn:hover {
+    background-color: #e5a730;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(253, 189, 63, 0.35);
+}

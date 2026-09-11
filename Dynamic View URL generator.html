@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Recruitment URL Generator</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 11px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 11px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .generate {
+            background: #007bff;
+            color: white;
+        }
+
+        .test {
+            background: #28a745;
+            color: white;
+        }
+
+        .copy {
+            background: #6c757d;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .result {
+            margin-top: 25px;
+        }
+
+        .url-box {
+            background: #f1f3f5;
+            padding: 15px;
+            border-radius: 6px;
+            word-break: break-all;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Recruitment URL Generator</h2>
+
+    <div class="form-group">
+        <label for="collectionId">Collection ID</label>
+        <input
+            type="text"
+            id="collectionId"
+            placeholder="Enter Collection ID">
+    </div>
+
+    <div class="form-group">
+        <label for="entityId">Entity ID</label>
+        <input
+            type="text"
+            id="entityId"
+            placeholder="Enter Entity ID">
+    </div>
+
+    <div class="form-group">
+        <label for="formId">Form ID</label>
+        <input
+            type="text"
+            id="formId"
+            placeholder="Enter Form ID">
+    </div>
+
+    <div class="buttons">
+
+        <button
+            class="generate"
+            onclick="generateUrl()">
+            Generate URL
+        </button>
+
+        <button
+            class="test"
+            onclick="testUrl()">
+            Test URL
+        </button>
+
+        <button
+            class="copy"
+            onclick="copyUrl()">
+            Copy
+        </button>
+
+    </div>
+
+    <div class="result">
+
+        <label>Generated URL</label>
+
+        <div
+            id="generatedUrl"
+            class="url-box">
+            URL will appear here
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    function generateUrl() {
+
+        const collectionId =
+            document.getElementById("collectionId").value.trim();
+
+        const entityId =
+            document.getElementById("entityId").value.trim();
+
+        const formId =
+            document.getElementById("formId").value.trim();
+
+        if (!collectionId || !entityId || !formId) {
+            alert("Please enter Collection ID, Entity ID and Form ID.");
+            return;
+        }
+
+        const url =
+            `https://portal.mawarid.com.sa/apps4x/#/apps/Recruitment/${collectionId}/ENtityid/View/${formId}`;
+
+        document.getElementById("generatedUrl").textContent = url;
+    }
+
+
+    function getUrl() {
+
+        const collectionId =
+            document.getElementById("collectionId").value.trim();
+
+        const entityId =
+            document.getElementById("entityId").value.trim();
+
+        const formId =
+            document.getElementById("formId").value.trim();
+
+        if (!collectionId || !entityId || !formId) {
+            alert("Please enter all fields.");
+            return null;
+        }
+
+        return `https://portal.mawarid.com.sa/apps4x/#/apps/Recruitment/${collectionId}/ENtityid/View/${formId}`;
+    }
+
+
+    function testUrl() {
+
+        const url = getUrl();
+
+        if (!url) return;
+
+        window.open(url, "_blank");
+    }
+
+
+    function copyUrl() {
+
+        const url = getUrl();
+
+        if (!url) return;
+
+        navigator.clipboard.writeText(url);
+
+        alert("URL copied!");
+    }
+
+</script>
+
+</body>
+</html>
