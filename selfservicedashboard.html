@@ -1405,11 +1405,15 @@
                   <div class="modal-popup-header d-flex justify-content-between align-items-center" style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
                     <h2 style="margin: 0; font-size: 1.2rem; color: #333;">{{Translate 'Edit Profile'}}</h2>
                     <!-- <button type="button" class="btn-close-profile-modal" id="btnCloseProfileModalX" style="background:none; border:none; font-size:24px; line-height:1; cursor:pointer; color:#888;">&times;</button> -->
+                    <button id="ChangeLanguage" title="Language" class="btn btn-warning d-none"> 
+                    </button>
                   </div>
                   <div class="user-form-card">
                     <form id="userCreateForm">
                       <input type="hidden" id="isEdit" value="No">
                       <input type="hidden" id="RecId" value="">
+                    
+
                       <!-- Profile / Attachment Upload Box -->
                       <div class="profile-upload-wrapper">
                         <div class="profile-upload-box" id="profileUploadBox"
@@ -1755,6 +1759,11 @@
         return _ret;
       });
       loadDashboard();
+      if(_this.globalService?.showMultiLanguage && _this.globalService.systemLanguages &&
+        _this.globalService.systemLanguages.length > 0){
+        $('#ChangeLanguage').removeClass('d-none');
+        $('#ChangeLanguage').text(_this.globalService.CurrentSortCode);
+      }
     };
     document.body.appendChild(script3);
 
@@ -2784,7 +2793,24 @@
       resetForm();
       
     }
+    $(document).on('click', '#ChangeLanguage', function () {
+      setLanguange();    
+    });
+      function setLanguange() {
+        let Lang = localStorage.getItem("CurrentLanguage");
+        let _lang = {}
+        if (Lang == 'English') {
+          _lang = { Language: "Arabic", SortCode: "عربي", Direction: "RTL" };
+        }
+        else {
+          _lang = { Language: "English", SortCode: "EN", Direction: "LTR" };
+        }
+        _this.globalService.CurrentSortCode = _lang.SortCode;
+        $('#ChangeLanguage').text(_this.globalService.CurrentSortCode);
+        _this.globalService.setLanguage(_lang.Language, _lang.Direction);
+        window.location.reload();
 
+      }
     // Modal Events
     $(document).on('click', '#updateProfile, #updateProfile1', function (e) {
       e.preventDefault();
