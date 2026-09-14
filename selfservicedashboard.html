@@ -1404,7 +1404,7 @@
                 <div class="modal-popup-content">
                   <div class="modal-popup-header d-flex justify-content-between align-items-center" style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
                     <h2 style="margin: 0; font-size: 1.2rem; color: #333;">{{Translate 'Edit Profile'}}</h2>
-                    <button type="button" class="btn-close-profile-modal" id="btnCloseProfileModalX" style="background:none; border:none; font-size:24px; line-height:1; cursor:pointer; color:#888;">&times;</button>
+                    <!-- <button type="button" class="btn-close-profile-modal" id="btnCloseProfileModalX" style="background:none; border:none; font-size:24px; line-height:1; cursor:pointer; color:#888;">&times;</button> -->
                   </div>
                   <div class="user-form-card">
                     <form id="userCreateForm">
@@ -1507,7 +1507,7 @@
                           <span id="btnSubmitText">{{Translate 'Submit'}}</span>
                           <span id="submitSpinner" class="btn-spinner" style="display: none;"></span>
                         </button>
-                        <button type="button" class="btn-custom-close" id="btnCloseForm">{{Translate 'Close'}}</button>
+                        <!-- <button type="button" class="btn-custom-close" id="btnCloseForm">{{Translate 'Close'}}</button> -->
                       </div>
                     </form>
                   </div>
@@ -2576,7 +2576,7 @@
           customClass: {
                 popup: 'my-swal-user-profile-popup'
             }
-        });
+        })
         return;
       }
 
@@ -2796,11 +2796,11 @@
       closeUserProfileModal();
     });
 
-    $(document).on('click', '#userProfileModal', function (e) {
-      if (e.target === this) {
-        closeUserProfileModal();
-      }
-    });
+    //$(document).on('click', '#userProfileModal', function (e) {
+    // if (e.target === this) {
+    //    closeUserProfileModal();
+    //  }
+    //});
 
     $(document).on('click', '#profileUploadBox', function () {
       $('#ProfileFileInput').trigger('click');
