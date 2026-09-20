@@ -606,7 +606,7 @@
     </span>
     <span class="p-2 alert alert-warning text-center d-none" id="info-logout">
       <i class="tabler ti ti-info-circle-filled text-dark" style="font-size: 14px;"></i>
-      {{Translate 'Please log out of the application and log back in.|يرجى تسجيل الخروج من التطبيق ثم تسجيل الدخول مرة أخرى.'}}
+      Please log out of the application and log back in.|يرجى تسجيل الخروج من التطبيق ثم تسجيل الدخول مرة أخرى.
     </span>
     <div class="top-section row">
 
@@ -1423,21 +1423,21 @@
               <div id="bankDetailsModal" class="modal-popup-overlay">
                 <div class="modal-popup-content">
                   <div class="modal-popup-header">
-                    <h2>Bank Details Required</h2>
+                    <h2>{{Translate 'Bank Details Required'}}</h2>
                   </div>
                   <div class="form-group">
-                    <label for="modalBankName">Bank Name <span style="color:red">*</span></label>
-                    <input type="text" id="modalBankName" placeholder="e.g. Al Rajhi Bank">
-                    <div id="bankNameError" class="error-msg">Bank Name is required</div>
+                    <label for="modalBankName">{{Translate 'Bank Name'}} <span style="color:red">*</span></label>
+                    <input type="text" id="modalBankName" placeholder="{{Translate 'e.g. Al Rajhi Bank'}}">
+                    <div id="bankNameError" class="error-msg">{{Translate 'Bank Name is required'}}</div>
                   </div>
                   <div class="form-group">
-                    <label for="modalIbanNo">IBAN No <span style="color:red">*</span></label>
-                    <input type="text" id="modalIbanNo" placeholder="SA...">
-                    <div id="ibanNoError" class="error-msg">IBAN No is required</div>
+                    <label for="modalIbanNo">{{Translate 'IBAN No'}} <span style="color:red">*</span></label>
+                    <input type="text" id="modalIbanNo" placeholder="{{Translate 'SA...'}}">
+                    <div id="ibanNoError" class="error-msg">{{Translate 'IBAN No is required'}}</div>
                   </div>
                   <div class="modal-popup-footer">
-                    <button class="modal-popup-btn cancel" id="cancelpopup">Cancel</button>
-                    <button class="modal-popup-btn confirm" id="submitpopup">Generate PDF</button>
+                    <button class="modal-popup-btn cancel" id="cancelpopup">{{Translate 'Cancel'}}</button>
+                    <button class="modal-popup-btn confirm" id="submitpopup">{{Translate 'Generate PDF'}}</button>
                   </div>
                 </div>
               </div>
@@ -1446,23 +1446,23 @@
               <div id="certificateDetailsModal" class="modal-popup-overlay">
                 <div class="modal-popup-content">
                   <div class="modal-popup-header">
-                    <h2>Employement Certificate Details Required</h2>
+                    <h2>{{Translate 'Employment Certificate Details Required'}}</h2>
                   </div>
                   <div class="form-group">
-                    <label for="modalToEn">To (English) <span style="color:red">*</span></label>
-                    <input type="text" id="modalToEn" placeholder="e.g. Whom it may concern">
-                    <div id="toEnError" class="error-msg">To (English) is required</div>
+                    <label for="modalToEn">{{Translate 'To (English)'}} <span style="color:red">*</span></label>
+                    <input type="text" id="modalToEn" placeholder="{{Translate 'e.g. Whom it may concern'}}">
+                    <div id="toEnError" class="error-msg">{{Translate 'To (English) is required'}}</div>
                   </div>
                   <div class="form-group" style="text-align: right;">
-                    <label for="modalToAr">إلى (عربي) <span style="color:red">*</span></label>
-                    <input type="text" id="modalToAr" placeholder="إلى من يهمه الأمر"
+                    <label for="modalToAr">{{Translate 'إلى (عربي)'}} <span style="color:red">*</span></label>
+                    <input type="text" id="modalToAr" placeholder="{{Translate 'إلى من يهمه الأمر'}}"
                       style="text-align: right; direction: rtl;">
-                    <div id="toArError" class="error-msg" style="text-align: right; direction: rtl;">هذا الحقل مطلوب
+                    <div id="toArError" class="error-msg" style="text-align: right; direction: rtl;">{{Translate 'هذا الحقل مطلوب'}}
                     </div>
                   </div>
                   <div class="modal-popup-footer" style="flex-direction: row-reverse;">
-                    <button class="modal-popup-btn confirm" id="submitCertPopup">Generate PDF</button>
-                    <button class="modal-popup-btn cancel" id="cancelCertPopup">Cancel</button>
+                    <button class="modal-popup-btn confirm" id="submitCertPopup">{{Translate 'Generate PDF'}}</button>
+                    <button class="modal-popup-btn cancel" id="cancelCertPopup">{{Translate 'Cancel'}}</button>
                   </div>
                 </div>
               </div>
@@ -1594,56 +1594,56 @@
         <!-- <div class="dashboard-card leave">
         <div class="card-header"><i class="fa fa-plane"></i> Leave Request</div>
         <div class="card-content">
-           <span><span class="label draft">Draft</span>{{PageData.Data.LeaveRequestForApprover.[0].Draft}}</span>
-          <span><span class="label approved">Approved</span>{{PageData.Data.LeaveRequestForApprover.[0].Approved}}</span>
-          <span><span class="label submitted">Submitted</span>{{PageData.Data.LeaveRequestForApprover.[0].Submitted}}</span>
-          <span><span class="label cancel">Cancel</span>{{PageData.Data.LeaveRequestForApprover.[0].Rejected}}</span>
-          <span><span class="label error">Error</span>{{PageData.Data.LeaveRequestForApprover.[0].Error}}</span>
-          <span><span class="label total">Total</span>{{PageData.Data.LeaveRequestForApprover.[0].TotalCount}}</span>
+           <span><span class="label draft">{{Translate 'Draft'}}</span>{{PageData.Data.LeaveRequestForApprover.[0].Draft}}</span>
+          <span><span class="label approved">{{Translate 'Approved'}}</span>{{PageData.Data.LeaveRequestForApprover.[0].Approved}}</span>
+          <span><span class="label submitted">{{Translate 'Submitted'}}</span>{{PageData.Data.LeaveRequestForApprover.[0].Submitted}}</span>
+          <span><span class="label cancel">{{Translate 'Cancel'}}</span>{{PageData.Data.LeaveRequestForApprover.[0].Rejected}}</span>
+          <span><span class="label error">{{Translate 'Error'}}</span>{{PageData.Data.LeaveRequestForApprover.[0].Error}}</span>
+          <span><span class="label total">{{Translate 'Total'}}</span>{{PageData.Data.LeaveRequestForApprover.[0].TotalCount}}</span>
         </div>
       </div>
       <div class="dashboard-card loan">
         <div class="card-header"><i class="fa fa-university"></i> Loan Request</div>
         <div class="card-content">
-          <span><span class="label draft">Draft</span>{{PageData.Data.LoneRequestForApprover.[0].Draft}}</span>
-          <span><span class="label approved">Approved</span>{{PageData.Data.LoneRequestForApprover.[0].Approved}}</span>
-          <span><span class="label submitted">Submitted</span>{{PageData.Data.LoneRequestForApprover.[0].Submitted}}</span>
-          <span><span class="label cancel">Cancel</span>{{PageData.Data.LoneRequestForApprover.[0].Rejected}}</span>
-          <span><span class="label error">Error</span>{{PageData.Data.LoneRequestForApprover.[0].Error}}</span>
-          <span><span class="label total">Total</span>{{PageData.Data.LoneRequestForApprover.[0].TotalCount}}</span>
+          <span><span class="label draft">{{Translate 'Draft'}}</span>{{PageData.Data.LoneRequestForApprover.[0].Draft}}</span>
+          <span><span class="label approved">{{Translate 'Approved'}}</span>{{PageData.Data.LoneRequestForApprover.[0].Approved}}</span>
+          <span><span class="label submitted">{{Translate 'Submitted'}}</span>{{PageData.Data.LoneRequestForApprover.[0].Submitted}}</span>
+          <span><span class="label cancel">{{Translate 'Cancel'}}</span>{{PageData.Data.LoneRequestForApprover.[0].Rejected}}</span>
+          <span><span class="label error">{{Translate 'Error'}}</span>{{PageData.Data.LoneRequestForApprover.[0].Error}}</span>
+          <span><span class="label total">{{Translate 'Total'}}</span>{{PageData.Data.LoneRequestForApprover.[0].TotalCount}}</span>
         </div>
       </div>
       <div class="dashboard-card trip">
         <div class="card-header"><i class="fa fa-briefcase"></i> Business Trip</div>
         <div class="card-content">
-          <span><span class="label draft">Draft</span>{{PageData.Data.BusinessTripForApprover.[0].Draft}}</span>
-          <span><span class="label approved">Approved</span>{{PageData.Data.BusinessTripForApprover.[0].Approved}}</span>
-          <span><span class="label submitted">Submitted</span>{{PageData.Data.BusinessTripForApprover.[0].Submitted}}</span>
-          <span><span class="label cancel">Cancel</span>{{PageData.Data.BusinessTripForApprover.[0].Rejected}}</span>
-          <span><span class="label error">Error</span>{{PageData.Data.BusinessTripForApprover.[0].Error}}</span>
-          <span><span class="label total">Total</span>{{PageData.Data.BusinessTripForApprover.[0].TotalCount}}</span>
+          <span><span class="label draft">{{Translate 'Draft'}}</span>{{PageData.Data.BusinessTripForApprover.[0].Draft}}</span>
+          <span><span class="label approved">{{Translate 'Approved'}}</span>{{PageData.Data.BusinessTripForApprover.[0].Approved}}</span>
+          <span><span class="label submitted">{{Translate 'Submitted'}}</span>{{PageData.Data.BusinessTripForApprover.[0].Submitted}}</span>
+          <span><span class="label cancel">{{Translate 'Cancel'}}</span>{{PageData.Data.BusinessTripForApprover.[0].Rejected}}</span>
+          <span><span class="label error">{{Translate 'Error'}}</span>{{PageData.Data.BusinessTripForApprover.[0].Error}}</span>
+          <span><span class="label total">{{Translate 'Total'}}</span>{{PageData.Data.BusinessTripForApprover.[0].TotalCount}}</span>
         </div>
       </div>
       <div class="dashboard-card item">
         <div class="card-header"><i class="fa fa-box"></i> Store Item Request</div>
         <div class="card-content">
-          <span><span class="label draft">Draft</span>{{PageData.Data.ItemRequestForApprover.[0].Draft}}</span>
-          <span><span class="label approved">Approved</span>{{PageData.Data.ItemRequestForApprover.[0].Approved}}</span>
-          <span><span class="label submitted">Submitted</span>{{PageData.Data.ItemRequestForApprover.[0].Submitted}}</span>
-          <span><span class="label cancel">Cancel</span>{{PageData.Data.ItemRequestForApprover.[0].Rejected}}</span>
-          <span><span class="label error">Error</span>{{PageData.Data.ItemRequestForApprover.[0].Error}}</span>
-          <span><span class="label total">Total</span>{{PageData.Data.ItemRequestForApprover.[0].TotalCount}}</span>
+          <span><span class="label draft">{{Translate 'Draft'}}</span>{{PageData.Data.ItemRequestForApprover.[0].Draft}}</span>
+          <span><span class="label approved">{{Translate 'Approved'}}</span>{{PageData.Data.ItemRequestForApprover.[0].Approved}}</span>
+          <span><span class="label submitted">{{Translate 'Submitted'}}</span>{{PageData.Data.ItemRequestForApprover.[0].Submitted}}</span>
+          <span><span class="label cancel">{{Translate 'Cancel'}}</span>{{PageData.Data.ItemRequestForApprover.[0].Rejected}}</span>
+          <span><span class="label error">{{Translate 'Error'}}</span>{{PageData.Data.ItemRequestForApprover.[0].Error}}</span>
+          <span><span class="label total">{{Translate 'Total'}}</span>{{PageData.Data.ItemRequestForApprover.[0].TotalCount}}</span>
         </div>
       </div>
       <div class="dashboard-card purchase">
-        <div class="card-header"><i class="fa fa-shopping-cart"></i> Purchase Request</div>
+        <div class="card-header"><i class="fa fa-shopping-cart"></i> {{Translate 'Purchase Request'}}</div>
         <div class="card-content">
-          <span><span class="label draft">Draft</span>{{PageData.Data.PurchaseRequestForApprover.[0].Draft}}</span>
-          <span><span class="label approved">Approved</span>{{PageData.Data.PurchaseRequestForApprover.[0].Approved}}</span>
-          <span><span class="label submitted">Submitted</span>{{PageData.Data.PurchaseRequestForApprover.[0].Submitted}}</span>
-          <span><span class="label cancel">Cancel</span>{{PageData.Data.PurchaseRequestForApprover.[0].Rejected}}</span>
-          <span><span class="label error">Error</span>{{PageData.Data.PurchaseRequestForApprover.[0].Error}}</span>
-          <span><span class="label total">Total</span>{{PageData.Data.PurchaseRequestForApprover.[0].TotalCount}}</span>
+          <span><span class="label draft">{{Translate 'Draft'}}</span>{{PageData.Data.PurchaseRequestForApprover.[0].Draft}}</span>
+          <span><span class="label approved">{{Translate 'Approved'}}</span>{{PageData.Data.PurchaseRequestForApprover.[0].Approved}}</span>
+          <span><span class="label submitted">{{Translate 'Submitted'}}</span>{{PageData.Data.PurchaseRequestForApprover.[0].Submitted}}</span>
+          <span><span class="label cancel">{{Translate 'Cancel'}}</span>{{PageData.Data.PurchaseRequestForApprover.[0].Rejected}}</span>
+          <span><span class="label error">{{Translate 'Error'}}</span>{{PageData.Data.PurchaseRequestForApprover.[0].Error}}</span>
+          <span><span class="label total">{{Translate 'Total'}}</span>{{PageData.Data.PurchaseRequestForApprover.[0].TotalCount}}</span>
         </div>
       </div> -->
         <div class="create-requests-widget top-create-requests">
@@ -2429,13 +2429,13 @@
 
       if (userIdVal.length < 5) {
         $('#UserId').addClass('is-invalid');
-        $('#userIdError').text('User Id should be minimum 5 characters.').show();
+        $('#userIdError').text(handlebarCompile("{{Translate 'User Id should be minimum 5 characters.'}}")).show();
         return { isValid: false, reason: 'min_length' };
       }
 
       if (userIdVal.length > 50) {
         $('#UserId').addClass('is-invalid');
-        $('#userIdError').text('User Id cannot exceed 50 characters.').show();
+        $('#userIdError').text(handlebarCompile("{{Translate 'User Id cannot exceed 50 characters.'}}")).show();
         return { isValid: false, reason: 'max_length' };
       }
 
@@ -2454,7 +2454,7 @@
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(emailVal)) {
         $('#Email').addClass('is-invalid');
-        $('#emailError').text('Please enter a valid email address.').show();
+        $('#emailError').text(handlebarCompile("{{Translate 'Please enter a valid email address.'}}")).show();
         return { isValid: false };
       }
 
@@ -2472,13 +2472,13 @@
 
       if (mobileVal.length < 8) {
         $('#MobileNumber').addClass('is-invalid');
-        $('#mobileNumberError').text('Mobile number should be minimum 8 characters.').show();
+        $('#mobileNumberError').text(handlebarCompile("{{Translate 'Mobile number should be minimum 8 characters.'}}")).show();
         return { isValid: false, reason: 'min_length' };
       }
 
       if (mobileVal.length > 15) {
         $('#MobileNumber').addClass('is-invalid');
-        $('#mobileNumberError').text('Mobile number cannot exceed 15 characters.').show();
+        $('#mobileNumberError').text(handlebarCompile("{{Translate 'Mobile number cannot exceed 15 characters.'}}")).show();
         return { isValid: false, reason: 'max_length' };
       }
 
@@ -2558,14 +2558,14 @@
       if (empId.length < 6) {
         $('#Name').val('');
         $('#EmployeeId').addClass('is-invalid');
-        $('#employeeIdError').text('Employee ID should be minimum 6 characters.').show();
+        $('#employeeIdError').text(handlebarCompile("{{Translate 'Employee ID should be minimum 6 characters.'}}")).show();
         return { isValid: false, reason: 'min_length' };
       }
 
       if (empId.length > 15) {
         $('#Name').val('');
         $('#EmployeeId').addClass('is-invalid');
-        $('#employeeIdError').text('Employee ID cannot exceed 15 characters.').show();
+        $('#employeeIdError').text(handlebarCompile("{{Translate 'Employee ID cannot exceed 15 characters.'}}")).show();
         return { isValid: false, reason: 'max_length' };
       }
 
@@ -2574,7 +2574,7 @@
         if (!erpRes.data || erpRes.data.length === 0) {
           $('#Name').val('');
           $('#EmployeeId').addClass('is-invalid');
-          $('#employeeIdError').text('Employee not found in ERP records.').show();
+          $('#employeeIdError').text(handlebarCompile("{{Translate 'Employee not found in ERP records.'}}")).show();
           return { isValid: false, reason: 'not_found' };
         }
 
@@ -2588,7 +2588,7 @@
         const dupRes = await checkDuplicateEmployee(empId, currentUserId);
         if (dupRes.isDuplicate) {
           $('#EmployeeId').addClass('is-invalid');
-          $('#employeeIdError').text(`Employee ID is already registered try a Different Employee Id`).show();
+          $('#employeeIdError').text(handlebarCompile("{{Translate 'Employee ID is already registered try a Different Employee Id'}}")).show();
           return { isValid: false, reason: 'duplicate' };
         }
 
@@ -2599,7 +2599,7 @@
         console.error("Employee validation error:", err);
         $('#Name').val('');
         $('#EmployeeId').addClass('is-invalid');
-        $('#employeeIdError').text('Failed to validate Employee ID. Please try again.').show();
+        $('#employeeIdError').text(handlebarCompile("{{Translate 'Failed to validate Employee ID. Please try again.'}}")).show();
         return { isValid: false, reason: 'error', error: err };
       }
     }
@@ -2618,8 +2618,8 @@
         if (password !== confirmPassword) {
           Swal.fire({
             icon: 'warning',
-            title: 'Password Mismatch',
-            text: 'Password and Confirm Password do not match.',
+            title: handlebarCompile("{{Translate 'Password Mismatch'}}"),
+            text: handlebarCompile("{{Translate 'Password and Confirm Password do not match.'}}"),
             customClass: {
                 popup: 'my-swal-user-profile-popup'
             }
@@ -2633,11 +2633,11 @@
         if (!userIdValidation.isValid) {
           $('#UserId').focus();
           const msg = userIdValidation.reason === 'max_length'
-            ? 'User Id cannot exceed 50 characters.'
-            : 'User Id should be minimum 5 characters.';
+            ? handlebarCompile("{{Translate 'User Id cannot exceed 50 characters.'}}")
+            : handlebarCompile("{{Translate 'User Id should be minimum 5 characters.'}}");
           Swal.fire({
             icon: 'warning',
-            title: 'Invalid User Id',
+            title: handlebarCompile("{{Translate 'Invalid User Id'}}"),
             text: msg,
             customClass: {
                 popup: 'my-swal-user-profile-popup'
@@ -2652,8 +2652,8 @@
         $('#Email').focus();
         Swal.fire({
           icon: 'warning',
-          title: 'Invalid Email',
-          text: 'Please enter a valid email address.',
+          title: handlebarCompile("{{Translate 'Invalid Email'}}"),
+          text: handlebarCompile("{{Translate 'Please enter a valid email address.'}}"),
           customClass: {
                 popup: 'my-swal-user-profile-popup'
             }
@@ -2665,11 +2665,11 @@
       if (!mobileValidation.isValid) {
         $('#MobileNumber').focus();
         const msg = mobileValidation.reason === 'max_length'
-          ? 'Mobile number cannot exceed 15 characters.'
-          : 'Mobile number should be minimum 8 characters.';
+          ? handlebarCompile("{{Translate 'Mobile number cannot exceed 15 characters.'}}")
+          : handlebarCompile("{{Translate 'Mobile number should be minimum 8 characters.'}}");
         Swal.fire({
           icon: 'warning',
-          title: 'Invalid Mobile Number',
+          title: handlebarCompile("{{Translate 'Invalid Mobile Number'}}"),
           text: msg,
           customClass: {
                 popup: 'my-swal-user-profile-popup'
@@ -2681,13 +2681,13 @@
       if (employeeId.length < 6 || employeeId.length > 15) {
         $('#EmployeeId').addClass('is-invalid');
         const msg = employeeId.length < 6
-          ? 'Employee ID should be minimum 6 characters.'
-          : 'Employee ID cannot exceed 15 characters.';
+          ? handlebarCompile("{{Translate 'Employee ID should be minimum 6 characters.'}}")
+          : handlebarCompile("{{Translate 'Employee ID cannot exceed 15 characters.'}}");
         $('#employeeIdError').text(msg).show();
         $('#EmployeeId').focus();
         Swal.fire({
           icon: 'warning',
-          title: 'Invalid Employee ID',
+          title: handlebarCompile("{{Translate 'Invalid Employee ID'}}"),
           text: msg,
           customClass: {
                 popup: 'my-swal-user-profile-popup'
@@ -2704,20 +2704,20 @@
           setLoading(false);
           $('#EmployeeId').focus();
 
-          let errorMsg = 'Please provide a valid Employee ID.';
+          let errorMsg = handlebarCompile("{{Translate 'Please provide a valid Employee ID.'}}");
           if (validation.reason === 'min_length') {
-            errorMsg = 'Employee ID should be minimum 6 characters.';
+            errorMsg = handlebarCompile("{{Translate 'Employee ID should be minimum 6 characters.'}}");
           } else if (validation.reason === 'max_length') {
-            errorMsg = 'Employee ID cannot exceed 15 characters.';
+            errorMsg = handlebarCompile("{{Translate 'Employee ID cannot exceed 15 characters.'}}");
           } else if (validation.reason === 'not_found') {
-            errorMsg = 'Employee not found in ERP records. Submission not allowed.';
+            errorMsg = handlebarCompile("{{Translate 'Employee not found in ERP records. Submission not allowed.'}}");
           } else if (validation.reason === 'duplicate') {
-            errorMsg = 'Employee ID is already registered try a Different Employee Id';
+            errorMsg = handlebarCompile("{{Translate 'Employee ID is already registered try a Different Employee Id'}}");
           }
 
           Swal.fire({
             icon: 'error',
-            title: 'Validation Failed',
+            title: handlebarCompile("{{Translate 'Validation Failed'}}"),
             text: errorMsg,
             customClass: {
                 popup: 'my-swal-user-profile-popup'
@@ -2730,8 +2730,8 @@
         console.error("Validation error:", valErr);
         Swal.fire({
           icon: 'error',
-          title: 'Validation Error',
-          text: 'Failed to verify Employee ID. ' + (valErr.message || ''),
+          title: handlebarCompile("{{Translate 'Validation Error'}}"),
+          text: handlebarCompile("{{Translate 'Failed to verify Employee ID.'}}") + ' ' + (valErr.message || ''),
           customClass: {
                 popup: 'my-swal-user-profile-popup'
           }
@@ -2829,12 +2829,12 @@
         }
 
         const successMsg = isEditMode
-          ? "User profile updated successfully Please Login Again!"
-          : "User profile created successfully Please Login Again!";
+          ? handlebarCompile("{{Translate 'User profile updated successfully Please Login Again!'}}")
+          : handlebarCompile("{{Translate 'User profile created successfully Please Login Again!'}}");
 
         Swal.fire({
           icon: "success",
-          title: "Success",
+          title: handlebarCompile("{{Translate 'Success'}}"),
           text: successMsg,
           customClass: {
                 popup: 'my-swal-user-profile-popup'
@@ -2860,16 +2860,7 @@
 
     function openUserProfileModal() {
       let activeUserData = getUserProfileData();
-      // if (!activeUserData) {
-      //   activeUserData = {
-      //     EmployeeId: currentEmployeeId || "1098483",
-      //     Name: $(".sidebar-profile h2").text().trim() || "Hyder Ali A",
-      //     UserId: profileUserId || "a.hyder",
-      //     Email: "hyder@faaztechsolutions.com",
-      //     MobileNumber: "9943221321",
-      //     RecId: 1
-      //   };
-      // }
+      
       $("#isEdit").val('Yes');
       $('#btnSubmitText').text(translate('Update'));
       applyEditModeUI(true);
@@ -2969,14 +2960,14 @@
       if (empId.length < 6) {
         $('#Name').val('');
         $('#EmployeeId').addClass('is-invalid');
-        $('#employeeIdError').text('Employee ID should be minimum 6 characters.').show();
+        $('#employeeIdError').text(handlebarCompile("{{Translate 'Employee ID should be minimum 6 characters.'}}")).show();
         return;
       }
 
       if (empId.length > 15) {
         $('#Name').val('');
         $('#EmployeeId').addClass('is-invalid');
-        $('#employeeIdError').text('Employee ID cannot exceed 15 characters.').show();
+        $('#employeeIdError').text(handlebarCompile("{{Translate 'Employee ID cannot exceed 15 characters.'}}")).show();
         return;
       }
 

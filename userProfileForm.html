@@ -204,7 +204,7 @@
             <!-- Profile / Attachment Upload Box -->
             <div class="profile-upload-wrapper">
                 <div class="profile-upload-box" id="profileUploadBox"
-                    title="Click to upload profile picture">
+                    title="{{Translate 'Click to upload profile picture'}}">
                     <div id="placeholderContent" class="text-center">
                         <svg class="upload-icon-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <!-- Rounded Outer Frame -->
@@ -220,7 +220,7 @@
                                 stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </div>
-                    <img id="profilePreviewImg" src="" alt="Profile Preview" style="display: none;" />
+                    <img id="profilePreviewImg" src="" alt="{{Translate 'Profile Preview'}}" style="display: none;" />
                 </div>
                 <input type="file" id="ProfileFileInput" accept="image/*" style="display: none;">
             </div>
@@ -594,13 +594,13 @@
 
             if (userIdVal.length < 5) {
                 $('#UserId').addClass('is-invalid');
-                $('#userIdError').text('User Id should be minimum 5 characters.').show();
+                $('#userIdError').text(translate('User Id should be minimum 5 characters.')).show();
                 return { isValid: false, reason: 'min_length' };
             }
 
             if (userIdVal.length > 50) {
                 $('#UserId').addClass('is-invalid');
-                $('#userIdError').text('User Id cannot exceed 50 characters.').show();
+                $('#userIdError').text(translate('User Id cannot exceed 50 characters.')).show();
                 return { isValid: false, reason: 'max_length' };
             }
 
@@ -631,7 +631,7 @@
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(emailVal)) {
                 $('#Email').addClass('is-invalid');
-                $('#emailError').text('Please enter a valid email address.').show();
+                $('#emailError').text(translate('Please enter a valid email address.')).show();
                 return { isValid: false };
             }
 
@@ -656,13 +656,13 @@
 
             if (mobileVal.length < 8) {
                 $('#MobileNumber').addClass('is-invalid');
-                $('#mobileNumberError').text('Mobile number should be minimum 8 characters.').show();
+                $('#mobileNumberError').text(translate('Mobile number should be minimum 8 characters.')).show();
                 return { isValid: false, reason: 'min_length' };
             }
 
             if (mobileVal.length > 15) {
                 $('#MobileNumber').addClass('is-invalid');
-                $('#mobileNumberError').text('Mobile number cannot exceed 15 characters.').show();
+                $('#mobileNumberError').text(translate('Mobile number cannot exceed 15 characters.')).show();
                 return { isValid: false, reason: 'max_length' };
             }
 
@@ -764,14 +764,14 @@
             if (empId.length < 6) {
                 $('#Name').val('');
                 $('#EmployeeId').addClass('is-invalid');
-                $('#employeeIdError').text('Employee ID should be minimum 6 characters.').show();
+                $('#employeeIdError').text(translate('Employee ID should be minimum 6 characters.')).show();
                 return { isValid: false, reason: 'min_length' };
             }
 
             if (empId.length > 15) {
                 $('#Name').val('');
                 $('#EmployeeId').addClass('is-invalid');
-                $('#employeeIdError').text('Employee ID cannot exceed 15 characters.').show();
+                $('#employeeIdError').text(translate('Employee ID cannot exceed 15 characters.')).show();
                 return { isValid: false, reason: 'max_length' };
             }
 
@@ -781,7 +781,7 @@
                 if (!erpRes.data || erpRes.data.length === 0) {
                     $('#Name').val('');
                     $('#EmployeeId').addClass('is-invalid');
-                    $('#employeeIdError').text('Employee not found in ERP records.').show();
+                    $('#employeeIdError').text(translate('Employee not found in ERP records.')).show();
                     return { isValid: false, reason: 'not_found' };
                 }
 
@@ -797,7 +797,7 @@
                 const dupRes = await checkDuplicateEmployee(empId, currentUserId);
                 if (dupRes.isDuplicate) {
                     $('#EmployeeId').addClass('is-invalid');
-                    $('#employeeIdError').text(`Employee ID is already registered try a Different Employee Id`).show();
+                    $('#employeeIdError').text(translate('Employee ID is already registered try a Different Employee Id')).show();
                     return { isValid: false, reason: 'duplicate' };
                 }
 
@@ -809,7 +809,7 @@
                 console.error("Employee validation error:", err);
                 $('#Name').val('');
                 $('#EmployeeId').addClass('is-invalid');
-                $('#employeeIdError').text('Failed to validate Employee ID. Please try again.').show();
+                $('#employeeIdError').text(translate('Failed to validate Employee ID. Please try again.')).show();
                 return { isValid: false, reason: 'error', error: err };
             }
         }
@@ -829,14 +829,14 @@
             if (empId.length < 6) {
                 $('#Name').val('');
                 $('#EmployeeId').addClass('is-invalid');
-                $('#employeeIdError').text('Employee ID should be minimum 6 characters.').show();
+                $('#employeeIdError').text(translate('Employee ID should be minimum 6 characters.')).show();
                 return;
             }
 
             if (empId.length > 15) {
                 $('#Name').val('');
                 $('#EmployeeId').addClass('is-invalid');
-                $('#employeeIdError').text('Employee ID cannot exceed 15 characters.').show();
+                $('#employeeIdError').text(translate('Employee ID cannot exceed 15 characters.')).show();
                 return;
             }
 
@@ -869,8 +869,8 @@
                 if (password !== confirmPassword) {
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Password Mismatch',
-                        text: 'Password and Confirm Password do not match.'
+                        title: translate('Password Mismatch'),
+                        text: translate('Password and Confirm Password do not match.')
                     });
                     return;
                 }
@@ -882,11 +882,11 @@
                 if (!userIdValidation.isValid) {
                     $('#UserId').focus();
                     const msg = userIdValidation.reason === 'max_length'
-                        ? 'User Id cannot exceed 50 characters.'
-                        : 'User Id should be minimum 5 characters.';
+                        ? translate('User Id cannot exceed 50 characters.')
+                        : translate('User Id should be minimum 5 characters.');
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Invalid User Id',
+                        title: translate('Invalid User Id'),
                         text: msg
                     });
                     return;
@@ -899,8 +899,8 @@
                 $('#Email').focus();
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Invalid Email',
-                    text: 'Please enter a valid email address.'
+                    title: translate('Invalid Email'),
+                    text: translate('Please enter a valid email address.')
                 });
                 return;
             }
@@ -910,11 +910,11 @@
             if (!mobileValidation.isValid) {
                 $('#MobileNumber').focus();
                 const msg = mobileValidation.reason === 'max_length'
-                    ? 'Mobile number cannot exceed 15 characters.'
-                    : 'Mobile number should be minimum 8 characters.';
+                    ? translate('Mobile number cannot exceed 15 characters.')
+                    : translate('Mobile number should be minimum 8 characters.');
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Invalid Mobile Number',
+                    title: translate('Invalid Mobile Number'),
                     text: msg
                 });
                 return;
@@ -924,13 +924,13 @@
             if (employeeId.length < 6 || employeeId.length > 15) {
                 $('#EmployeeId').addClass('is-invalid');
                 const msg = employeeId.length < 6
-                    ? 'Employee ID should be minimum 6 characters.'
-                    : 'Employee ID cannot exceed 15 characters.';
+                    ? translate('Employee ID should be minimum 6 characters.')
+                    : translate('Employee ID cannot exceed 15 characters.');
                 $('#employeeIdError').text(msg).show();
                 $('#EmployeeId').focus();
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Invalid Employee ID',
+                    title: translate('Invalid Employee ID'),
                     text: msg
                 });
                 return;
@@ -945,20 +945,20 @@
                     setLoading(false);
                     $('#EmployeeId').focus();
 
-                    let errorMsg = 'Please provide a valid Employee ID.';
+                    let errorMsg = translate('Please provide a valid Employee ID.');
                     if (validation.reason === 'min_length') {
-                        errorMsg = 'Employee ID should be minimum 6 characters.';
+                        errorMsg = translate('Employee ID should be minimum 6 characters.');
                     } else if (validation.reason === 'max_length') {
-                        errorMsg = 'Employee ID cannot exceed 15 characters.';
+                        errorMsg = translate('Employee ID cannot exceed 15 characters.');
                     } else if (validation.reason === 'not_found') {
-                        errorMsg = 'Employee not found in ERP records. Submission not allowed.';
+                        errorMsg = translate('Employee not found in ERP records. Submission not allowed.');
                     } else if (validation.reason === 'duplicate') {
-                        errorMsg = 'Employee ID is already registered try a Different Employee Id';
+                        errorMsg = translate('Employee ID is already registered try a Different Employee Id');
                     }
 
                     Swal.fire({
                         icon: 'error',
-                        title: 'Validation Failed',
+                        title: translate('Validation Failed'),
                         text: errorMsg
                     });
                     return;
@@ -968,8 +968,8 @@
                 console.error("Validation error:", valErr);
                 Swal.fire({
                     icon: 'error',
-                    title: 'Validation Error',
-                    text: 'Failed to verify Employee ID. ' + (valErr.message || '')
+                    title: translate('Validation Error'),
+                    text: translate('Failed to verify Employee ID.') + ' ' + (valErr.message || '')
                 });
                 return;
             }
@@ -1053,17 +1053,17 @@
                 setLoading(false);
 
                 if (typeof data === "string" && data.toLowerCase().includes("error")) {
-                    Swal.fire("Error", data, "error");
+                    Swal.fire(translate("Error"), translate(data), "error");
                     return;
                 }
 
                 const successMsg = isEditMode
-                    ? "User profile updated successfully!"
-                    : "User profile created successfully!";
+                    ? translate("User profile updated successfully!")
+                    : translate("User profile created successfully!");
 
                 Swal.fire({
                     icon: "success",
-                    title: "Success",
+                    title: translate("Success"),
                     text: successMsg
                 }).then(() => {
                     if (!isEditMode) {
@@ -1073,7 +1073,7 @@
             } catch (error) {
                 setLoading(false);
                 console.error("API Error:", error);
-                Swal.fire("Submission Error", error.message || "Failed to submit request.", "error");
+                Swal.fire(translate("Submission Error"), translate(error.message || "Failed to submit request."), "error");
             }
         }
     </script>
