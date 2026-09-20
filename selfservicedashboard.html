@@ -1176,6 +1176,11 @@
                   <div class="spinner"></div>
                   <span>{{Translate 'Download Employment Certificate as PDF'}}</span>
                 </button>
+                <button class="download-btn cert-no-salary-btn" id="downloadEmploymentCertificateNoSalary"
+                  style="background-color: #17a2b8;">
+                  <div class="spinner"></div>
+                  <span>{{Translate 'Employment certificate without salary'}}</span>
+                </button>
                 <button class="download-btn salary-transfer-btn" id="downloadSalaryTransferForm"
                   style="background-color: #28a745;">
                   <div class="spinner"></div>
@@ -1313,8 +1318,8 @@
                   <div class="signature-area">
                     <img src="data:image/png;base64,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" alt="Signature" class="signature-img" />
                     <div class="signature-line"></div>
-                    <div class="signatory-name">عصام العرابي</div>
-                    <div class="signatory-title">مدير عام إدارة التشغيل</div>
+                    <div class="signatory-name">فهد الشايع</div>
+                    <div class="signatory-title">مدير إدارة الموارد البشرية</div>
                   </div>
 
                   <div class="pdf-footer-row">
@@ -1408,8 +1413,8 @@
                   <div class="signature-area" style="margin-left: 0; width: 250px;">
                     <img src="data:image/png;base64,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" alt="Signature" class="signature-img" />
                     <div class="signature-line"></div>
-                    <div class="signatory-name" style="text-align: center;">مدير عام إدارة التشغيل</div>
-                    <div class="signatory-title" style="text-align: center;">عصام العرابي</div>
+                    <div class="signatory-name" style="text-align: center;">فهد الشايع</div>
+                    <div class="signatory-title" style="text-align: center;">مدير إدارة الموارد البشرية</div>
                   </div>
 
                   <div class="pdf-footer-row">
@@ -1977,6 +1982,9 @@
       $(document).on('click', '#downloadEmploymentCertificate', function (e) {
         downloadPDF('certificate');
       });
+      $(document).on('click', '#downloadEmploymentCertificateNoSalary', function (e) {
+        downloadPDF('certificate-no-salary');
+      });
       $(document).on('click', '#downloadSalaryTransferForm', function (e) {
         downloadPDF('salary-transfer');
       });
@@ -2022,7 +2030,8 @@
         showBankModal();
         return;
       }
-      if (type === 'certificate') {
+      if (type === 'certificate' || type === 'certificate-no-salary') {
+        window.currentCertType = type;
         showCertModal();
         return;
       }
@@ -2063,7 +2072,7 @@
         $(".certToEn").text(toEn);
         $(".certToAr").text(toAr);
         closeCertModal();
-        await executeDownloadFlow('certificate');
+        await executeDownloadFlow(window.currentCertType || 'certificate');
       }
     }
 
@@ -2108,17 +2117,52 @@
     }
 
     async function executeDownloadFlow(type) {
-      const btnSelector = type === 'certificate' ? '.certificate-btn' : '.salary-transfer-btn';
-      const containerSelector = type === 'certificate' ? '.certificate-container' : '.salary-transfer-container';
-      const btn = document.querySelector(btnSelector);
-      btn.classList.add('btn-load');
+      const isNoSalary = type === 'certificate-no-salary';
+      const isCert = type === 'certificate' || isNoSalary;
+
+      let btnSelector = '.salary-transfer-btn';
+      if (type === 'certificate') btnSelector = '.certificate-btn';
+      if (type === 'certificate-no-salary') btnSelector = '#downloadEmploymentCertificateNoSalary';
+
+      const containerSelector = isCert ? '.certificate-container' : '.salary-transfer-container';
+      const btn = document.querySelector(btnSelector) || document.querySelector('.certificate-btn');
+      if (btn) btn.classList.add('btn-load');
 
       const element = document.querySelector(containerSelector);
       const pageWrapper = element ? element.closest('.page-wrapper') : null;
-      let prevDisplay = '';
-      if (pageWrapper) {
-        prevDisplay = pageWrapper.style.display;
-        pageWrapper.style.display = 'block';
+      // let prevDisplay = '';
+      // if (pageWrapper) {
+      //   prevDisplay = pageWrapper.style.display;
+      //   pageWrapper.style.display = 'block';
+      // }
+
+      const salaryTable = element ? element.querySelector('.salary-table') : null;
+      const titleEn = element ? element.querySelector('.title-en') : null;
+      const titleAr = element ? element.querySelector('.title-ar') : null;
+      const sigArea = element ? element.querySelector('.signature-area') : null;
+
+      let origTableDisplay = '';
+      let origTitleEn = '';
+      let origTitleAr = '';
+      let origSigMarginTop = '';
+
+      if (isNoSalary) {
+        if (salaryTable) {
+          origTableDisplay = salaryTable.style.display;
+          salaryTable.style.display = 'none';
+        }
+        if (titleEn) {
+          origTitleEn = titleEn.textContent;
+          titleEn.textContent = 'Employment certificate without salary';
+        }
+        if (titleAr) {
+          origTitleAr = titleAr.textContent;
+          titleAr.textContent = 'خطاب تعريف بدون راتب';
+        }
+        if (sigArea) {
+          origSigMarginTop = sigArea.style.marginTop;
+          sigArea.style.marginTop = '60px';
+        }
       }
 
       try {
@@ -2153,9 +2197,13 @@
         const originalBoxShadow = element.style.boxShadow;
         element.style.boxShadow = 'none';
 
+        let pdfFilename = 'Employment_Certificate.pdf';
+        if (type === 'salary-transfer') pdfFilename = 'Salary_Transfer_Form.pdf';
+        if (isNoSalary) pdfFilename = 'Employment_Certificate_Without_Salary.pdf';
+
         const opt = {
           margin: 0, // Zero margin, rely on container padding
-          filename: type === 'certificate' ? 'Employment_Certificate.pdf' : 'Salary_Transfer_Form.pdf',
+          filename: pdfFilename,
           image: { type: 'jpeg', quality: 0.98 },
           html2canvas: {
             scale: 2,
@@ -2183,9 +2231,9 @@
       } catch (error) {
         console.error("PDF generation failed:", error);
       } finally {
-        if (pageWrapper) {
-          pageWrapper.style.display = prevDisplay;
-        }
+        // if (pageWrapper) {
+        //   pageWrapper.style.display = prevDisplay;
+        // }
         btn.classList.remove('btn-load');
       }
     }
