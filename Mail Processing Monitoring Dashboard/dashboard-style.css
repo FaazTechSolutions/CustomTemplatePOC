@@ -96,31 +96,155 @@
     font-weight: 400;
 }
 
-.mail-monitor-wrapper .date-badge {
+.mail-monitor-wrapper .date-filter-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.mail-monitor-wrapper .date-filter-btn {
     background: linear-gradient(135deg, var(--primary-bg), #dbeafe);
-    padding: 0.4rem 0.85rem;
+    padding: 0.45rem 0.85rem;
     border-radius: var(--radius-md);
     display: flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: 0.5rem;
     font-weight: 600;
     color: var(--primary-dark);
     border: 1px solid rgba(99, 102, 241, 0.15);
     font-size: 0.75rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: var(--transition);
+}
+
+.mail-monitor-wrapper .date-filter-btn:hover {
+    background: #dbeafe;
+    box-shadow: var(--shadow-sm);
+}
+
+.mail-monitor-wrapper .date-filter-menu {
+    position: absolute;
+    top: calc(100% + 5px);
+    right: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    min-width: 160px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    padding: 0.35rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mail-monitor-wrapper .date-filter-dropdown.open .date-filter-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.mail-monitor-wrapper .date-filter-item {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-main);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+}
+
+.mail-monitor-wrapper .date-filter-item:hover {
+    background: var(--bg-hover);
+    color: var(--primary);
+}
+
+.mail-monitor-wrapper .date-filter-item.active {
+    background: var(--primary-bg);
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+.mail-monitor-wrapper .date-filter-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 0.25rem 0;
+}
+
+.mail-monitor-wrapper .date-filter-custom {
+    padding: 0.5rem 0.5rem 0.25rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.mail-monitor-wrapper .custom-date-inputs {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.mail-monitor-wrapper .custom-date-inputs > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+}
+
+.mail-monitor-wrapper .custom-date-inputs label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.mail-monitor-wrapper .custom-date-inputs input[type="date"] {
+    width: 100%;
+    padding: 0.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 0.7rem;
+    font-family: inherit;
+    color: var(--text-main);
+    background: var(--bg-hover);
+    outline: none;
+    transition: var(--transition);
+}
+
+.mail-monitor-wrapper .custom-date-inputs input[type="date"]:focus {
+    border-color: var(--primary);
+    background: var(--bg-card);
+}
+
+.mail-monitor-wrapper .apply-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.mail-monitor-wrapper .apply-btn:hover {
+    background: var(--primary-dark);
 }
 
 /* ==================== PREMIUM KPI GRID ==================== */
 .mail-monitor-wrapper .premium-kpi-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.25rem;
-    margin-bottom: 1.75rem;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
 }
 
 .mail-monitor-wrapper .kpi-card {
     background: var(--bg-card);
-    border-radius: var(--radius-xl);
-    padding: 1.25rem;
+    border-radius: var(--radius-md);
+    padding: 0.75rem;
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-sm);
     display: flex;
@@ -178,34 +302,47 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.5rem;
+    gap: 0.25rem;
+}
+
+.mail-monitor-wrapper .kpi-title-box {
+    min-width: 0; /* allows text truncation */
+    flex: 1;
 }
 
 .mail-monitor-wrapper .kpi-subtitle {
-    font-size: 0.65rem;
+    font-size: 0.55rem;
     text-transform: uppercase;
     font-weight: 700;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.5px;
     color: var(--text-muted);
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.15rem;
     display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .mail-monitor-wrapper .kpi-title {
-    font-size: 0.85rem;
+    font-size: 0.7rem;
     font-weight: 600;
     color: var(--text-secondary);
-    line-height: 1.2;
+    line-height: 1.15;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .mail-monitor-wrapper .kpi-icon-wrapper {
-    width: 38px;
-    height: 38px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     flex-shrink: 0;
 }
 
@@ -220,21 +357,36 @@
 .mail-monitor-wrapper .cyan .kpi-icon-wrapper { background: #ecfeff; color: #06b6d4; }
 
 .mail-monitor-wrapper .kpi-card-body {
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.25rem;
 }
 
 .mail-monitor-wrapper .kpi-count {
-    font-size: 2.15rem;
+    font-size: 1.4rem;
     font-weight: 800;
     color: var(--text-main);
-    letter-spacing: -1px;
+    letter-spacing: -0.5px;
     line-height: 1;
 }
 
 .mail-monitor-wrapper .kpi-card-footer p {
-    font-size: 0.75rem;
+    font-size: 0.6rem;
     color: var(--text-muted);
-    line-height: 1.4;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+@media (max-width: 1200px) {
+    .mail-monitor-wrapper .premium-kpi-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+@media (max-width: 768px) {
+    .mail-monitor-wrapper .premium-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 .mail-monitor-wrapper .badge-mini {
@@ -356,6 +508,11 @@
     border-radius: var(--radius-lg);
     transition: var(--transition);
     box-shadow: var(--shadow-xs);
+    cursor: pointer;
+}
+
+.mail-monitor-wrapper .error-list-item * {
+    pointer-events: none;
 }
 
 .mail-monitor-wrapper .error-list-item:hover {
@@ -470,6 +627,29 @@
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
     background: var(--bg-card);
+}
+
+.mail-monitor-wrapper .export-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.45rem 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+    font-family: inherit;
+}
+
+.mail-monitor-wrapper .export-btn:hover {
+    background: var(--bg-hover);
+    color: var(--primary);
+    border-color: rgba(99, 102, 241, 0.3);
 }
 
 .mail-monitor-wrapper .table-responsive { 

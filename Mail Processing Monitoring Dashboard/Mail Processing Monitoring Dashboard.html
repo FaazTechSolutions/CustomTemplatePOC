@@ -27,11 +27,35 @@
                 </div>
                 <div class="header-actions" style="display: flex; gap: 0.75rem; align-items: center;">
                     <button id="refreshDashboardBtn" style="background: white; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.4rem 0.75rem; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; box-shadow: var(--shadow-sm);" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='white'">
-                        <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                        <i class="fa fa-arrows-rotate"></i> Refresh
                     </button>
-                    <div class="date-badge" id="currentDateBadge">
-                        <i class="fa-regular fa-calendar"></i>
-                        <span>Loading...</span>
+                    <div class="date-filter-dropdown" id="dateFilterDropdown">
+                        <button class="date-filter-btn" id="dateFilterBtn">
+                            <i class="fa fa-calendar"></i>
+                            <span id="dateFilterLabel">Today</span>
+                            <i class="fa fa-chevron-down" style="font-size: 0.6rem; margin-left: 2px;"></i>
+                        </button>
+                        <div class="date-filter-menu" id="dateFilterMenu">
+                            <div class="date-filter-item active" data-filter="today">Today</div>
+                            <div class="date-filter-item" data-filter="yesterday">Yesterday</div>
+                            <div class="date-filter-item" data-filter="current-week">Current Week</div>
+                            <div class="date-filter-item" data-filter="current-month">Current Month</div>
+                            <div class="date-filter-item" data-filter="prev-month">Previous Month</div>
+                            <div class="date-filter-divider"></div>
+                            <div class="date-filter-custom">
+                                <div class="custom-date-inputs">
+                                    <div>
+                                        <label>From</label>
+                                        <input type="date" id="customStartDate">
+                                    </div>
+                                    <div>
+                                        <label>To</label>
+                                        <input type="date" id="customEndDate">
+                                    </div>
+                                </div>
+                                <button id="applyCustomDateBtn" class="apply-btn">Apply Range</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -99,26 +123,12 @@
                         <h2 class="kpi-count" id="statErrors">0</h2>
                     </div>
                     <div class="kpi-card-footer">
-                        <p>Mails with missing <span class="badge-mini">CustomerCode</span> or parsing errors</p>
+                        <p>Mails with missing CustomerCode</p>
                     </div>
                 </div>
 
                 <!-- Row 2: Insights & Details -->
-                <div class="kpi-card glow-card primary">
-                    <div class="kpi-card-header">
-                        <div class="kpi-title-box">
-                            <span class="kpi-subtitle">System</span>
-                            <h3 class="kpi-title">Active Users</h3>
-                        </div>
-                        <div class="kpi-icon-wrapper"><i class="fa fa-users"></i></div>
-                    </div>
-                    <div class="kpi-card-body">
-                        <h2 class="kpi-count" id="statTotalUsers">0</h2>
-                    </div>
-                    <div class="kpi-card-footer">
-                        <p>Total monitored mailboxes active</p>
-                    </div>
-                </div>
+
 
                 <div class="kpi-card glow-card pink">
                     <div class="kpi-card-header">
@@ -132,7 +142,7 @@
                         <h2 class="kpi-count" id="statNewTickets">0</h2>
                     </div>
                     <div class="kpi-card-footer">
-                        <p>Matches Helpdesk Created <span class="badge-mini">CHDTickets</span></p>
+                        <p>Matches Customer Support Created Tickets</p>
                     </div>
                 </div>
 
@@ -185,7 +195,10 @@
             <div class="card table-card">
                 <div class="card-header flex-header">
                     <h3>Detailed Processing Logs</h3>
-                    <div class="table-actions">
+                    <div class="table-actions" style="display: flex; gap: 0.75rem; align-items: center;">
+                        <button id="exportTableBtn" class="export-btn">
+                            <i class="fa fa-file-export"></i> Export
+                        </button>
                         <div class="search-box">
                             <i class="fa fa-search"></i>
                             <input type="text" id="searchInput" placeholder="Search user...">
@@ -204,6 +217,7 @@
                                 <th>Processed</th>
                                 <th>Unproc.</th>
                                 <th>Errors</th>
+                                <th>Success Rate</th>
                                 <th>Status</th>
                                 <th>Last Sync</th>
                                 <th>Action</th>
