@@ -364,6 +364,10 @@
                                     readonly>
                             </div>
                             <div class="mb-3 d-none">
+                                <label for="IsDelegated" class="form-label">{{Translate 'IsDelegated'}}</label>
+                                <input type="text" class="form-control" id="IsDelegated" name="IsDelegated" readonly>
+                            </div>
+                            <div class="mb-3 d-none">
                                 <label for="isEdit" class="form-label">{{Translate 'isEdit'}}</label>
                                 <input type="text" class="form-control" id="isEdit" name="isEdit"
                                     readonly>
@@ -1106,8 +1110,8 @@
             userId = localStorage.getItem('UserId');
             companyId = localStorage.getItem('CompanyId');
         }else if (window.location.hostname === "localhost" || window.location.hostname === "" ){
-            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiI5OTQzMjIxMzIxIiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSIsImV4cCI6MTc4NDg2ODQ5MCwiaXNzIjoiYXBwczR4LmNvbSIsImF1ZCI6ImFwcHM0eC5jb20ifQ.EQWid7UNLhPzjeYYCWquVsZhDOd3ythETbNkZbZ6HtU";
-            currentEmployeeId = "1056641";//"1098483";idris bhai empId/1056641
+            token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJhLmh5ZGVyIiwiTmFtZSI6Ikh5ZGVyIEFsaSBBIiwiRW1haWwiOiJoeWRlckBmYWF6dGVjaHNvbHV0aW9ucy5jb20iLCJNb2JpbGVOdW1iZXIiOiI5OTQzMjIxMzIxIiwiQ29tcGFueUlkIjoiTEdFMDAwMDAwMSIsImV4cCI6MTc4NDk3NDI1NCwiaXNzIjoiYXBwczR4LmNvbSIsImF1ZCI6ImFwcHM0eC5jb20ifQ.ZbEP7VHWX8L3SII0Tzuo6E3WhY4uIjWZejTk4o8lZfg";
+            currentEmployeeId = "1162823";//"1098483";idris bhai empId/1056641
             userId = "a.hyder";
             companyId = "LGE0000001";
         }
@@ -1179,6 +1183,8 @@
                     $("#ApprovalManagerUserId").val(response.ApprovalManagerUserId);
                     $("#EmployeePosition").val(response.EmployeePosition);
                     $("#PayGroupName").val(response.PayGroupName);
+                    $("#SourceApprovalManager").val(response.SourceApprovalManager);
+                    $("#IsDelegated").val(response.IsDelegated);
                 }
 
 
@@ -2502,6 +2508,7 @@
                 "Status": "Draft",
                 "ApprovalManager": $("#approvalmanagerid").val(),
                 "SourceApprovalManager": $("#SourceApprovalManager").val(),
+                "IsDelegated": $("#IsDelegated").val(),
                 "LastWorkingDate": null,
                 "EmployeeJoinDate": null,
                 "AdultTicketPrice": parseInt($("#AdultTicketPrice").val()) || 0,
@@ -2779,6 +2786,7 @@
                     hideLoader('nextStep');
                     if(data && data.Data && data.Data.length > 0){
                     $("#ApprovalManagerUserId").val(data.Data[0].UserId);
+                    $("#IsDelegated").val(data.Data[0].IsDelegated);
                     $("#approvalmanagerid").val(data.Data[0].EmployeeId);
                     $("#approvalmanagername").val(data.Data[0].Name);
                     // $('#approvalmanagernametext').text('');

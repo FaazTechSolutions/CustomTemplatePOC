@@ -318,6 +318,10 @@
                                     <label for="SourceApprovalManager" class="form-label">{{Translate 'SourceApprovalManager'}}</label>
                                     <input type="text" class="form-control" id="SourceApprovalManager" name="SourceApprovalManager" min="1" readonly>
                                 </div>
+                                <div class="mb-3 d-none">
+                                    <label for="IsDelegated" class="form-label">{{Translate 'IsDelegated'}}</label>
+                                    <input type="text" class="form-control" id="IsDelegated" name="IsDelegated" readonly>
+                                </div>
                                 <div class="col-6 d-none">
                                     <label for="ApprovalManagerName" class="form-label">{{Translate 'ApprovalManagerName'}}</label>
                                     <input type="text" class="form-control" id="ApprovalManagerName" name="ApprovalManagerName" min="1" readonly>
@@ -751,8 +755,8 @@
                 "PersonnelNumber": $("#EmployeeId").val(),
                 "EmployeeName": $("#EmployeeName").val(),
                 "ApprovalManager": $("#ApprovalManager").val(),
-                "ApprovalManager": $("#ApprovalManager").val(),
                 "SourceApprovalManager": $("#SourceApprovalManager").val(),
+                "IsDelegated": $("#IsDelegated").val(),
                 "ApprovalManagerName": $("#ApprovalManagerName").val(),
                 "ApprovalManagerUserId": $("#ApprovalManagerUserId").val(),
                 "Description": $("#Description").val(),
@@ -1008,6 +1012,7 @@
                 .then(data => {
                     if(data && data.Data && data.Data.length > 0){
                     $("#ApprovalManagerUserId").val(data.Data[0].UserId);
+                    $("#IsDelegated").val(data.Data[0].IsDelegated);
                     $("#ApprovalManager").val(data.Data[0].EmployeeId);
                     $("#ApprovalManagerName").val(data.Data[0].Name);
                     $('#approvalmanagernametextstore').html(data.Data[0].Name);

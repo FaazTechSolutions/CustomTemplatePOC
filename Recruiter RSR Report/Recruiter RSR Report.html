@@ -6,16 +6,15 @@
   <title>Recruiter — RSR Report Template</title>
   <link rel="stylesheet" href="./report-styles.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
 <div class="rsr-rpt-container">
   <!-- Header -->
   <div class="rsr-rpt-page-header">
-    <div>
-      <div class="rsr-rpt-page-title">Recruitment project summary &mdash; RSR view</div>
-      <div class="rsr-rpt-page-subtitle">Generated entirely from the Main Project / Sub Project setup &mdash; grouped by Gender, Nationality, Profession and Customer, each sub-project shown for its own setup period</div>
-    </div>
+    <div class="rsr-rpt-page-title">Recruitment project summary &mdash; RSR view</div>
+    <button class="rsr-rpt-btn rsr-rpt-btn-sm" style="height:24px;padding:2px 10px;font-size:11px" onclick="window.rsrExportExcel()">Export</button>
   </div>
 
   <!-- Project Type Tabs -->
@@ -28,8 +27,8 @@
     <button class="rsr-rpt-tab" data-type="Client Agencies" onclick="window.rsrSwitchType('Client Agencies', this)">Client Agencies</button>
   </div>
 
-  <!-- Filter Bar (Agent filter alone visible; Main Project & Customer hidden) -->
-  <div class="rsr-rpt-actions-row">
+  <!-- Filter Bar (Hidden when all filters are hidden) -->
+  <div class="rsr-rpt-actions-row" style="display:none">
     <!-- Main Project Filter (Hidden via style="display:none") -->
     <div class="rsr-rpt-filter-group hidden-filter" id="rsrProjectFilterGroup" style="display:none">
       <label>MAIN PROJECT</label>
@@ -55,7 +54,7 @@
     </div>
 
     <!-- Agency / Owner Filter (Agent Filter Alone Visible) -->
-    <div class="rsr-rpt-filter-group" id="rsrAgencyFilterGroup">
+    <div class="rsr-rpt-filter-group hidden-filter" id="rsrAgencyFilterGroup" style="display:none">
       <label>AGENCY / OWNER (AGENT)</label>
       <div class="rsr-rpt-msf" id="rsrAgencyMsf">
         <div class="rsr-rpt-msf-box" onclick="window.rsrTogglePanel('rsrAgencyPanel', event)">
@@ -67,52 +66,31 @@
     </div>
 
     <!-- Actions -->
-    <button class="rsr-rpt-btn rsr-rpt-btn-gold rsr-rpt-btn-sm" style="height:36px" onclick="window.rsrSearch()">Search</button>
-    <button class="rsr-rpt-btn rsr-rpt-btn-sm" style="height:36px" onclick="window.rsrClear()">&#10005; Clear</button>
+    <button class="rsr-rpt-btn rsr-rpt-btn-gold rsr-rpt-btn-sm" style="display:none;height:36px" onclick="window.rsrSearch()">Search</button>
+    <button class="rsr-rpt-btn rsr-rpt-btn-sm" style="display:none;height:36px" onclick="window.rsrClear()">&#10005; Clear</button>
   </div>
 
-  <div id="rsrCascadeHint" style="font-size:12px;color:var(--rsr-gold);margin:-6px 0 12px;display:none"></div>
 
-  <!-- Legend -->
-  <div class="rsr-rpt-legend">
-    <div class="rsr-rpt-legend-item">
-      <span class="rsr-rpt-legend-box" style="border:1px solid var(--rsr-border2);background:#fff"></span>
-      <span>Calculated &mdash; read only</span>
-    </div>
-    <div class="rsr-rpt-legend-item">
-      <span class="rsr-rpt-legend-box" style="border:1px dashed var(--rsr-gold);background:var(--rsr-gold-bg)"></span>
-      <span>Manual input &mdash; editable</span>
-    </div>
-    <div class="rsr-rpt-legend-item">
-      <span class="rsr-rpt-legend-box" style="background:var(--rsr-red-bg);border:0.5px solid var(--rsr-red)"></span>
-      <span>Backed out / medically unfit</span>
-    </div>
-    <div class="rsr-rpt-legend-item">
-      <span class="rsr-rpt-legend-box" style="background:var(--rsr-teal-bg);border:0.5px solid var(--rsr-teal)"></span>
-      <span>Arrived this month</span>
-    </div>
-    <div class="rsr-rpt-legend-item">
-      <span class="rsr-rpt-legend-box" style="background:#0F6E56"></span>
-      <span>Arrived (overall)</span>
-    </div>
-  </div>
 
   <!-- Table Container -->
   <div id="rsrGroups"></div>
 
   <!-- Read-Only Agent Detail Modal (Inside .rsr-rpt-container to inherit CSS variables & table styles) -->
   <div class="rsr-rpt-modal-bg" id="rsrAgentModalBg" onclick="window.closeAgentDetailModal(event)">
-    <div class="rsr-rpt-modal" onclick="event.stopPropagation()">
+    <div class="rsr-rpt-modal">
       <div class="rsr-rpt-modal-header">
         <div>
           <div class="rsr-rpt-modal-title" id="rsrModalTitle">Agent Breakdown Details</div>
           <div class="rsr-rpt-modal-subtitle" id="rsrModalSubtitle">Read-only agent candidate status breakdown for matching Recruiting IDs</div>
         </div>
-        <button class="rsr-rpt-modal-close" onclick="window.closeAgentDetailModal()">&times;</button>
+        <div class="rsr-rpt-modal-actions">
+          <button class="rsr-rpt-btn rsr-rpt-btn-sm" onclick="window.rsrExportAgentDetailExcel()">Export</button>
+          <button class="rsr-rpt-modal-close" onclick="window.closeAgentDetailModal()">&times;</button>
+        </div>
       </div>
       <div class="rsr-rpt-modal-body">
-        <!-- Modal Filter Bar (Agent ID / Name Multi-Select Filter) -->
-        <div class="rsr-rpt-actions-row" style="margin-bottom:16px">
+        <!-- Modal Filter Bar (Compact Agent ID / Name Multi-Select Filter) -->
+        <div class="rsr-rpt-actions-row rsr-rpt-modal-filter-bar">
           <div class="rsr-rpt-filter-group" id="rsrModalAgentFilterGroup">
             <label>FILTER BY AGENT ID / NAME</label>
             <div class="rsr-rpt-msf" id="rsrModalAgentMsf">
@@ -123,8 +101,8 @@
               <div class="rsr-rpt-msf-panel" id="rsrModalAgentPanel"></div>
             </div>
           </div>
-          <button class="rsr-rpt-btn rsr-rpt-btn-gold rsr-rpt-btn-sm" style="height:36px" onclick="window.rsrRenderModalTable()">Search</button>
-          <button class="rsr-rpt-btn rsr-rpt-btn-sm" style="height:36px" onclick="window.rsrClearModalFilters()">&#10005; Clear</button>
+          <button class="rsr-rpt-btn rsr-rpt-btn-gold rsr-rpt-btn-sm" onclick="window.rsrRenderModalTable()">Search</button>
+          <button class="rsr-rpt-btn rsr-rpt-btn-sm" onclick="window.rsrClearModalFilters()">&#10005; Clear</button>
         </div>
 
         <!-- Read-Only Agent Detail Table Wrap -->
