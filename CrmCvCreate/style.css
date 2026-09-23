@@ -1,0 +1,551 @@
+/* ─── CRM CV Create Layout - Static CSS Styles ─── */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #0F172A;
+    -webkit-font-smoothing: antialiased;
+    background: #F4F7FB;
+}
+
+/* ─── Container Width & Height Setup ─── */
+.crmcvcreate {
+    background: #F4F7FB;
+    height: calc(100vh - 50px);
+    min-height: 500px;
+    padding: 12px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #0F172A;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+}
+
+.crmcvcreate .app-wrapper {
+    max-width: 1320px;
+    height: fit-content;
+    max-height: 100%;
+    margin: 0 auto;
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01);
+    overflow: hidden;
+    border: 1px solid #F1F5F9;
+    display: flex;
+    flex-direction: column;
+}
+
+.crmcvcreate .dashboard-form {
+    display: flex;
+    flex-wrap: nowrap;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.crmcvcreate .left-panel {
+    flex: 0 0 320px;
+    background: #FAFBFC;
+    padding: 20px;
+    border-right: 1px solid #E2E8F0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.crmcvcreate .right-panel {
+    flex: 1;
+    padding: 20px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    position: relative;
+    gap: 16px;
+}
+
+/* Scrollbars */
+.crmcvcreate * {
+    scrollbar-width: thin !important;
+    scrollbar-color: #CBD5E1 transparent !important;
+}
+
+.crmcvcreate .left-panel::-webkit-scrollbar,
+.crmcvcreate .right-panel::-webkit-scrollbar,
+.crmcvcreate ::-webkit-scrollbar {
+    width: 4px !important;
+    height: 4px !important;
+    background: transparent !important;
+}
+
+.crmcvcreate .left-panel::-webkit-scrollbar-thumb,
+.crmcvcreate .right-panel::-webkit-scrollbar-thumb,
+.crmcvcreate ::-webkit-scrollbar-thumb {
+    background-color: #CBD5E1 !important;
+    border-radius: 10px !important;
+}
+
+/* Profile Header */
+.crmcvcreate .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.crmcvcreate .avatar-ring {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: 2px solid #F8B633;
+    padding: 2px;
+    flex-shrink: 0;
+    background: #FFF9F0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    color: #F8B633;
+    overflow: hidden;
+}
+
+.crmcvcreate .avatar-ring img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.crmcvcreate .header-text h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 2px;
+    letter-spacing: -0.2px;
+}
+
+.crmcvcreate .upload-link {
+    font-size: 11px;
+    font-weight: 600;
+    color: #F8B633;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.crmcvcreate .upload-link:hover {
+    text-decoration: underline;
+}
+
+.crmcvcreate .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.crmcvcreate .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.crmcvcreate .field-group label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.crmcvcreate .field-group label .req {
+    color: #EF4444;
+}
+
+.crmcvcreate .form-input {
+    width: 100%;
+    height: 36px;
+    padding: 0 10px;
+    font-size: 12px;
+    font-family: inherit;
+    color: #0F172A;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.crmcvcreate .form-input:focus {
+    border-color: #F8B633;
+    box-shadow: 0 0 0 3px rgba(248, 182, 51, 0.15);
+}
+
+.crmcvcreate .form-input[readonly] {
+    background: #F1F5F9;
+    color: #475569;
+    border-style: dashed;
+    cursor: not-allowed;
+}
+
+.crmcvcreate select.form-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+}
+
+.crmcvcreate .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.crmcvcreate .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.crmcvcreate .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.crmcvcreate .span-2 {
+    grid-column: span 2;
+}
+
+/* Full Size Photo */
+.crmcvcreate .file-drop-area {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 12px 16px;
+    gap: 12px;
+    border: 2px dashed #CBD5E1;
+    border-radius: 8px;
+    background: linear-gradient(145deg, #F8FAFC 0%, #F1F5F9 100%);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.crmcvcreate .file-drop-area:hover {
+    border-color: #F8B633;
+    background: linear-gradient(145deg, #FFF9F0 0%, #FDF4E5 100%);
+    box-shadow: 0 4px 12px rgba(248, 182, 51, 0.15);
+    transform: translateY(-2px);
+}
+
+.crmcvcreate .upload-icon-wrapper {
+    background: #FFFFFF;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    color: #F8B633;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.crmcvcreate .file-drop-area:hover .upload-icon-wrapper {
+    transform: scale(1.1);
+    box-shadow: 0 4px 10px rgba(248, 182, 51, 0.25);
+    background: #F8B633;
+    color: #FFFFFF;
+}
+
+.crmcvcreate .file-drop-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    flex: 1;
+}
+
+.crmcvcreate .file-drop-area .drop-msg {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0F172A;
+}
+
+.crmcvcreate .file-drop-area .drop-submsg {
+    font-size: 10.5px;
+    color: #475569;
+    margin-top: 2px;
+}
+
+.crmcvcreate .file-preview-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: #F8B633;
+    background: #FFF9F0;
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+}
+
+.crmcvcreate .file-preview-name:empty {
+    display: none;
+}
+
+/* Caregiver Checkbox Grid */
+.crmcvcreate .caregiver-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.crmcvcreate .caregiver-check-card {
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 8px 10px;
+    background: #F8FAFC;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+
+.crmcvcreate .caregiver-check-card:hover {
+    border-color: #F8B633;
+    background: #FFF9F0;
+}
+
+.crmcvcreate .caregiver-check-card input[type="checkbox"] {
+    accent-color: #F8B633;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+}
+
+.crmcvcreate .caregiver-check-card span {
+    font-size: 11px;
+    font-weight: 600;
+    color: #0F172A;
+}
+
+/* Dynamic Cards Section */
+.crmcvcreate .card-box {
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    background: #FFFFFF;
+}
+
+.crmcvcreate .card-box-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+/* Custom Dropdown Views */
+.crmcvcreate .custom-dropdown-wrap {
+    position: relative;
+    width: 100%;
+}
+
+.crmcvcreate .custom-dropdown-trigger {
+    width: 100%;
+    min-height: 36px;
+    padding: 4px 10px;
+    font-size: 12px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+
+.crmcvcreate .custom-dropdown-wrap.open .custom-dropdown-trigger,
+.crmcvcreate .custom-dropdown-trigger:hover {
+    border-color: #F8B633;
+    box-shadow: 0 0 0 3px rgba(248, 182, 51, 0.15);
+}
+
+.crmcvcreate .dropdown-trigger-val {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #0F172A;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-wrap: wrap;
+}
+
+.crmcvcreate .dropdown-trigger-placeholder {
+    color: #94A3B8;
+}
+
+.crmcvcreate .dropdown-icon {
+    font-size: 10px;
+    color: #94A3B8;
+    transition: transform 0.2s ease;
+}
+
+.crmcvcreate .custom-dropdown-wrap.open .dropdown-icon {
+    transform: rotate(180deg);
+    color: #F8B633;
+}
+
+.crmcvcreate .custom-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0; right: 0;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+    z-index: 200;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.crmcvcreate .custom-dropdown-wrap.open .custom-dropdown-menu {
+    display: block;
+}
+
+.crmcvcreate .dropdown-search-box {
+    padding: 6px 8px;
+    border-bottom: 1px solid #E2E8F0;
+    position: sticky;
+    top: 0;
+    background: #FFFFFF;
+    z-index: 10;
+}
+
+.crmcvcreate .dropdown-search-box input {
+    width: 100%;
+    padding: 5px 8px;
+    font-size: 11px;
+    border: 1px solid #E2E8F0;
+    border-radius: 4px;
+    outline: none;
+    background: #F8FAFC;
+}
+
+.crmcvcreate .dropdown-options-list {
+    padding: 4px 0;
+}
+
+.crmcvcreate .dropdown-option-item {
+    padding: 7px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 12px;
+}
+
+.crmcvcreate .dropdown-option-item:hover {
+    background: #FFF9F0;
+}
+
+.crmcvcreate .dropdown-option-item.selected {
+    background: rgba(248, 182, 51, 0.15);
+    font-weight: 600;
+}
+
+.crmcvcreate .opt-en { color: #0F172A; font-weight: 500; }
+.crmcvcreate .opt-ar { color: #64748B; font-size: 11px; font-weight: 600; background: #F1F5F9; padding: 2px 5px; border-radius: 4px; }
+.crmcvcreate .opt-val-badge { font-size: 10px; color: #94A3B8; background: #F8FAFC; padding: 1px 4px; border-radius: 3px; }
+
+/* Multiselect Tag Styles */
+.crmcvcreate .multiselect-tag {
+    background: #FFF9F0;
+    color: #F8B633;
+    border: 1px solid rgba(248, 182, 51, 0.4);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.crmcvcreate .multiselect-tag .tag-remove {
+    cursor: pointer;
+    font-size: 11px;
+    color: #94A3B8;
+}
+
+.crmcvcreate .multiselect-tag .tag-remove:hover {
+    color: #EF4444;
+}
+
+/* Save Profile Button */
+.crmcvcreate .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 10px;
+}
+
+.crmcvcreate .btn-save-profile {
+    background: #F8B633;
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 28px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(248, 182, 51, 0.3);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.crmcvcreate .btn-save-profile:hover {
+    background: #E3A32B;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(248, 182, 51, 0.4);
+}
+
+/* Toast Container */
+.toast-wrap {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
+}
+
+.toast-msg {
+    background: #0F172A;
+    color: #FFFFFF;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    border-left: 4px solid #F8B633;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
