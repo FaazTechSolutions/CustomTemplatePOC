@@ -1,4 +1,50 @@
 let dashboardData = null;
+let currentDateFilter = 'today';
+let customDateRange = { FromDate: '', ToDate: '' };
+
+function getDateRangeForFilter(filter) {
+    const now = new Date();
+    const getStartOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const formatDate = (d) => {
+        const yr = d.getFullYear();
+        const mo = String(d.getMonth() + 1).padStart(2, '0');
+        const da = String(d.getDate()).padStart(2, '0');
+        return `${yr}-${mo}-${da}`;
+    };
+
+    let startDate, endDate;
+
+    switch(filter) {
+        case 'yesterday':
+            startDate = getStartOfDay(now);
+            startDate.setDate(startDate.getDate() - 1);
+            endDate = new Date(startDate);
+            break;
+        case 'current-week':
+            startDate = getStartOfDay(now);
+            const day = startDate.getDay();
+            const diff = startDate.getDate() - day + (day === 0 ? -6 : 1);
+            startDate.setDate(diff);
+            endDate = getStartOfDay(now);
+            break;
+        case 'current-month':
+            startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+            endDate = getStartOfDay(now);
+            break;
+        case 'prev-month':
+            startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            endDate = new Date(now.getFullYear(), now.getMonth(), 0);
+            break;
+        case 'custom':
+            return customDateRange;
+        case 'today':
+        default:
+            startDate = getStartOfDay(now);
+            endDate = getStartOfDay(now);
+            break;
+    }
+    return { FromDate: formatDate(startDate), ToDate: formatDate(endDate) };
+}
 var LOCAL_STORAGE_TOKEN_KEY =
   "eyjJwhtbtGockieOniJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9";
 
@@ -33,7 +79,7 @@ function getAuthToken() {
   return "";
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
+async function initDashboardApp() {
   try {
     await loadDashboardData();
     setupEventListeners();
@@ -45,15 +91,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       tableBody.innerHTML = `<tr><td colspan="12" style="text-align: center; padding: 2rem; color: var(--danger);">Failed to load data. Check console for errors.</td></tr>`;
     }
   }
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initDashboardApp);
+} else {
+  // DOM is already ready, run immediately
+  initDashboardApp();
+}
 
 async function loadDashboardData() {
-  // Show loading state
-  document.getElementById("currentDateBadge").innerHTML =
-    `<i class="fa fa-spinner fa-spin"></i> <span>Fetching...</span>`;
-
+  const dateRange = getDateRangeForFilter(currentDateFilter);
   const url =
-    "https://portal.mawarid.com.sa/apps4x-api/api/v1/LGE0000001/connector/CON0000001/sql/sysobjectexecute?object_Type=p&objectName=sp_GetMailProcessingDailySummary&%24page=1&%24size=0";
+    `https://portal.mawarid.com.sa/apps4x-api/api/v1/LGE0000001/connector/CON0000001/sql/sysobjectexecute?object_Type=p&objectName=sp_GetMailProcessingDailySummary&%24page=1&%24size=0&FromDate=${dateRange.FromDate}&ToDate=${dateRange.ToDate}`;
 
   // Note: Browser handles Cookie, Referer, User-Agent, and Sec-Ch-* headers automatically.
   // Adding them to fetch() in browser would result in a "Refused to set unsafe header" error.
@@ -110,25 +160,8 @@ async function initDashboard() {
   if (autoRefreshInterval) clearInterval(autoRefreshInterval);
   autoRefreshInterval = setInterval(loadDashboardData, 60000);
 
-  // Hook up refresh button
-  const refreshBtn = document.getElementById("refreshDashboardBtn");
-  if (refreshBtn) {
-    refreshBtn.addEventListener("click", () => {
-      refreshBtn.innerHTML =
-        '<i class="fa-solid fa-arrows-rotate fa-spin"></i> Refreshing';
-      loadDashboardData().then(() => {
-        setTimeout(() => {
-          refreshBtn.innerHTML =
-            '<i class="fa-solid fa-arrows-rotate"></i> Refresh';
-        }, 500);
-      });
-    });
-  }
+  // The date is now handled by the Date Filter UI instead of a badge.
 
-  // Set Header Date
-  const displayDate = dashboardData.date || new Date().toLocaleDateString();
-  document.getElementById("currentDateBadge").innerHTML =
-    `<i class="fa-regular fa-calendar"></i> <span>${displayDate}</span>`;
 
   // Calculate totals
   let totalReceived = 0;
@@ -170,12 +203,15 @@ async function initDashboard() {
 
   // Update Summary Cards
   const totalUserCount = dashboardData.totalUsers || dashboardData.data.length;
-  document.getElementById("statTotalUsers").textContent = totalUserCount;
+  const statTotalUsersEl = document.getElementById("statTotalUsers");
+  if (statTotalUsersEl) {
+    statTotalUsersEl.textContent = totalUserCount;
+  }
 
   // Update Subtitle dynamically
   const subtitleEl = document.getElementById("dashboardSubtitle");
   if (subtitleEl) {
-    subtitleEl.innerHTML = `Real-time O365 Delta Sync & Helpdesk Ticket Tracking for <span class="badge-mini" style="font-size:0.75rem;">${totalUserCount}</span> Users`;
+    subtitleEl.innerHTML = `Real-time O365 Delta Sync & Customer Support Ticket Tracking for <span class="badge-mini" style="font-size:0.75rem;">${totalUserCount}</span> Users`;
   }
   document.getElementById("statTotalReceived").textContent = totalReceived;
   document.getElementById("statNewTickets").textContent = totalNewTickets;
@@ -198,9 +234,17 @@ async function initDashboard() {
 
       // Extract initials or default avatar text
       const initial = userId.charAt(0).toUpperCase();
+      const errorDetailsStr = encodeURIComponent(user.errorDetails || user.ErrorDetails || "");
+      const lastSyncStatusStr = user.lastSyncStatus || user.LastSyncStatus || "UNKNOWN";
 
-      errorListEl.innerHTML += `
-                <li class="error-list-item">
+      const li = document.createElement("li");
+      li.className = "error-list-item";
+      li.style.cursor = "pointer";
+      li.style.transition = "background-color 0.2s";
+      li.onmouseover = () => li.style.backgroundColor = 'var(--bg-hover)';
+      li.onmouseout = () => li.style.backgroundColor = '';
+      
+      li.innerHTML = `
                     <div class="user-info">
                         <div class="user-avatar">${initial}</div>
                         <span class="user-email">${userId}</span>
@@ -208,8 +252,17 @@ async function initDashboard() {
                     <span class="error-count-badge">
                         <i class="fa fa-circle-exclamation"></i> ${errCount} Errors
                     </span>
-                </li>
-            `;
+      `;
+      
+      li.onclick = function() {
+          if (window.showUnifiedDetails) {
+              window.showUnifiedDetails(userId, true, errorDetailsStr, errCount, lastSyncStatusStr);
+          } else {
+              console.error("showUnifiedDetails is not defined on window");
+          }
+      };
+      
+      errorListEl.appendChild(li);
     });
   }
 
@@ -238,6 +291,17 @@ function renderTable(data) {
     const processed = item.processedCount || item.ProcessedCount || 0;
     const unprocessed = item.unprocessedCount || item.UnprocessedCount || 0;
     const errorCount = item.errorCount || item.ErrorCount || 0;
+
+    let successRate = item.successRate || item.SuccessRate;
+    if (successRate === undefined) {
+      if (received > 0) {
+        successRate = ((processed / received) * 100).toFixed(1) + "%";
+      } else {
+        successRate = "0%";
+      }
+    } else {
+      successRate = successRate + (String(successRate).includes("%") ? "" : "%");
+    }
 
     const lastSyncTime = item.lastSyncTime || item.LastSyncTime;
     const syncDate = lastSyncTime
@@ -274,6 +338,7 @@ function renderTable(data) {
                     : `<span class="text-muted">0</span>`
                 }
             </td>
+            <td class="text-center">${successRate}</td>
             <td>
                 <span class="status-badge ${statusBadgeClass}">
                     <i class="fa ${statusIcon}"></i> ${lastSyncStatus}
@@ -281,16 +346,127 @@ function renderTable(data) {
             </td>
             <td class="text-muted">${syncDate}</td>
             <td>
-                    <button class="action-btn action-btn-view" onclick="showUnifiedDetails('${userId}', ${hasErrors}, \`${encodeURIComponent(errorDetails)}\`, ${errorCount}, '${lastSyncStatus}')" title="View Details">
+                    <button class="action-btn action-btn-view" title="View Details">
                         <i class="fa fa-expand"></i>
                     </button>
             </td>
         `;
+    
+    const viewBtn = tr.querySelector('.action-btn-view');
+    if (viewBtn) {
+        viewBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (window.showUnifiedDetails) {
+                window.showUnifiedDetails(userId, hasErrors, encodeURIComponent(errorDetails), errorCount, lastSyncStatus);
+            }
+        });
+    }
+    
     tableBody.appendChild(tr);
   });
 }
 
 function setupEventListeners() {
+  // Date Filter Dropdown
+  const dateDropdown = document.getElementById("dateFilterDropdown");
+  const dateBtn = document.getElementById("dateFilterBtn");
+  const dateLabel = document.getElementById("dateFilterLabel");
+  const dateItems = document.querySelectorAll(".date-filter-item");
+
+  if (dateBtn) {
+    dateBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      dateDropdown.classList.toggle("open");
+    });
+  }
+
+  // Handle High Error Card clicks using Event Delegation was removed from here.
+
+  // Close dropdown when clicking outside
+  document.addEventListener("click", (e) => {
+    if (dateDropdown && !dateDropdown.contains(e.target)) {
+      dateDropdown.classList.remove("open");
+    }
+  });
+
+  if (dateItems) {
+    dateItems.forEach(item => {
+      item.addEventListener("click", (e) => {
+        // Update Active Class
+        dateItems.forEach(el => el.classList.remove("active"));
+        item.classList.add("active");
+        
+        // Update Label
+        dateLabel.textContent = item.textContent;
+        
+        // Set new filter and reload
+        currentDateFilter = item.getAttribute("data-filter");
+        
+        dateDropdown.classList.remove("open");
+
+        dateLabel.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Loading...';
+        loadDashboardData().then(() => {
+          dateLabel.textContent = item.textContent;
+        }).catch(() => {
+          dateLabel.textContent = item.textContent;
+        });
+      });
+    });
+  }
+
+  // Handle Custom Date Apply
+  const applyCustomBtn = document.getElementById("applyCustomDateBtn");
+  if (applyCustomBtn) {
+    applyCustomBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const startDateInput = document.getElementById("customStartDate").value;
+      const endDateInput = document.getElementById("customEndDate").value;
+      
+      if (!startDateInput || !endDateInput) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({ icon: 'warning', title: 'Missing Dates', text: 'Please select both start and end dates.' });
+        } else {
+            alert("Please select both start and end dates.");
+        }
+        return;
+      }
+
+      customDateRange.FromDate = startDateInput;
+      customDateRange.ToDate = endDateInput;
+      currentDateFilter = "custom";
+      
+      // Remove active class from predefined items
+      dateItems.forEach(el => el.classList.remove("active"));
+      
+      // Update label to show range nicely (e.g. 08-01 to 08-31)
+      const labelFormat = `${startDateInput.substring(5)} to ${endDateInput.substring(5)}`;
+      
+      dateDropdown.classList.remove("open");
+      
+      dateLabel.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Loading...';
+      loadDashboardData().then(() => {
+        dateLabel.textContent = labelFormat;
+      }).catch(() => {
+        dateLabel.textContent = labelFormat;
+      });
+    });
+  }
+
+  // Hook up refresh button
+  const refreshBtn = document.getElementById("refreshDashboardBtn");
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", () => {
+      refreshBtn.innerHTML =
+        '<i class="fa-solid fa-arrows-rotate fa-spin"></i> Refreshing';
+      loadDashboardData().then(() => {
+        setTimeout(() => {
+          refreshBtn.innerHTML =
+            '<i class="fa-solid fa-arrows-rotate"></i> Refresh';
+        }, 500);
+      });
+    });
+  }
+
   // Search handling
   document.getElementById("searchInput").addEventListener("input", (e) => {
     if (!dashboardData || !dashboardData.data) return;
@@ -307,6 +483,59 @@ function setupEventListeners() {
     });
     renderTable(filteredData);
   });
+
+  // Export handling
+  const exportBtn = document.getElementById("exportTableBtn");
+  if (exportBtn) {
+    exportBtn.addEventListener("click", () => {
+      exportToCSV();
+    });
+  }
+}
+
+function exportToCSV() {
+    const table = document.querySelector('.data-table');
+    if (!table) return;
+
+    const headers = Array.from(table.querySelectorAll('thead th'))
+        .map(th => th.innerText.trim())
+        .filter(text => text !== 'Action');
+    
+    const rows = Array.from(table.querySelectorAll('tbody tr'));
+    
+    if (rows.length === 0 || (rows.length === 1 && rows[0].innerText.includes('No records found'))) {
+        if(typeof Swal !== 'undefined') {
+            Swal.fire({ icon: 'info', title: 'No Data', text: 'No records available to export.'});
+        } else {
+            alert("No data available to export.");
+        }
+        return;
+    }
+
+    let csvContent = "data:text/csv;charset=utf-8,";
+    // Add BOM for Excel UTF-8 compatibility
+    csvContent = "data:text/csv;charset=utf-8,\uFEFF"; 
+    csvContent += headers.map(h => `"${h}"`).join(",") + "\r\n";
+    
+    rows.forEach(row => {
+        const cols = Array.from(row.querySelectorAll('td'));
+        if (cols.length > 1) { 
+            const rowData = cols.slice(0, cols.length - 1).map(col => {
+                let text = col.innerText.replace(/(\r\n|\n|\r)/gm, " ").trim();
+                return `"${text.replace(/"/g, '""')}"`;
+            });
+            csvContent += rowData.join(",") + "\r\n";
+        }
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    const dateStr = new Date().toISOString().split('T')[0];
+    link.setAttribute("download", `Mail_Processing_Logs_${dateStr}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 // Unified Details Modal Logic
@@ -324,13 +553,22 @@ window.showUnifiedDetails = async function (
   const errorText = document.getElementById("unifiedModalErrorText");
   const errorBadge = document.getElementById("unifiedErrorCount");
 
-  titleUser.textContent = userId;
+  titleUser.textContent = userId || "Unknown User";
+
+  // Safely decode error details
+  let decodedText = "";
+  try {
+      decodedText = decodeURIComponent(encodedDetails);
+  } catch(e) {
+      console.warn("Failed to decode error details:", e);
+      decodedText = encodedDetails; // fallback to raw
+  }
 
   // Handle Error Section state
   if (hasErrors) {
     errorSection.style.display = "block";
     errorBadge.textContent = errorCount;
-    errorText.textContent = decodeURIComponent(encodedDetails);
+    errorText.textContent = decodedText;
   } else {
     errorSection.style.display = "none";
   }
@@ -466,5 +704,4 @@ function renderUserDetailsTable(dataList, container) {
 
   container.innerHTML = html;
 }
-
-loadDashboardData();
+// Initialization handled at the top of the file
