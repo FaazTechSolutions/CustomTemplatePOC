@@ -731,6 +731,18 @@ function initializeApp() {
       const statusVal = document.getElementById("Status")
         ? document.getElementById("Status").value
         : "100000004";
+      const genderVal = document.getElementById("Gender")
+        ? document.getElementById("Gender").value
+        : null;
+      const religionVal = document.getElementById("Religion")
+        ? document.getElementById("Religion").value
+        : null;
+      const expectedSalaryVal = document.getElementById("expectedSalary")
+        ? document.getElementById("expectedSalary").value
+        : null;
+      const yearsExpVal = document.getElementById("YearsOfExperience")
+        ? document.getElementById("YearsOfExperience").value
+        : null;
 
       const natDesc = getDropdownDescriptions(
         nationalityVal,
@@ -745,6 +757,11 @@ function initializeApp() {
         DROPDOWN_DATA.services,
       );
       const stDesc = getDropdownDescriptions(statusVal, DROPDOWN_DATA.statuses);
+      const genDesc = getDropdownDescriptions(genderVal, DROPDOWN_DATA.genders);
+      const relDesc = getDropdownDescriptions(
+        religionVal,
+        DROPDOWN_DATA.religions,
+      );
 
       // Format birthDate to ISO string if provided
       let formattedBirthDate = null;
@@ -774,19 +791,6 @@ function initializeApp() {
           .filter((n) => !isNaN(n));
       }
 
-      const genderVal = document.getElementById("Gender")
-        ? document.getElementById("Gender").value
-        : null;
-      const religionVal = document.getElementById("Religion")
-        ? document.getElementById("Religion").value
-        : null;
-      const expectedSalaryVal = document.getElementById("expectedSalary")
-        ? document.getElementById("expectedSalary").value
-        : null;
-      const yearsExpVal = document.getElementById("YearsOfExperience")
-        ? document.getElementById("YearsOfExperience").value
-        : null;
-
       const modelData = {
         passportNumber: document.getElementById("PassportNumber")
           ? document.getElementById("PassportNumber").value
@@ -802,12 +806,16 @@ function initializeApp() {
           genderVal !== null && genderVal !== ""
             ? parseInt(genderVal, 10)
             : null,
+        Gender_Des: genDesc.en,
+        Gender_DesAr: genDesc.ar,
         birthDate: formattedBirthDate,
         name: nameInput ? nameInput.value : null,
         religion:
           religionVal !== null && religionVal !== ""
             ? parseInt(religionVal, 10)
             : null,
+        Religion_Des: relDesc.en,
+        Religion_DesAr: relDesc.ar,
         insuranceLevel:
           insuranceVal !== null && insuranceVal !== ""
             ? parseInt(insuranceVal, 10)
